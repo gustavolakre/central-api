@@ -1,0 +1,92 @@
+
+        body {
+            font-family: Arial;
+            margin: 40px;
+            background: #fafafa;
+        }
+
+        .campoTopo {
+            margin-bottom: 15px;
+        }
+
+        .campoTopo input,
+        .campoTopo select {
+            width: 400px;
+            padding: 5px;
+        }
+
+        .grupo {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .titulo {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .precos {
+            background: #f5f5f5;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .precos input {
+            width: 90px;
+            margin-bottom: 4px;
+        }
+
+        .linha {
+            margin-left: 20px;
+            margin-bottom: 3px;
+        }
+
+        .total {
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .valores {
+            color: green;
+            margin-top: 10px;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+
+        button {
+            margin-top: 10px;
+            margin-right: 10px;
+            padding: 6px 12px;
+        }
+
+        .disc {
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .botoes-topo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .botoes-topo button {
+            margin: 5px;
+            padding: 8px 14px;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .botoes-topo {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }

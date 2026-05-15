@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório para Faturamento</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+
+<body>
+    <h2 style="text-align:center; margin-bottom:20px;">Faturamento</h2>
+
+    <div style="display:flex; justify-content:center; align-items:flex-start; gap:60px; flex-wrap:wrap; margin-bottom:10px;">
+        <!-- CAMPOS (ESQUERDA) -->
+        <div>
+            <div class="campoTopo">
+                <b>Tipo de Operação</b><br>
+                <select id="tipoOperacao">
+                    <option value="comprador">Comprador</option>
+                    <option value="fornecedor">Fornecedor</option>
+                </select>
+            </div>
+            <div class="campoTopo">
+                <b>Discriminação / Período</b><br>
+                <input type="text" id="discriminacao">
+            </div>
+            <div class="campoTopo">
+                <b>Produto / Serviço</b><br>
+                <input type="text" id="produtoServico">
+            </div>
+            <div class="campoTopo">
+                <b>Mês Gerencial</b><br>
+                <select id="mesGerencial">
+                    <option>2026/01</option>
+                    <option>2026/02</option>
+                    <option>2026/03</option>
+                    <option>2026/04</option>
+                    <option>2026/05</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- UPLOADS (AO LADO) -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+            <div style="text-align:center;">
+                <b>Planilha de Dados</b><br>
+                    </div>
+            <div style="text-align:center;">
+                <b>Base de Parceiros</b><br>
+                    <div style="margin-top:30px; border-top:1px solid #ddd; padding-top:15px;">
+                    <b>Semana</b><br>
+                    <button onclick="selecionarTodasSemanas()">Selecionar todas</button>
+                    <button onclick="limparSemanas()">Limpar</button>
+                    <div id="listaSemanas" style="width:200px; max-height:150px; overflow:auto; border:1px solid #ccc; padding:10px; background:white; margin-top:5px; white-space:nowrap;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPRADORES -->
+        <div>
+            <label style="display:block; margin-bottom:10px;">
+                <input type="checkbox" onchange="toggleAgrupamentoSelecionados(this.checked)"> Agrupar selecionados em um único grupo
+            </label>
+            <b>Compradores</b><br>
+            <button onclick="selecionarTodosCompradores()">Selecionar todos</button>
+            <button onclick="limparCompradores()">Limpar</button>
+            <div id="listaCompradores" style="width:320px; max-height:250px; overflow:auto; border:1px solid #ccc; padding:10px; background:white; margin-top:5px; white-space:nowrap;">
+            </div>
+        </div>
+
+        <!-- FORNECEDORES -->
+        <div style="margin-top:20px;">
+            <b>Fornecedores</b><br>
+            <button onclick="selecionarTodosFornecedores()">Selecionar todos</button>
+            <button onclick="limparFornecedores()">Limpar</button>
+            <div id="listaFornecedores" style="width:320px; max-height:250px; overflow:auto; border:1px solid #ccc; padding:10px; background:white; margin-top:5px; white-space:nowrap;">
+            </div>
+        </div>
+    </div>
+
+    <div class="botoes-topo" style="margin-top:10px;">
+        <button onclick="salvarSessao()">Salvar Sessão</button>
+        <button onclick="abrirSessao()">Abrir Sessão</button>
+        <button onclick="novaSessao()">Nova Sessão</button>
+        <button onclick="abrirFaturados()">Ver Listas</button>
+    </div>
+
+    <input type="file" id="arquivoSessao" style="display:none">
+    <div id="resultado"></div>
+
+
+  <script src="script.js"></script>
+
+   
+</body>
+
+</html>

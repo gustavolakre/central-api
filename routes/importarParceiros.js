@@ -1,0 +1,213 @@
+const express = require("express");
+const axios = require("axios");
+const pool = require("../src/db/database");
+
+const router = express.Router();
+
+const TABLE_ID = 304131925;
+
+router.get("/", async (req, res) => {
+
+  try {
+
+    const query = `
+      query {
+
+        table_records(table_id: ${TABLE_ID}) {
+
+          edges {
+
+            node {
+
+              id
+
+              record_fields {
+                name
+                value
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+    `;
+
+    const response = await axios.post(
+      "https://api.pipefy.com/graphql",
+      { query },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.PIPEFY_TOKEN}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const records = response.data.data.table_records.edges;
+
+    for (const item of records) {
+
+      const record = item.node;
+
+      const fields = {};
+
+      record.record_fields.forEach(f => {
+        fields[f.name] = f.value;
+      });
+
+      await pool.query(
+      `
+      INSERT INTO parceiros_negocio (
+
+        pipefy_record_id,
+
+        tipo,
+        nome_usual,
+        razao_social,
+
+        cnpj,
+        cpf,
+        inscricao_estadual,
+
+        municipio,
+        uf,
+        cep,
+        endereco,
+
+        email_comercial,
+        email_cobranca,
+
+        localizacao,
+        inspecao,
+
+        conta_pix,
+
+        contatos,
+        anexos,
+
+        programador,
+        vendedor,
+
+        raw_data,
+        updated_at
+
+      )
+
+      VALUES (
+
+        $1,
+
+        $2,$3,$4,
+
+        $5,$6,$7,
+
+        $8,$9,$10,$11,
+
+        $12,$13,
+
+        $14,$15,
+
+        $16,
+
+        $17,$18,
+
+        $19,$20,
+
+        $21,NOW()
+
+      )
+
+      ON CONFLICT (pipefy_record_id)
+      DO UPDATE SET
+
+        tipo = EXCLUDED.tipo,
+        nome_usual = EXCLUDED.nome_usual,
+        razao_social = EXCLUDED.razao_social,
+
+        cnpj = EXCLUDED.cnpj,
+        cpf = EXCLUDED.cpf,
+        inscricao_estadual = EXCLUDED.inscricao_estadual,
+
+        municipio = EXCLUDED.municipio,
+        uf = EXCLUDED.uf,
+        cep = EXCLUDED.cep,
+        endereco = EXCLUDED.endereco,
+
+        email_comercial = EXCLUDED.email_comercial,
+        email_cobranca = EXCLUDED.email_cobranca,
+
+        localizacao = EXCLUDED.localizacao,
+        inspecao = EXCLUDED.inspecao,
+
+        conta_pix = EXCLUDED.conta_pix,
+
+        contatos = EXCLUDED.contatos,
+        anexos = EXCLUDED.anexos,
+
+        programador = EXCLUDED.programador,
+        vendedor = EXCLUDED.vendedor,
+
+        raw_data = EXCLUDED.raw_data,
+        updated_at = NOW()
+      `,
+      [
+
+        record.id,
+
+        fields.tipo || "",
+        fields.nome_usual || "",
+        fields.raz_o_social || "",
+
+        fields.cnpj || "",
+        fields.cpf || "",
+        fields.inscri_o_estadual || "",
+
+        fields.munic_pio || "",
+        fields.uf || "",
+        fields.cep || "",
+        fields.endere_o || "",
+
+        fields["e_mail_comercial"] || "",
+        fields["e_mail_cobran_a"] || "",
+
+        fields.localiza_o || "",
+        fields.inspe_o || "",
+
+        fields.conta_pix_para_pagmento || "",
+
+        fields.contatos || "",
+        JSON.stringify(fields.anexos || []),
+
+        fields.respons_veis || "",
+        fields.vendedor_01 || "",
+
+        JSON.stringify(fields)
+
+      ]
+      );
+
+    }
+
+    res.json({
+      success: true,
+      total: records.length
+    });
+
+  } catch (error) {
+
+    console.error("ERRO COMPLETO:");
+    console.error(JSON.stringify(error.response?.data, null, 2));
+    console.error(error.message);
+
+    res.status(500).json({
+      error: "Erro ao importar parceiros"
+    });
+
+  }
+
+});
+
+module.exports = router;
