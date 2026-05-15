@@ -29,6 +29,8 @@
         let agruparSelecionados = false
         let registrosFaturados = []
 
+        const API_URL = "https://api-production-6670.up.railway.app"
+
         function abrirSessao() {
             document.getElementById("arquivoSessao").click()
         }
@@ -1090,7 +1092,7 @@ async function salvarCard(id) {
         try {
 
           const response = await fetch(
-            "/pipefy",
+             `${API_URL}/pipefy`,
             {
               method: "POST",
               headers: {
@@ -1255,7 +1257,7 @@ async function criarCardsPipefy() {
 
   try {
 
-    let res = await fetch("https://api-production-6670.up.railway.app", {
+    let res = await fetch(`${API_URL}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -1371,7 +1373,7 @@ async function enviarFaturadosParaPipefy() {
 
     try {
 
-        const response = await fetch("https://api-production-6670.up.railway.app/", {
+        const response = await fetch(`${API_URL}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -1442,7 +1444,7 @@ async function carregarDadosBanco() {
     try {
 
         const response = await fetch(
-            "https://api-production-6670.up.railway.app/buscarDados"
+               `${API_URL}/buscarDados`
         )
 
         dadosPlanilha = await response.json()
@@ -1480,7 +1482,7 @@ async function carregarParceirosBanco() {
 try {
 
     const response = await fetch(
-        "https://api-production-6670.up.railway.app/buscarParceiros"
+          `${API_URL}/buscarParceiros`
     )
 
     baseParceiros = await response.json()
@@ -1511,7 +1513,7 @@ try {
                 cardId: d["Código"],
                 nf: nf
             }))
-            let res = await fetch("https://api-production-6670.up.railway.app", {
+            let res = await fetch(`${API_URL}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
