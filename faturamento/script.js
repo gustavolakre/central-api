@@ -62,47 +62,7 @@
             }
         }
 
-        /* PLANILHA PRINCIPAL */
-        document.getElementById("upload").addEventListener("change", function(e) {
-            let reader = new FileReader()
-            reader.onload = function(e) {
-                let data = new Uint8Array(e.target.result)
-                let workbook = XLSX.read(data, {
-                    type: 'array'
-                })
-                let sheet = workbook.Sheets[workbook.SheetNames[0]]
-                dadosPlanilha = XLSX.utils.sheet_to_json(sheet)
-
-                console.log("PRIMEIRA LINHA:", dadosPlanilha[0])
-                console.log("CODIGO LIDO:", dadosPlanilha[0]["Código"])
-                console.log("COLUNAS:", Object.keys(dadosPlanilha[0]))
-
-
-
-                console.log(dadosPlanilha.map(d => extrairSemana(d["etiquetas"])))
-                tiposSuino = [...new Set(dadosPlanilha.map(d => d["Tipo Suíno"]))]
-                montarListaSemanas()
-                montarListasSeparadas()
-                montarAgrupamento()
-                gerarRelatorio()
-            }
-            reader.readAsArrayBuffer(e.target.files[0])
-        })
-
-        /* BASE DE PARCEIROS */
-        document.getElementById("uploadBase").addEventListener("change", function(e) {
-            let reader = new FileReader()
-            reader.onload = function(e) {
-                let data = new Uint8Array(e.target.result)
-                let workbook = XLSX.read(data, {
-                    type: 'array'
-                })
-                let sheet = workbook.Sheets[workbook.SheetNames[0]]
-                baseParceiros = XLSX.utils.sheet_to_json(sheet)
-                console.log("Base parceiros carregada", baseParceiros)
-            }
-            reader.readAsArrayBuffer(e.target.files[0])
-        })
+      
 
         function buscarParceiro(nomeUsual) {
             if (!baseParceiros.length) return null
@@ -543,7 +503,21 @@ html += `<br>Valor dos Tributos (18%): ${formatar(trib)}`
                 "Parceiro": r["Parceiro"] || "",
                 "Nota Fiscal": r["Nota Fiscal"] || "",
                 "Valor Liquido": Number(r["Valor Líquido"]) || 0,
-                "Data do Vencimento": r["Data de Vencimento"] ? ((new Date(r["Data de Vencimento"]) - new Date(1899, 11, 30)) / 86400000) : "",
+                "Data do Vencimento": r["Data de Vencimento"]
+                ? (() => {
+
+                     let partes = r["Data de Vencimento"].split("-")
+
+                     let ano = Number(partes[0])
+                     let mes = Number(partes[1]) - 1
+                     let dia = Number(partes[2])
+
+                     let dataLocal = new Date(ano, mes, dia)
+
+                     return (dataLocal - new Date(1899, 11, 30)) / 86400000
+
+                 })()
+               : "",
                 "Responsável": "307283950"
             }))
 
@@ -1281,7 +1255,7 @@ async function criarCardsPipefy() {
 
   try {
 
-    let res = await fetch("https://postgres-production-6d36.up.railway.app", {
+    let res = await fetch("https://api-production-6670.up.railway.app", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -1293,13 +1267,6 @@ async function criarCardsPipefy() {
 
     let data = await res.json()
 
-    if (data.sucesso > 0) {
-
-  selecionados.forEach(index => {
-    registrosFaturados[index].enviadoPipefy = true
-  })
-
-}
 
     console.log("📥 RESPOSTA BACKEND:", data)
 
@@ -1404,7 +1371,7 @@ async function enviarFaturadosParaPipefy() {
 
     try {
 
-        const response = await fetch("https://postgres-production-6d36.up.railway.app", {
+        const response = await fetch("https://api-production-6670.up.railway.app/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -1469,13 +1436,82 @@ async function enviarFaturadosParaPipefy() {
 }
 
 
+
+async function carregarDadosBanco() {
+
+    try {
+
+        const response = await fetch(
+            "https://api-production-6670.up.railway.app/buscarDados"
+        )
+
+        dadosPlanilha = await response.json()
+
+        console.log("DADOS PLANILHA:", dadosPlanilha)
+
+        tiposSuino = [
+            ...new Set(
+                dadosPlanilha.map(d => d["Tipo Suíno"])
+            )
+        ]
+
+        montarListaSemanas()
+        montarListasSeparadas()
+        montarAgrupamento()
+        gerarRelatorio()
+
+    } catch (err) {
+
+        console.error(
+            "ERRO AO CARREGAR DADOS:",
+            err
+        )
+
+        alert("Erro ao carregar dados do banco")
+
+    }
+
+}
+
+
+async function carregarParceirosBanco() {
+
+
+try {
+
+    const response = await fetch(
+        "https://api-production-6670.up.railway.app/buscarParceiros"
+    )
+
+    baseParceiros = await response.json()
+
+    console.log(
+        "BASE PARCEIROS:",
+        baseParceiros
+    )
+
+} catch (err) {
+
+    console.error(
+        "ERRO AO CARREGAR PARCEIROS:",
+        err
+    )
+
+    alert("Erro ao carregar parceiros")
+
+}
+
+}
+
+
+
         async function enviarGrupoParaPipefy(grupo, nf) {
             let tipo = document.getElementById("tipoOperacao").value
             let cards = grupo.dados.map(d => ({
                 cardId: d["Código"],
                 nf: nf
             }))
-            let res = await fetch("https://postgres-production-6d36.up.railway.app", {
+            let res = await fetch("https://api-production-6670.up.railway.app", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -1595,6 +1631,11 @@ async function enviarFaturadosParaPipefy() {
 
             <tr style="background:#f5f5f5;">
 
+             <th>
+                <input type="checkbox" onchange="toggleTodasCargas(this.checked)">
+             </th>
+            <th>ID</th>
+
              
                 <th>ID</th>
                 <th>Semana</th>
@@ -1613,12 +1654,18 @@ async function enviarFaturadosParaPipefy() {
     html += `
         <tr>
            <td>
-               ${
-                c.enviadoControle
-                ? "✅"
-                : "⏳"
-                }
-          </td> 
+
+           ${
+             c.enviadoControle
+             ? "✅"
+             : `<input 
+                type="checkbox" 
+                class="checkCarga"
+                data-id="${c.ID}"
+              >`
+           }
+
+        </td>
             
 
             <td>${c.ID}</td>
@@ -1648,31 +1695,63 @@ async function enviarFaturadosParaPipefy() {
     return html
 }
 
-        function excluirFaturado(index) {
-            let item = registrosFaturados[index]
-            if (!confirm("Deseja excluir este faturamento?")) {
-                return
-            }
-            let nf = item["Nota Fiscal"]
-            dadosPlanilha.forEach(d => {
-                if (d["NF Taxa Compr."] === nf || d["NF Taxa Compr"] === nf) {
-                    delete d["NF Taxa Compr."]
-                    delete d["NF Taxa Compr"]
-                }
-                if (d["NF Taxa Fornec."] === nf || d["NF Taxa Fornec"] === nf) {
-                    delete d["NF Taxa Fornec."]
-                    delete d["NF Taxa Fornec"]
-                }
-                if (d["NF SALVA"] === nf) {
-                    delete d["NF SALVA"]
-                }
-            })
-            registrosFaturados.splice(index, 1)
-            montarAgrupamento()
-            gerarRelatorio()
-            fecharFaturados()
-            abrirFaturados()
+       function excluirFaturado(index) {
+
+    let item = registrosFaturados[index]
+
+    if (!confirm("Deseja excluir este faturamento?")) {
+        return
+    }
+
+    let nf = item["Nota Fiscal"]
+
+    dadosPlanilha.forEach(d => {
+
+        let codigo = Number(String(d["Código"]).trim())
+
+        let pertenceNF = false
+
+        if (
+            d["NF Taxa Compr."] === nf ||
+            d["NF Taxa Compr"] === nf
+        ) {
+
+            delete d["NF Taxa Compr."]
+            delete d["NF Taxa Compr"]
+
+            localStorage.removeItem(`nf_compr_${codigo}`)
+
+            pertenceNF = true
         }
+
+        if (
+            d["NF Taxa Fornec."] === nf ||
+            d["NF Taxa Fornec"] === nf
+        ) {
+
+            delete d["NF Taxa Fornec."]
+            delete d["NF Taxa Fornec"]
+
+            localStorage.removeItem(`nf_fornec_${codigo}`)
+
+            pertenceNF = true
+        }
+
+        if (pertenceNF) {
+            delete d["NF SALVA"]
+        }
+
+    })
+
+    registrosFaturados.splice(index, 1)
+
+    montarAgrupamento()
+    gerarRelatorio()
+
+    fecharFaturados()
+    abrirFaturados()
+
+}
 
     document.getElementById("arquivoSessao").addEventListener("change", function(e) {
 
@@ -1758,4 +1837,12 @@ async function enviarFaturadosParaPipefy() {
   }
 
   reader.readAsText(file)
+})
+
+;window.addEventListener("DOMContentLoaded", async () => {
+
+    await carregarParceirosBanco()
+
+    await carregarDadosBanco()
+
 })
