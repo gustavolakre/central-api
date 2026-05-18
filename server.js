@@ -18,6 +18,9 @@ console.log("3")
 require("./routes/importarPipefy")
 console.log("4")
 
+require("./routes/importarParceiros")
+console.log("5")
+
 app.get("/", (req, res) => {
   res.send("API ONLINE")
 })
