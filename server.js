@@ -30,8 +30,8 @@ app.use("/importar-parceiros", importarParceiros);
 app.use("/gerar-faturamento", gerarFaturamento);
 app.use(express.static(path.join(__dirname, "frontend")));
 
-app.use("/buscar-cargas", buscarCargas)
-app.use("/buscar-parceiros", buscarParceiros)
+app.use("/buscarDados", buscarCargas)
+app.use("/buscarParceiros", buscarParceiros)
 
 app.get("/", async (req, res) => {
 
@@ -61,6 +61,6 @@ app.get("/", async (req, res) => {
 
 const PORT = process.env.PORT || 3000
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log("Servidor rodando na porta", PORT)
 })
