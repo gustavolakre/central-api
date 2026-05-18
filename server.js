@@ -1,15 +1,14 @@
 require("dotenv").config()
 
-const path = require("path");
+const path = require("path")
 const express = require("express")
 const cors = require("cors")
-const importarPipefy = require("./routes/importarPipefy");
-const importarParceiros = require("./routes/importarParceiros");
-const gerarFaturamento = require("./routes/gerarFaturamento");
+
+const importarPipefy = require("./routes/importarPipefy")
+const importarParceiros = require("./routes/importarParceiros")
+const gerarFaturamento = require("./routes/gerarFaturamento")
 const buscarCargas = require("./routes/buscarCargas")
 const buscarParceiros = require("./routes/buscarParceiros")
-
-
 
 const pool = require("./src/db/database")
 
@@ -18,21 +17,28 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
+// 🔥 COMENTE TEMPORARIAMENTE ESTES STATIC
+// app.use(
+//   express.static(
+//     path.join(__dirname, "faturamento")
+//   )
+// )
 
-app.use(
-  express.static(
-    path.join(__dirname, "faturamento")
-  )
-)
+// app.use(
+//   express.static(
+//     path.join(__dirname, "frontend")
+//   )
+// )
 
-app.use("/importar-pipefy", importarPipefy);
-app.use("/importar-parceiros", importarParceiros);
-app.use("/gerar-faturamento", gerarFaturamento);
-app.use(express.static(path.join(__dirname, "frontend")));
+// ROTAS
+app.use("/importar-pipefy", importarPipefy)
+app.use("/importar-parceiros", importarParceiros)
+app.use("/gerar-faturamento", gerarFaturamento)
 
 app.use("/buscarDados", buscarCargas)
 app.use("/buscarParceiros", buscarParceiros)
 
+// ROTA TESTE
 app.get("/", async (req, res) => {
 
   try {
@@ -53,17 +59,13 @@ app.get("/", async (req, res) => {
       online: true,
       banco: false,
       erro: err.message
-    });
+    })
 
   }
 
 })
 
 const PORT = process.env.PORT || 3000
-
-app.get("/", (req, res) => {
-  res.send("API ONLINE")
-})
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor rodando na porta ${PORT}`)
