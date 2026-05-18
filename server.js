@@ -1,28 +1,63 @@
 require("dotenv").config()
 
+const path = require("path")
 const express = require("express")
 const cors = require("cors")
 
-console.log("1")
+const importarPipefy = require("./routes/importarPipefy")
+const importarParceiros = require("./routes/importarParceiros")
+// const gerarFaturamento = require("./routes/gerarFaturamento")
+const buscarCargas = require("./routes/buscarCargas")
+const buscarParceiros = require("./routes/buscarParceiros")
+
+const pool = require("./src/db/database")
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 
-console.log("2")
+app.use(
+  express.static(
+    path.join(__dirname, "faturamento")
+  )
+)
 
-require("./src/db/database")
-console.log("3")
+app.use(
+  express.static(
+    path.join(__dirname, "frontend")
+  )
+)
 
-require("./routes/importarPipefy")
-console.log("4")
+app.use("/importar-pipefy", importarPipefy)
+app.use("/importar-parceiros", importarParceiros)
+// app.use("/gerar-faturamento", gerarFaturamento)
 
-require("./routes/importarParceiros")
-console.log("5")
+app.use("/buscarDados", buscarCargas)
+app.use("/buscarParceiros", buscarParceiros)
 
-app.get("/", (req, res) => {
-  res.send("API ONLINE")
+app.get("/", async (req, res) => {
+
+  try {
+
+    const result = await pool.query("SELECT NOW()")
+
+    res.json({
+      online: true,
+      banco: true,
+      horario: result.rows[0]
+    })
+
+  } catch (err) {
+
+    res.status(500).json({
+      online: true,
+      banco: false,
+      erro: err.message
+    })
+
+  }
+
 })
 
 const PORT = process.env.PORT || 3000
