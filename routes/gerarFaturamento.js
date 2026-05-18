@@ -184,7 +184,8 @@ router.get("/", async (req, res) => {
 
   } catch (error) {
 
-    console.error(error);
+    console.error("ERRO GERAR FATURAMENTO:", error);
+    console.error(error.stack);
 
     res.status(500).json({
       error: "Erro ao gerar faturamento"
