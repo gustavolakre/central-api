@@ -3,33 +3,20 @@ require("dotenv").config()
 const express = require("express")
 const cors = require("cors")
 
-console.log("1 - express ok")
+console.log("1")
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 
-console.log("2 - middlewares ok")
+console.log("2")
 
-// TESTE IMPORTS
 require("./src/db/database")
-console.log("3 - database ok")
+console.log("3")
 
 require("./routes/importarPipefy")
-console.log("4 - importarPipefy ok")
-
-require("./routes/importarParceiros")
-console.log("5 - importarParceiros ok")
-
-require("./routes/gerarFaturamento")
-console.log("6 - gerarFaturamento ok")
-
-require("./routes/buscarCargas")
-console.log("7 - buscarCargas ok")
-
-require("./routes/buscarParceiros")
-console.log("8 - buscarParceiros ok")
+console.log("4")
 
 app.get("/", (req, res) => {
   res.send("API ONLINE")
