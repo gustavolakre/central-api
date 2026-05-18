@@ -10,7 +10,8 @@ router.get("/", async (req, res) => {
     const result = await pool.query(`
       SELECT *
       FROM controle_cargas
-   `)
+    
+    `)
 
     res.json(result.rows)
 
