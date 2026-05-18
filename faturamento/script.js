@@ -1342,22 +1342,21 @@ async function enviarFaturadosParaPipefy() {
             let codigoLinha = Number(String(d["Código"]).trim())
 
             if (
-               selecionados.includes(codigoLinha) &&
-                (nfCompr === nf || nfFornec === nf)
-            )
+                selecionados.includes(codigoLinha) &&
+              (nfCompr === nf || nfFornec === nf)
+            ) {
 
-                
-                if (nfCompr || nfFornec) {
+              if (nfCompr || nfFornec) {
 
-                     cards.push({
-                     cardId: Number(d["Código"]),
-                     nfCompr,
-                     nfFornec
+                 cards.push({
+                      cardId: Number(d["Código"]),
+                      nfCompr,
+                      nfFornec
                 })
 
-              }
+           }
 
-            }
+       }
 
         })
 
