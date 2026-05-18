@@ -970,7 +970,9 @@ async function salvarCard(id) {
       // 🔥 atualiza linhas da planilha
       grupo.dados.forEach(d => {
 
-        let cardId = Number(String(d["Código"]).trim())
+        let cardId = parseInt(String(d["Código"]).trim())
+
+        if (!cardId) return
 
         d["NF SALVA"] = nfDigitado
 
@@ -1110,21 +1112,22 @@ async function salvarCard(id) {
           )
 
           // 🔥 marca como enviado
+          // 🔥 marca como enviado no controle
           cards.forEach(card => {
 
-            dadosPlanilha.forEach(d => {
+              dadosPlanilha.forEach(d => {
 
-              let codigo = Number(
-                String(d["Código"]).trim()
-              )
+                  let codigoLinha = Number(String(d["Código"]).trim())
 
-              if (codigo === Number(card.cardId)) {
-                d.enviadoControle = true
-              }
+                  if (codigoLinha === Number(card.cardId)) {
 
-            })
+                    d.enviadoControle = true
+   
+        }
 
-          })
+    })
+
+})
 
         } catch (err) {
 
@@ -1257,7 +1260,7 @@ async function criarCardsPipefy() {
 
   try {
 
-    let res = await fetch(`${API_URL}`, {
+    let res = await fetch(`${API_URL}/importar-pipefy`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -1339,8 +1342,9 @@ async function enviarFaturadosParaPipefy() {
             let codigoLinha = Number(String(d["Código"]).trim())
 
             if (
-               (nfCompr === nf || nfFornec === nf)
-            ) {
+               selecionados.includes(codigoLinha) &&
+                (nfCompr === nf || nfFornec === nf)
+            )
 
                 
                 if (nfCompr || nfFornec) {
@@ -1373,7 +1377,7 @@ async function enviarFaturadosParaPipefy() {
 
     try {
 
-        const response = await fetch(`${API_URL}`, {
+        const response = await fetch(`${API_URL}/importar-pipefy`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -1513,7 +1517,7 @@ try {
                 cardId: d["Código"],
                 nf: nf
             }))
-            let res = await fetch(`${API_URL}`, {
+            let res = await fetch(`${API_URL}/importar-pipefy`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -1636,9 +1640,7 @@ try {
              <th>
                 <input type="checkbox" onchange="toggleTodasCargas(this.checked)">
              </th>
-            <th>ID</th>
-
-             
+                     
                 <th>ID</th>
                 <th>Semana</th>
                 <th>Comprador</th>
@@ -1800,7 +1802,10 @@ try {
 
       // 🔥 LIMPA NF ANTIGA
       Object.keys(localStorage)
-        .filter(k => k.startsWith("nf_"))
+        .filter(k =>
+           k.startsWith("nf_compr_") ||
+           k.startsWith("nf_fornec_")
+        )
         .forEach(k => localStorage.removeItem(k))
 
       // 🔥 RESTAURA NF DA SESSÃO
