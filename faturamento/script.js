@@ -1452,6 +1452,49 @@ async function carregarDadosBanco() {
 
         dadosPlanilha = await response.json()
 
+        dadosPlanilha = dadosPlanilha.map(d => ({
+
+    ...d,
+
+    "Comprador":
+        d["Comprador"] ||
+        d["comprador"] ||
+        "",
+
+    "Fornecedor":
+        d["Fornecedor"] ||
+        d["fornecedor"] ||
+        "",
+
+    "Tipo Suíno":
+        d["Tipo Suíno"] ||
+        d["tipo_suíno"] ||
+        d["tipo_suino"] ||
+        "",
+
+    "Quantidade":
+        d["Quantidade"] ||
+        d["quantidade"] ||
+        0,
+
+    "Código":
+        d["Código"] ||
+        d["codigo"] ||
+        0,
+
+    "Mortos em transporte":
+        d["Mortos em transporte"] ||
+        d["mortos_em_transporte"] ||
+        0,
+
+    "Etiquetas":
+        d["Etiquetas"] ||
+        d["etiquetas"] ||
+        d["etiqueta"] ||
+        ""
+
+}))
+
         console.log("DADOS PLANILHA:", dadosPlanilha)
 
         tiposSuino = [
