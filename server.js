@@ -6,7 +6,7 @@ const cors = require("cors")
 
 const importarPipefy = require("./routes/importarPipefy")
 const importarParceiros = require("./routes/importarParceiros")
-// const gerarFaturamento = require("./routes/gerarFaturamento")
+const gerarFaturamento = require("./routes/gerarFaturamento")
 const buscarCargas = require("./routes/buscarCargas")
 const buscarParceiros = require("./routes/buscarParceiros")
 
@@ -17,21 +17,11 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.use(
-  express.static(
-    path.join(__dirname, "faturamento")
-  )
-)
-
-app.use(
-  express.static(
-    path.join(__dirname, "frontend")
-  )
-)
+app.use(express.static(path.join(__dirname, "frontend")))
 
 app.use("/importar-pipefy", importarPipefy)
 app.use("/importar-parceiros", importarParceiros)
-// app.use("/gerar-faturamento", gerarFaturamento)
+app.use("/gerar-faturamento", gerarFaturamento)
 
 app.use("/buscarDados", buscarCargas)
 app.use("/buscarParceiros", buscarParceiros)
@@ -40,21 +30,15 @@ app.get("/", async (req, res) => {
 
   try {
 
-    const result = await pool.query("SELECT NOW()")
+    await pool.query("SELECT NOW()")
 
-    res.json({
-      online: true,
-      banco: true,
-      horario: result.rows[0]
-    })
+    res.status(200).send("API ONLINE")
 
   } catch (err) {
 
-    res.status(500).json({
-      online: true,
-      banco: false,
-      erro: err.message
-    })
+    console.error(err)
+
+    res.status(500).send("ERRO DB")
 
   }
 
@@ -63,5 +47,7 @@ app.get("/", async (req, res) => {
 const PORT = process.env.PORT || 3000
 
 app.listen(PORT, "0.0.0.0", () => {
+
   console.log(`Servidor rodando na porta ${PORT}`)
+
 })
