@@ -679,19 +679,70 @@ html += `<br>Valor dos Tributos (18%): ${formatar(trib)}`
         }
 
         function extrairSemana(valor) {
-            if (!valor) return null
-            let v = String(valor)
-            let partes = v.split(",")
-            if (partes.length < 2) return null
-            let semana = partes[1].trim()
-            if (!/^\d{4}\/\d{1,2}$/.test(semana)) {
-                return null
+
+    if (!valor) return null
+
+    try {
+
+        let semana = null
+
+        // 🔥 formato JSON string
+        if (
+            typeof valor === "string" &&
+            valor.startsWith("[")
+        ) {
+
+            let arr = JSON.parse(valor)
+
+            if (
+                Array.isArray(arr) &&
+                arr.length >= 2
+            ) {
+
+                semana = String(arr[1]).trim()
+
             }
-            if (!semana.startsWith("2026")) {
-                return null
+
+        } else {
+
+            // 🔥 fallback texto normal
+            let partes = String(valor).split(",")
+
+            if (partes.length >= 2) {
+
+                semana = partes[1]
+                    .replace(/[\[\]"]/g, "")
+                    .trim()
+
             }
-            return semana
+
         }
+
+        // 🔥 aceita SOMENTE yyyy/nn
+        if (
+            semana &&
+            /^\d{4}\/\d{1,2}$/.test(semana)
+        ) {
+
+            return semana
+
+        }
+
+        return null
+
+    } catch (err) {
+
+        console.error(
+            "ERRO EXTRAIR SEMANA:",
+            valor,
+            err
+        )
+
+        return null
+
+    }
+
+}
 
         function montarListaSemanas() {
             let semanasValidas = dadosPlanilha
