@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Painel Inicial</title>
+
+<style>
+
+body{
+    font-family:Arial;
+    background:#f5f5f5;
+    margin:0;
+    padding:40px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:40px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h1{
+    margin-top:0;
+    margin-bottom:30px;
+}
+
+.botoes{
+    display:flex;
+    gap:20px;
+}
+
+button{
+    border:none;
+    border-radius:8px;
+    padding:15px 25px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.btnAtualizar{
+    background:#ef6c00;
+    color:white;
+}
+
+.btnFaturamento{
+    background:#2e7d32;
+    color:white;
+}
+
+#status{
+    margin-top:30px;
+    padding:20px;
+    background:#f1f1f1;
+    border-radius:8px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Painel Financeiro</h1>
+
+    <div class="botoes">
+
+        <button
+            class="btnAtualizar"
+            onclick="atualizarPipefy()"
+        >
+            Atualizar Dados do Pipefy
+        </button>
+
+        <button
+            class="btnFaturamento"
+            onclick="abrirFaturamento()"
+        >
+            Abrir Faturamento
+        </button>
+
+    </div>
+
+    <div id="status">
+        Aguardando atualização...
+    </div>
+
+</div>
+
+<script>
+
+<script>
+
+async function atualizarPipefy(){
+
+    let status = document.getElementById("status")
+
+    try{
+
+        status.innerHTML =
+            "Atualizando dados do Pipefy..."
+
+        let response = await fetch(
+            "/importar-pipefy",
+            {
+                method:"POST"
+            }
+        )
+
+        let data = await response.json()
+
+        console.log(data)
+
+        status.innerHTML =
+            "Atualização concluída com sucesso."
+
+    }catch(err){
+
+        console.error(err)
+
+        status.innerHTML =
+            "Erro ao atualizar dados."
+
+    }
+
+}
+
+function abrirFaturamento(){
+
+    window.location.href = "/index.html"
+
+}
+
+</script>
+
+function abrirFaturamento(){
+
+    window.location.href = "/faturamento/index.html"
+
+}
+
+</script>
+
+</body>
+</html>

@@ -806,9 +806,26 @@ html += `<br>Valor dos Tributos (18%): ${formatar(trib)}`
         }
 
         function abrirFaturados() {
-            let html = `<div style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; overflow:auto; padding:20px; z-index:9999;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <div style="display:flex; gap:10px; align-items:center;">
+            let html = `<div style="
+                        position:fixed;
+                        top:0;
+                        left:0;
+
+                        width:100%;
+                        height:100%;
+
+                        background:white;
+
+                        overflow:auto;
+
+                        padding:20px;
+
+                        box-sizing:border-box;
+
+                        z-index:9999;
+                        ">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <div style="display:flex; gap:10px; align-items:center;">
                         <button onclick="fecharFaturados()">Fechar</button>
                         <button onclick="gerarExcel()" onmouseover="this.style.background='#1b5e20'" onmouseout="this.style.background='#2e7d32'" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'" style="background:#2e7d32; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; transition:all 0.15s ease;">
                             GERAR PLANILHA EXCEL
@@ -839,7 +856,19 @@ html += `<br>Valor dos Tributos (18%): ${formatar(trib)}`
                     <div style="background:#e8f5e9; border:1px solid #c8e6c9; padding:10px 15px; border-radius:6px; margin-bottom:15px; font-size:14px; font-weight:bold; text-align:center;">
                         Total Faturado: R$ ${totalFaturado.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                     </div>
-                    <table border="1" cellspacing="0" cellpadding="3" style="border-collapse:collapse; width:100%; font-size:13px; text-align:center; background:white;">
+                    <div style="width:100%; overflow-x:auto;">
+
+                    <table border="1"
+                      cellspacing="0"
+                      cellpadding="5"
+                      style="
+                           border-collapse:collapse;
+                           width:100%;
+                           min-width:1400px;
+                           font-size:13px;
+                           margin-top:10px;
+                           text-align:center;
+                    ">
                           <tr style="background:#f5f5f5;">
                             <th>
                               <input type="checkbox" onchange="toggleTodosFaturados(this.checked)">
@@ -1757,7 +1786,8 @@ try {
              <th>
                 <input type="checkbox" onchange="toggleTodasCargas(this.checked)">
              </th>
-                     
+                   
+                <th>#</th>
                 <th>ID</th>
                 <th>Semana</th>
                 <th>Comprador</th>
@@ -1770,7 +1800,7 @@ try {
             </tr>
     `
 
-    lista.forEach(c => {
+    lista.forEach((c, index) => {
 
     html += `
         <tr>
@@ -1788,7 +1818,7 @@ try {
 
         </td>
             
-
+            <td>${index + 1}</td>me m
             <td>${c.ID}</td>
             <td>${c.Semana}</td>
             <td>${c.Comprador}</td>
@@ -1811,7 +1841,7 @@ try {
 
 })
 
-    html += `</table>`
+    html += `</table></div>`
 
     return html
 }
