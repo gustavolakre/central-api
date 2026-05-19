@@ -1521,6 +1521,30 @@ async function carregarDadosBanco() {
 
 }
 
+dadosPlanilha = dadosPlanilha.map(d => {
+
+    let etiquetas = d["Etiquetas"]
+
+    try {
+
+        if (typeof etiquetas === "string" && etiquetas.startsWith("[")) {
+
+            etiquetas = JSON.parse(etiquetas).join(", ")
+
+        }
+
+    } catch {}
+
+    return {
+
+        ...d,
+
+        "Etiquetas": etiquetas || ""
+
+    }
+
+})
+
 
 async function carregarParceirosBanco() {
 
