@@ -52,6 +52,19 @@ let hasNextPage = true;
 
 let cursor = null;
 
+const ultimaSync = await pool.query(`
+  SELECT MAX(updated_at_pipefy) as ultima
+  FROM controle_cargas
+`);
+
+const dataUltimaSync =
+  ultimaSync.rows[0].ultima;
+
+console.log(
+  "ULTIMA SYNC:",
+  dataUltimaSync
+);
+
 while (hasNextPage) {
 
   const query = `
@@ -72,6 +85,7 @@ while (hasNextPage) {
             id
             title
             created_at
+            updated_at
 
             current_phase {
               name
@@ -114,6 +128,14 @@ while (hasNextPage) {
   for (const item of data.edges) {
 
   const card = item.node;
+
+  if (
+    dataUltimaSync &&
+    new Date(card.updated_at) <=
+    new Date(dataUltimaSync)
+  ) {
+    continue;
+  }
 
   console.log({
   titulo: card.title,
@@ -205,6 +227,7 @@ INSERT INTO controle_cargas (
   titulo,
   fase,
   created_at_pipefy,
+  updated_at_pipefy,
   raw_data,
 
   comprador,
@@ -238,14 +261,14 @@ INSERT INTO controle_cargas (
 )
 
 VALUES (
-  $1,$2,$3,$4,$5,
-  $6,$7,$8,$9,$10,
-  $11,$12,
-  $13,$14,$15,
-  $16,$17,$18,$19,$20,
-  $21,$22,
-  $23,$24,$25,$26,
-  $27
+  $1,$2,$3,$4,$5,$6,
+  $7,$8,$9,$10,$11,
+  $12,$13,
+  $14,$15,$16,
+  $17,$18,$19,$20,$21,
+  $22,$23,
+  $24,$25,$26,$27,
+  $28
 )
 
 ON CONFLICT (pipefy_card_id)
@@ -253,6 +276,8 @@ DO UPDATE SET
 
   titulo = EXCLUDED.titulo,
   fase = EXCLUDED.fase,
+  updated_at_pipefy =
+  EXCLUDED.updated_at_pipefy,
   raw_data = EXCLUDED.raw_data,
 
   comprador = EXCLUDED.comprador,
@@ -290,6 +315,7 @@ DO UPDATE SET
   card.title,
   card.current_phase?.name || "",
   card.created_at,
+  card.updated_at,
   JSON.stringify(fields),
 
   limparTexto(fields.Comprador),
