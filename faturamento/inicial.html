@@ -92,8 +92,6 @@ button{
 
 <script>
 
-<script>
-
 async function atualizarPipefy(){
 
     let status = document.getElementById("status")
@@ -106,7 +104,7 @@ async function atualizarPipefy(){
         let response = await fetch(
             "/importar-pipefy",
             {
-                method:"POST"
+                method:"GET"
             }
         )
 
@@ -131,14 +129,6 @@ async function atualizarPipefy(){
 function abrirFaturamento(){
 
     window.location.href = "/index.html"
-
-}
-
-</script>
-
-function abrirFaturamento(){
-
-    window.location.href = "/faturamento/index.html"
 
 }
 

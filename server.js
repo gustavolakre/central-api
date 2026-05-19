@@ -27,6 +27,7 @@ app.use("/gerar-faturamento", gerarFaturamento)
 app.use("/buscarDados", buscarCargas)
 app.use("/buscarParceiros", buscarParceiros)
 
+
 app.get("/", async (req, res) => {
 
   try {
