@@ -9,6 +9,8 @@ const importarParceiros = require("./routes/importarParceiros")
 const gerarFaturamento = require("./routes/gerarFaturamento")
 const buscarCargas = require("./routes/buscarCargas")
 const buscarParceiros = require("./routes/buscarParceiros")
+const financeiro = require("./routes/financeiro")
+const bancos = require("./routes/bancos")
 
 
 const pool = require("./src/db/database")
@@ -26,6 +28,9 @@ app.use("/gerar-faturamento", gerarFaturamento)
 
 app.use("/buscarDados", buscarCargas)
 app.use("/buscarParceiros", buscarParceiros)
+
+app.use("/financeiro", financeiro)
+app.use("/bancos", bancos)
 
 
 app.get("/", async (req, res) => {
