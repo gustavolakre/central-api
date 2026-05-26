@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lançamentos Financeiros</title>
+
+    <style>
+
+        *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:Arial;
+
+    background:#eef2f7;
+
+    padding:18px;
+}
+
+h1{
+
+    margin-bottom:14px;
+
+    font-size:22px;
+
+    color:#111827;
+}
+
+
+
+/* FORMULÁRIO */
+
+.formulario{
+
+    background:#dbeafe;
+
+    padding:16px;
+
+    border-radius:10px;
+
+    margin-bottom:14px;
+
+    border:1px solid #93c5fd;
+}
+
+
+
+/* FILTROS */
+
+.filtros{
+
+    background:white;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    margin-bottom:14px;
+
+    border:1px solid #ddd;
+}
+
+
+
+/* GRID */
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(170px,1fr));
+
+    gap:10px;
+}
+
+
+
+/* CAMPOS */
+
+.campo{
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+
+
+/* LABEL */
+
+label{
+
+    margin-bottom:4px;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    color:#374151;
+}
+
+
+
+/* INPUTS */
+
+input,
+select,
+textarea{
+
+    padding:8px 10px;
+
+    border-radius:6px;
+
+    border:1px solid #cbd5e1;
+
+    font-size:12px;
+
+    background:white;
+}
+
+textarea{
+
+    min-height:55px;
+
+    resize:vertical;
+}
+
+
+
+/* BOTÕES */
+
+.acoes{
+
+    margin-top:12px;
+}
+
+button{
+
+    background:#1d4ed8;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    font-size:12px;
+
+    font-weight:bold;
+}
+
+button:hover{
+    opacity:0.92;
+}
+
+
+
+/* TABELA */
+
+.tabela{
+
+    background:white;
+
+    border-radius:10px;
+
+    overflow:auto;
+
+    border:1px solid #ddd;
+
+    height:calc(100vh - 360px);
+}
+
+
+
+/* TABLE */
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+
+
+/* HEADER */
+
+th{
+
+    background:#1e293b;
+
+    color:white;
+
+    padding:9px;
+
+    text-align:left;
+
+    font-size:11px;
+
+    position:sticky;
+
+    top:0;
+}
+
+
+
+/* LINHAS */
+
+td{
+
+    padding:8px;
+
+    border-bottom:1px solid #eee;
+
+    font-size:11px;
+}
+
+tr:hover{
+    background:#f8fafc;
+}
+
+
+
+/* CORES */
+
+.receber{
+    color:#15803d;
+    font-weight:bold;
+}
+
+.pagar{
+    color:#dc2626;
+    font-weight:bold;
+}
+
+.pendente{
+    color:#ca8a04;
+    font-weight:bold;
+}
+
+.pago{
+    color:#15803d;
+    font-weight:bold;
+}
+
+
+.menuTop{
+
+    background:#111827;
+
+    padding:14px 20px;
+
+    border-radius:12px;
+
+    margin-bottom:20px;
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    box-shadow:0 2px 10px rgba(0,0,0,0.10);
+}
+
+
+
+.menuTop a{
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:10px 16px;
+
+    border-radius:8px;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    transition:0.2s;
+}
+
+
+
+.menuTop a:hover{
+
+    background:#1f2937;
+}
+
+
+
+
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="menuTop">
+
+    <a href="/janelas/inicial.html">
+        Início
+    </a>
+
+    <a href="/janelas/lancamentos-de-contas.html">
+        Lançamentos
+    </a>
+
+    <a href="/janelas/fluxo-de-caixa.html">
+        Fluxo de Caixa
+    </a>
+
+    <a href="/janelas/relatorios-financeiros.html">
+        Relatórios
+    </a>
+
+</div>
+
+
+
+<h1>Lançamentos Financeiros</h1>
+
+
+
+<!-- =========================================
+     LANÇAMENTO
+========================================= -->
+
+<div class="formulario">
+
+    <div class="grid">
+
+        <div class="campo">
+
+            <label>Tipo</label>
+
+            <select id="tipo">
+
+                <option value="RECEBER">
+                    RECEBER
+                </option>
+
+                <option value="PAGAR">
+                    PAGAR
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <div class="campo"
+            style="grid-column:span 2;"
+>
+
+         <label>Parceiro</label>
+
+         <input
+             type="text"
+             id="parceiro"
+         >
+
+        </div>
+
+        <div class="campo"
+    style="grid-column:span 2;"
+>
+
+    <label>
+        Discriminação / Período
+    </label>
+
+    <input
+        type="text"
+        id="discriminacao_periodo"
+    >
+
+</div>
+
+
+
+        <div class="campo">
+
+            <label>Produto/Serviço</label>
+
+            <input
+                type="text"
+                id="produto_servico"
+            >
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Valor</label>
+
+            <input
+                type="number"
+                id="valor"
+            >
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Data Emissão</label>
+
+            <input
+                type="date"
+                id="data_emissao"
+            >
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Vencimento</label>
+
+            <input
+                type="date"
+                id="vencimento"
+            >
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Nota Fiscal</label>
+
+            <input
+                type="text"
+                id="nota_fiscal"
+            >
+
+        </div>
+
+
+
+        <div class="campo"
+            style="grid-column:1/-1;"
+        >
+
+            <label>Descrição</label>
+
+            <textarea
+                id="descricao"
+            ></textarea>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="acoes">
+
+        <button onclick="salvarLancamento()">
+
+            Salvar Lançamento
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- =========================================
+     FILTROS
+========================================= -->
+
+<div class="filtros">
+
+    <div class="grid">
+
+        <div class="campo">
+
+            <label>Filtro Tipo</label>
+
+            <select
+                id="filtroTipo"
+                onchange="carregarLancamentos()"
+            >
+
+                <option value="">
+                    Todos
+                </option>
+
+                <option value="RECEBER">
+                    RECEBER
+                </option>
+
+                <option value="PAGAR">
+                    PAGAR
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Filtro Parceiro</label>
+
+            <input
+                type="text"
+                id="filtroParceiro"
+                onkeyup="carregarLancamentos()"
+            >
+
+        </div>
+
+        <div class="campo">
+
+           <label>Nota Fiscal</label>
+
+           <input
+               type="text"
+               id="filtroNota"
+               onkeyup="carregarLancamentos()"
+            >
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Emissão Inicial</label>
+
+            <input
+                type="date"
+                id="filtroEmissaoInicial"
+                onchange="carregarLancamentos()"
+            >
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Emissão Final</label>
+
+            <input
+                type="date"
+                id="filtroEmissaoFinal"
+                onchange="carregarLancamentos()"
+            >
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Vencimento Inicial</label>
+
+            <input
+                type="date"
+                id="filtroVencInicial"
+                onchange="carregarLancamentos()"
+            >
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Vencimento Final</label>
+
+            <input
+                type="date"
+                id="filtroVencFinal"
+                onchange="carregarLancamentos()"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- =========================================
+     TABELA
+========================================= -->
+
+<div class="tabela">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Tipo</th>
+
+                <th>Parceiro</th>
+
+                <th>Discriminação / Período</th>
+
+                <th>Produto</th>
+
+                <th>Valor</th>
+
+                <th>Pago</th>
+
+                <th>Saldo</th>
+
+                <th>Emissão</th>
+
+                <th>Vencimento</th>
+
+                <th>Status</th>
+
+                <th>Ações</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="tbodyLancamentos"></tbody>
+
+    </table>
+
+</div>
+
+
+    <div id="modalBaixa"
+    style="
+        display:none;
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.5);
+        z-index:999;
+    "
+>
+
+    <div
+        style="
+            background:white;
+            width:420px;
+            padding:25px;
+            border-radius:12px;
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+        "
+    >
+
+        <h2 style="margin-bottom:20px;">
+            Baixa Financeira
+        </h2>
+
+
+        <div class="campo"
+            style="margin-bottom:15px;"
+        >
+
+            <label>Banco</label>
+
+            <select id="bancoBaixa">
+
+                <option value="">
+                    Selecione
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <div class="campo"
+            style="margin-bottom:15px;"
+        >
+
+            <label>Tipo Baixa</label>
+
+            <select
+                id="tipoBaixa"
+                onchange="alterarTipoBaixa()"
+            >
+
+                <option value="TOTAL">
+                    TOTAL
+                </option>
+
+                <option value="PARCIAL">
+                    PARCIAL
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <div class="campo"
+            style="margin-bottom:15px;"
+        >
+
+            <label>Valor Pago</label>
+
+            <input
+                type="number"
+                id="valorPago"
+            >
+
+        </div>
+
+
+
+        <div class="campo"
+            style="margin-bottom:20px;"
+        >
+
+            <label>Data Pagamento</label>
+
+            <input
+                type="date"
+                id="dataPagamento"
+            >
+
+        </div>
+
+
+
+        <div
+            style="
+                display:flex;
+                gap:10px;
+                justify-content:flex-end;
+            "
+        >
+
+            <button
+                onclick="fecharModalBaixa()"
+                style="background:#64748b;"
+            >
+
+                Cancelar
+
+            </button>
+
+
+            <button onclick="confirmarBaixa()">
+
+                Confirmar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+const API = "https://api-production-6670.up.railway.app"
+
+
+
+async function carregarBancos(){
+
+    try{
+
+        const response = await fetch(`${API}/bancos`)
+
+        const bancos = await response.json()
+
+        const selectBanco =
+            document.getElementById("banco")
+
+        const filtroBanco =
+            document.getElementById("filtroBanco")
+
+
+        selectBanco.innerHTML = `
+            <option value="">
+                Selecione
+            </option>
+        `
+
+        bancos.forEach(banco=>{
+
+            selectBanco.innerHTML += `
+                <option value="${banco.nome}">
+                    ${banco.nome}
+                </option>
+            `
+
+            filtroBanco.innerHTML += `
+                <option value="${banco.nome}">
+                    ${banco.nome}
+                </option>
+            `
+
+        })
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+    }
+
+}
+
+
+
+async function salvarLancamento(){
+
+    try{
+
+        const body = {
+
+            tipo:
+                document.getElementById("tipo").value,
+
+            origem:"AVULSO",
+
+            parceiro:
+                document.getElementById("parceiro").value,
+
+            discriminacao_periodo:
+                 document.getElementById("discriminacao_periodo" ).value,
+       
+            banco:
+                document.getElementById("banco").value,
+
+            produto_servico:
+                document.getElementById("produto_servico").value,
+
+            descricao:
+                document.getElementById("descricao").value,
+
+            nota_fiscal:
+                document.getElementById("nota_fiscal").value,
+
+            valor:
+                Number(document.getElementById("valor").value),
+
+            data_emissao:
+                document.getElementById("data_emissao").value,
+         
+            vencimento:
+                document.getElementById("vencimento").value,
+
+            status:"PENDENTE"
+
+        }
+
+
+        await fetch(`${API}/financeiro`,{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify(body)
+
+        })
+
+
+        alert("Lançamento salvo")
+
+        carregarLancamentos()
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+        alert("Erro ao salvar")
+
+    }
+
+}
+
+let lancamentoAtual = null
+
+let valorDocumento = 0
+
+let valorJaPago = 0
+
+
+
+async function carregarBancosBaixa(){
+
+    try{
+
+        const response =
+            await fetch(`${API}/bancos`)
+
+        const bancos =
+            await response.json()
+
+        const select =
+            document.getElementById(
+                "bancoBaixa"
+            )
+
+        select.innerHTML = `
+            <option value="">
+                Selecione
+            </option>
+        `
+
+        bancos.forEach(banco=>{
+
+            select.innerHTML += `
+                <option value="${banco.nome}">
+                    ${banco.nome}
+                </option>
+            `
+
+        })
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+    }
+
+}
+
+
+
+function abrirBaixa(
+    id,
+    valor,
+    valorPagoAtual
+){
+
+    lancamentoAtual = id
+
+    valorDocumento = Number(valor)
+
+    valorJaPago = Number(valorPagoAtual || 0)
+
+    const restante =
+        valorDocumento - valorJaPago
+
+
+    document.getElementById(
+        "modalBaixa"
+    ).style.display = "block"
+
+
+    document.getElementById(
+        "tipoBaixa"
+    ).value = "TOTAL"
+
+
+    document.getElementById(
+        "valorPago"
+    ).value = restante.toFixed(2)
+
+
+    document.getElementById(
+        "dataPagamento"
+    ).value =
+        new Date()
+        .toISOString()
+        .split("T")[0]
+
+}
+
+
+
+function fecharModalBaixa(){
+
+    document.getElementById(
+        "modalBaixa"
+    ).style.display = "none"
+
+}
+
+
+
+function alterarTipoBaixa(){
+
+    const tipo =
+        document.getElementById(
+            "tipoBaixa"
+        ).value
+
+    const restante =
+        valorDocumento - valorJaPago
+
+
+    if(tipo === "TOTAL"){
+
+        document.getElementById(
+            "valorPago"
+        ).value =
+            restante.toFixed(2)
+
+    }
+
+    else{
+
+        document.getElementById(
+            "valorPago"
+        ).value = ""
+
+    }
+
+}
+
+
+
+async function confirmarBaixa(){
+
+    try{
+
+        const banco =
+            document.getElementById(
+                "bancoBaixa"
+            ).value
+
+        const valorPago =
+            Number(
+                document.getElementById(
+                    "valorPago"
+                ).value
+            )
+
+        const dataPagamento =
+            document.getElementById(
+                "dataPagamento"
+            ).value
+
+
+        if(!banco){
+
+            alert("Selecione o banco")
+
+            return
+
+        }
+
+
+        const restante =
+            valorDocumento - valorJaPago
+
+
+        if(valorPago <= 0){
+
+            alert("Valor inválido")
+
+            return
+
+        }
+
+
+        if(valorPago > restante){
+
+            alert(
+                "Valor maior que o saldo restante"
+            )
+
+            return
+
+        }
+
+
+        await fetch(
+
+            `${API}/financeiro/${lancamentoAtual}/baixa`,
+
+            {
+
+                method:"PUT",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+
+                    valor_pago:valorPago,
+
+                    banco_pagamento:banco,
+
+                    data_pagamento:dataPagamento
+
+                })
+
+            }
+
+        )
+
+
+        alert("Baixa realizada")
+
+        fecharModalBaixa()
+
+        carregarLancamentos()
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+        alert("Erro na baixa")
+
+    }
+
+}
+
+
+
+carregarBancosBaixa()
+
+
+async function carregarLancamentos(){
+
+    try{
+
+        const response =
+            await fetch(`${API}/financeiro`)
+
+        const dados =
+            await response.json()
+
+        const tbody =
+            document.getElementById(
+                "tbodyLancamentos"
+            )
+
+        tbody.innerHTML = ""
+
+
+        /* =========================================
+           FILTROS
+        ========================================= */
+
+        const filtroTipo =
+            document.getElementById(
+                "filtroTipo"
+            ).value
+
+
+        const filtroParceiro =
+            document.getElementById(
+                "filtroParceiro"
+            )
+            .value
+            .toLowerCase()
+
+
+        const emissaoInicial =
+            document.getElementById(
+                "filtroEmissaoInicial"
+            ).value
+
+
+        const emissaoFinal =
+            document.getElementById(
+                "filtroEmissaoFinal"
+            ).value
+
+
+        const vencInicial =
+            document.getElementById(
+                "filtroVencInicial"
+            ).value
+
+
+        const vencFinal =
+            document.getElementById(
+                "filtroVencFinal"
+            ).value
+
+     
+        const filtroNota =
+            document.getElementById(
+                "filtroNota"
+            )
+            .value
+            .toLowerCase()
+
+
+
+        /* =========================================
+           FILTRAR
+        ========================================= */
+
+        const filtrados = dados.filter(item=>{
+
+
+            /* TIPO */
+
+            const okTipo =
+
+                !filtroTipo ||
+
+                item.tipo === filtroTipo
+
+
+
+            /* PARCEIRO */
+
+            const okParceiro =
+
+                !filtroParceiro ||
+
+                (item.parceiro || "")
+                .toLowerCase()
+                .includes(filtroParceiro)
+
+
+            const okNota =
+
+                !filtroNota ||
+
+                (item.nota_fiscal || "")
+                .toLowerCase()
+                .includes(filtroNota)
+
+
+
+            /* EMISSÃO */
+
+            let okEmissao = true
+
+            if(item.data_emissao){
+
+                const emissao =
+
+                    item.data_emissao
+                    .split("T")[0]
+
+
+                if(
+                    emissaoInicial &&
+                    emissao < emissaoInicial
+                ){
+                    okEmissao = false
+                }
+
+
+                if(
+                    emissaoFinal &&
+                    emissao > emissaoFinal
+                ){
+                    okEmissao = false
+                }
+
+            }
+
+
+
+            /* VENCIMENTO */
+
+            let okVencimento = true
+
+            if(item.vencimento){
+
+                const venc =
+
+                    item.vencimento
+                    .split("T")[0]
+
+
+                if(
+                    vencInicial &&
+                    venc < vencInicial
+                ){
+                    okVencimento = false
+                }
+
+
+                if(
+                    vencFinal &&
+                    venc > vencFinal
+                ){
+                    okVencimento = false
+                }
+
+            }
+
+
+
+            return (
+
+                okTipo &&
+                okParceiro &&
+                okEmissao &&
+                okNota &&
+                okVencimento
+                
+       
+            )
+
+        })
+
+
+
+        /* =========================================
+           TABELA
+        ========================================= */
+
+        filtrados.forEach(item=>{
+
+
+            const valor =
+                Number(item.valor || 0)
+
+            const valorPago =
+                Number(item.valor_pago || 0)
+
+            const saldo =
+                valor - valorPago
+
+
+            tbody.innerHTML += `
+
+                <tr>
+
+                    <td>${item.id}</td>
+
+
+                    <td class="${
+                        item.tipo === 'RECEBER'
+                        ? 'receber'
+                        : 'pagar'
+                    }">
+
+                        ${item.tipo}
+
+                    </td>
+
+
+                    <td>
+                        ${item.parceiro || ''}
+                    </td>
+
+                    <td>
+                       ${item.discriminacao_periodo || ''}
+                    </td>
+
+
+                    <td>
+                        ${item.produto_servico || ''}
+                    </td>
+
+
+                    <td>
+
+                        ${valor.toLocaleString(
+                            'pt-BR',{
+
+                            style:'currency',
+
+                            currency:'BRL'
+
+                        })}
+
+                    </td>
+
+
+                    <td>
+
+                        ${valorPago.toLocaleString(
+                            'pt-BR',{
+
+                            style:'currency',
+
+                            currency:'BRL'
+
+                        })}
+
+                    </td>
+
+
+                    <td>
+
+                        ${saldo.toLocaleString(
+                            'pt-BR',{
+
+                            style:'currency',
+
+                            currency:'BRL'
+
+                        })}
+
+                    </td>
+
+
+                    <td>
+
+                        ${item.data_emissao
+                            ? new Date(
+                                item.data_emissao
+                              ).toLocaleDateString('pt-BR')
+                            : ''}
+
+                    </td>
+
+
+                    <td>
+
+                        ${item.vencimento
+                            ? new Date(
+                                item.vencimento
+                              ).toLocaleDateString('pt-BR')
+                            : ''}
+
+                    </td>
+
+
+                    <td class="${
+                        item.status === 'PAGO'
+                        ? 'pago'
+                        : item.status === 'PARCIAL'
+                        ? 'pendente'
+                        : 'pendente'
+                    }">
+
+                        ${item.status}
+
+                    </td>
+
+
+                    <td>
+
+                        <button
+                            onclick="abrirBaixa(
+                                ${item.id},
+                                ${valor},
+                                ${valorPago}
+                            )"
+                        >
+
+                            Baixar
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `
+
+        })
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+    }
+
+}
+
+
+
+carregarBancos()
+
+carregarLancamentos()
+
+</script>
+
+</body>
+
+</html>

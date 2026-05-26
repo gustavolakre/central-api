@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Tela Inicial</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:Arial;
+
+    background:#f4f6f9;
+
+    padding:40px;
+}
+
+
+
+/* CONTAINER */
+
+.container{
+
+    max-width:1100px;
+
+    margin:auto;
+
+    background:white;
+
+    padding:40px;
+
+    border-radius:16px;
+
+    box-shadow:0 2px 12px rgba(0,0,0,0.08);
+}
+
+
+
+/* TITULO */
+
+h1{
+
+    margin-bottom:30px;
+
+    color:#111827;
+
+    font-size:32px;
+}
+
+
+
+/* TOPO */
+
+.topo{
+
+    margin-bottom:30px;
+}
+
+
+
+/* BOTAO */
+
+button{
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:18px 24px;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    transition:0.2s;
+}
+
+button:hover{
+
+    transform:translateY(-2px);
+}
+
+
+
+/* ATUALIZAR */
+
+.btnAtualizar{
+
+    background:#ea580c;
+
+    color:white;
+}
+
+
+
+/* GRID */
+
+.gridMenu{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(250px,1fr));
+
+    gap:20px;
+
+    margin-bottom:30px;
+}
+
+
+
+/* CARDS */
+
+.cardMenu{
+
+    padding:35px;
+
+    border-radius:14px;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:0.2s;
+
+    min-height:140px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+}
+
+.cardMenu:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 8px 18px rgba(0,0,0,0.15);
+}
+
+
+
+/* TITULO CARD */
+
+.cardMenu h2{
+
+    margin-bottom:10px;
+
+    font-size:24px;
+}
+
+
+
+/* TEXTO */
+
+.cardMenu p{
+
+    font-size:14px;
+
+    opacity:0.95;
+}
+
+
+
+/* CORES */
+
+.cargas{
+
+    background:#2563eb;
+}
+
+.fretes{
+
+    background:#7c3aed;
+}
+
+.financeiro{
+
+    background:#059669;
+}
+
+
+
+/* STATUS */
+
+#status{
+
+    margin-top:10px;
+
+    padding:18px;
+
+    background:#f3f4f6;
+
+    border-radius:10px;
+
+    color:#374151;
+
+    font-size:15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Tela Inicial</h1>
+
+
+
+    <!-- TOPO -->
+
+    <div class="topo">
+
+        <button
+            class="btnAtualizar"
+            onclick="atualizarPipefy()"
+        >
+
+            Atualizar Dados do Pipefy
+
+        </button>
+
+    </div>
+
+
+
+    <!-- MENU -->
+
+    <div class="gridMenu">
+
+
+
+        <div
+            class="cardMenu cargas"
+            onclick="abrirCargas()"
+        >
+
+            <h2>
+                Faturamento de Cargas
+            </h2>
+
+            <p>
+                Gestão e faturamento operacional
+                de cargas.
+            </p>
+
+        </div>
+
+
+
+
+        <div
+            class="cardMenu fretes"
+            onclick="abrirFretes()"
+        >
+
+            <h2>
+                Faturamento de Fretes
+            </h2>
+
+            <p>
+                Controle financeiro e faturamento
+                de fretes.
+            </p>
+
+        </div>
+
+
+
+
+        <div
+            class="cardMenu financeiro"
+            onclick="abrirFinanceiro()"
+        >
+
+            <h2>
+                Financeiro
+            </h2>
+
+            <p>
+                Lançamentos, fluxo de caixa
+                e relatórios financeiros.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- STATUS -->
+
+    <div id="status">
+
+        Sistema aguardando atualização.
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+async function atualizarPipefy(){
+
+    const status =
+        document.getElementById("status")
+
+    try{
+
+        status.innerHTML =
+            "Atualizando dados do Pipefy..."
+
+        const response =
+            await fetch(
+                "/importar-pipefy",
+                {
+                    method:"GET"
+                }
+            )
+
+        const data =
+            await response.json()
+
+        console.log(data)
+
+        status.innerHTML =
+            "Atualização concluída com sucesso."
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+        status.innerHTML =
+            "Erro ao atualizar dados."
+
+    }
+
+}
+
+
+
+/* =========================================
+   ABRIR TELAS
+========================================= */
+
+function abrirCargas(){
+
+    window.location.href =
+        "/janelas/faturamento-cargas.html"
+
+}
+
+
+
+function abrirFretes(){
+
+    alert(
+        "Tela ainda será criada."
+    )
+
+}
+
+
+
+function abrirFinanceiro(){
+
+    window.location.href =
+         "/janelas/fluxo-de-caixa.html"
+
+}
+
+</script>
+
+</body>
+
+</html>

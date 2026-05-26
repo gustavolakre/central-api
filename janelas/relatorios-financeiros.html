@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Relatórios Financeiros</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:Arial;
+
+    background:#eef2f7;
+
+    padding:20px;
+}
+
+h1{
+
+    margin-bottom:18px;
+
+    font-size:24px;
+
+    color:#111827;
+}
+
+
+
+/* CARDS */
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(220px,1fr));
+
+    gap:15px;
+
+    margin-bottom:18px;
+}
+
+.card{
+
+    background:white;
+
+    padding:18px;
+
+    border-radius:10px;
+
+    border:1px solid #ddd;
+}
+
+.card h3{
+
+    font-size:12px;
+
+    color:#6b7280;
+
+    margin-bottom:8px;
+}
+
+.card .valor{
+
+    font-size:26px;
+
+    font-weight:bold;
+}
+
+.receber{
+    color:#15803d;
+}
+
+.pagar{
+    color:#dc2626;
+}
+
+.saldo{
+    color:#1d4ed8;
+}
+
+
+
+/* FILTROS */
+
+.filtros{
+
+    background:white;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    border:1px solid #ddd;
+
+    margin-bottom:15px;
+}
+
+
+
+/* GRID */
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(180px,1fr));
+
+    gap:10px;
+}
+
+
+
+/* CAMPOS */
+
+.campo{
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+
+
+/* LABEL */
+
+label{
+
+    margin-bottom:4px;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    color:#374151;
+}
+
+
+
+/* INPUTS */
+
+input,
+select{
+
+    padding:8px 10px;
+
+    border-radius:6px;
+
+    border:1px solid #cbd5e1;
+
+    font-size:12px;
+}
+
+
+
+/* TABELA */
+
+.tabela{
+
+    background:white;
+
+    border-radius:10px;
+
+    overflow:auto;
+
+    border:1px solid #ddd;
+
+    height:calc(100vh - 320px);
+}
+
+
+
+/* TABLE */
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+
+
+/* HEADER */
+
+th{
+
+    background:#1e293b;
+
+    color:white;
+
+    padding:10px;
+
+    text-align:left;
+
+    font-size:11px;
+
+    position:sticky;
+
+    top:0;
+}
+
+
+
+/* LINHAS */
+
+td{
+
+    padding:8px;
+
+    border-bottom:1px solid #eee;
+
+    font-size:11px;
+}
+
+tr:hover{
+    background:#f8fafc;
+}
+
+
+.menuTop{
+
+    background:#111827;
+
+    padding:14px 20px;
+
+    border-radius:12px;
+
+    margin-bottom:20px;
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    box-shadow:0 2px 10px rgba(0,0,0,0.10);
+}
+
+
+
+.menuTop a{
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:10px 16px;
+
+    border-radius:8px;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    transition:0.2s;
+}
+
+
+
+.menuTop a:hover{
+
+    background:#1f2937;
+}
+
+
+
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="menuTop">
+
+    <a href="/janelas/inicial.html">
+        Início
+    </a>
+
+    <a href="/janelas/lancamentos-de-contas.html">
+        Lançamentos
+    </a>
+
+    <a href="/janelas/fluxo-de-caixa.html">
+        Fluxo de Caixa
+    </a>
+
+    <a href="/janelas/relatorios-financeiros.html">
+        Relatórios
+    </a>
+
+</div>
+
+
+
+
+<h1>Relatórios Financeiros</h1>
+
+
+
+<!-- =========================================
+     TOTALIZADORES
+========================================= -->
+
+<div class="cards">
+
+    <div class="card">
+
+        <h3>Total Receber</h3>
+
+        <div
+            class="valor receber"
+            id="totalReceber"
+        >
+
+            R$ 0,00
+
+        </div>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <h3>Total Pagar</h3>
+
+        <div
+            class="valor pagar"
+            id="totalPagar"
+        >
+
+            R$ 0,00
+
+        </div>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <h3>Total Pago</h3>
+
+        <div
+            class="valor"
+            id="totalPago"
+        >
+
+            R$ 0,00
+
+        </div>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <h3>Saldo</h3>
+
+        <div
+            class="valor saldo"
+            id="saldoFinal"
+        >
+
+            R$ 0,00
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- =========================================
+     FILTROS
+========================================= -->
+
+<div class="filtros">
+
+    <div class="grid">
+
+        <div class="campo">
+
+            <label>Tipo</label>
+
+            <select
+                id="filtroTipo"
+                onchange="carregarRelatorio()"
+            >
+
+                <option value="">
+                    Todos
+                </option>
+
+                <option value="RECEBER">
+                    RECEBER
+                </option>
+
+                <option value="PAGAR">
+                    PAGAR
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Parceiro</label>
+
+            <input
+                type="text"
+                id="filtroParceiro"
+                onkeyup="carregarRelatorio()"
+            >
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Emissão Inicial</label>
+
+            <input
+                type="date"
+                id="filtroEmissaoInicial"
+                onchange="carregarRelatorio()"
+            >
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Emissão Final</label>
+
+            <input
+                type="date"
+                id="filtroEmissaoFinal"
+                onchange="carregarRelatorio()"
+            >
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Vencimento Inicial</label>
+
+            <input
+                type="date"
+                id="filtroVencInicial"
+                onchange="carregarRelatorio()"
+            >
+
+        </div>
+
+
+
+        <div class="campo">
+
+            <label>Vencimento Final</label>
+
+            <input
+                type="date"
+                id="filtroVencFinal"
+                onchange="carregarRelatorio()"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- =========================================
+     TABELA
+========================================= -->
+
+<div class="tabela">
+
+<table>
+
+    <thead>
+
+        <tr>
+
+            <th>ID</th>
+
+            <th>Tipo</th>
+
+            <th>Parceiro</th>
+
+            <th>Discriminação</th>
+
+            <th>Produto</th>
+
+            <th>Valor</th>
+
+            <th>Pago</th>
+
+            <th>Saldo</th>
+
+            <th>Emissão</th>
+
+            <th>Vencimento</th>
+
+            <th>Status</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody id="tbodyRelatorio"></tbody>
+
+</table>
+
+</div>
+
+
+
+
+
+<script>
+
+const API =
+    "https://api-production-6670.up.railway.app"
+
+
+
+async function carregarRelatorio(){
+
+    try{
+
+        const response =
+            await fetch(`${API}/financeiro`)
+
+        const dados =
+            await response.json()
+
+        const tbody =
+            document.getElementById(
+                "tbodyRelatorio"
+            )
+
+        tbody.innerHTML = ""
+
+
+        const filtroTipo =
+            document.getElementById(
+                "filtroTipo"
+            ).value
+
+
+        const filtroParceiro =
+            document.getElementById(
+                "filtroParceiro"
+            )
+            .value
+            .toLowerCase()
+
+
+        const emissaoInicial =
+            document.getElementById(
+                "filtroEmissaoInicial"
+            ).value
+
+
+        const emissaoFinal =
+            document.getElementById(
+                "filtroEmissaoFinal"
+            ).value
+
+
+        const vencInicial =
+            document.getElementById(
+                "filtroVencInicial"
+            ).value
+
+
+        const vencFinal =
+            document.getElementById(
+                "filtroVencFinal"
+            ).value
+
+
+        let totalReceber = 0
+
+        let totalPagar = 0
+
+        let totalPago = 0
+
+
+        const filtrados = dados.filter(item=>{
+
+
+            const okTipo =
+
+                !filtroTipo ||
+
+                item.tipo === filtroTipo
+
+
+            const okParceiro =
+
+                !filtroParceiro ||
+
+                (item.parceiro || "")
+                .toLowerCase()
+                .includes(filtroParceiro)
+
+
+
+            let okEmissao = true
+
+            if(item.data_emissao){
+
+                const emissao =
+                    item.data_emissao
+                    .split("T")[0]
+
+                if(
+                    emissaoInicial &&
+                    emissao < emissaoInicial
+                ){
+                    okEmissao = false
+                }
+
+                if(
+                    emissaoFinal &&
+                    emissao > emissaoFinal
+                ){
+                    okEmissao = false
+                }
+
+            }
+
+
+
+            let okVencimento = true
+
+            if(item.vencimento){
+
+                const venc =
+                    item.vencimento
+                    .split("T")[0]
+
+                if(
+                    vencInicial &&
+                    venc < vencInicial
+                ){
+                    okVencimento = false
+                }
+
+                if(
+                    vencFinal &&
+                    venc > vencFinal
+                ){
+                    okVencimento = false
+                }
+
+            }
+
+
+            return (
+
+                okTipo &&
+                okParceiro &&
+                okEmissao &&
+                okVencimento
+
+            )
+
+        })
+
+
+
+        filtrados.forEach(item=>{
+
+            const valor =
+                Number(item.valor || 0)
+
+            const pago =
+                Number(item.valor_pago || 0)
+
+            const saldo =
+                valor - pago
+
+
+            if(item.tipo === "RECEBER"){
+                totalReceber += valor
+            }
+
+            if(item.tipo === "PAGAR"){
+                totalPagar += valor
+            }
+
+            if(item.status === "PAGO"){
+                totalPago += pago
+            }
+
+
+            tbody.innerHTML += `
+
+                <tr>
+
+                    <td>${item.id}</td>
+
+                    <td>${item.tipo}</td>
+
+                    <td>
+                        ${item.parceiro || ''}
+                    </td>
+
+                    <td>
+                        ${item.discriminacao_periodo || ''}
+                    </td>
+
+                    <td>
+                        ${item.produto_servico || ''}
+                    </td>
+
+                    <td>
+
+                        ${valor.toLocaleString(
+                            'pt-BR',{
+
+                            style:'currency',
+
+                            currency:'BRL'
+
+                        })}
+
+                    </td>
+
+                    <td>
+
+                        ${pago.toLocaleString(
+                            'pt-BR',{
+
+                            style:'currency',
+
+                            currency:'BRL'
+
+                        })}
+
+                    </td>
+
+                    <td>
+
+                        ${saldo.toLocaleString(
+                            'pt-BR',{
+
+                            style:'currency',
+
+                            currency:'BRL'
+
+                        })}
+
+                    </td>
+
+                    <td>
+
+                        ${item.data_emissao
+                            ? new Date(
+                                item.data_emissao
+                              ).toLocaleDateString('pt-BR')
+                            : ''}
+
+                    </td>
+
+                    <td>
+
+                        ${item.vencimento
+                            ? new Date(
+                                item.vencimento
+                              ).toLocaleDateString('pt-BR')
+                            : ''}
+
+                    </td>
+
+                    <td>${item.status}</td>
+
+                </tr>
+
+            `
+
+        })
+
+
+
+        document.getElementById(
+            "totalReceber"
+        ).innerText =
+
+            totalReceber.toLocaleString(
+                'pt-BR',{
+
+                style:'currency',
+
+                currency:'BRL'
+
+            })
+
+
+
+        document.getElementById(
+            "totalPagar"
+        ).innerText =
+
+            totalPagar.toLocaleString(
+                'pt-BR',{
+
+                style:'currency',
+
+                currency:'BRL'
+
+            })
+
+
+
+        document.getElementById(
+            "totalPago"
+        ).innerText =
+
+            totalPago.toLocaleString(
+                'pt-BR',{
+
+                style:'currency',
+
+                currency:'BRL'
+
+            })
+
+
+
+        const saldo =
+            totalReceber - totalPagar
+
+
+        document.getElementById(
+            "saldoFinal"
+        ).innerText =
+
+            saldo.toLocaleString(
+                'pt-BR',{
+
+                style:'currency',
+
+                currency:'BRL'
+
+            })
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+    }
+
+}
+
+
+
+carregarRelatorio()
+
+</script>
+
+</body>
+
+</html>
