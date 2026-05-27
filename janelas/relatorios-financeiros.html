@@ -651,21 +651,6 @@ async function carregarRelatorio(){
             ).value
 
 
-        const hoje =
-             new Date()
-            .toISOString()
-             .split("T")[0]
-
-        const vencido =
-
-             item.vencimento &&
-
-             item.vencimento.split("T")[0] < hoje &&
-
-             item.status !== "PAGO"
-
-
-
         let totalReceber = 0
 
         let totalPagar = 0
@@ -769,58 +754,55 @@ async function carregarRelatorio(){
 
             const hoje = new Date()
 
-const vencimento = item.vencimento
-    ? new Date(item.vencimento)
-    : null
+            const vencimento = item.vencimento
+                 ? new Date(item.vencimento)
+                 : null
 
-const diffDias = vencimento
-    ? Math.ceil(
-        (vencimento - hoje)
-        / (1000 * 60 * 60 * 24)
-      )
-    : null
-
-
-let corLinha = "white"
+            const diffDias = vencimento
+                 ? Math.ceil(
+                 (vencimento - hoje)
+                 / (1000 * 60 * 60 * 24)
+            )
+                 : null
 
 
-/* VENCIDO */
-
-if(
-
-    vencimento &&
-
-    diffDias < 0 &&
-
-    item.status !== "PAGO"
-
-){
-
-    corLinha = "#fee2e2"
-
-}
+            let corLinha = "white"
 
 
-/* VENCE EM ATÉ 5 DIAS */
+            /* VENCIDO */
 
-else if(
+            if(
 
-    vencimento &&
+                vencimento &&
 
-    diffDias >= 0 &&
+                diffDias < 0 &&
 
-    diffDias <= 5 &&
+                item.status !== "PAGO"
 
-    item.status !== "PAGO"
+            ){
 
-){
+                corLinha = "#fee2e2"
 
-    corLinha = "#fef9c3"
-
-}
+            }
 
 
+             /* VENCE EM ATÉ 5 DIAS */
 
+            else if(
+
+                 vencimento &&
+
+                 diffDias >= 0 &&
+
+                 diffDias <= 5 &&
+
+                 item.status !== "PAGO"
+
+            ){
+
+                 corLinha = "#fef9c3"
+
+            }
 
 
             const valor =
@@ -848,6 +830,7 @@ else if(
 
             tbody.innerHTML += `
 
+            
                  <tr style="
                     background:${corLinha};
                  ">
@@ -934,6 +917,7 @@ else if(
             `
 
         })
+        
 
 
 
