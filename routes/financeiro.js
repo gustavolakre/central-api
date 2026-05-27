@@ -16,8 +16,9 @@ router.get("/", async (req, res) => {
     const result = await pool.query(`
       SELECT *
       FROM financeiro
+      WHERE COALESCE(status,'PENDENTE') != 'PAGO'
       ORDER BY vencimento ASC, id DESC
-    `)
+     `)
 
     res.json(result.rows)
 
@@ -233,6 +234,40 @@ router.put("/:id/baixa", async (req, res) => {
 })
 
 
+/* =========================================
+   FLUXO DE CAIXA
+========================================= */
+
+router.get("/fluxo", async (req, res) => {
+
+  try {
+
+    const result = await pool.query(`
+
+      SELECT *
+      FROM financeiro
+      WHERE status IN ('PAGO','PARCIAL')
+      ORDER BY data_pagamento DESC, id DESC
+
+    `)
+
+    res.json(result.rows)
+
+  }
+
+  catch (err) {
+
+    console.error(err)
+
+    res.status(500).json({
+      erro: err.message
+    })
+
+  }
+
+})
+
+
 
 /* =========================================
    EDITAR LANÇAMENTO
@@ -334,6 +369,50 @@ router.delete("/:id", async (req, res) => {
     })
 
   } catch (err) {
+
+    console.error(err)
+
+    res.status(500).json({
+      erro: err.message
+    })
+
+  }
+
+})
+
+
+/* =========================================
+   ANULAR BAIXA
+========================================= */
+
+router.put("/:id/anular-baixa", async (req, res) => {
+
+  try {
+
+    const { id } = req.params
+
+    const result = await pool.query(`
+
+      UPDATE financeiro
+
+      SET
+
+        valor_pago = 0,
+        banco_pagamento = NULL,
+        data_pagamento = NULL,
+        status = 'PENDENTE'
+
+      WHERE id = $1
+
+      RETURNING *
+
+    `, [id])
+
+    res.json(result.rows[0])
+
+  }
+
+  catch (err) {
 
     console.error(err)
 
