@@ -20,7 +20,10 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.use(express.static(path.join(__dirname, "faturamento")))
+app.use(
+  "/janelas",
+  express.static(path.join(__dirname, "janelas"))
+)
 
 app.use("/importar-pipefy", importarPipefy)
 app.use("/importar-parceiros", importarParceiros)

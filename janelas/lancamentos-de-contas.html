@@ -377,10 +377,13 @@ tr:hover{
 
          <label>Parceiro</label>
 
-         <input
-             type="text"
-             id="parceiro"
-         >
+         <select id="parceiro">
+
+            <option value="">
+                 Selecione
+            </option>
+
+         </select>
 
         </div>
 
@@ -418,10 +421,11 @@ tr:hover{
 
             <label>Valor</label>
 
-            <input
-                type="number"
-                id="valor"
-            >
+           <input
+               type="text"
+               id="valor"
+               oninput="formatarMoeda(this)"
+           >
 
         </div>
 
@@ -470,10 +474,10 @@ tr:hover{
             style="grid-column:1/-1;"
         >
 
-            <label>Descrição</label>
+            <label>Observações</label>
 
             <textarea
-                id="descricao"
+                id="observacao"
             ></textarea>
 
         </div>
@@ -643,6 +647,8 @@ tr:hover{
 
                 <th>Produto</th>
 
+                <th>Nota Fiscal</th>
+
                 <th>Valor</th>
 
                 <th>Pago</th>
@@ -652,8 +658,6 @@ tr:hover{
                 <th>Emissão</th>
 
                 <th>Vencimento</th>
-
-                <th>Status</th>
 
                 <th>Ações</th>
 
@@ -804,60 +808,10 @@ tr:hover{
 
 
 
+
 <script>
 
 const API = "https://api-production-6670.up.railway.app"
-
-
-
-async function carregarBancos(){
-
-    try{
-
-        const response = await fetch(`${API}/bancos`)
-
-        const bancos = await response.json()
-
-        const selectBanco =
-            document.getElementById("banco")
-
-        const filtroBanco =
-            document.getElementById("filtroBanco")
-
-
-        selectBanco.innerHTML = `
-            <option value="">
-                Selecione
-            </option>
-        `
-
-        bancos.forEach(banco=>{
-
-            selectBanco.innerHTML += `
-                <option value="${banco.nome}">
-                    ${banco.nome}
-                </option>
-            `
-
-            filtroBanco.innerHTML += `
-                <option value="${banco.nome}">
-                    ${banco.nome}
-                </option>
-            `
-
-        })
-
-    }
-
-    catch(err){
-
-        console.error(err)
-
-    }
-
-}
-
-
 
 async function salvarLancamento(){
 
@@ -868,54 +822,88 @@ async function salvarLancamento(){
             tipo:
                 document.getElementById("tipo").value,
 
-            origem:"AVULSO",
-
             parceiro:
                 document.getElementById("parceiro").value,
 
             discriminacao_periodo:
-                 document.getElementById("discriminacao_periodo" ).value,
-       
-            banco:
-                document.getElementById("banco").value,
+                document.getElementById(
+                    "discriminacao_periodo"
+                ).value,
 
             produto_servico:
-                document.getElementById("produto_servico").value,
-
-            descricao:
-                document.getElementById("descricao").value,
-
-            nota_fiscal:
-                document.getElementById("nota_fiscal").value,
+                document.getElementById(
+                    "produto_servico"
+                ).value,
 
             valor:
-                Number(document.getElementById("valor").value),
+               document.getElementById("valor")
+                 .value
+                 .replace(/\./g,'')
+                 .replace(',','.'),
 
             data_emissao:
-                document.getElementById("data_emissao").value,
-         
-            vencimento:
-                document.getElementById("vencimento").value,
+                document.getElementById(
+                    "data_emissao"
+                ).value,
 
-            status:"PENDENTE"
+            vencimento:
+                document.getElementById(
+                    "vencimento"
+                ).value,
+
+            nota_fiscal:
+                document.getElementById(
+                    "nota_fiscal"
+                ).value,
+
+            observacao:
+                document.getElementById(
+                    "observacao"
+                ).value
 
         }
 
 
-        await fetch(`${API}/financeiro`,{
+        const url = editandoId
 
-            method:"POST",
+           ? `${API}/financeiro/${editandoId}`
+           : `${API}/financeiro`
+ 
+        const metodo = editandoId
+           ? "PUT"
+           : "POST"
 
-            headers:{
-                "Content-Type":"application/json"
-            },
 
-            body:JSON.stringify(body)
+        const response = await fetch(
 
-        })
+            `${API}/financeiro`,
+
+            {
+
+                method:metodo,
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify(body)
+
+            }
+
+        )
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Erro ao salvar"
+            )
+
+        }
 
 
         alert("Lançamento salvo")
+
 
         carregarLancamentos()
 
@@ -925,17 +913,118 @@ async function salvarLancamento(){
 
         console.error(err)
 
-        alert("Erro ao salvar")
+        alert("Erro ao salvar lançamento")
 
     }
 
 }
 
+
 let lancamentoAtual = null
+
+let editandoId = null
 
 let valorDocumento = 0
 
 let valorJaPago = 0
+
+
+
+
+async function excluirLancamento(id){
+
+    const confirmar = confirm(
+        "Deseja excluir o lançamento?"
+    )
+
+    if(!confirmar) return
+
+
+    try{
+
+        await fetch(
+
+            `${API}/financeiro/${id}`,
+
+            {
+                method:"DELETE"
+            }
+
+        )
+
+        carregarLancamentos()
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+        alert("Erro ao excluir")
+
+    }
+
+}
+
+
+
+
+
+
+
+async function carregarParceiros(){
+
+    console.log("FUNÇÃO PARCEIROS EXECUTOU")
+
+    try{
+
+        const response =
+            await fetch("/buscarParceiros")
+
+        const parceiros =
+            await response.json()
+
+        console.log(parceiros)
+
+        const select =
+            document.getElementById(
+                "parceiro"
+            )
+
+        select.innerHTML = `
+
+            <option value="">
+                Selecione
+            </option>
+
+        `
+
+
+        parceiros.forEach(parceiro=>{
+
+            select.innerHTML += `
+
+                <option
+                    value="${parceiro.nome_usual}"
+                >
+
+                    ${parceiro.nome_usual}
+
+                </option>
+
+            `
+
+        })
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+    }
+
+}
 
 
 
@@ -980,6 +1069,26 @@ async function carregarBancosBaixa(){
 
 }
 
+
+function formatarMoeda(input){
+
+    let valor = input.value
+
+    valor = valor.replace(/\D/g,'')
+
+    valor = (Number(valor) / 100)
+        .toFixed(2) + ''
+
+    valor = valor.replace(".", ",")
+
+    valor = valor.replace(
+        /\B(?=(\d{3})+(?!\d))/g,
+        "."
+    )
+
+    input.value = valor
+
+}
 
 
 function abrirBaixa(
@@ -1061,6 +1170,75 @@ function alterarTipoBaixa(){
         ).value = ""
 
     }
+
+}
+
+
+function editarLancamento(item){
+
+    editandoId = item.id
+
+
+    document.getElementById("tipo").value =
+        item.tipo || ""
+
+    document.getElementById("parceiro").value =
+        item.parceiro || ""
+
+    document.getElementById(
+        "discriminacao_periodo"
+    ).value =
+        item.discriminacao_periodo || ""
+
+    document.getElementById(
+        "produto_servico"
+    ).value =
+        item.produto_servico || ""
+
+    document.getElementById("valor").value =
+        Number(item.valor || 0)
+        .toLocaleString(
+            'pt-BR',
+            {
+                minimumFractionDigits:2
+            }
+        )
+
+    document.getElementById(
+        "data_emissao"
+    ).value =
+        item.data_emissao
+        ? item.data_emissao.split("T")[0]
+        : ""
+
+    document.getElementById(
+        "vencimento"
+    ).value =
+        item.vencimento
+        ? item.vencimento.split("T")[0]
+        : ""
+
+    document.getElementById(
+        "nota_fiscal"
+    ).value =
+        item.nota_fiscal || ""
+
+    document.getElementById(
+        "observacao"
+    ).value =
+        item.observacao || ""
+
+
+    document.querySelector(
+        ".acoes button"
+    ).innerText =
+        "Atualizar Lançamento"
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    })
 
 }
 
@@ -1400,13 +1578,16 @@ async function carregarLancamentos(){
 
 
                     <td>
-                        ${item.produto_servico || ''}
+                       ${item.produto_servico || ''}
                     </td>
 
+                    <td>
+                       ${item.nota_fiscal || ''}
+                    </td>
 
                     <td>
 
-                        ${valor.toLocaleString(
+                         ${valor.toLocaleString(
                             'pt-BR',{
 
                             style:'currency',
@@ -1449,10 +1630,12 @@ async function carregarLancamentos(){
                     <td>
 
                         ${item.data_emissao
-                            ? new Date(
-                                item.data_emissao
-                              ).toLocaleDateString('pt-BR')
-                            : ''}
+                            ? item.data_emissao
+                            .split("T")[0]
+                            .split("-")
+                            .reverse()
+                            .join("/")
+                        : ''}
 
                     </td>
 
@@ -1468,34 +1651,42 @@ async function carregarLancamentos(){
                     </td>
 
 
-                    <td class="${
-                        item.status === 'PAGO'
-                        ? 'pago'
-                        : item.status === 'PARCIAL'
-                        ? 'pendente'
-                        : 'pendente'
-                    }">
+                  <td
+                       style="
+                            display:flex;
+                            gap:6px;
+                            flex-wrap:wrap;
+                        "
+                    >
 
-                        ${item.status}
+                     <button
+                        onclick="abrirBaixa(
+                            ${item.id},
+                            ${valor},
+                            ${valorPago}
+                        )"
+                     >
+                         Baixar
+                    </button>
+
+
+                    <button
+                         style="background:#ca8a04;"
+                         onclick='editarLancamento(${JSON.stringify(item)})'
+                     >
+                         Editar
+                     </button>
+
+
+                    <button
+                          style="background:#dc2626;"
+                          onclick="excluirLancamento(${item.id})"
+                     >
+                          Excluir
+                     </button>
 
                     </td>
-
-
-                    <td>
-
-                        <button
-                            onclick="abrirBaixa(
-                                ${item.id},
-                                ${valor},
-                                ${valorPago}
-                            )"
-                        >
-
-                            Baixar
-
-                        </button>
-
-                    </td>
+                    
 
                 </tr>
 
@@ -1513,11 +1704,17 @@ async function carregarLancamentos(){
 
 }
 
+document.getElementById(
+    "data_emissao"
+).value =
+    new Date()
+    .toISOString()
+    .split("T")[0]
 
 
-carregarBancos()
-
+carregarParceiros()
 carregarLancamentos()
+carregarBancosBaixa()
 
 </script>
 

@@ -325,20 +325,38 @@ async function atualizarPipefy(){
     try{
 
         status.innerHTML =
-            "Atualizando dados do Pipefy..."
+            "Atualizando cargas..."
 
-        const response =
-            await fetch(
-                "/importar-pipefy",
-                {
-                    method:"GET"
-                }
-            )
 
-        const data =
-            await response.json()
+        /* =====================================
+           IMPORTAR CARGAS
+        ===================================== */
 
-        console.log(data)
+        await fetch(
+            "/importar-pipefy",
+            {
+                method:"GET"
+            }
+        )
+
+
+
+        /* =====================================
+           IMPORTAR PARCEIROS
+        ===================================== */
+
+        status.innerHTML =
+            "Atualizando parceiros..."
+
+
+        await fetch(
+            "/importar-parceiros",
+            {
+                method:"GET"
+            }
+        )
+
+
 
         status.innerHTML =
             "Atualização concluída com sucesso."
@@ -355,7 +373,6 @@ async function atualizarPipefy(){
     }
 
 }
-
 
 
 /* =========================================

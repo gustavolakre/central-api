@@ -58,6 +58,8 @@ router.get("/", async (req, res) => {
         fields[f.name] = f.value;
       });
 
+      console.log(fields)
+
       await pool.query(
       `
       INSERT INTO parceiros_negocio (
@@ -116,7 +118,9 @@ router.get("/", async (req, res) => {
 
         $19,$20,
 
-        $21,NOW()
+        $21,
+        
+        NOW()
 
       )
 
@@ -157,32 +161,30 @@ router.get("/", async (req, res) => {
 
         record.id,
 
-        fields.tipo || "",
-        fields.nome_usual || "",
-        fields.raz_o_social || "",
+        fields["Tipo"] || "",
+        fields["Nome Usual"] || "",
+        fields["Razão Social"] || "",
 
-        fields.cnpj || "",
-        fields.cpf || "",
-        fields.inscri_o_estadual || "",
+        fields["CNPJ"] || "",
+        fields["CPF"] || "",
+        fields["Inscrição Estadual"] || "",
 
-        fields.munic_pio || "",
-        fields.uf || "",
-        fields.cep || "",
-        fields.endere_o || "",
+        fields["Município"] || "",
+        fields["UF"] || "",
+        fields["CEP"] || "",
+        fields["Endereço"] || "",
 
-        fields["e_mail_comercial"] || "",
-        fields["e_mail_cobran_a"] || "",
+        fields["e-mail Comercial"] || "",
+        fields["e-mail Cobrança"] || "",
 
-        fields.localiza_o || "",
-        fields.inspe_o || "",
+        fields["Localização"] || "",
+        fields["Inspeção"] || "",
 
-        fields.conta_pix_para_pagmento || "",
-
-        fields.contatos || "",
-        JSON.stringify(fields.anexos || []),
-
-        fields.respons_veis || "",
-        fields.vendedor_01 || "",
+        fields["CONTA / PIX"] || "",
+        fields["Contatos"] || "",
+        JSON.stringify(fields["Anexos"] || []),
+        fields["Programador"] || "",
+        fields["Vendedor"] || "",
 
         JSON.stringify(fields)
 
