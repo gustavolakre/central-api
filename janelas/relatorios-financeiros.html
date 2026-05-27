@@ -501,6 +501,36 @@ tr:hover{
 </div>
 
 
+<div class="campo">
+
+    <label>Status</label>
+
+    <select
+        id="filtroStatus"
+        onchange="carregarRelatorio()"
+    >
+
+        <option value="">
+            Todos
+        </option>
+
+        <option value="PENDENTE">
+            PENDENTE
+        </option>
+
+        <option value="PARCIAL">
+            PARCIAL
+        </option>
+
+        <option value="PAGO">
+            PAGO
+        </option>
+
+    </select>
+
+</div>
+
+
 
 
 
@@ -615,6 +645,27 @@ async function carregarRelatorio(){
             ).value
 
 
+        const filtroStatus =
+            document.getElementById(
+               "filtroStatus"
+            ).value
+
+
+        const hoje =
+             new Date()
+            .toISOString()
+             .split("T")[0]
+
+        const vencido =
+
+             item.vencimento &&
+
+             item.vencimento.split("T")[0] < hoje &&
+
+             item.status !== "PAGO"
+
+
+
         let totalReceber = 0
 
         let totalPagar = 0
@@ -639,6 +690,13 @@ async function carregarRelatorio(){
                 (item.parceiro || "")
                 .toLowerCase()
                 .includes(filtroParceiro)
+
+            
+            const okStatus =
+
+                !filtroStatus ||
+
+                item.status === filtroStatus
 
 
 
@@ -697,6 +755,7 @@ async function carregarRelatorio(){
 
                 okTipo &&
                 okParceiro &&
+                okStatus && 
                 okEmissao &&
                 okVencimento
 
@@ -707,6 +766,62 @@ async function carregarRelatorio(){
 
 
         filtrados.forEach(item=>{
+
+            const hoje = new Date()
+
+const vencimento = item.vencimento
+    ? new Date(item.vencimento)
+    : null
+
+const diffDias = vencimento
+    ? Math.ceil(
+        (vencimento - hoje)
+        / (1000 * 60 * 60 * 24)
+      )
+    : null
+
+
+let corLinha = "white"
+
+
+/* VENCIDO */
+
+if(
+
+    vencimento &&
+
+    diffDias < 0 &&
+
+    item.status !== "PAGO"
+
+){
+
+    corLinha = "#fee2e2"
+
+}
+
+
+/* VENCE EM ATÉ 5 DIAS */
+
+else if(
+
+    vencimento &&
+
+    diffDias >= 0 &&
+
+    diffDias <= 5 &&
+
+    item.status !== "PAGO"
+
+){
+
+    corLinha = "#fef9c3"
+
+}
+
+
+
+
 
             const valor =
                 Number(item.valor || 0)
@@ -733,7 +848,9 @@ async function carregarRelatorio(){
 
             tbody.innerHTML += `
 
-                <tr>
+                 <tr style="
+                    background:${corLinha};
+                 ">
 
                     <td>${item.id}</td>
 
