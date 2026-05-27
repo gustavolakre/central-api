@@ -410,15 +410,15 @@
 
                 <th>Produto</th>
 
-                <th>Valor Pago</th>
+                <th>Saídas</th>
 
-                <th>Valor Recebido</th>
+                <th>Entradas</th>
 
-                <th>Data Pagamento</th>
-
-                <th>Total</th>
+                <th>Documento</th>
 
                 <th>Data Pagamento</th>
+
+                <th>Ações</th>
 
             </tr>
 
@@ -477,12 +477,49 @@ async function carregarBancos(){
 }
 
 
+async function anularBaixa(id){
+
+    try{
+
+        const ok = confirm(
+            "Deseja anular esta baixa?"
+        )
+
+        if(!ok) return
+
+        await fetch(
+
+            `${API}/financeiro/${id}/anular-baixa`,
+
+            {
+                method:"PUT"
+            }
+
+        )
+
+        alert("Baixa anulada")
+
+        carregarFluxo()
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+        alert("Erro ao anular baixa")
+
+    }
+
+}
+
+
 async function carregarFluxo(){
 
     try{
 
         const response =
-            await fetch(`${API}/financeiro`)
+            await fetch(`${API}/financeiro/fluxo`)
 
         const dados =
             await response.json()
@@ -616,86 +653,105 @@ async function carregarFluxo(){
 
 
 
-            tbody.innerHTML += `
+          tbody.innerHTML += `
 
-                <tr>
+    <tr>
 
-                    <td>
+        <td>
+            ${item.parceiro || ''}
+        </td>
 
-                        ${item.parceiro || ''}
+        <td>
+            ${item.produto_servico || ''}
+        </td>
 
-                    </td>
+        <!-- SAÍDAS -->
 
+        <td style="
+            color:#dc2626;
+            font-weight:bold;
+        ">
 
-                    <td>
+            ${
+                item.tipo === "PAGAR"
 
-                        ${item.produto_servico || ''}
+                ? Number(item.valor_pago || 0)
+                    .toLocaleString('pt-BR',{
 
-                    </td>
+                        style:'currency',
+                        currency:'BRL'
 
+                    })
 
-                    <td>
+                : "R$ 0,00"
+            }
 
-                        ${valorPago.toLocaleString(
-                            'pt-BR',{
-
-                            style:'currency',
-
-                            currency:'BRL'
-
-                        })}
-
-                    </td>
-
-
-                    <td>
-
-                        ${valorRecebido.toLocaleString(
-                            'pt-BR',{
-
-                            style:'currency',
-
-                            currency:'BRL'
-
-                        })}
-
-                    </td>
+        </td>
 
 
-                    <td style="
-                        font-weight:bold;
-                        color:${
-                            total >= 0
-                            ? '#15803d'
-                            : '#dc2626'
-                        };
-                    ">
+        <!-- ENTRADAS -->
 
-                        ${total.toLocaleString(
-                            'pt-BR',{
+        <td style="
+            color:#15803d;
+            font-weight:bold;
+        ">
 
-                            style:'currency',
+            ${
+                item.tipo === "RECEBER"
 
-                            currency:'BRL'
+                ? Number(item.valor_pago || 0)
+                    .toLocaleString('pt-BR',{
 
-                        })}
+                        style:'currency',
+                        currency:'BRL'
 
-                    </td>
+                    })
+
+                : "R$ 0,00"
+            }
+
+        </td>
 
 
-                    <td>
+        <!-- NOTA -->
 
-                        ${new Date(
-                            item.data_pagamento
-                        ).toLocaleDateString(
-                            'pt-BR'
-                        )}
+        <td>
+            ${item.nota_fiscal || ''}
+        </td>
 
-                    </td>
 
-                </tr>
+        <!-- DATA PAGAMENTO -->
 
-            `
+        <td>
+
+            ${item.data_pagamento
+
+                ? new Date(item.data_pagamento)
+                    .toLocaleDateString('pt-BR')
+
+                : ''
+            }
+
+        </td>
+
+
+        <!-- AÇÕES -->
+
+        <td>
+
+            <button
+                onclick="anularBaixa(${item.id})"
+            >
+
+                Anular Baixa
+
+            </button>
+
+        </td>
+
+    </tr>
+
+`
 
         })
 
