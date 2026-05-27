@@ -430,6 +430,37 @@ tr:hover{
 
         <div class="campo">
 
+            <label>Status</label>
+
+            <select
+                id="filtroStatus"
+                onchange="carregarRelatorio()"
+            >
+
+                <option value="">
+                    Todos
+                </option>
+
+                <option value="PENDENTE">
+                    PENDENTE
+                </option>
+
+                <option value="PARCIAL">
+                    PARCIAL
+                </option>
+
+                <option value="PAGO">
+                    PAGO
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <div class="campo">
+
             <label>Parceiro</label>
 
             <input
@@ -499,38 +530,6 @@ tr:hover{
     </div>
 
 </div>
-
-
-<div class="campo">
-
-    <label>Status</label>
-
-    <select
-        id="filtroStatus"
-        onchange="carregarRelatorio()"
-    >
-
-        <option value="">
-            Todos
-        </option>
-
-        <option value="PENDENTE">
-            PENDENTE
-        </option>
-
-        <option value="PARCIAL">
-            PARCIAL
-        </option>
-
-        <option value="PAGO">
-            PAGO
-        </option>
-
-    </select>
-
-</div>
-
-
 
 
 
@@ -917,7 +916,7 @@ async function carregarRelatorio(){
             `
 
         })
-        
+
 
 
 
