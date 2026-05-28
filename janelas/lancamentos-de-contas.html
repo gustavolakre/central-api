@@ -983,9 +983,8 @@ async function salvarLancamento(){
 
         document.getElementById(
              "conta_gerencial"
-        ).value =
-             item.conta_gerencial || ""
-
+        ).value = ""
+             
         document.getElementById("valor").value = ""
 
         document.getElementById(
@@ -1380,6 +1379,12 @@ function editarLancamento(item){
         "produto_servico"
     ).value =
         item.produto_servico || ""
+
+    document.getElementById(
+       "conta_gerencial"
+    ).value =
+        item.conta_gerencial || ""
+
 
     document.getElementById("valor").value =
         Number(item.valor || 0)

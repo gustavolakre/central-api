@@ -1,5 +1,3 @@
-const express = require("express")
-const router = express.Router()
 
 const pool = require("../src/db/database")
 
@@ -55,7 +53,8 @@ router.post("/", async (req, res) => {
       data_emissao,
       vencimento,
       nota_fiscal,
-      observacao
+      observacao,
+      conta_gerencial
 
     } = req.body
 
@@ -74,7 +73,8 @@ router.post("/", async (req, res) => {
         nota_fiscal,
         observacao,
         status,
-        valor_pago
+        valor_pago,
+        conta_gerencial
 
       )
 
@@ -82,7 +82,7 @@ router.post("/", async (req, res) => {
 
         $1,$2,$3,$4,$5,
         $6,$7,$8,$9,
-        $10,$11
+        $10,$11,$12
 
       )
 
@@ -100,7 +100,8 @@ router.post("/", async (req, res) => {
       nota_fiscal,
       observacao,
       "PENDENTE",
-      0
+      0,
+      conta_gerencial
 
     ])
 
@@ -234,6 +235,108 @@ router.put("/:id/baixa", async (req, res) => {
 })
 
 
+
+// routes/contasGerenciais.js
+
+const express = require("express")
+const router = express.Router()
+
+const pool = require("../src/db/database")
+
+
+
+/* =========================================
+   LISTAR
+========================================= */
+
+router.get("/", async(req,res)=>{
+
+    try{
+
+        const result = await pool.query(`
+
+            SELECT *
+            FROM contas_gerenciais
+            ORDER BY nome ASC
+
+        `)
+
+        res.json(result.rows)
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+        res.status(500).json({
+            erro: err.message
+        })
+
+    }
+
+})
+
+
+
+/* =========================================
+   NOVA CONTA
+========================================= */
+
+router.post("/", async(req,res)=>{
+
+    try{
+
+        const {
+            nome,
+            tipo
+        } = req.body
+
+        const result = await pool.query(`
+
+            INSERT INTO contas_gerenciais (
+
+                nome,
+                tipo
+
+            )
+
+            VALUES (
+
+                $1,$2
+
+            )
+
+            RETURNING *
+
+        `,[
+
+            nome,
+            tipo
+
+        ])
+
+        res.json(result.rows[0])
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+        res.status(500).json({
+            erro: err.message
+        })
+
+    }
+
+})
+
+
+
+module.exports = router
+
+
 /* =========================================
    FLUXO DE CAIXA
 ========================================= */
@@ -268,7 +371,6 @@ router.get("/fluxo", async (req, res) => {
 })
 
 
-
 /* =========================================
    EDITAR LANÇAMENTO
 ========================================= */
@@ -289,7 +391,8 @@ router.put("/:id", async (req, res) => {
       data_emissao,
       vencimento,
       nota_fiscal,
-      observacao
+      observacao,
+      conta_gerencial
 
     } = req.body
 
@@ -308,9 +411,10 @@ router.put("/:id", async (req, res) => {
         data_emissao = $6,
         vencimento = $7,
         nota_fiscal = $8,
-        observacao = $9
+        observacao = $9,
+        conta_gerencial = $10
 
-      WHERE id = $10
+      WHERE id = $11
 
       RETURNING *
 
@@ -325,6 +429,7 @@ router.put("/:id", async (req, res) => {
       vencimento,
       nota_fiscal,
       observacao,
+      conta_gerencial,
       id
 
     ])
