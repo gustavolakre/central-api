@@ -238,11 +238,6 @@ router.put("/:id/baixa", async (req, res) => {
 
 // routes/contasGerenciais.js
 
-const express = require("express")
-const router = express.Router()
-
-const pool = require("../src/db/database")
-
 
 
 /* =========================================
@@ -450,8 +445,6 @@ router.put("/:id", async (req, res) => {
   }
 
 })
-
-
 
 
 /* =========================================
