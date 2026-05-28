@@ -278,6 +278,34 @@ tr:hover{
     background:#1f2937;
 }
 
+.btnLimpar{
+
+    background:#64748b;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    transition:0.2s;
+
+}
+
+.btnLimpar:hover{
+
+    opacity:0.92;
+
+}
+
 
 
 
@@ -290,12 +318,9 @@ tr:hover{
 
 <div class="menuTop">
 
-    <a href="/janelas/inicial.html">
-        Início
-    </a>
-
+ 
     <a href="/janelas/lancamentos-de-contas.html">
-        Lançamentos
+        Lançamento de Contas
     </a>
 
     <a href="/janelas/fluxo-de-caixa.html">
@@ -527,6 +552,15 @@ tr:hover{
 
         </div>
 
+       <button
+            class="btnLimpar"
+            onclick="limparFiltros()"
+        >
+
+             Limpar Filtros
+
+        </button>
+
     </div>
 
 </div>
@@ -554,6 +588,8 @@ tr:hover{
             <th>Discriminação</th>
 
             <th>Produto</th>
+
+            <th>Conta Gerencial</th>
 
             <th>Valor</th>
 
@@ -585,6 +621,29 @@ tr:hover{
 
 const API =
     "https://api-production-6670.up.railway.app"
+
+
+
+
+function limparFiltros(){
+
+    document.getElementById("filtroTipo").value = ""
+
+    document.getElementById("filtroParceiro").value = ""
+
+    document.getElementById("filtroStatus").value = ""
+
+    document.getElementById("filtroEmissaoInicial").value = ""
+
+    document.getElementById("filtroEmissaoFinal").value = ""
+
+    document.getElementById("filtroVencInicial").value = ""
+
+    document.getElementById("filtroVencFinal").value = ""
+
+    carregarRelatorio()
+
+}
 
 
 
@@ -848,6 +907,10 @@ async function carregarRelatorio(){
 
                     <td>
                         ${item.produto_servico || ''}
+                    </td>
+
+                    <td>
+                         ${item.conta_gerencial || ''}
                     </td>
 
                     <td>

@@ -293,6 +293,34 @@
     background:#1f2937;
 }
 
+.btnLimpar{
+
+    background:#64748b;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    transition:0.2s;
+
+}
+
+.btnLimpar:hover{
+
+    opacity:0.92;
+
+}
+
     </style>
 
 </head>
@@ -361,6 +389,7 @@
         </select>
 
     </div>
+    
 
 
 
@@ -390,6 +419,15 @@
 
     </div>
 
+     <button
+          class="btnLimpar"
+          onclick="limparFiltros()"
+     >
+
+            Limpar Filtros
+
+     </button>
+
 </div>
 
 
@@ -415,6 +453,8 @@
 
                 <th>Data Pagamento</th>
 
+                <th>Conta Gerencial</th>
+
                 <th>Ações</th>
 
             </tr>
@@ -424,6 +464,8 @@
         <tbody id="tbodyFluxo"></tbody>
 
     </table>
+
+    
 
 </div>
 
@@ -507,6 +549,25 @@ async function anularBaixa(id){
         alert("Erro ao anular baixa")
 
     }
+
+}
+
+
+function limparFiltros(){
+
+    document.getElementById(
+        "filtroBancoPrincipal"
+    ).value = ""
+
+    document.getElementById(
+        "dataInicial"
+    ).value = ""
+
+    document.getElementById(
+        "dataFinal"
+    ).value = ""
+
+    carregarFluxo()
 
 }
 
@@ -729,6 +790,10 @@ async function carregarFluxo(){
                 : ''
             }
 
+        </td>
+
+        <td>
+              ${item.conta_gerencial || ''}
         </td>
 
 

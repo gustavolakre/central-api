@@ -305,7 +305,33 @@ tr:hover{
     background:#1f2937;
 }
 
+.btnLimpar{
 
+    background:#64748b;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    transition:0.2s;
+
+}
+
+.btnLimpar:hover{
+
+    opacity:0.92;
+
+}
 
 
 
@@ -367,8 +393,7 @@ tr:hover{
         </div>
 
 
-
-        <div class="campo"
+         <div class="campo"
             style="grid-column:span 2;"
 >
 
@@ -462,6 +487,20 @@ tr:hover{
                 type="text"
                 id="nota_fiscal"
             >
+
+        </div>
+
+        <div class="campo">
+
+           <label>Conta Gerencial</label>
+
+           <select id="conta_gerencial">
+
+           <option value="">
+                Selecione
+           </option>
+
+         </select>
 
         </div>
 
@@ -614,6 +653,15 @@ tr:hover{
 
         </div>
 
+        <button
+              class="btnLimpar"
+              onclick="limparFiltros()"
+        >
+
+              Limpar Filtros
+
+       </button>
+
     </div>
 
 </div>
@@ -643,6 +691,8 @@ tr:hover{
                 <th>Discriminação / Período</th>
 
                 <th>Produto</th>
+
+                <th>Conta Gerencial</th>
 
                 <th>Nota Fiscal</th>
 
@@ -797,6 +847,19 @@ tr:hover{
 
             </button>
 
+            <button
+                 id="btnExcluirBaixa"
+                 onclick="excluirBaixaParcial()"
+                 style="
+                    background:#dc2626;
+                    display:none;
+                "
+            >
+
+              Excluir Baixa Parcial
+
+            </button>
+
         </div>
 
     </div>
@@ -830,6 +893,11 @@ async function salvarLancamento(){
             produto_servico:
                 document.getElementById(
                     "produto_servico"
+                ).value,
+                
+            conta_gerencial:
+                document.getElementById(
+                   "conta_gerencial"
                 ).value,
 
             valor:
@@ -873,7 +941,7 @@ async function salvarLancamento(){
 
         const response = await fetch(
 
-            `${API}/financeiro`,
+             url,
 
             {
 
@@ -901,6 +969,47 @@ async function salvarLancamento(){
 
         alert("Lançamento salvo")
 
+        document.getElementById("tipo").value = "RECEBER"
+
+        document.getElementById("parceiro").value = ""
+
+        document.getElementById(
+             "discriminacao_periodo"
+        ).value = ""
+
+        document.getElementById(
+             "produto_servico"
+        ).value = ""
+
+        document.getElementById(
+             "conta_gerencial"
+        ).value =
+             item.conta_gerencial || ""
+
+        document.getElementById("valor").value = ""
+
+        document.getElementById(
+             "vencimento"
+        ).value = ""
+
+        document.getElementById(
+             "nota_fiscal"
+        ).value = ""
+
+        document.getElementById(
+            "observacao"
+        ).value = ""
+
+
+        /* mantém data atual */
+
+        document.getElementById(
+           "data_emissao"
+        ).value =
+            new Date()
+            .toISOString()
+            .split("T")[0]
+
 
         carregarLancamentos()
 
@@ -926,6 +1035,25 @@ let valorDocumento = 0
 let valorJaPago = 0
 
 
+function limparFiltros(){
+
+    document.getElementById("filtroTipo").value = ""
+
+    document.getElementById("filtroParceiro").value = ""
+
+    document.getElementById("filtroNota").value = ""
+
+    document.getElementById("filtroEmissaoInicial").value = ""
+
+    document.getElementById("filtroEmissaoFinal").value = ""
+
+    document.getElementById("filtroVencInicial").value = ""
+
+    document.getElementById("filtroVencFinal").value = ""
+
+    carregarLancamentos()
+
+}
 
 
 async function excluirLancamento(id){
@@ -964,8 +1092,50 @@ async function excluirLancamento(id){
 }
 
 
+async function carregarContasGerenciais(){
 
+    try{
 
+        const response = await fetch(
+            `${API}/contas-gerenciais`
+        )
+
+        const contas = await response.json()
+
+        const select =
+            document.getElementById(
+                "conta_gerencial"
+            )
+
+        select.innerHTML = `
+
+            <option value="">
+                Selecione
+            </option>
+
+        `
+
+        contas.forEach(conta=>{
+
+            select.innerHTML += `
+
+                <option value="${conta.nome}">
+                    ${conta.nome}
+                </option>
+
+            `
+
+        })
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+    }
+
+}
 
 
 
@@ -1104,6 +1274,25 @@ function abrirBaixa(
         valorDocumento - valorJaPago
 
 
+        if(
+           valorJaPago > 0 &&
+           valorJaPago < valorDocumento
+        ){
+
+           document.getElementById(
+               "btnExcluirBaixa"
+        ).style.display = "block"
+
+        }
+        else{
+
+            document.getElementById(
+                 "btnExcluirBaixa"
+            ).style.display = "none"
+
+        }
+
+
     document.getElementById(
         "modalBaixa"
     ).style.display = "block"
@@ -1239,7 +1428,45 @@ function editarLancamento(item){
 
 }
 
+async function excluirBaixaParcial(){
 
+    try{
+
+        const ok = confirm(
+            "Deseja excluir a baixa parcial?"
+        )
+
+        if(!ok) return
+
+
+        await fetch(
+
+            `${API}/financeiro/${lancamentoAtual}/anular-baixa`,
+
+            {
+                method:"PUT"
+            }
+
+        )
+
+        alert("Baixa parcial removida")
+
+
+        fecharModalBaixa()
+
+        carregarLancamentos()
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+        alert("Erro ao remover baixa")
+
+    }
+
+}
 
 async function confirmarBaixa(){
 
@@ -1361,6 +1588,7 @@ async function carregarLancamentos(){
                 "tbodyLancamentos"
             )
 
+        
         tbody.innerHTML = ""
 
 
@@ -1412,6 +1640,7 @@ async function carregarLancamentos(){
             )
             .value
             .toLowerCase()
+            
 
 
 
@@ -1547,6 +1776,49 @@ async function carregarLancamentos(){
                 valor - valorPago
 
 
+                const hoje = new Date()
+
+            const vencimentoData = item.vencimento
+                ? new Date(item.vencimento)
+                : null
+
+            const diffDias = vencimentoData
+                ? Math.ceil(
+                (vencimentoData - hoje)
+                / (1000 * 60 * 60 * 24)
+            )
+                : null
+
+            let corVencimento = "#111827"
+
+
+            /* VENCIDO */
+
+            if(
+                vencimentoData &&
+                diffDias < 0 &&
+                item.status !== "PAGO"
+            ){
+
+                corVencimento = "#dc2626"
+
+            }
+
+
+/* VENCE EM ATÉ 5 DIAS */
+
+else if(
+    vencimentoData &&
+    diffDias >= 0 &&
+    diffDias <= 5 &&
+    item.status !== "PAGO"
+){
+
+    corVencimento = "#ca8a04"
+
+}
+
+
             tbody.innerHTML += `
 
                 <tr>
@@ -1576,6 +1848,10 @@ async function carregarLancamentos(){
 
                     <td>
                        ${item.produto_servico || ''}
+                    </td>
+
+                    <td>
+                       ${item.conta_gerencial || ''}
                     </td>
 
                     <td>
@@ -1610,19 +1886,21 @@ async function carregarLancamentos(){
                     </td>
 
 
-                    <td>
+                    <td style="
+                        font-weight:bold;
+                        color:${saldo > 0 ? '#dc2626' : '#15803d'};
+                    ">
 
                         ${saldo.toLocaleString(
-                            'pt-BR',{
+                    'pt-BR',{
 
-                            style:'currency',
+                        style:'currency',
 
-                            currency:'BRL'
+                        currency:'BRL'
 
-                        })}
+                    })}
 
                     </td>
-
 
                     <td>
 
@@ -1637,7 +1915,10 @@ async function carregarLancamentos(){
                     </td>
 
 
-                    <td>
+                    <td style="
+                        font-weight:bold;
+                        color:${corVencimento};
+                     ">
 
                         ${item.vencimento
                             ? new Date(
@@ -1682,7 +1963,8 @@ async function carregarLancamentos(){
                           Excluir
                      </button>
 
-                    </td>
+
+                   </td>
                     
 
                 </tr>
@@ -1712,6 +1994,7 @@ document.getElementById(
 carregarParceiros()
 carregarLancamentos()
 carregarBancosBaixa()
+carregarContasGerenciais()
 
 </script>
 
