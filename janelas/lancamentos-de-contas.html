@@ -335,6 +335,7 @@ tr:hover{
 
 
 
+
     </style>
 
 </head>
@@ -550,10 +551,10 @@ tr:hover{
 
             <label>Filtro Tipo</label>
 
-            <select
-                id="filtroTipo"
-                onchange="carregarLancamentos()"
-            >
+               <select
+                  id="filtroTipo"
+                  onchange="carregarLancamentos()"
+                >
 
                 <option value="">
                     Todos
@@ -575,13 +576,13 @@ tr:hover{
 
         <div class="campo">
 
-            <label>Filtro Parceiro</label>
+        <label>Filtro Parceiro</label>
 
-            <input
-                type="text"
-                id="filtroParceiro"
-                onkeyup="carregarLancamentos()"
-            >
+        <input
+            type="text"
+            id="filtroParceiro"
+            onkeyup="carregarLancamentos()"
+        >
 
         </div>
 
@@ -1165,7 +1166,6 @@ async function carregarParceiros(){
 
         `
 
-
         parceiros.forEach(parceiro=>{
 
             select.innerHTML += `
@@ -1180,7 +1180,7 @@ async function carregarParceiros(){
 
             `
 
-        })
+            })
 
     }
 
@@ -1601,23 +1601,17 @@ async function carregarLancamentos(){
            FILTROS
         ========================================= */
 
-        const filtroTipo = Array.from(
+        const filtroTipo =
+            document.getElementById(
+               "filtroTipo"
+        ).value
 
-           document.getElementById(
-           "filtroTipo"
-         ).selectedOptions
-
-       ).map(o=>o.value)
-
-
-        const filtroParceiro = Array.from(
-
-           document.getElementById(
-           "filtroParceiro"
-        ).selectedOptions
-
-        ).map(o=>o.value.toLowerCase())
-
+        const filtroParceiro =
+            document.getElementById(
+              "filtroParceiro"
+        )
+            .value
+            .toLowerCase()
 
         const emissaoInicial =
             document.getElementById(
@@ -1651,14 +1645,7 @@ async function carregarLancamentos(){
             .toLowerCase()
 
 
-        const filtroStatus = Array.from(
-
-            document.getElementById(
-            "filtroStatus"
-            ).selectedOptions
-
-        ).map(o=>o.value)
-            
+               
 
 
 
@@ -1668,40 +1655,26 @@ async function carregarLancamentos(){
 
         const filtrados = dados.filter(item=>{
 
-            if(item.status === "PAGO"){
-                return false
-            }
-
-
+         
             /* TIPO */
 
             const okTipo =
 
-             filtroTipo.length === 0 ||
+              !filtroTipo ||
 
-             filtroTipo.includes(item.tipo)
-
-
-             const okStatus =
-
-              filtroStatus.length === 0 ||
-
-              filtroStatus.includes(
-              item.status || "PENDENTE"
-            )
+              item.tipo === filtroTipo
 
 
-
+        
             /* PARCEIRO */
 
-            const okParceiro =
+           const okParceiro =
 
-                  filtroParceiro.length === 0 ||
+                !filtroParceiro ||
 
-                  filtroParceiro.includes(
-                      (item.parceiro || "")
-                      .toLowerCase()
-             )
+                (item.parceiro || "")
+                .toLowerCase()
+                .includes(filtroParceiro)
 
 
             const okNota =
@@ -1779,7 +1752,6 @@ async function carregarLancamentos(){
             return (
 
                  okTipo &&
-                 okStatus &&
                  okParceiro &&
                  okEmissao &&
                  okNota &&

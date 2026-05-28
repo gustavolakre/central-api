@@ -12,6 +12,41 @@
 
 <style>
 
+
+.checksFiltro{
+
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+
+    background:#f8fafc;
+
+    border:1px solid #cbd5e1;
+
+    padding:10px;
+
+    border-radius:8px;
+
+    font-size:12px;
+}
+
+.checksFiltro label{
+
+    display:flex;
+    align-items:center;
+    gap:6px;
+
+    font-weight:normal;
+
+    cursor:pointer;
+}
+
+.checksScroll{
+
+    max-height:180px;
+    overflow:auto;
+}
+
 *{
     margin:0;
     padding:0;
@@ -470,76 +505,89 @@ tr:hover{
 
     <div class="grid">
 
-        <div class="campo">
+      <div class="campo">
 
-            <label>Tipo</label>
+    <label>Tipo</label>
 
-            <select
-                id="filtroTipo"
-                onchange="carregarRelatorio()"
-            >
+    <div class="checksFiltro">
 
-                <option value="">
-                    Todos
-                </option>
-
-                <option value="RECEBER">
-                    RECEBER
-                </option>
-
-                <option value="PAGAR">
-                    PAGAR
-                </option>
-
-            </select>
-
-        </div>
-
-
-
-        <div class="campo">
-
-            <label>Status</label>
-
-            <select
-                id="filtroStatus"
-                onchange="carregarRelatorio()"
-            >
-
-                <option value="">
-                    Todos
-                </option>
-
-                <option value="PENDENTE">
-                    PENDENTE
-                </option>
-
-                <option value="PARCIAL">
-                    PARCIAL
-                </option>
-
-                <option value="PAGO">
-                    PAGO
-                </option>
-
-            </select>
-
-        </div>
-
-
-
-        <div class="campo">
-
-            <label>Parceiro</label>
-
+        <label>
             <input
-                type="text"
-                id="filtroParceiro"
-                onkeyup="carregarRelatorio()"
+                type="checkbox"
+                value="RECEBER"
+                class="checkTipo"
+                onchange="carregarRelatorio()"
             >
+            RECEBER
+        </label>
 
-        </div>
+        <label>
+            <input
+                type="checkbox"
+                value="PAGAR"
+                class="checkTipo"
+                onchange="carregarRelatorio()"
+            >
+            PAGAR
+        </label>
 
+    </div>
+
+</div> 
+
+
+<div class="campo">
+
+    <label>Status</label>
+
+    <div class="checksFiltro">
+
+        <label>
+            <input
+                type="checkbox"
+                value="PENDENTE"
+                class="checkStatus"
+                onchange="carregarRelatorio()"
+            >
+            PENDENTE
+        </label>
+
+        <label>
+            <input
+                type="checkbox"
+                value="PARCIAL"
+                class="checkStatus"
+                onchange="carregarRelatorio()"
+            >
+            PARCIAL
+        </label>
+
+        <label>
+            <input
+                type="checkbox"
+                value="PAGO"
+                class="checkStatus"
+                onchange="carregarRelatorio()"
+            >
+            PAGO
+        </label>
+
+    </div>
+
+</div>
+
+
+
+<div class="campo">
+
+    <label>Parceiros</label>
+
+    <div
+        id="listaParceiros"
+        class="checksFiltro checksScroll"
+    ></div>
+
+</div>
 
 
         <div class="campo">
@@ -691,7 +739,6 @@ function limparFiltros(){
 }
 
 
-
 async function carregarRelatorio(){
 
     try{
@@ -710,18 +757,35 @@ async function carregarRelatorio(){
         tbody.innerHTML = ""
 
 
-        const filtroTipo =
-            document.getElementById(
-                "filtroTipo"
-            ).value
+        /* =========================================
+           FILTROS
+        ========================================= */
 
+        const filtroTipo = Array.from(
 
-        const filtroParceiro =
-            document.getElementById(
-                "filtroParceiro"
+            document.querySelectorAll(
+                ".checkTipo:checked"
             )
-            .value
-            .toLowerCase()
+
+        ).map(el=>el.value)
+
+
+        const filtroStatus = Array.from(
+
+            document.querySelectorAll(
+                ".checkStatus:checked"
+            )
+
+        ).map(el=>el.value)
+
+
+        const filtroParceiro = Array.from(
+
+            document.querySelectorAll(
+                ".checkParceiro:checked"
+            )
+
+        ).map(el=>el.value.toLowerCase())
 
 
         const emissaoInicial =
@@ -748,53 +812,75 @@ async function carregarRelatorio(){
             ).value
 
 
-        const filtroStatus =
+        const filtroNota =
             document.getElementById(
-               "filtroStatus"
-            ).value
+                "filtroNota"
+            )
+            .value
+            .toLowerCase()
 
 
-        let totalReceber = 0
-
-        let totalPagar = 0
-
-        let totalPago = 0
-
+        /* =========================================
+           FILTRAR
+        ========================================= */
 
         const filtrados = dados.filter(item=>{
 
 
+            /* TIPO */
+
             const okTipo =
 
-                !filtroTipo ||
+                filtroTipo.length === 0 ||
 
-                item.tipo === filtroTipo
+                filtroTipo.includes(item.tipo)
 
+
+            /* STATUS */
+
+            const okStatus =
+
+                filtroStatus.length === 0 ||
+
+                filtroStatus.includes(
+                    item.status || "PENDENTE"
+                )
+
+
+            /* PARCEIRO */
 
             const okParceiro =
 
-                !filtroParceiro ||
+                filtroParceiro.length === 0 ||
 
-                (item.parceiro || "")
+                filtroParceiro.includes(
+                    (item.parceiro || "")
+                    .toLowerCase()
+                )
+
+
+            /* NOTA */
+
+            const okNota =
+
+                !filtroNota ||
+
+                (item.nota_fiscal || "")
                 .toLowerCase()
-                .includes(filtroParceiro)
-
-            
-            const okStatus =
-
-                !filtroStatus ||
-
-                item.status === filtroStatus
+                .includes(filtroNota)
 
 
+            /* EMISSÃO */
 
             let okEmissao = true
 
             if(item.data_emissao){
 
                 const emissao =
+
                     item.data_emissao
                     .split("T")[0]
+
 
                 if(
                     emissaoInicial &&
@@ -802,6 +888,7 @@ async function carregarRelatorio(){
                 ){
                     okEmissao = false
                 }
+
 
                 if(
                     emissaoFinal &&
@@ -813,14 +900,17 @@ async function carregarRelatorio(){
             }
 
 
+            /* VENCIMENTO */
 
             let okVencimento = true
 
             if(item.vencimento){
 
                 const venc =
+
                     item.vencimento
                     .split("T")[0]
+
 
                 if(
                     vencInicial &&
@@ -828,6 +918,7 @@ async function carregarRelatorio(){
                 ){
                     okVencimento = false
                 }
+
 
                 if(
                     vencFinal &&
@@ -842,8 +933,9 @@ async function carregarRelatorio(){
             return (
 
                 okTipo &&
+                okStatus &&
                 okParceiro &&
-                okStatus && 
+                okNota &&
                 okEmissao &&
                 okVencimento
 
@@ -852,98 +944,42 @@ async function carregarRelatorio(){
         })
 
 
+        /* =========================================
+           TABELA
+        ========================================= */
 
         filtrados.forEach(item=>{
-
-            const hoje = new Date()
-
-            const vencimento = item.vencimento
-                 ? new Date(item.vencimento)
-                 : null
-
-            const diffDias = vencimento
-                 ? Math.ceil(
-                 (vencimento - hoje)
-                 / (1000 * 60 * 60 * 24)
-            )
-                 : null
-
-
-            let corLinha = "white"
-
-
-            /* VENCIDO */
-
-            if(
-
-                vencimento &&
-
-                diffDias < 0 &&
-
-                item.status !== "PAGO"
-
-            ){
-
-                corLinha = "#fee2e2"
-
-            }
-
-
-             /* VENCE EM ATÉ 5 DIAS */
-
-            else if(
-
-                 vencimento &&
-
-                 diffDias >= 0 &&
-
-                 diffDias <= 5 &&
-
-                 item.status !== "PAGO"
-
-            ){
-
-                 corLinha = "#fef9c3"
-
-            }
-
 
             const valor =
                 Number(item.valor || 0)
 
-            const pago =
+            const valorPago =
                 Number(item.valor_pago || 0)
 
             const saldo =
-                valor - pago
-
-
-            if(item.tipo === "RECEBER"){
-                totalReceber += valor
-            }
-
-            if(item.tipo === "PAGAR"){
-                totalPagar += valor
-            }
-
-            if(item.status === "PAGO"){
-                totalPago += pago
-            }
+                valor - valorPago
 
 
             tbody.innerHTML += `
 
-            
-                 <tr style="
-                    background:${corLinha};
-                 ">
+                <tr>
 
                     <td>${item.id}</td>
 
-                    <td>${item.tipo}</td>
+                    <td>
+                        ${item.tipo || ''}
+                    </td>
+
+                    <td>
+                        ${item.status || ''}
+                    </td>
 
                     <td>
                         ${item.parceiro || ''}
+                    </td>
+
+                    <td>
+                        ${item.conta_gerencial || ''}
                     </td>
 
                     <td>
@@ -955,69 +991,75 @@ async function carregarRelatorio(){
                     </td>
 
                     <td>
-                         ${item.conta_gerencial || ''}
+                        ${item.nota_fiscal || ''}
                     </td>
 
                     <td>
 
                         ${valor.toLocaleString(
-                            'pt-BR',{
-
-                            style:'currency',
-
-                            currency:'BRL'
-
-                        })}
-
-                    </td>
-
-                    <td>
-
-                        ${pago.toLocaleString(
-                            'pt-BR',{
-
-                            style:'currency',
-
-                            currency:'BRL'
-
-                        })}
+                            'pt-BR',
+                            {
+                                style:'currency',
+                                currency:'BRL'
+                            }
+                        )}
 
                     </td>
 
                     <td>
+
+                        ${valorPago.toLocaleString(
+                            'pt-BR',
+                            {
+                                style:'currency',
+                                currency:'BRL'
+                            }
+                        )}
+
+                    </td>
+
+                    <td
+                        style="
+                            font-weight:bold;
+                            color:${saldo > 0 ? '#dc2626' : '#15803d'};
+                        "
+                    >
 
                         ${saldo.toLocaleString(
-                            'pt-BR',{
-
-                            style:'currency',
-
-                            currency:'BRL'
-
-                        })}
+                            'pt-BR',
+                            {
+                                style:'currency',
+                                currency:'BRL'
+                            }
+                        )}
 
                     </td>
 
                     <td>
 
                         ${item.data_emissao
-                            ? new Date(
-                                item.data_emissao
-                              ).toLocaleDateString('pt-BR')
-                            : ''}
+                            ? item.data_emissao
+                                .split("T")[0]
+                                .split("-")
+                                .reverse()
+                                .join("/")
+                            : ''
+                        }
 
                     </td>
 
                     <td>
 
                         ${item.vencimento
-                            ? new Date(
-                                item.vencimento
-                              ).toLocaleDateString('pt-BR')
-                            : ''}
+                            ? item.vencimento
+                                .split("T")[0]
+                                .split("-")
+                                .reverse()
+                                .join("/")
+                            : ''
+                        }
 
                     </td>
-
-                    <td>${item.status}</td>
 
                 </tr>
 
@@ -1025,70 +1067,65 @@ async function carregarRelatorio(){
 
         })
 
+    }
+
+    catch(err){
+
+        console.error(err)
+
+    }
+
+}
 
 
+async function carregarParceiros(){
 
-        document.getElementById(
-            "totalReceber"
-        ).innerText =
+    try{
+        
 
-            totalReceber.toLocaleString(
-                'pt-BR',{
+        const response =
+            await fetch("/buscarParceiros")
 
-                style:'currency',
+        const parceiros =
+            await response.json()
 
-                currency:'BRL'
+        const div =
+            document.getElementById(
+                "listaParceiros"
+            )
 
-            })
-
-
-
-        document.getElementById(
-            "totalPagar"
-        ).innerText =
-
-            totalPagar.toLocaleString(
-                'pt-BR',{
-
-                style:'currency',
-
-                currency:'BRL'
-
-            })
+        div.innerHTML = ""
 
 
+        parceiros.forEach(parceiro=>{
 
-        document.getElementById(
-            "totalPago"
-        ).innerText =
+            div.innerHTML += `
 
-            totalPago.toLocaleString(
-                'pt-BR',{
+                <label
+                    style="
+                        display:flex;
+                        align-items:center;
+                        gap:6px;
+                        margin-bottom:6px;
+                        font-size:12px;
+                        cursor:pointer;
+                    "
+                >
 
-                style:'currency',
+                    <input
+                        type="checkbox"
+                        value="${parceiro.nome_usual}"
+                        class="checkParceiro"
+                        onchange="carregarRelatorio()"
+                    >
 
-                currency:'BRL'
+                    ${parceiro.nome_usual}
 
-            })
+                </label>
 
+            `
 
-
-        const saldo =
-            totalReceber - totalPagar
-
-
-        document.getElementById(
-            "saldoFinal"
-        ).innerText =
-
-            saldo.toLocaleString(
-                'pt-BR',{
-
-                style:'currency',
-
-                currency:'BRL'
-
-            })
+        })
 
     }
 
