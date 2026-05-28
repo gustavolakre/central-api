@@ -1601,18 +1601,22 @@ async function carregarLancamentos(){
            FILTROS
         ========================================= */
 
-        const filtroTipo =
-            document.getElementById(
-                "filtroTipo"
-            ).value
+        const filtroTipo = Array.from(
+
+           document.getElementById(
+           "filtroTipo"
+         ).selectedOptions
+
+       ).map(o=>o.value)
 
 
-        const filtroParceiro =
-            document.getElementById(
-                "filtroParceiro"
-            )
-            .value
-            .toLowerCase()
+        const filtroParceiro = Array.from(
+
+           document.getElementById(
+           "filtroParceiro"
+        ).selectedOptions
+
+        ).map(o=>o.value.toLowerCase())
 
 
         const emissaoInicial =
@@ -1645,6 +1649,15 @@ async function carregarLancamentos(){
             )
             .value
             .toLowerCase()
+
+
+        const filtroStatus = Array.from(
+
+            document.getElementById(
+            "filtroStatus"
+            ).selectedOptions
+
+        ).map(o=>o.value)
             
 
 
@@ -1655,14 +1668,27 @@ async function carregarLancamentos(){
 
         const filtrados = dados.filter(item=>{
 
+            if(item.status === "PAGO"){
+                return false
+            }
+
 
             /* TIPO */
 
             const okTipo =
 
-                !filtroTipo ||
+             filtroTipo.length === 0 ||
 
-                item.tipo === filtroTipo
+             filtroTipo.includes(item.tipo)
+
+
+             const okStatus =
+
+              filtroStatus.length === 0 ||
+
+              filtroStatus.includes(
+              item.status || "PENDENTE"
+            )
 
 
 
@@ -1670,11 +1696,12 @@ async function carregarLancamentos(){
 
             const okParceiro =
 
-                !filtroParceiro ||
+                  filtroParceiro.length === 0 ||
 
-                (item.parceiro || "")
-                .toLowerCase()
-                .includes(filtroParceiro)
+                  filtroParceiro.includes(
+                      (item.parceiro || "")
+                      .toLowerCase()
+             )
 
 
             const okNota =
@@ -1751,13 +1778,12 @@ async function carregarLancamentos(){
 
             return (
 
-                okTipo &&
-                okParceiro &&
-                okEmissao &&
-                okNota &&
-                okVencimento
-                
-       
+                 okTipo &&
+                 okStatus &&
+                 okParceiro &&
+                 okEmissao &&
+                 okNota &&
+                 okVencimento
             )
 
         })

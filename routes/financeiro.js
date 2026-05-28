@@ -13,11 +13,12 @@ router.get("/", async (req, res) => {
   try {
 
     const result = await pool.query(`
+
       SELECT *
       FROM financeiro
-      WHERE COALESCE(status,'PENDENTE') != 'PAGO'
       ORDER BY vencimento ASC, id DESC
-     `)
+
+    `)
 
     res.json(result.rows)
 

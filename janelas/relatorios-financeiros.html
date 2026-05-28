@@ -336,9 +336,51 @@ tr:hover{
 </div>
 
 
+<div
+    style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:14px;
+    "
+>
 
+    <h1 style="margin:0;">
+        Relatórios Financeiros
+    </h1>
 
-<h1>Relatórios Financeiros</h1>
+    <button
+    onclick="exportarBackupFinanceiro()"
+    style="
+        background:linear-gradient(135deg,#16a34a,#15803d);
+        color:white;
+        border:none;
+        padding:12px 22px;
+        border-radius:10px;
+        cursor:pointer;
+        font-size:13px;
+        font-weight:bold;
+        display:flex;
+        align-items:center;
+        gap:8px;
+        box-shadow:0 4px 12px rgba(22,163,74,0.25);
+        transition:0.2s;
+    "
+    onmouseover="
+        this.style.transform='translateY(-1px)';
+        this.style.boxShadow='0 6px 16px rgba(22,163,74,0.35)';
+    "
+    onmouseout="
+        this.style.transform='translateY(0)';
+        this.style.boxShadow='0 4px 12px rgba(22,163,74,0.25)';
+    "
+>
+
+    📥 Gerar Backup Excel
+
+</button>
+
+</div>
 
 
 
@@ -563,17 +605,6 @@ tr:hover{
 
         </button>
 
-
-        <button
-             onclick="exportarBackupFinanceiro()"
-             style="
-                background:#16a34a;
-                margin-bottom:15px;
-             "
-        >
-          Gerar Backup Excel
-     </button>
-
     </div>
 
 </div>
@@ -636,193 +667,7 @@ const API =
     "https://api-production-6670.up.railway.app"
 
 
-    async function exportarBackupFinanceiro(){
-
-    try{
-
-        const responseFinanceiro =
-            await fetch(`${API}/financeiro`)
-
-        const financeiro =
-            await responseFinanceiro.json()
-
-
-        const responseFluxo =
-            await fetch(`${API}/financeiro/fluxo`)
-
-        const fluxo =
-            await responseFluxo.json()
-
-
-        /* =========================================
-           PLANILHA 1
-           TODOS LANÇAMENTOS
-        ========================================= */
-
-        const dadosLancamentos = financeiro.map(item=>({
-
-            ID: item.id,
-            Tipo: item.tipo,
-            Parceiro: item.parceiro,
-            "Discriminação":
-                item.discriminacao_periodo,
-
-            Produto:
-                item.produto_servico,
-
-            "Conta Gerencial":
-                item.conta_gerencial,
-
-            Valor: item.valor,
-
-            "Valor Pago":
-                item.valor_pago,
-
-            Saldo:
-                Number(item.valor || 0)
-                - Number(item.valor_pago || 0),
-
-            Status: item.status,
-
-            "Data Emissão":
-                item.data_emissao,
-
-            Vencimento:
-                item.vencimento,
-
-            "Nota Fiscal":
-                item.nota_fiscal,
-
-            Observação:
-                item.observacao,
-
-            Banco:
-                item.banco_pagamento,
-
-            "Data Pagamento":
-                item.data_pagamento
-
-        }))
-
-
-        /* =========================================
-           PLANILHA 2
-           FLUXO DE CAIXA
-        ========================================= */
-
-        const dadosFluxo = fluxo.map(item=>({
-
-            ID: item.id,
-
-            Banco:
-                item.banco_pagamento,
-
-            Tipo:
-                item.tipo,
-
-            Parceiro:
-                item.parceiro,
-
-            "Conta Gerencial":
-                item.conta_gerencial,
-
-            Valor:
-                item.valor,
-
-            "Valor Pago":
-                item.valor_pago,
-
-            Status:
-                item.status,
-
-            "Data Pagamento":
-                item.data_pagamento,
-
-            Vencimento:
-                item.vencimento
-
-        }))
-
-
-        /* =========================================
-           PLANILHA 3
-           BACKUP COMPLETO
-        ========================================= */
-
-        const dadosCompletos = financeiro.map(item=>({
-
-            ...item
-
-        }))
-
-
-        /* =========================================
-           CRIAR EXCEL
-        ========================================= */
-
-        const wb = XLSX.utils.book_new()
-
-
-        const ws1 =
-            XLSX.utils.json_to_sheet(
-                dadosLancamentos
-            )
-
-        const ws2 =
-            XLSX.utils.json_to_sheet(
-                dadosFluxo
-            )
-
-        const ws3 =
-            XLSX.utils.json_to_sheet(
-                dadosCompletos
-            )
-
-
-        XLSX.utils.book_append_sheet(
-            wb,
-            ws1,
-            "Lançamentos"
-        )
-
-        XLSX.utils.book_append_sheet(
-            wb,
-            ws2,
-            "Fluxo Caixa"
-        )
-
-        XLSX.utils.book_append_sheet(
-            wb,
-            ws3,
-            "Backup Completo"
-        )
-
-
-        const hoje =
-            new Date()
-            .toISOString()
-            .split("T")[0]
-
-
-        XLSX.writeFile(
-            wb,
-            `backup_financeiro_${hoje}.xlsx`
-        )
-
-
-    }
-
-    catch(err){
-
-        console.error(err)
-
-        alert(
-            "Erro ao gerar backup"
-        )
-
-    }
-
-}
+    
 
 
 function limparFiltros(){
