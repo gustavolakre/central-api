@@ -60,11 +60,11 @@ const ultimaSync = await pool.query(`
 const dataUltimaSync =
   ultimaSync.rows[0].ultima;
 
-
 console.log(
-  "FILTRO PIPEFY:",
-  dataFiltro
+  "ULTIMA SYNC:",
+  dataUltimaSync
 );
+
 
 while (hasNextPage) {
 
