@@ -10,10 +10,27 @@ router.get("/", async (req, res) => {
 
   try {
 
+    let totalImportados = 0;
+
+    let hasNextPage = true;
+
+    let cursor = null;
+
+    while (hasNextPage) {
+
     const query = `
       query {
 
-        table_records(table_id: ${TABLE_ID}) {
+        table_records(
+         table_id: ${TABLE_ID},
+          first: 50,
+          after: ${cursor ? `"${cursor}"` : null}
+          ) {
+
+           pageInfo {
+            hasNextPage
+            endCursor
+          }
 
           edges {
 
@@ -48,6 +65,18 @@ router.get("/", async (req, res) => {
 
     const records = response.data.data.table_records.edges;
 
+    hasNextPage =
+      response.data.data.table_records.pageInfo.hasNextPage;
+
+    cursor =
+      response.data.data.table_records.pageInfo.endCursor;
+
+    console.log({
+      hasNextPage,
+      cursor,
+      lote: records.length
+    });
+
     for (const item of records) {
 
       const record = item.node;
@@ -61,6 +90,7 @@ router.get("/", async (req, res) => {
       console.log(fields)
 
       await pool.query(
+        
       `
       INSERT INTO parceiros_negocio (
 
@@ -190,6 +220,10 @@ router.get("/", async (req, res) => {
 
       ]
       );
+
+      
+
+    }
 
     }
 

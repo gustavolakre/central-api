@@ -133,13 +133,13 @@ query {
 
   const card = item.node;
 
-  // if (
-  //   dataUltimaSync &&
-  //  new Date(card.updated_at) <=
-  //  new Date(dataUltimaSync)
-  // ) {
-  //  continue;
-  // }
+   if (
+     dataUltimaSync &&
+    new Date(card.updated_at) <=
+    new Date(dataUltimaSync)
+   ) {
+    continue;
+   }
 
   console.log({
   titulo: card.title,
