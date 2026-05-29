@@ -76,14 +76,14 @@ console.log(
 
 while (hasNextPage) {
 
- const query = `
+const query = `
 query {
-  allCards(
-  pipeId: ${PIPE_ID},
-  first: 50,
-  after: ${cursor ? `"${cursor}"` : null}
-  ${dataFiltro ? `, updatedAfter: "${dataFiltro}"` : ""}
-) {
+
+  table_records(
+    table_id: ${TABLE_ID},
+    first: 50,
+    after: ${cursor ? `"${cursor}"` : null}
+  ) {
 
     pageInfo {
       hasNextPage
@@ -91,27 +91,22 @@ query {
     }
 
     edges {
+
       node {
+
         id
-        title
-        created_at
-        updated_at
 
-        current_phase {
-          name
-        }
-
-        fields {
+        record_fields {
           name
           value
-
-          field {
-            id
-          }
         }
+
       }
+
     }
+
   }
+
 }
 `;
 
@@ -400,7 +395,8 @@ DO UPDATE SET
 
     console.error("ERRO COMPLETO:");
     console.error(JSON.stringify(error.response?.data, null, 2));
-    console.error(error.message);
+    console.error(error.response?.data);
+    console.error(error);
 
     res.status(500).json({
       error: "Erro ao importar cards"
