@@ -341,10 +341,7 @@ DO UPDATE SET
   nfCompr,
   nfFornec,
 
-  fields["Nota Fiscal Venda"] ||
-  fields["Nota Fiscal"] ||
-  fields["NF Venda"] ||
-  "", 
+  fields["N Nota de Venda"] || "",
 
   etiquetasRaw,
 
