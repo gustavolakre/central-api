@@ -17,19 +17,17 @@ router.get("/", async (req, res) => {
     let cursor = null;
 
     const ultimaSync = await pool.query(`
-       SELECT MAX(updated_at)
-       as ultima
-       FROM parceiros_negocio
+      SELECT MAX(updated_at) as ultima
+      FROM parceiros_negocio
     `);
 
     const dataUltimaSync =
        ultimaSync.rows[0].ultima;
 
-    const dataFiltro = dataUltimaSync
-       ? new Date(dataUltimaSync).toISOString()
-       : null;
-
-    console.log("ULTIMA SYNC:", dataFiltro);
+    console.log(
+      "ULTIMA SYNC:",
+       dataUltimaSync
+    );
 
     while (hasNextPage) {
 
@@ -244,9 +242,11 @@ query {
 
     }
 
+    
+
     res.json({
       success: true,
-      total: records.length
+      total: totalImportados
     });
 
   } catch (error) {

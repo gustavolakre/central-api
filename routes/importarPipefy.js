@@ -53,21 +53,13 @@ let hasNextPage = true;
 let cursor = null;
 
 const ultimaSync = await pool.query(`
-  SELECT as ultima
+  SELECT MAX(updated_at_pipefy) as ultima
   FROM controle_cargas
 `);
 
 const dataUltimaSync =
   ultimaSync.rows[0].ultima;
 
-const dataFiltro = dataUltimaSync
-  ? new Date(dataUltimaSync).toISOString()
-  : null;
-
-console.log(
-  "ULTIMA SYNC:",
-  dataUltimaSync
-);
 
 console.log(
   "FILTRO PIPEFY:",
@@ -78,9 +70,8 @@ while (hasNextPage) {
 
 const query = `
 query {
-
-  table_records(
-    table_id: ${TABLE_ID},
+  allCards(
+    pipeId: ${PIPE_ID},
     first: 50,
     after: ${cursor ? `"${cursor}"` : null}
   ) {
@@ -95,10 +86,21 @@ query {
       node {
 
         id
+        title
+        created_at
+        updated_at
 
-        record_fields {
+        current_phase {
+          name
+        }
+
+        fields {
           name
           value
+
+          field {
+            id
+          }
         }
 
       }
@@ -106,7 +108,6 @@ query {
     }
 
   }
-
 }
 `;
 
