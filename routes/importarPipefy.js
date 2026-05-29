@@ -53,7 +53,7 @@ let hasNextPage = true;
 let cursor = null;
 
 const ultimaSync = await pool.query(`
-  SELECT MAX(updated_at_pipefy) as ultima
+  SELECT as ultima
   FROM controle_cargas
 `);
 
@@ -137,6 +137,36 @@ query {
   for (const item of data.edges) {
 
   const card = item.node;
+
+  const registroBanco = await pool.query(
+  `
+  SELECT updated_at_pipefy
+  FROM controle_cargas
+  WHERE pipefy_card_id = $1
+  `,
+  [card.id]
+);
+
+
+if (registroBanco.rows.length > 0) {
+
+  const atualizadoBanco =
+    registroBanco.rows[0].updated_at_pipefy;
+
+  if (
+    atualizadoBanco &&
+    new Date(atualizadoBanco) >=
+    new Date(card.updated_at)
+  ) {
+
+    console.log(
+      "CARD IGNORADO:",
+      card.title
+    );
+
+    continue;
+  }
+}
 
    
   console.log({
