@@ -7,40 +7,40 @@ const bcrypt = require("bcryptjs")
 const pool = require("../src/db/database")
 
 
-const JWT_SECRET =
-process.env.JWT_SECRET || "segredo_super_forte"
-
-
 /* =========================================
    LOGIN
 ========================================= */
 
-router.post("/login", async(req,res)=>{
+router.post("/login", async (req, res) => {
 
-    try{
+    try {
 
-        const {
-            email,
-            senha
-        } = req.body
+        const { email, senha } = req.body
+
+        if (!email || !senha) {
+
+            return res.status(400).json({
+                erro: "Email e senha obrigatórios"
+            })
+
+        }
 
 
-        const result = await pool.query(
+        /* BUSCAR USUÁRIO */
 
-            `
+        const result = await pool.query(`
+
             SELECT *
             FROM usuarios
             WHERE email = $1
-            `,
-            [email]
 
-        )
+        `, [email])
 
 
-        if(!result.rows.length){
+        if (!result.rows.length) {
 
             return res.status(401).json({
-                erro:"Usuário não encontrado"
+                erro: "Usuário não encontrado"
             })
 
         }
@@ -49,36 +49,38 @@ router.post("/login", async(req,res)=>{
         const usuario = result.rows[0]
 
 
-        const senhaOk = await bcrypt.compare(
-            senha,
-            usuario.senha
-        )
+        /* VALIDAR SENHA */
+
+        const senhaCorreta =
+            await bcrypt.compare(
+                senha,
+                usuario.senha
+            )
 
 
-        if(!senhaOk){
+        if (!senhaCorreta) {
 
             return res.status(401).json({
-                erro:"Senha inválida"
+                erro: "Senha inválida"
             })
 
         }
 
 
+        /* GERAR TOKEN */
+
         const token = jwt.sign(
 
             {
-
-                id:usuario.id,
-                email:usuario.email
-
+                id: usuario.id,
+                nome: usuario.nome,
+                email: usuario.email
             },
 
-            JWT_SECRET,
+            process.env.JWT_SECRET,
 
             {
-
-                expiresIn:"7d"
-
+                expiresIn: "12h"
             }
 
         )
@@ -87,28 +89,29 @@ router.post("/login", async(req,res)=>{
         res.json({
 
             token,
-            usuario:{
-                id:usuario.id,
-                nome:usuario.nome,
-                email:usuario.email
+
+            usuario: {
+
+                id: usuario.id,
+                nome: usuario.nome,
+                email: usuario.email
+
             }
 
         })
 
     }
 
-    catch(err){
+    catch (err) {
 
         console.error(err)
 
         res.status(500).json({
-            erro:err.message
+            erro: err.message
         })
 
     }
 
 })
-
-
 
 module.exports = router

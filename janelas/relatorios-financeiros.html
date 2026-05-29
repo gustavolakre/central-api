@@ -43,7 +43,8 @@
 
 .checksScroll{
 
-    max-height:180px;
+    max-height:110px;
+
     overflow:auto;
 }
 
@@ -644,14 +645,28 @@ tr:hover{
 
         </div>
 
-       <button
-            class="btnLimpar"
-            onclick="limparFiltros()"
-        >
+       <div
+            style="
+               display:flex;
+               align-items:flex-start;
+               margin-top:10px;
+           "
+         >
 
-             Limpar Filtros
+      <button
+           class="btnLimpar"
+           onclick="limparFiltros()"
+           style="
+              height:38px;
+              padding:0 16px;
+           "
+    >
 
-        </button>
+        Limpar Filtros
+
+    </button>
+
+</div>
 
     </div>
 
@@ -720,19 +735,27 @@ const API =
 
 function limparFiltros(){
 
-    document.getElementById("filtroTipo").value = ""
+    document
+        .querySelectorAll(
+            ".checkTipo,.checkStatus,.checkParceiro"
+        )
+        .forEach(el=>el.checked = false)
 
-    document.getElementById("filtroParceiro").value = ""
+    document.getElementById(
+        "filtroEmissaoInicial"
+    ).value = ""
 
-    document.getElementById("filtroStatus").value = ""
+    document.getElementById(
+        "filtroEmissaoFinal"
+    ).value = ""
 
-    document.getElementById("filtroEmissaoInicial").value = ""
+    document.getElementById(
+        "filtroVencInicial"
+    ).value = ""
 
-    document.getElementById("filtroEmissaoFinal").value = ""
-
-    document.getElementById("filtroVencInicial").value = ""
-
-    document.getElementById("filtroVencFinal").value = ""
+    document.getElementById(
+        "filtroVencFinal"
+    ).value = ""
 
     carregarRelatorio()
 
@@ -812,13 +835,6 @@ async function carregarRelatorio(){
             ).value
 
 
-        const filtroNota =
-            document.getElementById(
-                "filtroNota"
-            )
-            .value
-            .toLowerCase()
-
 
         /* =========================================
            FILTRAR
@@ -827,8 +843,6 @@ async function carregarRelatorio(){
         const filtrados = dados.filter(item=>{
 
 
-            /* TIPO */
-
             const okTipo =
 
                 filtroTipo.length === 0 ||
@@ -836,7 +850,6 @@ async function carregarRelatorio(){
                 filtroTipo.includes(item.tipo)
 
 
-            /* STATUS */
 
             const okStatus =
 
@@ -847,7 +860,6 @@ async function carregarRelatorio(){
                 )
 
 
-            /* PARCEIRO */
 
             const okParceiro =
 
@@ -859,18 +871,6 @@ async function carregarRelatorio(){
                 )
 
 
-            /* NOTA */
-
-            const okNota =
-
-                !filtroNota ||
-
-                (item.nota_fiscal || "")
-                .toLowerCase()
-                .includes(filtroNota)
-
-
-            /* EMISSÃO */
 
             let okEmissao = true
 
@@ -900,7 +900,6 @@ async function carregarRelatorio(){
             }
 
 
-            /* VENCIMENTO */
 
             let okVencimento = true
 
@@ -930,18 +929,108 @@ async function carregarRelatorio(){
             }
 
 
+
             return (
 
                 okTipo &&
                 okStatus &&
                 okParceiro &&
-                okNota &&
                 okEmissao &&
                 okVencimento
 
             )
 
         })
+
+
+
+        /* =========================================
+           TOTALIZADORES
+        ========================================= */
+
+        let totalReceber = 0
+        let totalPagar = 0
+        let totalPago = 0
+
+        filtrados.forEach(item=>{
+
+            const valor =
+                Number(item.valor || 0)
+
+            const valorPago =
+                Number(item.valor_pago || 0)
+
+
+            if(item.tipo === "RECEBER"){
+
+                totalReceber += valor
+
+            }else{
+
+                totalPagar += valor
+
+            }
+
+            totalPago += valorPago
+
+        })
+
+
+        const saldo =
+            totalReceber - totalPagar
+
+
+        document.getElementById(
+            "totalReceber"
+        ).innerText =
+
+            totalReceber.toLocaleString(
+                'pt-BR',
+                {
+                    style:'currency',
+                    currency:'BRL'
+                }
+            )
+
+
+        document.getElementById(
+            "totalPagar"
+        ).innerText =
+
+            totalPagar.toLocaleString(
+                'pt-BR',
+                {
+                    style:'currency',
+                    currency:'BRL'
+                }
+            )
+
+
+        document.getElementById(
+            "totalPago"
+        ).innerText =
+
+            totalPago.toLocaleString(
+                'pt-BR',
+                {
+                    style:'currency',
+                    currency:'BRL'
+                }
+            )
+
+
+        document.getElementById(
+            "saldoFinal"
+        ).innerText =
+
+            saldo.toLocaleString(
+                'pt-BR',
+                {
+                    style:'currency',
+                    currency:'BRL'
+                }
+            )
+
 
 
         /* =========================================
@@ -966,21 +1055,9 @@ async function carregarRelatorio(){
 
                     <td>${item.id}</td>
 
-                    <td>
-                        ${item.tipo || ''}
-                    </td>
+                    <td>${item.tipo || ''}</td>
 
-                    <td>
-                        ${item.status || ''}
-                    </td>
-
-                    <td>
-                        ${item.parceiro || ''}
-                    </td>
-
-                    <td>
-                        ${item.conta_gerencial || ''}
-                    </td>
+                    <td>${item.parceiro || ''}</td>
 
                     <td>
                         ${item.discriminacao_periodo || ''}
@@ -991,7 +1068,7 @@ async function carregarRelatorio(){
                     </td>
 
                     <td>
-                        ${item.nota_fiscal || ''}
+                        ${item.conta_gerencial || ''}
                     </td>
 
                     <td>
@@ -1061,6 +1138,10 @@ async function carregarRelatorio(){
 
                     </td>
 
+                    <td>
+                        ${item.status || ''}
+                    </td>
+
                 </tr>
 
             `
@@ -1072,6 +1153,182 @@ async function carregarRelatorio(){
     catch(err){
 
         console.error(err)
+
+    }
+
+}
+
+async function exportarBackupFinanceiro(){
+
+    try{
+
+        const response =
+            await fetch(`${API}/financeiro`)
+
+        const dados =
+            await response.json()
+
+
+        /* =========================================
+           PLANILHA 1
+           TODOS LANÇAMENTOS
+        ========================================= */
+
+        const wsLancamentos =
+            XLSX.utils.json_to_sheet(dados)
+
+
+        /* =========================================
+           PLANILHA 2
+           FLUXO DE CAIXA
+        ========================================= */
+
+        const bancos = [
+
+            ...new Set(
+
+                dados.map(item=>
+                    item.banco_pagamento
+                ).filter(Boolean)
+
+            )
+
+        ]
+
+
+        const fluxo = dados.map(item=>{
+
+            const linha = {
+
+                ID:item.id,
+
+                Tipo:item.tipo,
+
+                Parceiro:item.parceiro,
+
+                Conta:item.conta_gerencial,
+
+                Valor:Number(item.valor || 0),
+
+                Pago:Number(item.valor_pago || 0),
+
+                Status:item.status,
+
+                Banco:item.banco_pagamento || "",
+
+                DataPagamento:
+                    item.data_pagamento || ""
+
+            }
+
+
+            bancos.forEach(banco=>{
+
+                linha[banco] =
+
+                    item.banco_pagamento === banco
+
+                    ? Number(item.valor_pago || 0)
+
+                    : 0
+
+            })
+
+
+            return linha
+
+        })
+
+
+        const wsFluxo =
+            XLSX.utils.json_to_sheet(fluxo)
+
+
+        /* =========================================
+           PLANILHA 3
+           BACKUP COMPLETO
+        ========================================= */
+
+        const backupCompleto = dados.map(item=>({
+
+            ...item,
+
+            saldo:
+
+                Number(item.valor || 0)
+
+                -
+
+                Number(item.valor_pago || 0)
+
+        }))
+
+
+        const wsBackup =
+            XLSX.utils.json_to_sheet(
+                backupCompleto
+            )
+
+
+        /* =========================================
+           WORKBOOK
+        ========================================= */
+
+        const wb = XLSX.utils.book_new()
+
+
+        XLSX.utils.book_append_sheet(
+
+            wb,
+            wsLancamentos,
+            "Lancamentos"
+
+        )
+
+
+        XLSX.utils.book_append_sheet(
+
+            wb,
+            wsFluxo,
+            "FluxoCaixa"
+
+        )
+
+
+        XLSX.utils.book_append_sheet(
+
+            wb,
+            wsBackup,
+            "BackupCompleto"
+
+        )
+
+
+        /* =========================================
+           EXPORTAR
+        ========================================= */
+
+        XLSX.writeFile(
+
+            wb,
+
+            `backup_financeiro_${
+                new Date()
+                .toISOString()
+                .split("T")[0]
+            }.xlsx`
+
+        )
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+        alert(
+            "Erro ao gerar backup"
+        )
 
     }
 
@@ -1138,7 +1395,7 @@ async function carregarParceiros(){
 }
 
 
-
+carregarParceiros()
 carregarRelatorio()
 
 </script>

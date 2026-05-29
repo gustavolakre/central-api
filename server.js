@@ -11,8 +11,9 @@ const buscarCargas = require("./routes/buscarCargas")
 const buscarParceiros = require("./routes/buscarParceiros")
 const financeiro = require("./routes/financeiro")
 const bancos = require("./routes/bancos")
-const contasGerenciaisRoutes =
-require("./routes/contasGerenciais")
+const contasGerenciaisRoutes = require("./routes/contasGerenciais")
+
+const authRoutes = require("./routes/auth")
 
 const pool = require("./src/db/database")
 
@@ -38,10 +39,9 @@ app.use("/buscarParceiros", buscarParceiros)
 app.use("/financeiro", financeiro)
 app.use("/bancos", bancos)
 
-app.use(
-  "/contas-gerenciais",
-  contasGerenciaisRoutes
-)
+app.use("/contas-gerenciais", contasGerenciaisRoutes)
+
+app.use("/auth", authRoutes)
 
 app.get("/", async (req, res) => {
 
