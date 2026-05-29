@@ -16,18 +16,38 @@ router.get("/", async (req, res) => {
 
     let cursor = null;
 
+    const ultimaSync = await pool.query(`
+       SELECT MAX(updated_at)
+       as ultima
+       FROM parceiros_negocio
+    `);
+
+    const dataUltimaSync =
+       ultimaSync.rows[0].ultima;
+
+    const dataFiltro = dataUltimaSync
+       ? new Date(dataUltimaSync).toISOString()
+       : null;
+
+    console.log("ULTIMA SYNC:", dataFiltro);
+
     while (hasNextPage) {
 
     const query = `
       query {
 
         table_records(
-         table_id: ${TABLE_ID},
+          table_id: ${TABLE_ID},
           first: 50,
           after: ${cursor ? `"${cursor}"` : null}
-          ) {
+          ${dataFiltro ? `
+          filter: {
+           updated_at: "${dataFiltro}"
+            }` : ""}
+          )
 
            pageInfo {
+
             hasNextPage
             endCursor
           }
@@ -90,6 +110,8 @@ router.get("/", async (req, res) => {
       console.log(fields)
 
       await pool.query(
+
+        
         
       `
       INSERT INTO parceiros_negocio (
@@ -221,9 +243,9 @@ router.get("/", async (req, res) => {
       ]
       );
 
-      
+      totalImportados++;
 
-    }
+          }
 
     }
 

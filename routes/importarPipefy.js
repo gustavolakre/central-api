@@ -60,9 +60,18 @@ const ultimaSync = await pool.query(`
 const dataUltimaSync =
   ultimaSync.rows[0].ultima;
 
+const dataFiltro = dataUltimaSync
+  ? new Date(dataUltimaSync).toISOString()
+  : null;
+
 console.log(
   "ULTIMA SYNC:",
   dataUltimaSync
+);
+
+console.log(
+  "FILTRO PIPEFY:",
+  dataFiltro
 );
 
 while (hasNextPage) {
@@ -70,10 +79,11 @@ while (hasNextPage) {
  const query = `
 query {
   allCards(
-    pipeId: ${PIPE_ID},
-    first: 200,
-    after: ${cursor ? `"${cursor}"` : null}
-  ) {
+  pipeId: ${PIPE_ID},
+  first: 50,
+  after: ${cursor ? `"${cursor}"` : null}
+  ${dataFiltro ? `, updatedAfter: "${dataFiltro}"` : ""}
+) {
 
     pageInfo {
       hasNextPage
@@ -133,14 +143,7 @@ query {
 
   const card = item.node;
 
-   if (
-     dataUltimaSync &&
-    new Date(card.updated_at) <=
-    new Date(dataUltimaSync)
-   ) {
-    continue;
-   }
-
+   
   console.log({
   titulo: card.title,
   phase: card.current_phase
