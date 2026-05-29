@@ -67,41 +67,43 @@ console.log(
 
 while (hasNextPage) {
 
-  const query = `
-    query {
-      allCards(
-        pipeId: ${PIPE_ID},
-        first: 200,
-        after: ${cursor ? `"${cursor}"` : null}
-      ) {
+ const query = `
+query {
+  allCards(
+    pipeId: ${PIPE_ID},
+    first: 200,
+    after: ${cursor ? `"${cursor}"` : null}
+  ) {
 
-        pageInfo {
-          hasNextPage
-          endCursor
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+
+    edges {
+      node {
+        id
+        title
+        created_at
+        updated_at
+
+        current_phase {
+          name
         }
 
-        edges {
-          node {
+        fields {
+          name
+          value
+
+          field {
             id
-            title
-            created_at
-            updated_at
-
-            current_phase {
-              name
-            }
-
-            fields {
-              name
-              value
-              field {
-               id
-            }
           }
         }
       }
     }
-  `;
+  }
+}
+`;
 
   const response = await axios.post(
     "https://api.pipefy.com/graphql",
