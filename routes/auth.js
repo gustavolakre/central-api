@@ -1,32 +1,24 @@
+// routes/auth.js
+
 const express = require("express")
 const router = express.Router()
 
 const jwt = require("jsonwebtoken")
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcrypt")
 
 const pool = require("../src/db/database")
 
+const JWT_SECRET = process.env.JWT_SECRET
 
-/* =========================================
-   LOGIN
-========================================= */
 
 router.post("/login", async (req, res) => {
 
-    try {
+    try{
 
-        const { email, senha } = req.body
-
-        if (!email || !senha) {
-
-            return res.status(400).json({
-                erro: "Email e senha obrigatórios"
-            })
-
-        }
-
-
-        /* BUSCAR USUÁRIO */
+        const {
+            email,
+            senha
+        } = req.body
 
         const result = await pool.query(`
 
@@ -34,80 +26,59 @@ router.post("/login", async (req, res) => {
             FROM usuarios
             WHERE email = $1
 
-        `, [email])
+        `,[email])
 
-
-        if (!result.rows.length) {
+        if(!result.rows.length){
 
             return res.status(401).json({
-                erro: "Usuário não encontrado"
+                erro:"Usuário não encontrado"
             })
 
         }
-
 
         const usuario = result.rows[0]
 
+        const senhaOk = await bcrypt.compare(
+            senha,
+            usuario.senha
+        )
 
-        /* VALIDAR SENHA */
-
-        const senhaCorreta =
-            await bcrypt.compare(
-                senha,
-                usuario.senha
-            )
-
-
-        if (!senhaCorreta) {
+        if(!senhaOk){
 
             return res.status(401).json({
-                erro: "Senha inválida"
+                erro:"Senha inválida"
             })
 
         }
-
-
-        /* GERAR TOKEN */
 
         const token = jwt.sign(
 
             {
-                id: usuario.id,
-                nome: usuario.nome,
-                email: usuario.email
+                id:usuario.id,
+                nome:usuario.nome,
+                email:usuario.email
             },
 
-            process.env.JWT_SECRET,
+            JWT_SECRET,
 
             {
-                expiresIn: "12h"
+                expiresIn:"12h"
             }
 
         )
 
-
         res.json({
-
-            token,
-
-            usuario: {
-
-                id: usuario.id,
-                nome: usuario.nome,
-                email: usuario.email
-
-            }
-
+            token
         })
 
     }
 
-    catch (err) {
+    catch(err){
 
         console.error(err)
 
         res.status(500).json({
-            erro: err.message
+            erro:err.message
         })
 
     }

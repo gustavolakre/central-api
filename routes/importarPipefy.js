@@ -152,7 +152,6 @@ console.log("FASE:", fase);
 
 const fasesIgnoradas = [
   "cancel",
-  "final",
   "fatur",
   "encerr",
   "conclu",
@@ -251,6 +250,7 @@ INSERT INTO controle_cargas (
 
   nf_taxa_compr,
   nf_taxa_fornec,
+  nota_fiscal_venda,
 
   etiquetas,
   transportadora,
@@ -266,9 +266,9 @@ VALUES (
   $12,$13,
   $14,$15,$16,
   $17,$18,$19,$20,$21,
-  $22,$23,
-  $24,$25,$26,$27,
-  $28
+  $22,$23,$24,
+  $25,$26,$27,$28,
+  $29
 )
 
 ON CONFLICT (pipefy_card_id)
@@ -301,6 +301,7 @@ DO UPDATE SET
 
   nf_taxa_compr = EXCLUDED.nf_taxa_compr,
   nf_taxa_fornec = EXCLUDED.nf_taxa_fornec,
+  nota_fiscal_venda = EXCLUDED.nota_fiscal_venda,
 
   etiquetas = EXCLUDED.etiquetas,
 
@@ -339,6 +340,11 @@ DO UPDATE SET
 
   nfCompr,
   nfFornec,
+
+  fields["Nota Fiscal Venda"] ||
+  fields["Nota Fiscal"] ||
+  fields["NF Venda"] ||
+  "", 
 
   etiquetasRaw,
 
