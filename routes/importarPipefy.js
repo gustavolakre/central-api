@@ -94,6 +94,8 @@ while (hasNextPage) {
             fields {
               name
               value
+              field {
+               id
             }
           }
         }
@@ -129,13 +131,13 @@ while (hasNextPage) {
 
   const card = item.node;
 
-  if (
-    dataUltimaSync &&
-    new Date(card.updated_at) <=
-    new Date(dataUltimaSync)
-  ) {
-    continue;
-  }
+  // if (
+  //   dataUltimaSync &&
+  //  new Date(card.updated_at) <=
+  //  new Date(dataUltimaSync)
+  // ) {
+  //  continue;
+  // }
 
   console.log({
   titulo: card.title,
@@ -173,8 +175,19 @@ if (ignorarFase) {
   const fields = {};
 
   card.fields.forEach(f => {
-    fields[f.name.trim()] = f.value || "";
-  });
+
+  const nome = f.name?.trim()
+  const id = f.field?.id?.trim()
+
+  if (nome) {
+    fields[nome] = f.value || ""
+  }
+
+  if (id) {
+    fields[id] = f.value || ""
+  }
+
+})
 
   // etiquetas
   const etiquetasRaw =
@@ -341,7 +354,7 @@ DO UPDATE SET
   nfCompr,
   nfFornec,
 
-  fields["N Nota de Venda"] || "",
+  fields["nota_fiscal_de_venda_1"] || "",
 
   etiquetasRaw,
 
