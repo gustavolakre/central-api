@@ -13,6 +13,9 @@ const financeiro = require("./routes/financeiro")
 const bancos = require("./routes/bancos")
 const contasGerenciaisRoutes = require("./routes/contasGerenciais")
 
+const webhookPipefy =
+require("./routes/webhookPipefy");
+
 const authRoutes = require("./routes/auth")
 
 const pool = require("./src/db/database")
@@ -40,6 +43,11 @@ app.use("/financeiro", financeiro)
 app.use("/bancos", bancos)
 
 app.use("/contas-gerenciais", contasGerenciaisRoutes)
+
+app.use(
+  "/webhook/pipefy",
+  webhookPipefy
+);
 
 app.use("/auth", authRoutes)
 
