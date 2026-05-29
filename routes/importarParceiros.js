@@ -34,43 +34,38 @@ router.get("/", async (req, res) => {
     while (hasNextPage) {
 
     const query = `
-      query {
+query {
 
-        table_records(
-          table_id: ${TABLE_ID},
-          first: 50,
-          after: ${cursor ? `"${cursor}"` : null}
-          ${dataFiltro ? `
-          filter: {
-           updated_at: "${dataFiltro}"
-            }` : ""}
-          )
+  table_records(
+    table_id: ${TABLE_ID},
+    first: 50,
+    after: ${cursor ? `"${cursor}"` : null}
+  ) {
 
-           pageInfo {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
 
-            hasNextPage
-            endCursor
-          }
+    edges {
 
-          edges {
+      node {
 
-            node {
+        id
 
-              id
-
-              record_fields {
-                name
-                value
-              }
-
-            }
-
-          }
-
+        record_fields {
+          name
+          value
         }
 
       }
-    `;
+
+    }
+
+  }
+
+}
+`;
 
     const response = await axios.post(
       "https://api.pipefy.com/graphql",
