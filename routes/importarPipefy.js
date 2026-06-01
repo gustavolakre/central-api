@@ -176,12 +176,14 @@ for (const row of registrosBanco.rows) {
 
 while (hasNextPage) {
 
+const afterClause = cursor ? `after: "${cursor}",` : "";
+
 const query = `
 query {
   allCards(
     pipeId: ${PIPE_ID},
     first: 200,
-    after: ${cursor ? `"${cursor}"` : ""}
+    ${afterClause}
   ) {
 
     pageInfo {
