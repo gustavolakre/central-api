@@ -156,25 +156,14 @@ query {
 
   const card = item.node;
 
-  const atualizadoBanco =
-  mapaCards[card.id];
-
-if (
-  atualizadoBanco &&
-  new Date(atualizadoBanco) >=
-  new Date(card.updated_at)
-) {
-
   console.log(
-    "CARD IGNORADO:",
-    card.title
-  );
+  "PIPEFY:",
+  card.id,
+  card.current_phase?.name,
+  card.updated_at
+);
 
-  continue;
-}
-
-
-  console.log({
+   console.log({
   titulo: card.title,
   phase: card.current_phase
 });
@@ -202,7 +191,35 @@ const ignorarFase = fasesIgnoradas.some(f =>
 
 if (ignorarFase) {
 
-  console.log("IGNORADO FASE:", fase);
+  await pool.query(`
+    UPDATE controle_cargas
+    SET ativo = false
+    WHERE pipefy_card_id = $1
+  `, [card.id]);
+
+  console.log(
+  "IGNORADO BANCO:",
+  card.id,
+  atualizadoBanco,
+  card.updated_at
+);
+
+  continue;
+}
+
+const atualizadoBanco =
+  mapaCards[card.id];
+
+if (
+  atualizadoBanco &&
+  new Date(atualizadoBanco) >=
+  new Date(card.updated_at)
+) {
+
+  console.log(
+    "CARD IGNORADO:",
+    card.title
+  );
 
   continue;
 }
@@ -238,6 +255,7 @@ if (ignorarFase) {
 ) {
   continue;
 }
+
 
   console.log("ETIQUETA BANCO:", etiquetasRaw);
 
@@ -312,7 +330,8 @@ INSERT INTO controle_cargas (
   motorista,
   placa,
 
-  pagamento_realizado
+  pagamento_realizado,
+  ativo
 )
 
 VALUES (
@@ -323,8 +342,10 @@ VALUES (
   $17,$18,$19,$20,$21,
   $22,$23,$24,
   $25,$26,$27,$28,
-  $29
+  $29,
+  $30
 )
+
 
 ON CONFLICT (pipefy_card_id)
 DO UPDATE SET
@@ -364,7 +385,8 @@ DO UPDATE SET
   motorista = EXCLUDED.motorista,
   placa = EXCLUDED.placa,
 
-  pagamento_realizado = EXCLUDED.pagamento_realizado
+  pagamento_realizado = EXCLUDED.pagamento_realizado,
+  ativo = EXCLUDED.ativo
 `,
 [
   card.id,
@@ -404,7 +426,8 @@ DO UPDATE SET
   fields.Motorista || "",
   fields.Placa || "",
 
-  fields["Pagamento Realizado"] || ""
+  fields["Pagamento Realizado"] || "",
+  true
 ]
 );
 
