@@ -6,6 +6,9 @@ const router = express.Router();
 
 const PIPE_ID = 304131962;
 
+const BATCH_SIZE = 50;
+let batch = [];
+
 
 function converterData(data) {
 
@@ -15,6 +18,22 @@ function converterData(data) {
   const [ano, hora] = resto.split(" ");
 
   return `${ano}-${mes}-${dia} ${hora}:00`;
+}
+
+
+function gerarHashCard(card) {
+  const campos = {};
+
+  card.fields.forEach(f => {
+    const key = f.field?.id || f.name;
+    campos[key] = f.value || "";
+  });
+
+  return JSON.stringify({
+    updated_at: card.updated_at,
+    phase: card.current_phase?.name,
+    fields: campos
+  });
 }
 
 
@@ -28,6 +47,64 @@ function limparTexto(valor) {
     .replace(/\["/g, "")
     .replace(/"\]/g, "")
     .trim();
+}
+
+
+
+async function salvarBatch(cards) {
+  const values = [];
+  const params = [];
+  let i = 1;
+
+  for (const c of cards) {
+    values.push(`(
+      $${i++},$${i++},$${i++},$${i++},$${i++},
+      $${i++},$${i++},$${i++},$${i++},$${i++},
+      $${i++}
+    )`);
+
+    params.push(
+      c.id,
+      c.title,
+      c.fase,
+      c.created_at,
+      c.updated_at,
+      JSON.stringify(c.fields),
+      c.nfCompr,
+      c.nfFornec,
+      c.etiquetasRaw,
+      c.ativo,
+      c.hash
+    );
+  }
+
+  await pool.query(`
+    INSERT INTO controle_cargas (
+      pipefy_card_id,
+      titulo,
+      fase,
+      created_at_pipefy,
+      updated_at_pipefy,
+      raw_data,
+      nf_taxa_compr,
+      nf_taxa_fornec,
+      etiquetas,
+      ativo,
+      hash_card
+    )
+    VALUES ${values.join(",")}
+    ON CONFLICT (pipefy_card_id)
+    DO UPDATE SET
+      titulo = EXCLUDED.titulo,
+      fase = EXCLUDED.fase,
+      updated_at_pipefy = EXCLUDED.updated_at_pipefy,
+      raw_data = EXCLUDED.raw_data,
+      nf_taxa_compr = EXCLUDED.nf_taxa_compr,
+      nf_taxa_fornec = EXCLUDED.nf_taxa_fornec,
+      etiquetas = EXCLUDED.etiquetas,
+      ativo = EXCLUDED.ativo,
+      hash_card = EXCLUDED.hash_card
+  `, params);
 }
 
 
@@ -45,6 +122,20 @@ function converterNumero(valor) {
 
 router.get("/", async (req, res) => {
   try {
+
+ const syncRow = await pool.query(`
+      SELECT last_sync
+      FROM sync_state
+      WHERE pipe_id = $1
+    `, [PIPE_ID]);
+
+    const lastSync = syncRow.rows[0]?.last_sync;
+
+    const lastSyncDate = lastSync
+      ? new Date(lastSync)
+      : new Date(Date.now() - 1000 * 60 * 60 * 24 * 7);
+
+    console.log("ULTIMO SYNC:", lastSyncDate);
 
 const semanaFiltro = req.query.semana || "";
 
@@ -68,18 +159,18 @@ console.log(
 );
 
 const registrosBanco = await pool.query(`
-  SELECT
-    pipefy_card_id,
-    updated_at_pipefy
-  FROM controle_cargas
+  SELECT pipefy_card_id, hash_card
+FROM controle_cargas
+WHERE updated_at_pipefy > NOW() - INTERVAL '7 days'
 `);
 
 const mapaCards = {};
 
 for (const row of registrosBanco.rows) {
-
-  mapaCards[row.pipefy_card_id] =
-    row.updated_at_pipefy;
+  mapaCards[row.pipefy_card_id] = {
+  hash: row.hash_card,
+  ativo: row.ativo
+};
 }
 
 
@@ -90,7 +181,7 @@ query {
   allCards(
     pipeId: ${PIPE_ID},
     first: 200,
-    after: ${cursor ? `"${cursor}"` : null}
+    after: ${cursor ? `"${cursor}"` : ""}
   ) {
 
     pageInfo {
@@ -141,10 +232,10 @@ query {
 
   const data = response.data?.data?.allCards;
 
-  if (!data) {
-    console.log("SEM DADOS DO PIPEFY");
-    break;
-  }
+if (!data || !Array.isArray(data.edges)) {
+  console.log("Resposta inválida do Pipefy");
+  break;
+}
 
   hasNextPage = data.pageInfo.hasNextPage;
 
@@ -152,115 +243,47 @@ query {
 
   console.log("LOTE RECEBIDO:", data.edges.length);
 
-  for (const item of data.edges) {
+
+for (const item of data.edges) {
 
   const card = item.node;
 
-     if (card.id !== "1355779054") {
+  const updatedAt = new Date(card.updated_at);
+  const lastSyncTime = new Date(lastSyncDate);
+
+  if (updatedAt <= lastSyncTime) {
     continue;
   }
 
-    console.log("================================");
-    console.log("CARD ENCONTRADO");
-    console.log("ID:", card.id);
-    console.log("TITLE:", card.title);
-    console.log("UPDATED:", card.updated_at);
-    console.log("PHASE:", card.current_phase?.name);
+  const hashNovo = gerarHashCard(card);
+  const cached = mapaCards[card.id];
 
-  
+  if (cached?.hash === hashNovo && cached?.ativo) {
+    continue;
+  }
 
-//  console.log(
-//  "PIPEFY:",
-//  card.id,
-//  card.current_phase?.name,
-//  card.updated_at
-// );
-
-//   console.log({
-//  titulo: card.title,
-//  phase: card.current_phase
-// });
-
-  const fase = (
-  card.current_phase?.name || ""
-)
-.toLowerCase()
-.trim();
-
-// console.log("FASE:", fase);
-
-const fasesIgnoradas = [
-  "cancel",
-  "fatur",
-  "encerr",
-  "conclu",
-  "arquiv",
-  "pago"
-];
-
-const ignorarFase = fasesIgnoradas.some(f =>
-  fase.includes(f)
-);
-
-if (ignorarFase) {
-
-  console.log(
-    "DESATIVANDO CARD:",
-    card.id,
-    card.current_phase?.name
-  );
-
-  await pool.query(`
-    UPDATE controle_cargas
-    SET
-      ativo = false,
-      fase = $2,
-      updated_at_pipefy = $3
-    WHERE pipefy_card_id = $1
-  `, [
-    card.id,
-    card.current_phase?.name,
-    card.updated_at
-  ]);
-
-  continue;
-}
-
-const atualizadoBanco =
-  mapaCards[card.id];
-
-if (
-  atualizadoBanco &&
-  new Date(atualizadoBanco) >=
-  new Date(card.updated_at)
-) {
-
-  console.log(
-    "CARD IGNORADO:",
-    card.title
-  );
-
-  continue;
-}
+  const fase = (card.current_phase?.name || "").toLowerCase().trim();
 
   const fields = {};
 
   card.fields.forEach(f => {
+    const nome = f.name?.trim();
+    const id = f.field?.id?.trim();
 
-  const nome = f.name?.trim()
-  const id = f.field?.id?.trim()
+    if (nome) fields[nome] = f.value || "";
+    if (id) fields[id] = f.value || "";
+  });
 
-  if (nome) {
-    fields[nome] = f.value || ""
-  }
+  const nfCompr =
+    fields["NF Taxa Compr."] ||
+    fields["NF Taxa Compr"] ||
+    "";
 
-  if (id) {
-    fields[id] = f.value || ""
-  }
+  const nfFornec =
+    fields["NF Taxa Fornec."] ||
+    fields["NF Taxa Fornec"] ||
+    "";
 
-})
-
-  // etiquetas
   const etiquetasRaw =
     fields["Etiquetas"] ||
     fields["etiquetas"] ||
@@ -268,224 +291,64 @@ if (
     fields["ETIQUETAS"] ||
     "";
 
-  if (
-  semanaFiltro &&
-  !etiquetasRaw.includes(semanaFiltro)
-) {
-  continue;
-}
+  const nfCompleto =
+    nfCompr.trim() !== "" &&
+    nfFornec.trim() !== "";
 
+  if (nfCompleto) {
 
-  console.log("ETIQUETA BANCO:", etiquetasRaw);
+    await pool.query(`
+      UPDATE controle_cargas
+      SET nf_taxa_compr = $2,
+          nf_taxa_fornec = $3,
+          ativo = false,
+          updated_at_pipefy = $4
+      WHERE pipefy_card_id = $1
+    `, [
+      card.id,
+      nfCompr,
+      nfFornec,
+      card.updated_at
+    ]);
 
-  const possuiSemana2026 = /2026\/\d+/.test(etiquetasRaw);
-
-  if (!possuiSemana2026) {
     continue;
   }
 
-  console.log("IMPORTANDO:", {
-  card: card.title,
-  etiquetas: etiquetasRaw,
-  fase
-  });
-
-  // NFs
-  const nfCompr = fields["NF Taxa Compr."] || "";
-  const nfFornec = fields["NF Taxa Fornec."] || "";
-
-  // ignora apenas quando os DOIS estiverem preenchidos
-  if (
-  nfCompr.trim() !== "" &&
-  nfFornec.trim() !== ""
-) {
-
-  await pool.query(`
-    UPDATE controle_cargas
-    SET
-      nf_taxa_compr = $2,
-      nf_taxa_fornec = $3,
-      ativo = false,
-      updated_at_pipefy = $4
-    WHERE pipefy_card_id = $1
-  `, [
-    card.id,
+  batch.push({
+    id: card.id,
+    title: card.title,
+    fase,
+    created_at: card.created_at,
+    updated_at: card.updated_at,
+    fields,
     nfCompr,
     nfFornec,
-    card.updated_at
-  ]);
-
-  continue;
-}
- 
-  console.log("IMPORTANDO:", {
-    card: card.title,
     etiquetasRaw,
-    nfCompr,
-    nfFornec
+    ativo: true,
+    hash: hashNovo
   });
 
-  try {
-
-    await pool.query(
-`
-INSERT INTO controle_cargas (
-  pipefy_card_id,
-  titulo,
-  fase,
-  created_at_pipefy,
-  updated_at_pipefy,
-  raw_data,
-
-  comprador,
-  fornecedor,
-  tipo_suino,
-  quantidade,
-  preco_kg,
-
-  embarque,
-  desembarque,
-
-  peso,
-  peso_quebra,
-  peso_medio,
-
-  valor_total_bruto,
-  valor_mortos,
-  valor_condenacoes,
-  outros_descontos,
-  valor_total_liquido,
-
-  nf_taxa_compr,
-  nf_taxa_fornec,
-  nota_fiscal_venda,
-
-  etiquetas,
-  transportadora,
-  motorista,
-  placa,
-
-  pagamento_realizado,
-  ativo
-)
-
-VALUES (
-  $1,$2,$3,$4,$5,$6,
-  $7,$8,$9,$10,$11,
-  $12,$13,
-  $14,$15,$16,
-  $17,$18,$19,$20,$21,
-  $22,$23,$24,
-  $25,$26,$27,$28,
-  $29,
-  $30
-)
-
-
-ON CONFLICT (pipefy_card_id)
-DO UPDATE SET
-
-  titulo = EXCLUDED.titulo,
-  fase = EXCLUDED.fase,
-  updated_at_pipefy =
-  EXCLUDED.updated_at_pipefy,
-  raw_data = EXCLUDED.raw_data,
-
-  comprador = EXCLUDED.comprador,
-  fornecedor = EXCLUDED.fornecedor,
-  tipo_suino = EXCLUDED.tipo_suino,
-  quantidade = EXCLUDED.quantidade,
-  preco_kg = EXCLUDED.preco_kg,
-
-  embarque = EXCLUDED.embarque,
-  desembarque = EXCLUDED.desembarque,
-
-  peso = EXCLUDED.peso,
-  peso_quebra = EXCLUDED.peso_quebra,
-  peso_medio = EXCLUDED.peso_medio,
-
-  valor_total_bruto = EXCLUDED.valor_total_bruto,
-  valor_mortos = EXCLUDED.valor_mortos,
-  valor_condenacoes = EXCLUDED.valor_condenacoes,
-  outros_descontos = EXCLUDED.outros_descontos,
-  valor_total_liquido = EXCLUDED.valor_total_liquido,
-
-  nf_taxa_compr = EXCLUDED.nf_taxa_compr,
-  nf_taxa_fornec = EXCLUDED.nf_taxa_fornec,
-  nota_fiscal_venda = EXCLUDED.nota_fiscal_venda,
-
-  etiquetas = EXCLUDED.etiquetas,
-
-  transportadora = EXCLUDED.transportadora,
-  motorista = EXCLUDED.motorista,
-  placa = EXCLUDED.placa,
-
-  pagamento_realizado = EXCLUDED.pagamento_realizado,
-  ativo = EXCLUDED.ativo
-`,
-[
-  card.id,
-  card.title,
-  card.current_phase?.name || "",
-  card.created_at,
-  card.updated_at,
-  JSON.stringify(fields),
-
-  limparTexto(fields.Comprador),
-  limparTexto(fields.Fornecedor),
-  fields["Tipo Suíno"] || "",
-  converterNumero(fields.Quantidade),
-  converterNumero(fields["Preço / kg"]),
-
-  converterData(fields.Embarque),
-  converterData(fields.Descarga),
-
-  converterNumero(fields["Peso"]),
-  converterNumero(fields["Peso Quebra"]),
-  converterNumero(fields["Peso Médio"]),
-
-  converterNumero(fields["Valor Total Bruto"]),
-  converterNumero(fields["Valor Mortos"]),
-  converterNumero(fields["Valor Condenações"]),
-  converterNumero(fields["Outros Descontos"]),
-  converterNumero(fields["Valor Total Liquido"]),
-
-  nfCompr,
-  nfFornec,
-
-  fields["nota_fiscal_de_venda"] || "",
-
-  etiquetasRaw,
-
-  limparTexto(fields.Transportadora),
-  fields.Motorista || "",
-  fields.Placa || "",
-
-  fields["Pagamento Realizado"] || "",
-  true
-]
-);
-
-    totalImportados++;
-
-      console.log(
-         "CARD SALVO:",
-         totalImportados,
-         "-",
-        card.title
-      );
-
-
-
-  } catch (err) {
-
-    console.log("ERRO AO SALVAR CARD:", card.title);
-    console.log(err.message);
-
+  if (batch.length >= BATCH_SIZE) {
+    await salvarBatch(batch);
+    batch = [];
   }
+}
+}
 
+if (batch.length > 0) {
+  await salvarBatch(batch);
+  batch = [];
 }
-}
+
+// 🔥 PASSO 5 — ATUALIZAR SYNC
+await pool.query(`
+  INSERT INTO sync_state (pipe_id, last_sync)
+  VALUES ($1, NOW())
+  ON CONFLICT (pipe_id)
+  DO UPDATE SET last_sync = EXCLUDED.last_sync
+`, [PIPE_ID]);
+
+
    res.json({
       success: true,
       total_salvo: totalImportados
