@@ -167,7 +167,7 @@ query {
     console.log("UPDATED:", card.updated_at);
     console.log("PHASE:", card.current_phase?.name);
 
-  }
+  
 
 //  console.log(
 //  "PIPEFY:",
