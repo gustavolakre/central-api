@@ -224,19 +224,31 @@ button:hover{
 
     <!-- TOPO -->
 
-    <div class="topo">
+   <div class="topo">
 
-        <button
-            class="btnAtualizar"
-            onclick="atualizarPipefy()"
-        >
+    <label>Semana:</label>
 
-            Atualizar Dados do Pipefy
+    <select id="semanaImportacao">
 
-        </button>
+        <option value="">Todas</option>
 
-    </div>
+        <option value="2026/22">2026/22</option>
+        <option value="2026/21">2026/21</option>
+        <option value="2026/20">2026/20</option>
+        <option value="2026/19">2026/19</option>
 
+    </select>
+
+    <button
+        class="btnAtualizar"
+        onclick="atualizarPipefy()"
+    >
+
+        Atualizar Dados do Pipefy
+
+    </button>
+
+</div>
 
 
     <!-- MENU -->
@@ -332,10 +344,15 @@ async function atualizarPipefy(){
            IMPORTAR CARGAS
         ===================================== */
 
+        const semana =
+           document.getElementById(
+           "semanaImportacao"
+        ).value
+
         await fetch(
-            "/importar-pipefy",
-            {
-                method:"GET"
+           `/importar-pipefy?semana=${encodeURIComponent(semana)}`,
+        {
+             method:"GET"
             }
         )
 
