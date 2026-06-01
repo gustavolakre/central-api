@@ -156,6 +156,17 @@ query {
 
   const card = item.node;
 
+    if (card.id == "1355779054") {
+
+    console.log("================================");
+    console.log("CARD ENCONTRADO");
+    console.log("ID:", card.id);
+    console.log("TITLE:", card.title);
+    console.log("UPDATED:", card.updated_at);
+    console.log("PHASE:", card.current_phase?.name);
+
+  }
+
   console.log(
   "PIPEFY:",
   card.id,
