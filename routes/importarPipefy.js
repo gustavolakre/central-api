@@ -296,12 +296,28 @@ if (
 
   // ignora apenas quando os DOIS estiverem preenchidos
   if (
-    nfCompr.trim() !== "" &&
-    nfFornec.trim() !== ""
-  ) {
-    continue;
-  }
+  nfCompr.trim() !== "" &&
+  nfFornec.trim() !== ""
+) {
 
+  await pool.query(`
+    UPDATE controle_cargas
+    SET
+      nf_taxa_compr = $2,
+      nf_taxa_fornec = $3,
+      ativo = false,
+      updated_at_pipefy = $4
+    WHERE pipefy_card_id = $1
+  `, [
+    card.id,
+    nfCompr,
+    nfFornec,
+    card.updated_at
+  ]);
+
+  continue;
+}
+ 
   console.log("IMPORTANDO:", {
     card: card.title,
     etiquetasRaw,
