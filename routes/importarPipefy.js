@@ -156,7 +156,7 @@ query {
 
   const card = item.node;
 
-    if (card.id == "1355779054") {
+   if (card.id == "1355779054") {
 
     console.log("================================");
     console.log("CARD ENCONTRADO");
@@ -214,6 +214,23 @@ if (ignorarFase) {
   atualizadoBanco,
   card.updated_at
 );
+
+  continue;
+}
+
+if (ignorarFase) {
+
+  console.log(
+    "DESATIVANDO:",
+    card.id,
+    card.current_phase?.name
+  );
+
+  await pool.query(`
+    UPDATE controle_cargas
+    SET ativo = false
+    WHERE pipefy_card_id = $1
+  `, [card.id]);
 
   continue;
 }
