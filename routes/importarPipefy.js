@@ -167,17 +167,17 @@ query {
 
   }
 
-  console.log(
-  "PIPEFY:",
-  card.id,
-  card.current_phase?.name,
-  card.updated_at
-);
+//  console.log(
+//  "PIPEFY:",
+//  card.id,
+//  card.current_phase?.name,
+//  card.updated_at
+// );
 
-   console.log({
-  titulo: card.title,
-  phase: card.current_phase
-});
+//   console.log({
+//  titulo: card.title,
+//  phase: card.current_phase
+// });
 
   const fase = (
   card.current_phase?.name || ""
@@ -185,7 +185,7 @@ query {
 .toLowerCase()
 .trim();
 
-console.log("FASE:", fase);
+// console.log("FASE:", fase);
 
 const fasesIgnoradas = [
   "cancel",
@@ -202,35 +202,24 @@ const ignorarFase = fasesIgnoradas.some(f =>
 
 if (ignorarFase) {
 
-  await pool.query(`
-    UPDATE controle_cargas
-    SET ativo = false
-    WHERE pipefy_card_id = $1
-  `, [card.id]);
-
   console.log(
-  "IGNORADO BANCO:",
-  card.id,
-  atualizadoBanco,
-  card.updated_at
-);
-
-  continue;
-}
-
-if (ignorarFase) {
-
-  console.log(
-    "DESATIVANDO:",
+    "DESATIVANDO CARD:",
     card.id,
     card.current_phase?.name
   );
 
   await pool.query(`
     UPDATE controle_cargas
-    SET ativo = false
+    SET
+      ativo = false,
+      fase = $2,
+      updated_at_pipefy = $3
     WHERE pipefy_card_id = $1
-  `, [card.id]);
+  `, [
+    card.id,
+    card.current_phase?.name,
+    card.updated_at
+  ]);
 
   continue;
 }
