@@ -67,6 +67,21 @@ console.log(
   dataUltimaSync
 );
 
+const registrosBanco = await pool.query(`
+  SELECT
+    pipefy_card_id,
+    updated_at_pipefy
+  FROM controle_cargas
+`);
+
+const mapaCards = {};
+
+for (const row of registrosBanco.rows) {
+
+  mapaCards[row.pipefy_card_id] =
+    row.updated_at_pipefy;
+}
+
 
 while (hasNextPage) {
 
@@ -74,7 +89,7 @@ const query = `
 query {
   allCards(
     pipeId: ${PIPE_ID},
-    first: 50,
+    first: 200,
     after: ${cursor ? `"${cursor}"` : null}
   ) {
 
@@ -141,37 +156,24 @@ query {
 
   const card = item.node;
 
-  const registroBanco = await pool.query(
-  `
-  SELECT updated_at_pipefy
-  FROM controle_cargas
-  WHERE pipefy_card_id = $1
-  `,
-  [card.id]
-);
-
-
-if (registroBanco.rows.length > 0) {
-
   const atualizadoBanco =
-    registroBanco.rows[0].updated_at_pipefy;
+  mapaCards[card.id];
 
-  if (
-    atualizadoBanco &&
-    new Date(atualizadoBanco) >=
-    new Date(card.updated_at)
-  ) {
+if (
+  atualizadoBanco &&
+  new Date(atualizadoBanco) >=
+  new Date(card.updated_at)
+) {
 
-    console.log(
-      "CARD IGNORADO:",
-      card.title
-    );
+  console.log(
+    "CARD IGNORADO:",
+    card.title
+  );
 
-    continue;
-  }
+  continue;
 }
 
-   
+
   console.log({
   titulo: card.title,
   phase: card.current_phase
