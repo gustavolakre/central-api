@@ -46,6 +46,8 @@ function converterNumero(valor) {
 router.get("/", async (req, res) => {
   try {
 
+const semanaFiltro = req.query.semana || "";
+
 let totalImportados = 0;
 
 let hasNextPage = true;
@@ -227,6 +229,13 @@ if (ignorarFase) {
     fields["Etiqueta"] ||
     fields["ETIQUETAS"] ||
     "";
+
+  if (
+  semanaFiltro &&
+  !etiquetasRaw.includes(semanaFiltro)
+) {
+  continue;
+}
 
   console.log("ETIQUETA BANCO:", etiquetasRaw);
 
