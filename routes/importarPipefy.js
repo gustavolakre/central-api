@@ -156,8 +156,9 @@ query {
 
   const card = item.node;
 
-   if (card.id == "1355779054") {
-      continue;
+     if (card.id !== "1355779054") {
+    continue;
+  }
 
     console.log("================================");
     console.log("CARD ENCONTRADO");
