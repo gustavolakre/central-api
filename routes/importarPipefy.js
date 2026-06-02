@@ -223,10 +223,25 @@ console.log(
 //  ok: true
 // });
 
-if (!data || !Array.isArray(data.edges)) {
-  console.log("Resposta inválida do Pipefy");
-  break;
-}
+const fields = {};
+
+card.fields.forEach(f => {
+  const nome = f.name?.trim();
+  const id = f.field?.id?.trim();
+
+  if (nome) fields[nome] = f.value || "";
+  if (id) fields[id] = f.value || "";
+});
+
+console.log("TESTE NF IDs");
+console.log({
+  nfComprID: fields["nf_taxa_compr"],
+  nfFornecID: fields["nfs_de_servi_o"],
+  nfComprNome: fields["NF Taxa Compr."],
+  nfFornecNome: fields["NF Taxa Fornec."]
+});
+
+return res.json({ ok: true });
 
   hasNextPage = data.pageInfo.hasNextPage;
 
