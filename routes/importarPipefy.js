@@ -182,7 +182,7 @@ const query = `
 query {
   allCards(
     pipeId: ${PIPE_ID},
-    first: 5,
+    first: 1,
     ${afterClause}
   ) {
 
@@ -253,6 +253,10 @@ for (const item of data.edges) {
   const card = item.node;
 
   console.log(
+  JSON.stringify(card.fields, null, 2)
+);
+
+  console.log(
   "CARD:",
   card.id,
   card.title,
@@ -295,6 +299,19 @@ console.log(
     if (nome) fields[nome] = f.value || "";
     if (id) fields[id] = f.value || "";
   });
+
+  console.log("CARD:", card.id);
+
+card.fields.forEach(f => {
+  console.log(
+    "CAMPO:",
+    f.name,
+    "| ID:",
+    f.field?.id,
+    "| VALOR:",
+    f.value
+  );
+});
 
   const nfCompr =
     fields["NF Taxa Compr."] ||
