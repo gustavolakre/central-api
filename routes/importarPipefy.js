@@ -241,7 +241,7 @@ console.log({
   nfFornecNome: fields["NF Taxa Fornec."]
 });
 
-return res.json({ ok: true });
+
 
   hasNextPage = data.pageInfo.hasNextPage;
 
