@@ -177,7 +177,7 @@ for (const row of registrosBanco.rows) {
 }
 
 
-while (hasNextPage) {
+{
 
 const afterClause = cursor ? `after: "${cursor}",` : "";
 
@@ -341,6 +341,9 @@ console.log(
   const nfCompleto =
     nfCompr.trim() !== "" &&
     nfFornec.trim() !== "";
+
+    console.log("TIPO NF COMPR:", typeof nfCompr);
+    console.log("TIPO NF FORNEC:", typeof nfFornec);
 
   console.log("NF COMPR:", nfCompr);
   console.log("NF FORNEC:", nfFornec);
