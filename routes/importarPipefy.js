@@ -182,7 +182,7 @@ const query = `
 query {
   allCards(
     pipeId: ${PIPE_ID},
-    first: 200,
+    first: 5,
     ${afterClause}
   ) {
 
@@ -243,6 +243,8 @@ if (!data || !Array.isArray(data.edges)) {
 
   cursor = data.pageInfo.endCursor;
 
+  hasNextPage = false;
+
   console.log("LOTE RECEBIDO:", data.edges.length);
 
 
@@ -300,6 +302,14 @@ for (const item of data.edges) {
   if (nfCompleto) {
 
     await pool.query(`
+
+      console.log(
+  "NF COMPLETA:",
+  card.id,
+  nfCompr,
+  nfFornec
+);
+
       UPDATE controle_cargas
       SET nf_taxa_compr = $2,
           nf_taxa_fornec = $3,
