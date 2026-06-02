@@ -306,6 +306,18 @@ console.log(
     fields["NF Taxa Fornec"] ||
     "";
 
+    console.log("CARD", card.id);
+
+console.log("NF COMPR:", JSON.stringify(nfCompr));
+
+console.log("NF FORNEC:", JSON.stringify(nfFornec));
+
+console.log(
+  "NF COMPLETO:",
+  nfCompr.trim() !== "" &&
+  nfFornec.trim() !== ""
+);
+
   const etiquetasRaw =
     fields["Etiquetas"] ||
     fields["etiquetas"] ||
@@ -319,7 +331,7 @@ console.log(
 
   if (nfCompleto) {
 
-      const resultado = await pool.query(`
+  const resultado = await pool.query(`
   UPDATE controle_cargas
   SET nf_taxa_compr = $2,
       nf_taxa_fornec = $3,
@@ -336,7 +348,7 @@ console.log(
 console.log(
   "UPDATE",
   card.id,
-  "linhas:",
+  "ROWCOUNT",
   resultado.rowCount
 );
 
