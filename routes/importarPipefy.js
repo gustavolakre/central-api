@@ -177,30 +177,49 @@ for (const row of registrosBanco.rows) {
 }
 
 
-{
+while (hasNextPage) {
 
 const afterClause = cursor ? `after: "${cursor}",` : "";
 
 const query = `
 query {
-  card(id: 1348246838) {
-    id
-    title
-    created_at
-    updated_at
+  allCards(
+    pipeId: ${PIPE_ID},
+    first: 50,
+    after: ${cursor ? `"${cursor}"` : null}
+  ) {
 
-    current_phase {
-      name
+    pageInfo {
+      hasNextPage
+      endCursor
     }
 
-    fields {
-      name
-      value
+    edges {
 
-      field {
+      node {
+
         id
+        title
+        created_at
+        updated_at
+
+        current_phase {
+          name
+        }
+
+        fields {
+          name
+          value
+
+          field {
+            id
+          }
+        }
+
       }
+
     }
+
   }
 }
 `;
@@ -217,28 +236,34 @@ query {
   );
 
 
-const card = response.data?.data?.card;
+const cards =
+  response.data.data.allCards.edges;
 
-if (!card) {
-  console.log("Card não encontrado");
-  return res.json({ erro: true });
-}
+hasNextPage =
+  response.data.data.allCards.pageInfo.hasNextPage;
 
-console.log("CARD ENCONTRADO:", card.id);
+cursor =
+  response.data.data.allCards.pageInfo.endCursor;
 
-console.log(
-  JSON.stringify(card, null, 2)
-);
+for (const edge of cards) {
 
-const fields = {};
+  const card = edge.node;
 
-card.fields.forEach(f => {
-  const nome = f.name?.trim();
-  const id = f.field?.id?.trim();
+  console.log("CARD ENCONTRADO:", card.id);
 
-  if (nome) fields[nome] = f.value || "";
-  if (id) fields[id] = f.value || "";
-});
+  console.log(
+    JSON.stringify(card, null, 2)
+  );
+
+  const fields = {};
+
+  card.fields.forEach(f => {
+    const nome = f.name?.trim();
+    const id = f.field?.id?.trim();
+
+    if (nome) fields[nome] = f.value || "";
+    if (id) fields[id] = f.value || "";
+  });
 
 console.log("TESTE NF IDs");
 console.log({
@@ -276,9 +301,9 @@ console.log("HASH BANCO:", cached?.hash);
 console.log("HASH NOVO:", hashNovo);
 
 // TESTE
-// if (cached?.hash === hashNovo && cached?.ativo) {
-//   continue;
-// }
+ if (cached?.hash === hashNovo && cached?.ativo) {
+   continue;
+ }
 
 const fase =
   (card.current_phase?.name || "")
@@ -403,12 +428,8 @@ console.log(
     resultado.rowCount
   );
 
-  return res.json({
-    success: true,
-    atualizado: true,
-    linhas: resultado.rowCount
-  });
-}
+ continue;
+ }
 
   batch.push({
     id: card.id,
@@ -431,7 +452,7 @@ console.log(
     batch = [];
   }
 }
-
+}
 
 if (batch.length > 0) {
   await salvarBatch(batch);
