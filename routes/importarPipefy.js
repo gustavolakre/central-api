@@ -285,6 +285,12 @@ console.log(
     if (id) fields[id] = f.value || "";
   });
 
+  console.log("FIELDS:");
+  console.log(fields);
+
+  console.log("NF COMPR EXTRAIDA:", fields["NF Taxa Compr."]);
+  console.log("NF FORNEC EXTRAIDA:", fields["NF Taxa Fornec."]);
+
   console.log("CARD:", card.id);
 
 card.fields.forEach(f => {
@@ -339,6 +345,15 @@ console.log(
   console.log("FORNEC:", nfFornec);
 
   const resultado = await pool.query(`
+
+    console.log(
+  "VAI ATUALIZAR:",
+  card.id,
+  nfCompr,
+  nfFornec
+);
+
+
     UPDATE controle_cargas
     SET nf_taxa_compr = $2,
         nf_taxa_fornec = $3,
