@@ -334,6 +334,14 @@ console.log(
   if (nfCompleto) {
 
   const resultado = await pool.query(`
+
+    console.log(
+  "ATUALIZANDO:",
+  card.id,
+  nfCompr,
+  nfFornec
+);
+
   UPDATE controle_cargas
   SET nf_taxa_compr = $2,
       nf_taxa_fornec = $3,
