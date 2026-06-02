@@ -311,6 +311,7 @@ card.fields.forEach(f => {
   );
 });
 
+
   const nfCompr =
     fields["NF Taxa Compr."] ||
     fields["NF Taxa Compr"] ||
@@ -346,6 +347,10 @@ console.log(
   const nfCompleto =
     nfCompr.trim() !== "" &&
     nfFornec.trim() !== "";
+
+    console.log("NF COMPR RAW:", JSON.stringify(nfCompr));
+console.log("NF FORNEC RAW:", JSON.stringify(nfFornec));
+console.log("NF COMPLETO:", nfCompleto);
 
   if (nfCompleto) {
 
