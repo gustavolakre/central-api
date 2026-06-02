@@ -219,9 +219,9 @@ console.log(
   JSON.stringify(card, null, 2)
 );
 
-return res.json({
-  ok: true
-});
+// return res.json({
+//  ok: true
+// });
 
 if (!data || !Array.isArray(data.edges)) {
   console.log("Resposta inválida do Pipefy");
