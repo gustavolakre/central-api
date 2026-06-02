@@ -362,6 +362,21 @@ console.log(
   resultado.rowCount
 );
 
+
+if (updatedAt <= lastSyncTime) {
+
+  console.log(
+    "PULOU CARD",
+    card.id,
+    "UPDATE:",
+    updatedAt,
+    "LASTSYNC:",
+    lastSyncTime
+  );
+
+  continue;
+}
+
     continue;
   }
 
