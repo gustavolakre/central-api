@@ -213,32 +213,6 @@ query {
     }
   );
 
-  const card = response.data?.data?.card;
-
-if (!card) {
-  console.log("Card não encontrado");
-  return res.json({ erro: true });
-}
-
-console.log("CARD ENCONTRADO:", card.id);
-
-console.log(
-  JSON.stringify(card, null, 2)
-);
-
-// return res.json({
-//  ok: true
-// });
-
-
-console.log("TESTE NF IDs");
-console.log({
-  nfComprID: fields["nf_taxa_compr"],
-  nfFornecID: fields["nfs_de_servi_o"],
-  nfComprNome: fields["NF Taxa Compr."],
-  nfFornecNome: fields["NF Taxa Fornec."]
-});
-
 
 const card = response.data?.data?.card;
 
@@ -247,62 +221,28 @@ if (!card) {
   return res.json({ erro: true });
 }
 
+console.log("CARD ENCONTRADO:", card.id);
+
 console.log(
   JSON.stringify(card, null, 2)
 );
 
-console.log("CARD ENCONTRADO:", card.id);
+const fields = {};
 
- console.log(
-  "CARD",
-  card.id,
-  "TOTAL CAMPOS:",
-  card.fields.length
-);
+card.fields.forEach(f => {
+  const nome = f.name?.trim();
+  const id = f.field?.id?.trim();
 
-  const updatedAt = new Date(card.updated_at);
-  const lastSyncTime = new Date(lastSyncDate);
+  if (nome) fields[nome] = f.value || "";
+  if (id) fields[id] = f.value || "";
+});
 
- // if (updatedAt <= lastSyncTime) {
- //   continue;
- //  }
- 
-
-  const hashNovo = gerarHashCard(card);
-  const cached = mapaCards[card.id];
-
-  console.log(
-  "LAST SYNC:",
-  lastSyncTime.toISOString()
-);
-
-console.log(
-  "CARD UPDATE:",
-  updatedAt.toISOString()
-);
-
-  if (cached?.hash === hashNovo && cached?.ativo) {
-    continue;
-  }
-
-  const fase = (card.current_phase?.name || "").toLowerCase().trim();
-
-  const fields = {};
-
-  card.fields.forEach(f => {
-    const nome = f.name?.trim();
-    const id = f.field?.id?.trim();
-
-    if (nome) fields[nome] = f.value || "";
-    if (id) fields[id] = f.value || "";
-  });
-
-  console.log("FIELDS NF:");
-  console.log({
-  "NF Taxa Compr.": fields["NF Taxa Compr."],
-  "NF Taxa Fornec.": fields["NF Taxa Fornec."],
-  "nf_taxa_compr": fields["nf_taxa_compr"],
-  "nfs_de_servi_o": fields["nfs_de_servi_o"]
+console.log("TESTE NF IDs");
+console.log({
+  nfComprID: fields["nf_taxa_compr"],
+  nfFornecID: fields["nfs_de_servi_o"],
+  nfComprNome: fields["NF Taxa Compr."],
+  nfFornecNome: fields["NF Taxa Fornec."]
 });
 
 
@@ -323,16 +263,33 @@ card.fields.forEach(f => {
   );
 });
 
+const updatedAt = new Date(card.updated_at);
+const lastSyncTime = new Date(lastSyncDate);
 
-  const nfCompr =
-    fields["NF Taxa Compr."] ||
-    fields["NF Taxa Compr"] ||
-    "";
+const hashNovo = gerarHashCard(card);
+const cached = mapaCards[card.id];
 
-  const nfFornec =
-    fields["NF Taxa Fornec."] ||
-    fields["NF Taxa Fornec"] ||
-    "";
+if (cached?.hash === hashNovo && cached?.ativo) {
+  continue;
+}
+
+const fase =
+  (card.current_phase?.name || "")
+    .toLowerCase()
+    .trim();
+
+
+ const nfCompr =
+  fields["nf_taxa_compr"] ||
+  fields["NF Taxa Compr."] ||
+  fields["NF Taxa Compr"] ||
+  "";
+
+const nfFornec =
+  fields["nfs_de_servi_o"] ||
+  fields["NF Taxa Fornec."] ||
+  fields["NF Taxa Fornec"] ||
+  "";
 
     console.log("NF COMPR:", nfCompr);
 console.log("NF FORNEC:", nfFornec);
@@ -379,8 +336,8 @@ console.log(
     nfFornec.trim() !== "";
 
   console.log("NF COMPR:", nfCompr);
-console.log("NF FORNEC:", nfFornec);
-console.log("NF COMPLETO:", nfCompleto);
+  console.log("NF FORNEC:", nfFornec);
+  console.log("NF COMPLETO:", nfCompleto);
 
 if (nfCompleto) {
 
@@ -426,12 +383,14 @@ if (nfCompleto) {
     hash: hashNovo
   });
 
+  totalImportados++;
+
   if (batch.length >= BATCH_SIZE) {
     await salvarBatch(batch);
     batch = [];
   }
 }
-}
+
 
 if (batch.length > 0) {
   await salvarBatch(batch);
