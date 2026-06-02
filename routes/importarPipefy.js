@@ -301,7 +301,7 @@ console.log(
   });
 
   console.log("FIELDS NF:");
-console.log({
+  console.log({
   "NF Taxa Compr.": fields["NF Taxa Compr."],
   "NF Taxa Fornec.": fields["NF Taxa Fornec."],
   "nf_taxa_compr": fields["nf_taxa_compr"],
@@ -336,6 +336,24 @@ card.fields.forEach(f => {
     fields["NF Taxa Fornec."] ||
     fields["NF Taxa Fornec"] ||
     "";
+
+    console.log("NF COMPR:", nfCompr);
+console.log("NF FORNEC:", nfFornec);
+
+const teste = await pool.query(`
+  SELECT
+    pipefy_card_id,
+    nf_taxa_compr,
+    nf_taxa_fornec,
+    ativo
+  FROM controle_cargas
+  WHERE pipefy_card_id = $1
+`, [card.id]);
+
+console.log(
+  "REGISTRO BANCO:",
+  JSON.stringify(teste.rows, null, 2)
+);
 
     console.log("NF COMPR =", nfCompr);
 console.log("NF FORNEC =", nfFornec);
