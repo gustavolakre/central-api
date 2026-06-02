@@ -180,43 +180,24 @@ const afterClause = cursor ? `after: "${cursor}",` : "";
 
 const query = `
 query {
-  allCards(
-    pipeId: ${PIPE_ID},
-    first: 1,
-    ${afterClause}
-  ) {
+  card(id: 1348246838) {
+    id
+    title
+    created_at
+    updated_at
 
-    pageInfo {
-      hasNextPage
-      endCursor
+    current_phase {
+      name
     }
 
-    edges {
+    fields {
+      name
+      value
 
-      node {
-
+      field {
         id
-        title
-        created_at
-        updated_at
-
-        current_phase {
-          name
-        }
-
-        fields {
-          name
-          value
-
-          field {
-            id
-          }
-        }
-
       }
-
     }
-
   }
 }
 `;
@@ -232,7 +213,15 @@ query {
     }
   );
 
-  const data = response.data?.data?.allCards;
+  const card = response.data?.data?.card;
+
+console.log(
+  JSON.stringify(card, null, 2)
+);
+
+return res.json({
+  ok: true
+});
 
 if (!data || !Array.isArray(data.edges)) {
   console.log("Resposta inválida do Pipefy");
@@ -252,15 +241,11 @@ for (const item of data.edges) {
 
   const card = item.node;
 
-  console.log(
-  JSON.stringify(card.fields, null, 2)
-);
-
-  console.log(
-  "CARD:",
+ console.log(
+  "CARD",
   card.id,
-  card.title,
-  card.updated_at
+  "TOTAL CAMPOS:",
+  card.fields.length
 );
 
   const updatedAt = new Date(card.updated_at);
