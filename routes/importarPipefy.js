@@ -381,8 +381,8 @@ console.log(
     nfCompr.trim() !== "" &&
     nfFornec.trim() !== "";
 
-    console.log("NF COMPR RAW:", JSON.stringify(nfCompr));
-console.log("NF FORNEC RAW:", JSON.stringify(nfFornec));
+  console.log("NF COMPR:", nfCompr);
+console.log("NF FORNEC:", nfFornec);
 console.log("NF COMPLETO:", nfCompleto);
 
   if (nfCompleto) {
