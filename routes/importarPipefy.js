@@ -333,45 +333,28 @@ console.log(
 
   if (nfCompleto) {
 
+  console.log("=== VAI ATUALIZAR ===");
+  console.log("CARD:", card.id);
+  console.log("COMPR:", nfCompr);
+  console.log("FORNEC:", nfFornec);
+
   const resultado = await pool.query(`
-
-    console.log(
-  "ATUALIZANDO:",
-  card.id,
-  nfCompr,
-  nfFornec
-);
-
-  UPDATE controle_cargas
-  SET nf_taxa_compr = $2,
-      nf_taxa_fornec = $3,
-      ativo = false,
-      updated_at_pipefy = $4
-  WHERE pipefy_card_id = $1
-`, [
-  card.id,
-  nfCompr,
-  nfFornec,
-  card.updated_at
-]);
-
-console.log(
-  "UPDATE",
-  card.id,
-  "ROWCOUNT",
-  resultado.rowCount
-);
-
-
-if (updatedAt <= lastSyncTime) {
+    UPDATE controle_cargas
+    SET nf_taxa_compr = $2,
+        nf_taxa_fornec = $3,
+        ativo = false,
+        updated_at_pipefy = $4
+    WHERE pipefy_card_id = $1
+  `, [
+    card.id,
+    nfCompr,
+    nfFornec,
+    card.updated_at
+  ]);
 
   console.log(
-    "PULOU CARD",
-    card.id,
-    "UPDATE:",
-    updatedAt,
-    "LASTSYNC:",
-    lastSyncTime
+    "LINHAS AFETADAS:",
+    resultado.rowCount
   );
 
   continue;
