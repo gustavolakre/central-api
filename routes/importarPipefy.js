@@ -285,13 +285,13 @@ console.log(
     if (id) fields[id] = f.value || "";
   });
 
-  console.log("FIELDS:");
-  console.log(fields);
-
-  console.log("NF COMPR EXTRAIDA:", fields["NF Taxa Compr."]);
-  console.log("NF FORNEC EXTRAIDA:", fields["NF Taxa Fornec."]);
-
-  console.log("CARD:", card.id);
+  console.log("FIELDS NF:");
+console.log({
+  "NF Taxa Compr.": fields["NF Taxa Compr."],
+  "NF Taxa Fornec.": fields["NF Taxa Fornec."],
+  "nf_taxa_compr": fields["nf_taxa_compr"],
+  "nfs_de_servi_o": fields["nfs_de_servi_o"]
+});
 
 card.fields.forEach(f => {
   console.log(
@@ -313,6 +313,9 @@ card.fields.forEach(f => {
     fields["NF Taxa Fornec."] ||
     fields["NF Taxa Fornec"] ||
     "";
+
+    console.log("NF COMPR =", nfCompr);
+console.log("NF FORNEC =", nfFornec);
 
     console.log("CARD", card.id);
 
