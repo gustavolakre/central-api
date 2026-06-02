@@ -357,8 +357,6 @@ console.log(
     resultado.rowCount
   );
 
-  continue;
-}
 
     continue;
   }
