@@ -159,9 +159,12 @@ console.log(
 );
 
 const registrosBanco = await pool.query(`
-  SELECT pipefy_card_id, hash_card
-FROM controle_cargas
-WHERE updated_at_pipefy > NOW() - INTERVAL '7 days'
+  SELECT
+    pipefy_card_id,
+    hash_card,
+    ativo
+  FROM controle_cargas
+  WHERE updated_at_pipefy > NOW() - INTERVAL '7 days'
 `);
 
 const mapaCards = {};
@@ -269,9 +272,13 @@ const lastSyncTime = new Date(lastSyncDate);
 const hashNovo = gerarHashCard(card);
 const cached = mapaCards[card.id];
 
-if (cached?.hash === hashNovo && cached?.ativo) {
-  continue;
-}
+console.log("HASH BANCO:", cached?.hash);
+console.log("HASH NOVO:", hashNovo);
+
+// TESTE
+// if (cached?.hash === hashNovo && cached?.ativo) {
+//   continue;
+// }
 
 const fase =
   (card.current_phase?.name || "")
@@ -339,12 +346,39 @@ console.log(
   console.log("NF FORNEC:", nfFornec);
   console.log("NF COMPLETO:", nfCompleto);
 
+
+  console.log("VALOR NF COMPR:", JSON.stringify(nfCompr));
+  console.log("VALOR NF FORNEC:", JSON.stringify(nfFornec));
+  console.log(
+  "NF COMPLETO?",
+  nfCompr.trim() !== "" &&
+  nfFornec.trim() !== ""
+);
+
 if (nfCompleto) {
 
   console.log("=== VAI ATUALIZAR ===");
   console.log("CARD:", card.id);
   console.log("COMPR:", nfCompr);
   console.log("FORNEC:", nfFornec);
+
+
+const conferencia = await pool.query(`
+  SELECT
+    pipefy_card_id,
+    nf_taxa_compr,
+    nf_taxa_fornec,
+    ativo
+  FROM controle_cargas
+  WHERE pipefy_card_id = $1
+`, [card.id]);
+
+console.log(
+  "REGISTRO APÓS UPDATE:",
+  JSON.stringify(conferencia.rows, null, 2)
+);
+
+
 
   const resultado = await pool.query(`
     UPDATE controle_cargas
@@ -366,7 +400,11 @@ if (nfCompleto) {
     resultado.rowCount
   );
 
-  continue;
+  return res.json({
+    success: true,
+    atualizado: true,
+    linhas: resultado.rowCount
+  });
 }
 
   batch.push({
