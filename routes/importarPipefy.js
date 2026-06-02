@@ -252,15 +252,33 @@ for (const item of data.edges) {
 
   const card = item.node;
 
+  console.log(
+  "CARD:",
+  card.id,
+  card.title,
+  card.updated_at
+);
+
   const updatedAt = new Date(card.updated_at);
   const lastSyncTime = new Date(lastSyncDate);
 
-  if (updatedAt <= lastSyncTime) {
-    continue;
-  }
+ // if (updatedAt <= lastSyncTime) {
+ //   continue;
+ //  }
+ 
 
   const hashNovo = gerarHashCard(card);
   const cached = mapaCards[card.id];
+
+  console.log(
+  "LAST SYNC:",
+  lastSyncTime.toISOString()
+);
+
+console.log(
+  "CARD UPDATE:",
+  updatedAt.toISOString()
+);
 
   if (cached?.hash === hashNovo && cached?.ativo) {
     continue;
