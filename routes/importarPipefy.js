@@ -215,6 +215,13 @@ query {
 
   const card = response.data?.data?.card;
 
+if (!card) {
+  console.log("Card não encontrado");
+  return res.json({ erro: true });
+}
+
+console.log("CARD ENCONTRADO:", card.id);
+
 console.log(
   JSON.stringify(card, null, 2)
 );
@@ -223,15 +230,6 @@ console.log(
 //  ok: true
 // });
 
-const fields = {};
-
-card.fields.forEach(f => {
-  const nome = f.name?.trim();
-  const id = f.field?.id?.trim();
-
-  if (nome) fields[nome] = f.value || "";
-  if (id) fields[id] = f.value || "";
-});
 
 console.log("TESTE NF IDs");
 console.log({
@@ -242,19 +240,18 @@ console.log({
 });
 
 
+const card = response.data?.data?.card;
 
-  hasNextPage = data.pageInfo.hasNextPage;
+if (!card) {
+  console.log("Card não encontrado");
+  return res.json({ erro: true });
+}
 
-  cursor = data.pageInfo.endCursor;
+console.log(
+  JSON.stringify(card, null, 2)
+);
 
-  hasNextPage = false;
-
-  console.log("LOTE RECEBIDO:", data.edges.length);
-
-
-for (const item of data.edges) {
-
-  const card = item.node;
+console.log("CARD ENCONTRADO:", card.id);
 
  console.log(
   "CARD",
@@ -385,7 +382,7 @@ console.log(
 console.log("NF FORNEC:", nfFornec);
 console.log("NF COMPLETO:", nfCompleto);
 
-  if (nfCompleto) {
+if (nfCompleto) {
 
   console.log("=== VAI ATUALIZAR ===");
   console.log("CARD:", card.id);
@@ -393,20 +390,12 @@ console.log("NF COMPLETO:", nfCompleto);
   console.log("FORNEC:", nfFornec);
 
   const resultado = await pool.query(`
-
-    console.log(
-  "VAI ATUALIZAR:",
-  card.id,
-  nfCompr,
-  nfFornec
-);
-
-
     UPDATE controle_cargas
-    SET nf_taxa_compr = $2,
-        nf_taxa_fornec = $3,
-        ativo = false,
-        updated_at_pipefy = $4
+    SET
+      nf_taxa_compr = $2,
+      nf_taxa_fornec = $3,
+      ativo = false,
+      updated_at_pipefy = $4
     WHERE pipefy_card_id = $1
   `, [
     card.id,
@@ -420,9 +409,8 @@ console.log("NF COMPLETO:", nfCompleto);
     resultado.rowCount
   );
 
-
-    continue;
-  }
+  continue;
+}
 
   batch.push({
     id: card.id,
