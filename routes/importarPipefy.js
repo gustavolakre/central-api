@@ -293,6 +293,13 @@ console.log({
   "nfs_de_servi_o": fields["nfs_de_servi_o"]
 });
 
+
+console.log("TESTE NF IDs");
+console.log({
+  nfComprID: fields["nf_taxa_compr"],
+  nfFornecID: fields["nfs_de_servi_o"]
+});
+
 card.fields.forEach(f => {
   console.log(
     "CAMPO:",
