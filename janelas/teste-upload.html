@@ -42,12 +42,31 @@ async function importar() {
     );
 
     const resposta = await fetch(
-        "/importar-cargas-excel",
-        {
-            method: "POST",
-            body: formData
-        }
+    "http://localhost:3000/importar-cargas",
+    {
+        method: "POST",
+        body: formData
+    }
+);
+
+const texto = await resposta.text();
+
+console.log(texto);
+
+try {
+
+    const json = JSON.parse(texto);
+
+    console.log(json);
+
+} catch(err) {
+
+    console.error(
+        "Resposta não é JSON:",
+        texto
     );
+
+}
 
     const dados =
         await resposta.json();
