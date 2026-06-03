@@ -83,10 +83,6 @@ router.post(
 
 for (const carga of dados) {
 
-  console.log("TOTAL VALORES:", valores.length);
-
-await pool.query(sql, valores);
-
   const sql = `
 INSERT INTO controle_cargas (
 
@@ -285,7 +281,9 @@ DO UPDATE SET
 
 ];
 
-  
+    console.log("TOTAL VALORES:", valores.length);
+
+    await pool.query(sql, valores);
 
   importados++;
 }
