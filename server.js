@@ -16,6 +16,9 @@ const contasGerenciaisRoutes = require("./routes/contasGerenciais")
 const importarCargasExcel =
 require("./routes/importarCargasExcel");
 
+const importarParceirosExcel =
+  require("./routes/importarParceirosExcel");
+
 const pool = require("./src/db/database")
 
 const app = express()
@@ -27,6 +30,12 @@ app.use(
   "/janelas",
   express.static(path.join(__dirname, "janelas"))
 )
+
+app.use(
+  "/importar-parceiros-excel",
+  require("./routes/importarParceirosExcel")
+);
+
 
 app.use("/importar-pipefy", importarPipefy)
 app.use("/importar-parceiros", importarParceiros)
