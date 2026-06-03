@@ -153,7 +153,8 @@ INSERT INTO controle_cargas (
   documentacao,
 
   observacao_pagamento,
-  motivo_cancelamento
+  motivo_cancelamento,
+  raw_data
 
 )
 VALUES (
@@ -167,7 +168,7 @@ VALUES (
   $31,$32,$33,$34,$35,
   $36,$37,$38,$39,$40,
   $41,$42,$43,$44,$45,
-  $46,$47,$48,$49
+  $46,$47,$48,$49,$50
 
 )
 
@@ -240,7 +241,8 @@ DO UPDATE SET
   documentacao = EXCLUDED.documentacao,
 
   observacao_pagamento = EXCLUDED.observacao_pagamento,
-  motivo_cancelamento = EXCLUDED.motivo_cancelamento
+  motivo_cancelamento = EXCLUDED.motivo_cancelamento,
+  raw_data = EXCLUDED.raw_data
 `, [
 
   Number(carga["Código"]),
@@ -311,7 +313,10 @@ DO UPDATE SET
   texto(carga["Documentação"]),
 
   texto(carga["Observação pagamento"]),
-  texto(carga["Motivo do Cancelamento"])
+  texto(carga["Motivo do Cancelamento"]),
+
+  JSON.stringify(carga)
+  
 
 ]);
   importados++;
