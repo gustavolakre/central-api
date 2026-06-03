@@ -13,9 +13,9 @@ const upload = multer({
   storage: multer.memoryStorage()
 });
 
+const BATCH_SIZE = 200;
 
 function numero(valor) {
-
   if (
     valor === null ||
     valor === undefined ||
@@ -34,7 +34,6 @@ function numero(valor) {
 }
 
 function texto(valor) {
-
   if (
     valor === null ||
     valor === undefined ||
@@ -42,6 +41,18 @@ function texto(valor) {
   ) return null;
 
   return String(valor).trim();
+}
+
+function data(valor) {
+  if (
+    valor === null ||
+    valor === undefined ||
+    valor === ""
+  ) {
+    return null;
+  }
+
+  return valor;
 }
 
 router.post(
@@ -62,254 +73,313 @@ router.post(
         { type: "buffer" }
       );
 
-      const sheetName =
-        workbook.SheetNames[0];
+      const sheetName = workbook.SheetNames[0];
 
-      const worksheet =
-        workbook.Sheets[sheetName];
+      const worksheet = workbook.Sheets[sheetName];
 
       const dados = XLSX.utils.sheet_to_json(
         worksheet,
-       {
-         defval: null,
-         raw: false
+        {
+          defval: null,
+          raw: false
         }
       );
 
-        console.log(dados[0]);
+      console.time("IMPORTACAO_TOTAL");
 
 
-    let importados = 0;
+      console.log("Total linhas:", dados.length);
 
-for (const carga of dados) {
+      const sql = `
+        INSERT INTO controle_cargas (
 
-  const sql = `
-INSERT INTO controle_cargas (
+          pipefy_card_id,
+          titulo,
+          fase,
+          comprador,
+          fornecedor,
+          quantidade,
+          peso,
+          peso_quebra,
+          tipo_suino,
+          valor_total_bruto,
+          valor_total_liquido,
+          mortos_transporte,
+          condenacoes_totais,
+          condenacoes_parciais,
+          nf_taxa_fornec,
+          nf_taxa_compr,
+          nota_fiscal_venda,
+          pagamento_realizado,
+          embarque,
+          descarga,
+          data_vencimento_financeiro,
+          etiquetas,
+          preco_kg,
+          peso_medio,
+          valor_mortos,
+          valor_condenacoes,
+          outros_descontos,
+          transportadora,
+          motorista,
+          placa,
+          responsaveis,
+          observacoes_negociacao,
+          frete,
+          prazo_negociado,
+          vendedor_comprador,
+          vendedor_fornecedor,
+          finalidade_gta,
+          local_abate,
+          numero_gta,
+          embutido_cozido,
+          senar_funrural,
+          verificacao,
+          crm,
+          nota_fiscal,
+          cnpj,
+          documentacao,
+          observacao_pagamento,
+          motivo_cancelamento,
+          raw_data
 
-  pipefy_card_id,
-  titulo,
-  fase,
-  comprador,
-  fornecedor,
-  quantidade,
-  peso,
-  peso_quebra,
-  tipo_suino,
-  valor_total_bruto,
-  valor_total_liquido,
-  mortos_transporte,
-  condenacoes_totais,
-  condenacoes_parciais,
-  nf_taxa_fornec,
-  nf_taxa_compr,
-  nota_fiscal_venda,
-  pagamento_realizado,
-  embarque,
-  descarga,
-  data_vencimento_financeiro,
-  etiquetas,
-  preco_kg,
-  peso_medio,
-  valor_mortos,
-  valor_condenacoes,
-  outros_descontos,
-  transportadora,
-  motorista,
-  placa,
-  responsaveis,
-  observacoes_negociacao,
-  frete,
-  prazo_negociado,
-  vendedor_comprador,
-  vendedor_fornecedor,
-  finalidade_gta,
-  local_abate,
-  numero_gta,
-  embutido_cozido,
-  senar_funrural,
-  verificacao,
-  crm,
-  nota_fiscal,
-  cnpj,
-  documentacao,
-  observacao_pagamento,
-  motivo_cancelamento,
-  raw_data
+        )
+        VALUES
+      `;
 
-)
-VALUES (
+      let importados = 0;
 
-  $1,$2,$3,$4,$5,
-  $6,$7,$8,$9,$10,
-  $11,$12,$13,$14,$15,
-  $16,$17,$18,$19,$20,
-  $21,$22,$23,$24,$25,
-  $26,$27,$28,$29,$30,
-  $31,$32,$33,$34,$35,
-  $36,$37,$38,$39,$40,
-  $41,$42,$43,$44,$45,
-  $46,$47,$48,$49
+      for (let i = 0; i < dados.length; i += BATCH_SIZE) {
 
-)
+        console.time(`LOTE_${i}`);
 
-ON CONFLICT (pipefy_card_id)
-DO UPDATE SET
+        const lote = dados.slice(
+          i,
+          i + BATCH_SIZE
+        );
 
-  titulo = EXCLUDED.titulo,
-  fase = EXCLUDED.fase,
-  comprador = EXCLUDED.comprador,
-  fornecedor = EXCLUDED.fornecedor,
-  quantidade = EXCLUDED.quantidade,
-  peso = EXCLUDED.peso,
-  peso_quebra = EXCLUDED.peso_quebra,
-  tipo_suino = EXCLUDED.tipo_suino,
-  valor_total_bruto = EXCLUDED.valor_total_bruto,
-  valor_total_liquido = EXCLUDED.valor_total_liquido,
-  mortos_transporte = EXCLUDED.mortos_transporte,
-  condenacoes_totais = EXCLUDED.condenacoes_totais,
-  condenacoes_parciais = EXCLUDED.condenacoes_parciais,
-  nf_taxa_fornec = EXCLUDED.nf_taxa_fornec,
-  nf_taxa_compr = EXCLUDED.nf_taxa_compr,
-  nota_fiscal_venda = EXCLUDED.nota_fiscal_venda,
-  pagamento_realizado = EXCLUDED.pagamento_realizado,
-  embarque = EXCLUDED.embarque,
-  descarga = EXCLUDED.descarga,
-  data_vencimento_financeiro = EXCLUDED.data_vencimento_financeiro,
-  etiquetas = EXCLUDED.etiquetas,
-  preco_kg = EXCLUDED.preco_kg,
-  peso_medio = EXCLUDED.peso_medio,
-  valor_mortos = EXCLUDED.valor_mortos,
-  valor_condenacoes = EXCLUDED.valor_condenacoes,
-  outros_descontos = EXCLUDED.outros_descontos,
-  transportadora = EXCLUDED.transportadora,
-  motorista = EXCLUDED.motorista,
-  placa = EXCLUDED.placa,
-  responsaveis = EXCLUDED.responsaveis,
-  observacoes_negociacao = EXCLUDED.observacoes_negociacao,
-  frete = EXCLUDED.frete,
-  prazo_negociado = EXCLUDED.prazo_negociado,
-  vendedor_comprador = EXCLUDED.vendedor_comprador,
-  vendedor_fornecedor = EXCLUDED.vendedor_fornecedor,
-  finalidade_gta = EXCLUDED.finalidade_gta,
-  local_abate = EXCLUDED.local_abate,
-  numero_gta = EXCLUDED.numero_gta,
-  embutido_cozido = EXCLUDED.embutido_cozido,
-  senar_funrural = EXCLUDED.senar_funrural,
-  verificacao = EXCLUDED.verificacao,
-  crm = EXCLUDED.crm,
-  nota_fiscal = EXCLUDED.nota_fiscal,
-  cnpj = EXCLUDED.cnpj,
-  documentacao = EXCLUDED.documentacao,
-  observacao_pagamento = EXCLUDED.observacao_pagamento,
-  motivo_cancelamento = EXCLUDED.motivo_cancelamento,
-  raw_data = EXCLUDED.raw_data
-`;
+        const valores = [];
+        const placeholders = [];
 
+        lote.forEach((carga, index) => {
 
-if (!carga["Embarque"]) {
-  console.log(
-    "EMBARQUE VAZIO:",
-    carga["Código"]
-  );
-}
+          const base = index * 49;
 
- const valores = [
+          placeholders.push(`(
 
-  
+            $${base + 1},
+            $${base + 2},
+            $${base + 3},
+            $${base + 4},
+            $${base + 5},
+            $${base + 6},
+            $${base + 7},
+            $${base + 8},
+            $${base + 9},
+            $${base + 10},
+            $${base + 11},
+            $${base + 12},
+            $${base + 13},
+            $${base + 14},
+            $${base + 15},
+            $${base + 16},
+            $${base + 17},
+            $${base + 18},
+            $${base + 19},
+            $${base + 20},
+            $${base + 21},
+            $${base + 22},
+            $${base + 23},
+            $${base + 24},
+            $${base + 25},
+            $${base + 26},
+            $${base + 27},
+            $${base + 28},
+            $${base + 29},
+            $${base + 30},
+            $${base + 31},
+            $${base + 32},
+            $${base + 33},
+            $${base + 34},
+            $${base + 35},
+            $${base + 36},
+            $${base + 37},
+            $${base + 38},
+            $${base + 39},
+            $${base + 40},
+            $${base + 41},
+            $${base + 42},
+            $${base + 43},
+            $${base + 44},
+            $${base + 45},
+            $${base + 46},
+            $${base + 47},
+            $${base + 48},
+            $${base + 49}
 
-  Number(carga["Código"]),
+          )`);
 
-  texto(carga["Título"]),
-  texto(carga["Fase atual"]),
-  texto(carga["Comprador"]),
-  texto(carga["Fornecedor"]),
+          valores.push(
 
-  numero(carga["Quantidade"]),
-  numero(carga["Peso"]),
-  numero(carga["Peso Quebra"]),
-  texto(carga["Tipo Suíno"]),
+            Number(carga["Código"]),
 
-  numero(carga["Valor Total Bruto"]),
-  numero(carga["Valor Total Líquido"]),
+            texto(carga["Título"]),
+            texto(carga["Fase atual"]),
+            texto(carga["Comprador"]),
+            texto(carga["Fornecedor"]),
 
-  numero(carga["Mortos em transporte"]),
-  numero(carga["Condenações Totais"]),
-  numero(carga["Condenações Parciais"]),
+            numero(carga["Quantidade"]),
+            numero(carga["Peso"]),
+            numero(carga["Peso Quebra"]),
+            texto(carga["Tipo Suíno"]),
 
-  texto(carga["NF Taxa Fornec."]),
-  texto(carga["NF Taxa Compr."]),
+            numero(carga["Valor Total Bruto"]),
+            numero(carga["Valor Total Líquido"]),
 
-  texto(carga["N Nota de Venda"]),
-  texto(carga["Pagamento realizado?"]),
+            numero(carga["Mortos em transporte"]),
+            numero(carga["Condenações Totais"]),
+            numero(carga["Condenações Parciais"]),
 
-  data(carga["Embarque"]),
-  data(carga["Descarga"]),
-  data(carga["Data Vencimento Financeiro"]),
+            texto(carga["NF Taxa Fornec."]),
+            texto(carga["NF Taxa Compr."]),
 
-  texto(carga["Etiquetas"]),
+            texto(carga["N Nota de Venda"]),
+            texto(carga["Pagamento realizado?"]),
 
-  numero(carga["Preço / kg"]),
-  numero(carga["Peso Médio"]),
+            data(carga["Embarque"]),
+            data(carga["Descarga"]),
+            data(carga["Data Vencimento Financeiro"]),
 
-  numero(carga["Valor dos Mortos"]),
-  numero(carga["Valor das Condenações"]),
-  numero(carga["Outros Descontos"]),
+            texto(carga["Etiquetas"]),
 
-  texto(carga["Transportadora"]),
-  texto(carga["Motorista"]),
-  texto(carga["Placa"]),
+            numero(carga["Preço / kg"]),
+            numero(carga["Peso Médio"]),
 
-  texto(carga["Responsáveis"]),
-  texto(carga["Observações da Negociação"]),
+            numero(carga["Valor dos Mortos"]),
+            numero(carga["Valor das Condenações"]),
+            numero(carga["Outros Descontos"]),
 
-  texto(carga["Frete"]),
-  texto(carga["Prazo Negociado"]),
+            texto(carga["Transportadora"]),
+            texto(carga["Motorista"]),
+            texto(carga["Placa"]),
 
-  texto(carga["Vend. Comprador"]),
-  texto(carga["Vend. Fornecedor"]),
+            texto(carga["Responsáveis"]),
+            texto(carga["Observações da Negociação"]),
 
-  texto(carga["Finalidade da GTA"]),
-  texto(carga["Local de Abate"]),
-  texto(carga["Numero da GTA"]),
+            texto(carga["Frete"]),
+            texto(carga["Prazo Negociado"]),
 
-  texto(carga["Embutido / Cozido"]),
+            texto(carga["Vend. Comprador"]),
+            texto(carga["Vend. Fornecedor"]),
 
-  numero(carga["Senar / Funrural"]),
+            texto(carga["Finalidade da GTA"]),
+            texto(carga["Local de Abate"]),
+            texto(carga["Numero da GTA"]),
 
-  texto(carga["Verificação"]),
-  texto(carga["CRM"]),
+            texto(carga["Embutido / Cozido"]),
 
-  texto(carga["Nota Fiscal"]),
-  texto(carga["CNPJ"]),
+            numero(carga["Senar / Funrural"]),
 
-  texto(carga["Documentação"]),
+            texto(carga["Verificação"]),
+            texto(carga["CRM"]),
 
-  texto(carga["Observação pagamento"]),
-  texto(carga["Motivo do Cancelamento"]),
+            texto(carga["Nota Fiscal"]),
+            texto(carga["CNPJ"]),
 
-  JSON.stringify(carga)
+            texto(carga["Documentação"]),
 
-];
+            texto(carga["Observação pagamento"]),
+            texto(carga["Motivo do Cancelamento"]),
 
-    console.log("TOTAL VALORES:", valores.length);
+            JSON.stringify(carga)
 
-    await pool.query(sql, valores);
+          );
 
-  importados++;
-}
+        });
 
-res.json({
-  sucesso: true,
-  importados
-});
+        const sqlFinal =
+          sql +
+          placeholders.join(",") +
+          `
+          ON CONFLICT (pipefy_card_id)
+          DO UPDATE SET
 
+            titulo = EXCLUDED.titulo,
+            fase = EXCLUDED.fase,
+            comprador = EXCLUDED.comprador,
+            fornecedor = EXCLUDED.fornecedor,
+            quantidade = EXCLUDED.quantidade,
+            peso = EXCLUDED.peso,
+            peso_quebra = EXCLUDED.peso_quebra,
+            tipo_suino = EXCLUDED.tipo_suino,
+            valor_total_bruto = EXCLUDED.valor_total_bruto,
+            valor_total_liquido = EXCLUDED.valor_total_liquido,
+            mortos_transporte = EXCLUDED.mortos_transporte,
+            condenacoes_totais = EXCLUDED.condenacoes_totais,
+            condenacoes_parciais = EXCLUDED.condenacoes_parciais,
+            nf_taxa_fornec = EXCLUDED.nf_taxa_fornec,
+            nf_taxa_compr = EXCLUDED.nf_taxa_compr,
+            nota_fiscal_venda = EXCLUDED.nota_fiscal_venda,
+            pagamento_realizado = EXCLUDED.pagamento_realizado,
+            embarque = EXCLUDED.embarque,
+            descarga = EXCLUDED.descarga,
+            data_vencimento_financeiro = EXCLUDED.data_vencimento_financeiro,
+            etiquetas = EXCLUDED.etiquetas,
+            preco_kg = EXCLUDED.preco_kg,
+            peso_medio = EXCLUDED.peso_medio,
+            valor_mortos = EXCLUDED.valor_mortos,
+            valor_condenacoes = EXCLUDED.valor_condenacoes,
+            outros_descontos = EXCLUDED.outros_descontos,
+            transportadora = EXCLUDED.transportadora,
+            motorista = EXCLUDED.motorista,
+            placa = EXCLUDED.placa,
+            responsaveis = EXCLUDED.responsaveis,
+            observacoes_negociacao = EXCLUDED.observacoes_negociacao,
+            frete = EXCLUDED.frete,
+            prazo_negociado = EXCLUDED.prazo_negociado,
+            vendedor_comprador = EXCLUDED.vendedor_comprador,
+            vendedor_fornecedor = EXCLUDED.vendedor_fornecedor,
+            finalidade_gta = EXCLUDED.finalidade_gta,
+            local_abate = EXCLUDED.local_abate,
+            numero_gta = EXCLUDED.numero_gta,
+            embutido_cozido = EXCLUDED.embutido_cozido,
+            senar_funrural = EXCLUDED.senar_funrural,
+            verificacao = EXCLUDED.verificacao,
+            crm = EXCLUDED.crm,
+            nota_fiscal = EXCLUDED.nota_fiscal,
+            cnpj = EXCLUDED.cnpj,
+            documentacao = EXCLUDED.documentacao,
+            observacao_pagamento = EXCLUDED.observacao_pagamento,
+            motivo_cancelamento = EXCLUDED.motivo_cancelamento,
+            raw_data = EXCLUDED.raw_data
+        `;
 
+        await pool.query(
+          sqlFinal,
+          valores
+        );
+
+          console.timeEnd(`LOTE_${i}`);
+
+        importados += lote.length;
+
+        console.log(
+          `Importados ${importados}/${dados.length}`
+        );
+      }
+
+      console.timeEnd("IMPORTACAO_TOTAL");
+
+      return res.json({
+        sucesso: true,
+        importados
+      });
 
     } catch (err) {
 
       console.error(err);
 
-      res.status(500).json({
+      return res.status(500).json({
         erro: err.message
       });
 
@@ -317,19 +387,5 @@ res.json({
 
   }
 );
-
-
-function data(valor) {
-
-  if (
-    valor === null ||
-    valor === undefined ||
-    valor === ""
-  ) {
-    return null;
-  }
-
-  return valor;
-}
 
 module.exports = router;
