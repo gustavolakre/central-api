@@ -83,6 +83,8 @@ router.post(
 
 for (const carga of dados) {
 
+  console.log("TOTAL VALORES:", valores.length);
+
  await pool.query(`
 INSERT INTO controle_cargas (
 
