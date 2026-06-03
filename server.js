@@ -13,8 +13,9 @@ const financeiro = require("./routes/financeiro")
 const bancos = require("./routes/bancos")
 const contasGerenciaisRoutes = require("./routes/contasGerenciais")
 
-const webhookPipefy =
-require("./routes/webhookPipefy");
+const importarCargasExcel =
+require("./routes/importarCargasExcel");
+
 
 const authRoutes = require("./routes/auth")
 
@@ -44,10 +45,12 @@ app.use("/bancos", bancos)
 
 app.use("/contas-gerenciais", contasGerenciaisRoutes)
 
+
 app.use(
-  "/webhook/pipefy",
-  webhookPipefy
+  "/importar-cargas",
+  importarCargasExcel
 );
+
 
 app.use("/auth", authRoutes)
 
