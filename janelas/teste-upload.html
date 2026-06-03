@@ -1,50 +1,60 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <meta charset="UTF-8">
+    <title>Importar Cargas</title>
+</head>
 <body>
 
-<h2>Teste Upload Excel</h2>
+<h2>Importar Planilha de Cargas</h2>
 
-<input type="file" id="arquivo">
-<button onclick="enviar()">Enviar</button>
+<input
+    type="file"
+    id="arquivo"
+    accept=".xlsx,.xls"
+/>
 
-<pre id="resultado"></pre>
+<button onclick="importar()">
+    Importar
+</button>
+
+<div id="resultado"></div>
 
 <script>
 
-async function enviar() {
+async function importar() {
 
-  const file =
-    document.getElementById("arquivo")
-    .files[0];
+    const arquivo =
+        document.getElementById("arquivo").files[0];
 
-  if (!file) {
-    alert("Selecione um arquivo");
-    return;
-  }
+    if (!arquivo) {
 
-  const formData = new FormData();
+        alert("Selecione um arquivo");
 
-  formData.append(
-    "arquivo",
-    file
-  );
-
-  const resposta = await fetch(
-    "http://localhost:3000/importar-cargas",
-    {
-      method: "POST",
-      body: formData
+        return;
     }
-  );
 
-  const json =
-    await resposta.json();
+    const formData = new FormData();
 
-  document.getElementById(
-    "resultado"
-  ).textContent =
-    JSON.stringify(json, null, 2);
+    formData.append(
+        "arquivo",
+        arquivo
+    );
 
+    const resposta = await fetch(
+        "/importar-cargas-excel",
+        {
+            method: "POST",
+            body: formData
+        }
+    );
+
+    const dados =
+        await resposta.json();
+
+    document.getElementById("resultado")
+        .innerHTML =
+        JSON.stringify(dados, null, 2);
 }
 
 </script>
