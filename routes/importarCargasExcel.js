@@ -85,7 +85,9 @@ for (const carga of dados) {
 
   console.log("TOTAL VALORES:", valores.length);
 
- await pool.query(`
+await pool.query(sql, valores);
+
+  const sql = `
 INSERT INTO controle_cargas (
 
   pipefy_card_id,
@@ -93,67 +95,47 @@ INSERT INTO controle_cargas (
   fase,
   comprador,
   fornecedor,
-
   quantidade,
   peso,
   peso_quebra,
   tipo_suino,
-
   valor_total_bruto,
   valor_total_liquido,
-
   mortos_transporte,
   condenacoes_totais,
   condenacoes_parciais,
-
   nf_taxa_fornec,
   nf_taxa_compr,
-
   nota_fiscal_venda,
   pagamento_realizado,
-
   embarque,
   descarga,
   data_vencimento_financeiro,
-
   etiquetas,
-
   preco_kg,
   peso_medio,
-
   valor_mortos,
   valor_condenacoes,
   outros_descontos,
-
   transportadora,
   motorista,
   placa,
-
   responsaveis,
   observacoes_negociacao,
-
   frete,
   prazo_negociado,
-
   vendedor_comprador,
   vendedor_fornecedor,
-
   finalidade_gta,
   local_abate,
   numero_gta,
-
   embutido_cozido,
-
   senar_funrural,
-
   verificacao,
   crm,
-
   nota_fiscal,
   cnpj,
-
   documentacao,
-
   observacao_pagamento,
   motivo_cancelamento,
   raw_data
@@ -181,77 +163,53 @@ DO UPDATE SET
   fase = EXCLUDED.fase,
   comprador = EXCLUDED.comprador,
   fornecedor = EXCLUDED.fornecedor,
-
   quantidade = EXCLUDED.quantidade,
   peso = EXCLUDED.peso,
   peso_quebra = EXCLUDED.peso_quebra,
   tipo_suino = EXCLUDED.tipo_suino,
-
   valor_total_bruto = EXCLUDED.valor_total_bruto,
   valor_total_liquido = EXCLUDED.valor_total_liquido,
-
   mortos_transporte = EXCLUDED.mortos_transporte,
   condenacoes_totais = EXCLUDED.condenacoes_totais,
   condenacoes_parciais = EXCLUDED.condenacoes_parciais,
-
   nf_taxa_fornec = EXCLUDED.nf_taxa_fornec,
   nf_taxa_compr = EXCLUDED.nf_taxa_compr,
-
   nota_fiscal_venda = EXCLUDED.nota_fiscal_venda,
   pagamento_realizado = EXCLUDED.pagamento_realizado,
-
   embarque = EXCLUDED.embarque,
   descarga = EXCLUDED.descarga,
   data_vencimento_financeiro = EXCLUDED.data_vencimento_financeiro,
-
   etiquetas = EXCLUDED.etiquetas,
-
   preco_kg = EXCLUDED.preco_kg,
   peso_medio = EXCLUDED.peso_medio,
-
   valor_mortos = EXCLUDED.valor_mortos,
   valor_condenacoes = EXCLUDED.valor_condenacoes,
   outros_descontos = EXCLUDED.outros_descontos,
-
   transportadora = EXCLUDED.transportadora,
   motorista = EXCLUDED.motorista,
   placa = EXCLUDED.placa,
-
   responsaveis = EXCLUDED.responsaveis,
   observacoes_negociacao = EXCLUDED.observacoes_negociacao,
-
   frete = EXCLUDED.frete,
   prazo_negociado = EXCLUDED.prazo_negociado,
-
   vendedor_comprador = EXCLUDED.vendedor_comprador,
   vendedor_fornecedor = EXCLUDED.vendedor_fornecedor,
-
   finalidade_gta = EXCLUDED.finalidade_gta,
   local_abate = EXCLUDED.local_abate,
   numero_gta = EXCLUDED.numero_gta,
-
   embutido_cozido = EXCLUDED.embutido_cozido,
-
   senar_funrural = EXCLUDED.senar_funrural,
-
   verificacao = EXCLUDED.verificacao,
   crm = EXCLUDED.crm,
-
   nota_fiscal = EXCLUDED.nota_fiscal,
   cnpj = EXCLUDED.cnpj,
-
   documentacao = EXCLUDED.documentacao,
-
   observacao_pagamento = EXCLUDED.observacao_pagamento,
   motivo_cancelamento = EXCLUDED.motivo_cancelamento,
   raw_data = EXCLUDED.raw_data
+`;
 
-
-)
-VALUES (
-
-
-`, [
+ const valores = [
 
   Number(carga["Código"]),
 
@@ -325,9 +283,10 @@ VALUES (
 
   JSON.stringify(carga)
 
+];
+
   
-  
-]);
+
   importados++;
 }
 
