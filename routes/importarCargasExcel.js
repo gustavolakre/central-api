@@ -245,6 +245,12 @@ DO UPDATE SET
   observacao_pagamento = EXCLUDED.observacao_pagamento,
   motivo_cancelamento = EXCLUDED.motivo_cancelamento,
   raw_data = EXCLUDED.raw_data
+
+
+)
+VALUES (
+
+
 `, [
 
   Number(carga["Código"]),
@@ -318,8 +324,9 @@ DO UPDATE SET
   texto(carga["Motivo do Cancelamento"]),
 
   JSON.stringify(carga)
-  
 
+  
+  
 ]);
   importados++;
 }
