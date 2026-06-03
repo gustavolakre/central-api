@@ -16,12 +16,7 @@ const contasGerenciaisRoutes = require("./routes/contasGerenciais")
 const importarCargasExcel =
 require("./routes/importarCargasExcel");
 
-
-const authRoutes = require("./routes/auth")
-
 const pool = require("./src/db/database")
-
-
 
 const app = express()
 
