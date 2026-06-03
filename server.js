@@ -47,8 +47,6 @@ app.use(
 );
 
 
-app.use("/auth", authRoutes)
-
 app.get("/", async (req, res) => {
 
   try {
