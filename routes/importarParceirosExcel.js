@@ -252,8 +252,10 @@ router.post(
                 linha["Contatos"]
               ),
 
-              texto(
-                linha["Anexos"]
+              JSON.stringify(
+               linha["Anexos"]
+               ? [linha["Anexos"]]
+               : []
               ),
 
               texto(
