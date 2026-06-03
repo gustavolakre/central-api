@@ -4,22 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Relatório para Faturamento</title>
-<style>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
         body {
-
             font-family: Arial;
-
-            margin: 0;
-
-            padding: 25px 25px 50px 25px;
-
+            margin: 40px;
             background: #fafafa;
-
-            overflow-x: hidden;
-
-            box-sizing: border-box;
-
         }
 
         .campoTopo {
@@ -107,29 +97,37 @@
             background: #f5f5f5;
             border-radius: 8px;
         }
-
-        #resultado {
-
-            padding-bottom: 20px;
-            
-            box-sizing: border-box;
-
-        }
-
-        table {
-
-            max-width: 100%;
-
-            box-sizing: border-box;
-
-        }
-
-
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    </style>
 </head>
 
 <body>
+
+<div
+id="topoInicio"
+
+style="
+margin-bottom:20px;
+"
+>
+
+<button
+onclick="
+location.href=
+'./index.html'
+"
+
+style="
+background:#1565c0;
+color:white;
+"
+>
+
+← Início
+
+</button>
+
+</div>
+
     <h2 style="text-align:center; margin-bottom:20px;">Faturamento</h2>
 
     <div style="display:flex; justify-content:center; align-items:flex-start; gap:60px; flex-wrap:wrap; margin-bottom:10px;">
@@ -166,10 +164,12 @@
         <div style="display:flex; flex-direction:column; gap:20px;">
             <div style="text-align:center;">
                 <b>Planilha de Dados</b><br>
-                    </div>
+                <input type="file" id="upload">
+            </div>
             <div style="text-align:center;">
                 <b>Base de Parceiros</b><br>
-                    <div style="margin-top:30px; border-top:1px solid #ddd; padding-top:15px;">
+                <input type="file" id="uploadBase">
+                <div style="margin-top:30px; border-top:1px solid #ddd; padding-top:15px;">
                     <b>Semana</b><br>
                     <button onclick="selecionarTodasSemanas()">Selecionar todas</button>
                     <button onclick="limparSemanas()">Limpar</button>
@@ -210,8 +210,10 @@
 
     <input type="file" id="arquivoSessao" style="display:none">
     <div id="resultado"></div>
-<script>
-  Object.keys(localStorage)
+
+    <script>
+
+           Object.keys(localStorage)
         .filter(k =>
             k.startsWith("nf_compr_") ||
             k.startsWith("nf_fornec_")
@@ -241,8 +243,6 @@
         let primeiraCargaSemanas = true
         let agruparSelecionados = false
         let registrosFaturados = []
-
-        const API_URL = "https://api-production-6670.up.railway.app"
 
         function abrirSessao() {
             document.getElementById("arquivoSessao").click()
@@ -277,7 +277,70 @@
             }
         }
 
-      
+        /* PLANILHA PRINCIPAL */
+        document.getElementById("upload").addEventListener("change", function(e) {
+            let reader = new FileReader()
+            reader.onload = function(e) {
+                let data = new Uint8Array(e.target.result)
+                let workbook = XLSX.read(data, {
+                    type: 'array'
+                })
+                let sheet = workbook.Sheets[workbook.SheetNames[0]]
+                dadosPlanilha = XLSX.utils.sheet_to_json(sheet)
+
+                console.log("PRIMEIRA LINHA:", dadosPlanilha[0])
+                console.log("CODIGO LIDO:", dadosPlanilha[0]["Código"])
+                console.log("COLUNAS:", Object.keys(dadosPlanilha[0]))
+
+
+
+                console.log(dadosPlanilha.map(d => extrairSemana(d["etiquetas"])))
+                const ordemTipos = [
+                   "PADRÃO",
+                   "PLUS",
+                   "PRIME",
+                   "LEITOA",
+                   "MARRA",
+                   "MATRIZ",
+                   "MATRIZ MACHO",
+                   "LEITAO"
+                ]
+
+                tiposSuino = [...new Set(dadosPlanilha.map(d => d["Tipo Suíno"]))]
+
+                tiposSuino.sort((a, b) => {
+
+                    let ia = ordemTipos.indexOf(String(a).trim().toUpperCase())
+                    let ib = ordemTipos.indexOf(String(b).trim().toUpperCase())
+
+                    if (ia === -1) ia = 999
+                    if (ib === -1) ib = 999
+
+                    return ia - ib
+
+                })
+                montarListaSemanas()
+                montarListasSeparadas()
+                montarAgrupamento()
+                gerarRelatorio()
+            }
+            reader.readAsArrayBuffer(e.target.files[0])
+        })
+
+        /* BASE DE PARCEIROS */
+        document.getElementById("uploadBase").addEventListener("change", function(e) {
+            let reader = new FileReader()
+            reader.onload = function(e) {
+                let data = new Uint8Array(e.target.result)
+                let workbook = XLSX.read(data, {
+                    type: 'array'
+                })
+                let sheet = workbook.Sheets[workbook.SheetNames[0]]
+                baseParceiros = XLSX.utils.sheet_to_json(sheet)
+                console.log("Base parceiros carregada", baseParceiros)
+            }
+            reader.readAsArrayBuffer(e.target.files[0])
+        })
 
         function buscarParceiro(nomeUsual) {
             if (!baseParceiros.length) return null
@@ -670,7 +733,15 @@
     </div>
 `
 
-html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (18%): ${formatar(trib)}</span>`
+    html += `
+    <br>
+    <span style="
+       color:#c62828;
+       font-weight:bold;
+    ">
+       Valor dos Tributos (18%): ${formatar(trib)}
+    </span>
+    `
             document.getElementById(`val_${id}`).innerHTML = html
         }
 
@@ -718,21 +789,7 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
                 "Parceiro": r["Parceiro"] || "",
                 "Nota Fiscal": r["Nota Fiscal"] || "",
                 "Valor Liquido": Number(r["Valor Líquido"]) || 0,
-                "Data do Vencimento": r["Data de Vencimento"]
-                ? (() => {
-
-                     let partes = r["Data de Vencimento"].split("-")
-
-                     let ano = Number(partes[0])
-                     let mes = Number(partes[1]) - 1
-                     let dia = Number(partes[2])
-
-                     let dataLocal = new Date(ano, mes, dia)
-
-                     return (dataLocal - new Date(1899, 11, 30)) / 86400000
-
-                 })()
-               : "",
+                "Data do Vencimento": r["Data de Vencimento"] ? ((new Date(r["Data de Vencimento"]) - new Date(1899, 11, 30)) / 86400000) : "",
                 "Responsável": "307283950"
             }))
 
@@ -805,9 +862,20 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
 
       // 🔹 faturamentos
       registrosFaturados: registrosFaturados.map(r => ({
-        ...r,
-        enviadoPipefy: r.enviadoPipefy || false,
-        enviadoControle: r.enviadoControle || false
+
+         ...r,
+
+        // 🔥 garante persistência
+        Ids: Array.isArray(r.Ids)
+            ? r.Ids
+            : [],
+
+        enviadoPipefy:
+            r.enviadoPipefy || false,
+
+        enviadoControle:
+            r.enviadoControle || false
+
       })),
 
       // 🔹 campos da tela
@@ -892,70 +960,19 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
         }
 
         function extrairSemana(valor) {
-
-    if (!valor) return null
-
-    try {
-
-        let semana = null
-
-        // 🔥 formato JSON string
-        if (
-            typeof valor === "string" &&
-            valor.startsWith("[")
-        ) {
-
-            let arr = JSON.parse(valor)
-
-            if (
-                Array.isArray(arr) &&
-                arr.length >= 2
-            ) {
-
-                semana = String(arr[1]).trim()
-
+            if (!valor) return null
+            let v = String(valor)
+            let partes = v.split(",")
+            if (partes.length < 2) return null
+            let semana = partes[1].trim()
+            if (!/^\d{4}\/\d{1,2}$/.test(semana)) {
+                return null
             }
-
-        } else {
-
-            // 🔥 fallback texto normal
-            let partes = String(valor).split(",")
-
-            if (partes.length >= 2) {
-
-                semana = partes[1]
-                    .replace(/[\[\]"]/g, "")
-                    .trim()
-
+            if (!semana.startsWith("2026")) {
+                return null
             }
-
-        }
-
-        // 🔥 aceita SOMENTE yyyy/nn
-        if (
-            semana &&
-            /^\d{4}\/\d{1,2}$/.test(semana)
-        ) {
-
             return semana
-
         }
-
-        return null
-
-    } catch (err) {
-
-        console.error(
-            "ERRO EXTRAIR SEMANA:",
-            valor,
-            err
-        )
-
-        return null
-
-    }
-
-}
 
         function montarListaSemanas() {
             let semanasValidas = dadosPlanilha
@@ -1019,40 +1036,23 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
         }
 
         function abrirFaturados() {
-            let html = `<div style="
-                        position:fixed;
-                        top:0;
-                        left:0;
-
-                        width:100%;
-                        height:100%;
-
-                        background:white;
-
-                        overflow:auto;
-
-                        padding:20px;
-
-                        box-sizing:border-box;
-
-                        z-index:9999;
-                        ">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <div style="display:flex; gap:10px; align-items:center;">
+            let html = `<div style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; overflow:auto; padding:20px; z-index:9999;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <div style="display:flex; gap:10px; align-items:center;">
                         <button onclick="fecharFaturados()">Fechar</button>
                         <button onclick="gerarExcel()" onmouseover="this.style.background='#1b5e20'" onmouseout="this.style.background='#2e7d32'" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'" style="background:#2e7d32; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; transition:all 0.15s ease;">
                             GERAR PLANILHA EXCEL
                         </button>
-                      
 
-<button onclick="criarCardsPipefy()" 
-  onmouseover="this.style.background='#c62828'" 
-  onmouseout="this.style.background='#e53935'" 
-  onmousedown="this.style.transform='scale(0.95)'" 
-  onmouseup="this.style.transform='scale(1)'" 
-  style="background:#e53935; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; transition:all 0.15s ease;">
-    CRIAR CARDS NO CONTAS A RECEBER
-</button>
+
+     <button onclick="criarCardsPipefy()" 
+         onmouseover="this.style.background='#c62828'" 
+         onmouseout="this.style.background='#e53935'" 
+         onmousedown="this.style.transform='scale(0.95)'" 
+         onmouseup="this.style.transform='scale(1)'" 
+     style="background:#e53935; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; transition:all 0.15s ease;">
+          CRIAR CARDS NO CONTAS A RECEBER
+         </button>
 
                     </div>
                 </div>
@@ -1067,20 +1067,9 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
                     <div style="background:#e8f5e9; border:1px solid #c8e6c9; padding:10px 15px; border-radius:6px; margin-bottom:15px; font-size:14px; font-weight:bold; text-align:center;">
                         Total Faturado: R$ ${totalFaturado.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                     </div>
-                    <div style="width:100%; overflow-x:auto;">
-
-                    <table border="1"
-                      cellspacing="0"
-                      cellpadding="5"
-                      style="
-                           border-collapse:collapse;
-                           width:100%;
-                           min-width:1400px;
-                           font-size:13px;
-                           margin-top:10px;
-                           text-align:center;
-                    ">
+                    <table border="1" cellspacing="0" cellpadding="3" style="border-collapse:collapse; width:100%; font-size:13px; text-align:center; background:white;">
                           <tr style="background:#f5f5f5;">
+                            <th>#</th>
                             <th>
                               <input type="checkbox" onchange="toggleTodosFaturados(this.checked)">
                             </th>
@@ -1103,6 +1092,7 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
 
     html += `
         <tr style="background:${corLinha};">
+            <td>${index + 1}</td>
 
             <td>
                 ${
@@ -1213,9 +1203,26 @@ async function salvarCard(id) {
   let nfDigitado = document.getElementById(`nf_${id}`).value
 
   if (!nfDigitado || nfDigitado.trim() === "") {
+
     alert("Digite a Nota Fiscal antes de salvar.")
+
     return
+
   }
+
+  let nfLimpa = String(nfDigitado).trim().toLowerCase()
+
+  // 🔥 valida NF
+  let somenteNumero = /^\d+$/.test(nfLimpa)
+
+  if (!somenteNumero && nfLimpa !== "sem acordo") {
+
+     alert('A Nota Fiscal deve ser numérica ou "sem acordo".')
+ 
+     return
+
+  }
+
 
   let tipoOperacao = document.getElementById("tipoOperacao").value
 
@@ -1261,9 +1268,7 @@ async function salvarCard(id) {
       // 🔥 atualiza linhas da planilha
       grupo.dados.forEach(d => {
 
-        let cardId = parseInt(String(d["Código"]).trim())
-
-        if (!cardId) return
+        let cardId = Number(String(d["Código"]).trim())
 
         d["NF SALVA"] = nfDigitado
 
@@ -1319,9 +1324,15 @@ async function salvarCard(id) {
           : grupo.dados[0]["Fornecedor"]
 
       // 🔥 remove faturamento antigo da mesma NF
-          registrosFaturados = registrosFaturados.filter(r =>
-          String(r["Nota Fiscal"]).trim() !== String(nfDigitado).trim()
-       )
+      // mas NÃO remove quando for "sem acordo"
+
+      if (String(nfDigitado).trim().toLowerCase() !== "sem acordo") {
+
+         registrosFaturados = registrosFaturados.filter(r =>
+             String(r["Nota Fiscal"]).trim() !== String(nfDigitado).trim()
+         )
+
+      }
 
       registrosFaturados.push({
 
@@ -1336,7 +1347,9 @@ async function salvarCard(id) {
         "Produto Servico":
           document.getElementById("produtoServico").value,
         "Mes Gerencial":
-          document.getElementById("mesGerencial").value
+          document.getElementById("mesGerencial").value,
+
+        "Ids": grupo.dados.map(d => Number(d["Código"]))
 
       })
 
@@ -1385,7 +1398,7 @@ async function salvarCard(id) {
         try {
 
           const response = await fetch(
-             `${API_URL}/pipefy`,
+            "/.netlify/functions/pipefy",
             {
               method: "POST",
               headers: {
@@ -1403,22 +1416,21 @@ async function salvarCard(id) {
           )
 
           // 🔥 marca como enviado
-          // 🔥 marca como enviado no controle
           cards.forEach(card => {
 
-              dadosPlanilha.forEach(d => {
+            dadosPlanilha.forEach(d => {
 
-                  let codigoLinha = Number(String(d["Código"]).trim())
+              let codigo = Number(
+                String(d["Código"]).trim()
+              )
 
-                  if (codigoLinha === Number(card.cardId)) {
+              if (codigo === Number(card.cardId)) {
+                d.enviadoControle = true
+              }
 
-                    d.enviadoControle = true
-   
-        }
+            })
 
-    })
-
-})
+          })
 
         } catch (err) {
 
@@ -1551,7 +1563,7 @@ async function criarCardsPipefy() {
 
   try {
 
-    let res = await fetch(`${API_URL}/importar-pipefy`, {
+    let res = await fetch("/.netlify/functions/pipefy", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -1563,6 +1575,13 @@ async function criarCardsPipefy() {
 
     let data = await res.json()
 
+    if (data.sucesso > 0) {
+
+  selecionados.forEach(index => {
+    registrosFaturados[index].enviadoPipefy = true
+  })
+
+}
 
     console.log("📥 RESPOSTA BACKEND:", data)
 
@@ -1633,21 +1652,21 @@ async function enviarFaturadosParaPipefy() {
             let codigoLinha = Number(String(d["Código"]).trim())
 
             if (
-                selecionados.includes(codigoLinha) &&
-              (nfCompr === nf || nfFornec === nf)
+               (nfCompr === nf || nfFornec === nf)
             ) {
 
-              if (nfCompr || nfFornec) {
+                
+                if (nfCompr || nfFornec) {
 
-                 cards.push({
-                      cardId: Number(d["Código"]),
-                      nfCompr,
-                      nfFornec
+                     cards.push({
+                     cardId: Number(d["Código"]),
+                     nfCompr,
+                     nfFornec
                 })
 
-           }
+              }
 
-       }
+            }
 
         })
 
@@ -1667,7 +1686,7 @@ async function enviarFaturadosParaPipefy() {
 
     try {
 
-        const response = await fetch(`${API_URL}/importar-pipefy`, {
+        const response = await fetch("/.netlify/functions/pipefy", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -1732,177 +1751,13 @@ async function enviarFaturadosParaPipefy() {
 }
 
 
-
-async function carregarDadosBanco() {
-
-    try {
-
-        const response = await fetch(
-               `${API_URL}/buscarDados`
-        )
-
-        dadosPlanilha = await response.json()
-
-        dadosPlanilha = dadosPlanilha.map(d => ({
-
-    ...d,
-
-    "Comprador":
-        d["Comprador"] ||
-        d["comprador"] ||
-        "",
-
-    "Fornecedor":
-        d["Fornecedor"] ||
-        d["fornecedor"] ||
-        "",
-
-    "Tipo Suíno":
-        d["Tipo Suíno"] ||
-        d["tipo_suíno"] ||
-        d["tipo_suino"] ||
-        "",
-
-    "Quantidade":
-        d["Quantidade"] ||
-        d["quantidade"] ||
-        0,
-
-    "Código":
-        d["Código"] ||
-        d["codigo"] ||
-        0,
-
-    "Mortos em transporte":
-        d["Mortos em transporte"] ||
-        d["mortos_em_transporte"] ||
-        0,
-
-    "Etiquetas":
-        d["Etiquetas"] ||
-        d["etiquetas"] ||
-        d["etiqueta"] ||
-        ""
-
-}))
-
-        console.log("DADOS PLANILHA:", dadosPlanilha)
-
-        const ordemTipos = [
-    "padrão",
-    "plus",
-    "prime",
-    "leitoa",
-    "marrã",
-    "matriz",
-    "matriz macho",
-    "leitao"
-]
-
-tiposSuino = [
-    ...new Set(
-        dadosPlanilha.map(d => d["Tipo Suíno"])
-    )
-]
-
-tiposSuino.sort((a, b) => {
-
-    let ia = ordemTipos.findIndex(x =>
-        String(x).toLowerCase() === String(a).toLowerCase()
-    )
-
-    let ib = ordemTipos.findIndex(x =>
-        String(x).toLowerCase() === String(b).toLowerCase()
-    )
-
-    if (ia === -1) ia = 999
-    if (ib === -1) ib = 999
-
-    return ia - ib
-
-})
-
-        montarListaSemanas()
-        montarListasSeparadas()
-        montarAgrupamento()
-        gerarRelatorio()
-
-    } catch (err) {
-
-        console.error(
-            "ERRO AO CARREGAR DADOS:",
-            err
-        )
-
-        alert("Erro ao carregar dados do banco")
-
-    }
-
-}
-
-dadosPlanilha = dadosPlanilha.map(d => {
-
-    let etiquetas = d["Etiquetas"]
-
-    try {
-
-        if (typeof etiquetas === "string" && etiquetas.startsWith("[")) {
-
-            etiquetas = JSON.parse(etiquetas).join(", ")
-
-        }
-
-    } catch {}
-
-    return {
-
-        ...d,
-
-        "Etiquetas": etiquetas || ""
-
-    }
-
-})
-
-
-async function carregarParceirosBanco() {
-
-
-try {
-
-    const response = await fetch(
-          `${API_URL}/buscarParceiros`
-    )
-
-    baseParceiros = await response.json()
-
-    console.log(
-        "BASE PARCEIROS:",
-        baseParceiros
-    )
-
-} catch (err) {
-
-    console.error(
-        "ERRO AO CARREGAR PARCEIROS:",
-        err
-    )
-
-    alert("Erro ao carregar parceiros")
-
-}
-
-}
-
-
-
         async function enviarGrupoParaPipefy(grupo, nf) {
             let tipo = document.getElementById("tipoOperacao").value
             let cards = grupo.dados.map(d => ({
                 cardId: d["Código"],
                 nf: nf
             }))
-            let res = await fetch(`${API_URL}/importar-pipefy`, {
+            let res = await fetch("/.netlify/functions/pipefy", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -2022,7 +1877,6 @@ try {
 
             <tr style="background:#f5f5f5;">
 
-                               
                 <th>#</th>
                 <th>ID</th>
                 <th>Semana</th>
@@ -2040,7 +1894,13 @@ try {
 
     html += `
         <tr>
-           
+           <td>
+               ${
+                c.enviadoControle
+                ? "✅"
+                : "⏳"
+                }
+          </td> 
             
             <td>${index + 1}</td>
             <td>${c.ID}</td>
@@ -2065,68 +1925,68 @@ try {
 
 })
 
-    html += `</table></div>`
+    html += `</table>`
 
     return html
 }
 
-       function excluirFaturado(index) {
+        function excluirFaturado(index) {
+            let item = registrosFaturados[index]
+            if (!confirm("Deseja excluir este faturamento?")) {
+                return
+            }
 
-    let item = registrosFaturados[index]
+            let ids = item["Ids"] || []
 
-    if (!confirm("Deseja excluir este faturamento?")) {
-        return
-    }
+            // 🔥 compatibilidade sessões antigas
+            if (ids.length === 0) {
 
-    let nf = item["Nota Fiscal"]
+             let nf = item["Nota Fiscal"]
 
-    dadosPlanilha.forEach(d => {
+                 dadosPlanilha.forEach(d => {
 
-        let codigo = Number(String(d["Código"]).trim())
+                 if (
+                   d["NF Taxa Compr."] === nf ||
+                   d["NF Taxa Compr"] === nf ||
+                   d["NF Taxa Fornec."] === nf ||
+                   d["NF Taxa Fornec"] === nf
+                ) {
 
-        let pertenceNF = false
+                   let codigo = Number(
+                   String(d["Código"]).trim()
+                )
 
-        if (
-            d["NF Taxa Compr."] === nf ||
-            d["NF Taxa Compr"] === nf
-        ) {
+                ids.push(codigo)
 
-            delete d["NF Taxa Compr."]
-            delete d["NF Taxa Compr"]
+              }
 
-            localStorage.removeItem(`nf_compr_${codigo}`)
+          })
 
-            pertenceNF = true
+      }
+
+            dadosPlanilha.forEach(d => {
+
+            let codigo = Number(String(d["Código"]).trim())
+
+            if (!ids.includes(codigo)) {
+                return
+            }
+
+           delete d["NF Taxa Compr."]
+           delete d["NF Taxa Compr"]
+
+           delete d["NF Taxa Fornec."]
+           delete d["NF Taxa Fornec"]
+
+           delete d["NF SALVA"]
+
+        })
+            registrosFaturados.splice(index, 1)
+            montarAgrupamento()
+            gerarRelatorio()
+            fecharFaturados()
+            abrirFaturados()
         }
-
-        if (
-            d["NF Taxa Fornec."] === nf ||
-            d["NF Taxa Fornec"] === nf
-        ) {
-
-            delete d["NF Taxa Fornec."]
-            delete d["NF Taxa Fornec"]
-
-            localStorage.removeItem(`nf_fornec_${codigo}`)
-
-            pertenceNF = true
-        }
-
-        if (pertenceNF) {
-            delete d["NF SALVA"]
-        }
-
-    })
-
-    registrosFaturados.splice(index, 1)
-
-    montarAgrupamento()
-    gerarRelatorio()
-
-    fecharFaturados()
-    abrirFaturados()
-
-}
 
     document.getElementById("arquivoSessao").addEventListener("change", function(e) {
 
@@ -2166,17 +2026,25 @@ try {
         checkboxAgrupar.checked = agruparSelecionados
       }
       registrosFaturados = (dados.registrosFaturados || []).map(r => ({
+
       ...r,
-         enviadoPipefy: r.enviadoPipefy || false,
-         enviadoControle: r.enviadoControle || false
+
+      // 🔥 compatibilidade sessões antigas
+      Ids: Array.isArray(r.Ids)
+        ? r.Ids
+        : [],
+
+      enviadoPipefy:
+         r.enviadoPipefy || false,
+
+      enviadoControle:
+         r.enviadoControle || false
+
       }))
 
       // 🔥 LIMPA NF ANTIGA
       Object.keys(localStorage)
-        .filter(k =>
-           k.startsWith("nf_compr_") ||
-           k.startsWith("nf_fornec_")
-        )
+        .filter(k => k.startsWith("nf_"))
         .forEach(k => localStorage.removeItem(k))
 
       // 🔥 RESTAURA NF DA SESSÃO
@@ -2195,7 +2063,30 @@ try {
       tipoOperacao = dados.tipoOperacao || "comprador"
 
       // 🔹 Tipos de suíno
+      const ordemTipos = [
+         "PADRÃO",
+         "PLUS",
+         "PRIME",
+         "LEITOA",
+         "MARRA",
+         "MATRIZ",
+         "MATRIZ MACHO",
+         "LEITAO"
+       ]
+
       tiposSuino = [...new Set(dadosPlanilha.map(d => d["Tipo Suíno"]))]
+
+      tiposSuino.sort((a, b) => {
+
+           let ia = ordemTipos.indexOf(String(a).trim().toUpperCase())
+           let ib = ordemTipos.indexOf(String(b).trim().toUpperCase())
+
+           if (ia === -1) ia = 999
+           if (ib === -1) ib = 999
+
+      return ia - ib
+
+      })
 
       // 🔹 Reconstrução da tela
       montarListaSemanas()
@@ -2216,16 +2107,7 @@ try {
 
   reader.readAsText(file)
 })
-
-;window.addEventListener("DOMContentLoaded", async () => {
-
-    await carregarParceirosBanco()
-
-    await carregarDadosBanco()
-
-})
-
-</script>
+    </script>
 </body>
 
 </html>

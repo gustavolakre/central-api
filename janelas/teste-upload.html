@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Teste Upload Excel</h2>
+
+<input type="file" id="arquivo">
+<button onclick="enviar()">Enviar</button>
+
+<pre id="resultado"></pre>
+
+<script>
+
+async function enviar() {
+
+  const file =
+    document.getElementById("arquivo")
+    .files[0];
+
+  if (!file) {
+    alert("Selecione um arquivo");
+    return;
+  }
+
+  const formData = new FormData();
+
+  formData.append(
+    "arquivo",
+    file
+  );
+
+  const resposta = await fetch(
+    "http://localhost:3000/importar-cargas",
+    {
+      method: "POST",
+      body: formData
+    }
+  );
+
+  const json =
+    await resposta.json();
+
+  document.getElementById(
+    "resultado"
+  ).textContent =
+    JSON.stringify(json, null, 2);
+
+}
+
+</script>
+
+</body>
+</html>
