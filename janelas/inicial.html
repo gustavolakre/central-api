@@ -210,6 +210,19 @@ button:hover{
     font-size:15px;
 }
 
+input[type=file]{
+
+    padding:12px;
+
+    background:white;
+
+    border:1px solid #d1d5db;
+
+    border-radius:10px;
+
+    margin-right:10px;
+}
+
 </style>
 
 </head>
@@ -224,33 +237,19 @@ button:hover{
 
     <!-- TOPO -->
 
-   <div class="topo">
+ <div class="topo">
 
-    <label>Semana:</label>
-
-    <select id="semanaImportacao">
-
-        <option value="">Todas</option>
-
-
-        <option value="2026/26">2026/26</option>
-        <option value="2026/25">2026/25</option>
-        <option value="2026/24">2026/24</option>
-        <option value="2026/23">2026/23</option>
-        <option value="2026/22">2026/22</option>
-        <option value="2026/21">2026/21</option>
-        <option value="2026/20">2026/20</option>
-        <option value="2026/19">2026/19</option>
-
-    </select>
+    <input
+        type="file"
+        id="arquivoExcel"
+        accept=".xlsx,.xls"
+    >
 
     <button
         class="btnAtualizar"
-        onclick="atualizarPipefy()"
+        onclick="importarPlanilha()"
     >
-
-        Atualizar Dados do Pipefy
-
+        Importar Planilha
     </button>
 
 </div>
@@ -334,68 +333,6 @@ button:hover{
 
 <script>
 
-async function atualizarPipefy(){
-
-    const status =
-        document.getElementById("status")
-
-    try{
-
-        status.innerHTML =
-            "Atualizando cargas..."
-
-
-        /* =====================================
-           IMPORTAR CARGAS
-        ===================================== */
-
-        const semana =
-           document.getElementById(
-           "semanaImportacao"
-        ).value
-
-        await fetch(
-           `/importar-pipefy?semana=${encodeURIComponent(semana)}`,
-        {
-             method:"GET"
-            }
-        )
-
-
-
-        /* =====================================
-           IMPORTAR PARCEIROS
-        ===================================== */
-
-  //      status.innerHTML =
-    //        "Atualizando parceiros..."
-//
-
-   //     await fetch(
-   //         "/importar-parceiros",
-   //         {
-   //             method:"GET"
-   //         }
-   //     )
-
-
-
-        status.innerHTML =
-            "Atualização concluída com sucesso."
-
-    }
-
-    catch(err){
-
-        console.error(err)
-
-        status.innerHTML =
-            "Erro ao atualizar dados."
-
-    }
-
-}
-
 
 /* =========================================
    ABRIR TELAS
@@ -424,6 +361,96 @@ function abrirFinanceiro(){
 
     window.location.href =
          "/janelas/fluxo-de-caixa.html"
+
+}
+
+async function importarPlanilha(){
+
+    const status =
+        document.getElementById("status");
+
+    const botao =
+        document.querySelector(".btnAtualizar");
+
+    const arquivo =
+        document.getElementById(
+            "arquivoExcel"
+        ).files[0];
+
+    if(!arquivo){
+
+        alert(
+            "Selecione uma planilha."
+        );
+
+        return;
+    }
+
+    try{
+
+        status.innerHTML =
+            "Enviando arquivo...";
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "arquivo",
+            arquivo
+        );
+
+     const resposta =
+        await fetch(
+           "/importar-cargas",
+          {
+            method:"POST",
+            body:formData
+           }
+       );
+
+      if(!resposta.ok){
+
+      throw new Error(
+        "Erro na resposta do servidor"
+    );
+}
+            
+
+        const dados =
+            await resposta.json();
+
+        if(dados.sucesso){
+             status.innerHTML =
+        `
+       ✅ Importação concluída com sucesso.
+
+         <br><br>
+
+        <b>${dados.importados}</b>
+        registros importados.
+        `;
+
+        }else{
+
+            status.innerHTML =
+                "Erro na importação.";
+
+        }
+
+    }catch(err){
+
+        console.error(err);
+
+        status.innerHTML =
+            "Erro ao importar planilha.";
+
+    }finally{
+
+   botao.disabled = false;
+   botao.innerHTML =
+       "Importar Planilha";
+
+}
 
 }
 
