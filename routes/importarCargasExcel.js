@@ -205,7 +205,17 @@ DO UPDATE SET
   raw_data = EXCLUDED.raw_data
 `;
 
+
+if (!carga["Embarque"]) {
+  console.log(
+    "EMBARQUE VAZIO:",
+    carga["Código"]
+  );
+}
+
  const valores = [
+
+  
 
   Number(carga["Código"]),
 
@@ -232,9 +242,9 @@ DO UPDATE SET
   texto(carga["N Nota de Venda"]),
   texto(carga["Pagamento realizado?"]),
 
-  carga["Embarque"],
-  carga["Descarga"],
-  carga["Data Vencimento Financeiro"],
+  data(carga["Embarque"]),
+  data(carga["Descarga"]),
+  data(carga["Data Vencimento Financeiro"]),
 
   texto(carga["Etiquetas"]),
 
@@ -307,5 +317,19 @@ res.json({
 
   }
 );
+
+
+function data(valor) {
+
+  if (
+    valor === null ||
+    valor === undefined ||
+    valor === ""
+  ) {
+    return null;
+  }
+
+  return valor;
+}
 
 module.exports = router;
