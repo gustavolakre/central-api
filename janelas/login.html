@@ -45,13 +45,13 @@ async function entrar(){
         );
 
     const dados =
+
+    
         await resposta.json();
 
-        console.log("Email recebido:", usuario);
-console.log("Usuários encontrados:", resultado.rows.length);
-console.log("Hash encontrado:", usuarioDb.senha);
-console.log("Senha válida:", senhaValida);
-        
+        console.log("senha digitada:", senha);
+        console.log("hash banco:", user.senha);
+        console.log("começa com $2a?:", user.senha.startsWith("$2a$"));
 
         console.log(dados);
 
