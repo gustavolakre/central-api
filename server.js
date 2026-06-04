@@ -23,6 +23,8 @@ const pool = require("./src/db/database")
 
 const app = express()
 
+const bcrypt = require("bcrypt");
+
 const jwt = require("jsonwebtoken");
 
 const autenticar =
@@ -89,42 +91,76 @@ app.listen(PORT, "0.0.0.0", () => {
 
 })
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
 
-    const { usuario, senha } = req.body;
+    try {
 
-    if (
-        usuario !== process.env.ADMIN_USER ||
-        senha !== process.env.ADMIN_PASSWORD
-    ) {
+        const { usuario, senha } = req.body;
 
-        return res.status(401).json({
-            sucesso: false,
-            erro: "Usuário ou senha inválidos"
+        console.log("Email recebido:", usuario);
+
+        const resultado =
+            await pool.query(
+                `
+                SELECT *
+                FROM usuarios
+                WHERE email = $1
+                `,
+                [usuario]
+            );
+
+        console.log(
+            "Usuários encontrados:",
+            resultado.rows.length
+        );
+
+        if(resultado.rows.length === 0){
+
+            return res.status(401).json({
+                sucesso:false,
+                erro:"Usuário não encontrado"
+            });
+
+        }
+
+        const usuarioDb =
+            resultado.rows[0];
+
+        console.log(
+            "Hash banco:",
+            usuarioDb.senha
+        );
+
+        const senhaValida =
+            await bcrypt.compare(
+                senha,
+                usuarioDb.senha
+            );
+
+        console.log(
+            "Senha válida:",
+            senhaValida
+        );
+
+        if(!senhaValida){
+
+            return res.status(401).json({
+                sucesso:false,
+                erro:"Senha inválida"
+            });
+
+        }
+
+        // restante do login...
+
+    } catch(err){
+
+        console.error(err);
+
+        res.status(500).json({
+            sucesso:false
         });
 
     }
-
-    const token = jwt.sign(
-
-        {
-            usuario
-        },
-
-        process.env.JWT_SECRET,
-
-        {
-            expiresIn: "8h"
-        }
-
-    );
-
-    res.json({
-
-        sucesso: true,
-
-        token
-
-    });
 
 });
