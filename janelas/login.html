@@ -47,6 +47,14 @@ async function entrar(){
     const dados =
         await resposta.json();
 
+        console.log("Email recebido:", usuario);
+console.log("Usuários encontrados:", resultado.rows.length);
+console.log("Hash encontrado:", usuarioDb.senha);
+console.log("Senha válida:", senhaValida);
+        
+
+        console.log(dados);
+
     if(dados.token){
 
         localStorage.setItem(
