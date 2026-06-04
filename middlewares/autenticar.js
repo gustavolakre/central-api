@@ -1,0 +1,55 @@
+const jwt = require("jsonwebtoken");
+
+module.exports = function autenticar(
+    req,
+    res,
+    next
+){
+
+    const auth =
+        req.headers.authorization;
+
+    if(
+        !auth ||
+        !auth.startsWith("Bearer ")
+    ){
+
+        return res.status(401).json({
+            erro: "Token não informado"
+        });
+
+    }
+
+    const token =
+        auth.replace(
+            "Bearer ",
+            ""
+        );
+
+    try{
+
+        const payload =
+            jwt.verify(
+                token,
+                process.env.JWT_SECRET
+            );
+
+        req.usuario =
+            payload;
+
+        next();
+
+    }catch(error){
+
+        console.error(
+            "Erro JWT:",
+            error.message
+        );
+
+        return res.status(401).json({
+            erro: "Token inválido"
+        });
+
+    }
+
+};

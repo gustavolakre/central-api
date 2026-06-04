@@ -23,6 +23,11 @@ const pool = require("./src/db/database")
 
 const app = express()
 
+const jwt = require("jsonwebtoken");
+
+const autenticar =
+    require("./middlewares/autenticar");
+
 app.use(cors())
 app.use(express.json())
 
@@ -33,12 +38,13 @@ app.use(
 
 app.use(
   "/importar-parceiros-excel",
-  require("./routes/importarParceirosExcel")
+  autenticar,
+  importarParceirosExcel
 );
 
 
 app.use("/importar-pipefy", importarPipefy)
-app.use("/importar-parceiros", importarParceiros)
+app.use("/importar-parceiros", autenticar, importarParceiros)
 app.use("/gerar-faturamento", gerarFaturamento)
 
 app.use("/buscarDados", buscarCargas)
@@ -51,8 +57,9 @@ app.use("/contas-gerenciais", contasGerenciaisRoutes)
 
 
 app.use(
-  "/importar-cargas",
-  importarCargasExcel
+    "/importar-cargas",
+    autenticar,
+    importarCargasExcel
 );
 
 
@@ -81,3 +88,43 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor rodando na porta ${PORT}`)
 
 })
+
+app.post("/login", (req, res) => {
+
+    const { usuario, senha } = req.body;
+
+    if (
+        usuario !== process.env.ADMIN_USER ||
+        senha !== process.env.ADMIN_PASSWORD
+    ) {
+
+        return res.status(401).json({
+            sucesso: false,
+            erro: "Usuário ou senha inválidos"
+        });
+
+    }
+
+    const token = jwt.sign(
+
+        {
+            usuario
+        },
+
+        process.env.JWT_SECRET,
+
+        {
+            expiresIn: "8h"
+        }
+
+    );
+
+    res.json({
+
+        sucesso: true,
+
+        token
+
+    });
+
+});

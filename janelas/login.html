@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<input
+    id="usuario"
+    placeholder="Usuário"
+>
+
+<input
+    id="senha"
+    type="password"
+    placeholder="Senha"
+>
+
+<button onclick="entrar()">
+    Entrar
+</button>
+
+<script>
+
+async function entrar(){
+
+    const resposta =
+        await fetch(
+            "/login",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                    "application/json"
+                },
+
+                body:JSON.stringify({
+
+                    usuario:
+                        document.getElementById("usuario").value,
+
+                    senha:
+                        document.getElementById("senha").value
+
+                })
+            }
+        );
+
+    const dados =
+        await resposta.json();
+
+    if(dados.token){
+
+        localStorage.setItem(
+            "token",
+            dados.token
+        );
+
+        window.location.href =
+            "/janelas/tela-inicial.html";
+
+    }else{
+
+        alert(
+            "Login inválido"
+        );
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
