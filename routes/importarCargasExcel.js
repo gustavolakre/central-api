@@ -41,12 +41,6 @@ const upload = multer({
 
 const BATCH_SIZE = 200;
 
-if (req.usuario.perfil !== "admin") {
-  return res.status(403).json({
-    erro: "Acesso negado"
-  });
-}
-
 function numero(valor) {
   if (
     valor === null ||
@@ -87,13 +81,19 @@ function data(valor) {
   return valor;
 }
 
-const validarToken = require("../middlewares/validarToken");
+const autenticar = require("../middlewares/autenticar");
 
 router.post(
   "/",
-  validarToken,
+  autenticar,
   upload.single("arquivo"),
   async (req, res) => {
+
+      if (req.usuario.perfil !== "admin") {
+      return res.status(403).json({
+        erro: "Acesso negado"
+      });
+    }
 
     try {
 

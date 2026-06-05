@@ -1,11 +1,11 @@
 const express = require("express");
 const axios = require("axios");
 const pool = require("../src/db/database");
-const validarToken = require("../middlewares/validarToken");
+const autenticar = require("../middlewares/autenticar");
 
 const router = express.Router();
 
-router.use(validarToken);
+router.use(autenticar);
 
 const TABLE_ID = 304131925;
 

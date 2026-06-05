@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const XLSX = require("xlsx");
 const pool = require("../src/db/database");
+const autenticar = require("../middlewares/autenticar");
 
 const router = express.Router();
 
