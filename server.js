@@ -4,7 +4,6 @@ const path = require("path")
 const express = require("express")
 const cors = require("cors")
 
-const importarPipefy = require("./routes/importarPipefy")
 const importarParceiros = require("./routes/importarParceiros")
 const gerarFaturamento = require("./routes/gerarFaturamento")
 const buscarCargas = require("./routes/buscarCargas")
@@ -45,7 +44,6 @@ app.use(
 );
 
 
-app.use("/importar-pipefy", importarPipefy)
 app.use("/importar-parceiros", autenticar, importarParceiros)
 app.use("/gerar-faturamento", gerarFaturamento)
 
