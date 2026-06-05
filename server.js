@@ -32,11 +32,19 @@ const autenticar =
 app.use(cors())
 app.use(express.json())
 
+// Login público
+app.get("/login", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "janelas", "login.html")
+  );
+});
+
+// Todas as demais janelas protegidas
 app.use(
   "/janelas",
   autenticar,
   express.static(path.join(__dirname, "janelas"))
-)
+);
 
 app.use(
   "/importar-parceiros-excel",
