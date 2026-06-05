@@ -3,6 +3,8 @@
 
 <head>
 
+    
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
@@ -730,6 +732,61 @@ const API =
     "https://api-production-6670.up.railway.app"
 
 
+async function validarLogin(){
+
+    const token =
+        localStorage.getItem("token");
+
+    if(!token){
+
+        window.location.href =
+            "/login.html";
+
+        return false;
+    }
+
+    const resposta =
+        await fetch(
+            `${API}/validar-token`,
+            {
+                headers:{
+                    Authorization:
+                        `Bearer ${token}`
+                }
+            }
+        );
+
+    if(!resposta.ok){
+
+        localStorage.removeItem(
+            "token"
+        );
+
+        window.location.href =
+            "/login.html";
+
+        return false;
+    }
+
+    return true;
+}
+
+function authHeaders(extra = {}){
+
+    return {
+
+        ...extra,
+
+        Authorization:
+            `Bearer ${
+                localStorage.getItem("token")
+            }`
+
+    };
+
+}
+
+
     
 
 
@@ -767,7 +824,12 @@ async function carregarRelatorio(){
     try{
 
         const response =
-            await fetch(`${API}/financeiro`)
+            await fetch(
+              `${API}/financeiro`,
+        {
+             headers: authHeaders()
+        }
+    )
 
         const dados =
             await response.json()
@@ -1163,7 +1225,12 @@ async function exportarBackupFinanceiro(){
     try{
 
         const response =
-            await fetch(`${API}/financeiro`)
+            await fetch(
+              `${API}/financeiro`,
+           {
+               headers: authHeaders()
+           }
+       )
 
         const dados =
             await response.json()
@@ -1341,7 +1408,12 @@ async function carregarParceiros(){
         
 
         const response =
-            await fetch("/buscarParceiros")
+            await fetch(
+              "/buscarParceiros",
+          {
+               headers: authHeaders()
+          }
+      )
 
         const parceiros =
             await response.json()
@@ -1395,8 +1467,20 @@ async function carregarParceiros(){
 }
 
 
-carregarParceiros()
-carregarRelatorio()
+(async()=>{
+
+    const autorizado =
+        await validarLogin();
+
+    if(!autorizado){
+        return;
+    }
+
+    carregarParceiros();
+
+    carregarRelatorio();
+
+})();
 
 </script>
 

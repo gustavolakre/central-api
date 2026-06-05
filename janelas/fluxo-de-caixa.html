@@ -478,12 +478,63 @@ const API =
 
 
 
+async function validarLogin(){
+
+    const token =
+        localStorage.getItem("token");
+
+    if(!token){
+
+        window.location.href =
+            "/login.html";
+
+        return false;
+    }
+
+    const resposta =
+        await fetch(
+            `${API}/validar-token`,
+            {
+                headers:{
+                    Authorization:
+                        `Bearer ${token}`
+                }
+            }
+        );
+
+    if(!resposta.ok){
+
+        localStorage.removeItem(
+            "token"
+        );
+
+        window.location.href =
+            "/login.html";
+
+        return false;
+    }
+
+    return true;
+}
+
+
+
 async function carregarBancos(){
 
     try{
 
         const response =
-            await fetch(`${API}/bancos`)
+            await fetch(
+                `${API}/bancos`,
+            {
+                  headers:{
+                  Authorization:
+                    `Bearer ${
+                       localStorage.getItem("token")
+                  }`
+              }
+           }
+    )
 
         const bancos =
             await response.json()
@@ -528,13 +579,20 @@ async function anularBaixa(id){
 
         await fetch(
 
-            `${API}/financeiro/${id}/anular-baixa`,
+             `${API}/financeiro/${id}/anular-baixa`,
 
-            {
-                method:"PUT"
-            }
+        {
+              method:"PUT",
 
-        )
+           headers:{
+               Authorization:
+                  `Bearer ${
+                      localStorage.getItem("token")
+                 }`
+          }
+       }
+
+    )
 
         alert("Baixa anulada")
 
@@ -577,7 +635,18 @@ async function carregarFluxo(){
     try{
 
         const response =
-            await fetch(`${API}/financeiro/fluxo`)
+            await fetch(
+              `${API}/financeiro/fluxo`,
+            {
+               headers:{
+               Authorization:
+                `Bearer ${
+                    localStorage.getItem("token")
+                }`
+             }
+          }
+       )
+            
 
         const dados =
             await response.json()
@@ -844,10 +913,20 @@ async function carregarFluxo(){
 
 
 
+(async()=>{
 
-carregarBancos()
+    const autorizado =
+        await validarLogin();
 
-carregarFluxo()
+    if(!autorizado){
+        return;
+    }
+
+    carregarBancos();
+
+    carregarFluxo();
+
+})();
 
 </script>
 

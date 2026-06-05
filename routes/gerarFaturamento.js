@@ -1,7 +1,10 @@
 const express = require("express");
 const pool = require("../src/db/database");
+const validarToken = require("../middlewares/validarToken");
 
 const router = express.Router();
+
+router.use(validarToken);
 
 router.get("/", async (req, res) => {
 

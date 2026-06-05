@@ -119,6 +119,7 @@
         table {
 
             max-width: 100%;
+            
 
             box-sizing: border-box;
 
@@ -243,6 +244,41 @@
         let registrosFaturados = []
 
         const API_URL = "https://api-production-6670.up.railway.app"
+
+        function getAuthHeaders() {
+
+            async function verificar401(response) {
+
+            if (response.status === 401) {
+
+                localStorage.removeItem("token")
+
+                alert("Sessão expirada. Faça login novamente.")
+
+                location.href = "login.html"
+
+                throw new Error("Token expirado")
+            }
+
+                return response
+           }
+
+           const token = localStorage.getItem("token")
+
+        if (!token) {
+
+            alert("Sessão expirada")
+            location.href = "login.html"
+
+            throw new Error("Sem token")
+        }
+
+        return {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        }
+
 
         function abrirSessao() {
             document.getElementById("arquivoSessao").click()
@@ -1395,6 +1431,8 @@ async function salvarCard(id) {
             }
           )
 
+          await verificar401(response)
+
           const data = await response.json()
 
           console.log(
@@ -1667,13 +1705,16 @@ async function enviarFaturadosParaPipefy() {
 
     try {
 
-        const response = await fetch(`${API_URL}/importar-pipefy`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ cards })
-        })
+        const response = await fetch(
+            `${API_URL}/importar-pipefy`,
+        {
+             method:"POST",
+             headers:getAuthHeaders(),
+             body:JSON.stringify({ cards })
+        }
+       )
+
+       await verificar401(response)
 
         const data = await response.json()
 
@@ -1738,8 +1779,15 @@ async function carregarDadosBanco() {
     try {
 
         const response = await fetch(
-               `${API_URL}/buscarDados`
-        )
+          `${API_URL}/buscarDados`,
+        {
+            headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+    )
+
+    await verificar401(response)
 
         dadosPlanilha = await response.json()
 
@@ -1871,8 +1919,15 @@ async function carregarParceirosBanco() {
 try {
 
     const response = await fetch(
-          `${API_URL}/buscarParceiros`
-    )
+        `${API_URL}/buscarParceiros`,
+    {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    }
+)
+
+await verificar401(response)
 
     baseParceiros = await response.json()
 
@@ -1902,16 +1957,17 @@ try {
                 cardId: d["Código"],
                 nf: nf
             }))
-            let res = await fetch(`${API_URL}/importar-pipefy`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    cards: cards,
-                    tipo: tipo
-                })
-            })
+              let res = await fetch(
+                `${API_URL}/importar-pipefy`,
+             {
+                 method:"POST",
+                 headers:getAuthHeaders(),
+                  body:JSON.stringify({
+                cards,
+                tipo
+             })
+            }
+        )
             let data = await res.json()
             console.log("Resposta Pipefy:", data)
         }

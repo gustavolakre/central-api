@@ -10,10 +10,42 @@ router.get("/", (req, res) => {
 });
 
 const upload = multer({
-  storage: multer.memoryStorage()
+  storage: multer.memoryStorage(),
+
+  limits: {
+    fileSize: 20 * 1024 * 1024 // 20MB
+  },
+
+  fileFilter: (req, file, cb) => {
+
+    const permitidos = [
+      ".xlsx",
+      ".xls"
+    ];
+
+    const nome = file.originalname.toLowerCase();
+
+    const valido = permitidos.some(ext =>
+      nome.endsWith(ext)
+    );
+
+    if (!valido) {
+      return cb(
+        new Error("Apenas arquivos Excel são permitidos")
+      );
+    }
+
+    cb(null, true);
+  }
 });
 
 const BATCH_SIZE = 200;
+
+if (req.usuario.perfil !== "admin") {
+  return res.status(403).json({
+    erro: "Acesso negado"
+  });
+}
 
 function numero(valor) {
   if (
@@ -55,8 +87,11 @@ function data(valor) {
   return valor;
 }
 
+const validarToken = require("../middlewares/validarToken");
+
 router.post(
   "/",
+  validarToken,
   upload.single("arquivo"),
   async (req, res) => {
 
@@ -89,6 +124,14 @@ router.post(
 
 
       console.log("Total linhas:", dados.length);
+
+      const LIMITE_LINHAS = 50000;
+
+       if (dados.length > LIMITE_LINHAS) {
+          return res.status(400).json({
+              erro: `Planilha excede o limite de ${LIMITE_LINHAS} linhas`
+         });
+       }
 
       const sql = `
         INSERT INTO controle_cargas (
@@ -377,13 +420,19 @@ router.post(
 
     } catch (err) {
 
-      console.error(err);
+  console.error(err);
 
-      return res.status(500).json({
-        erro: err.message
-      });
+  if (err.code === "LIMIT_FILE_SIZE") {
+    return res.status(400).json({
+      erro: "Arquivo maior que 20MB"
+    });
+  }
 
-    }
+  return res.status(500).json({
+    erro: err.message
+  });
+
+}
 
   }
 );

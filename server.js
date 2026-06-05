@@ -55,6 +55,44 @@ app.use("/buscarParceiros", buscarParceiros)
 app.use("/financeiro", financeiro)
 app.use("/bancos", bancos)
 
+//app.use(
+//    "/financeiro",
+//    autenticar,
+//    financeiro
+//);
+
+//app.use(
+//    "/bancos",
+//    autenticar,
+//    bancos
+//);
+
+//app.use(
+//    "/buscarParceiros",
+//    autenticar,
+//    buscarParceiros
+//);
+
+//app.use(
+//    "/contas-gerenciais",
+//    autenticar,
+//    contasGerenciaisRoutes
+//);
+
+//app.use(
+//    "/financeiro",
+//    autenticar,
+//    financeiro
+// );
+
+//app.use(
+//    "/bancos",
+//    autenticar,
+//    bancos
+// );
+
+
+
 app.use("/contas-gerenciais", contasGerenciaisRoutes)
 
 
@@ -84,6 +122,19 @@ app.get("/", async (req, res) => {
 })
 
 const PORT = process.env.PORT || 3000
+
+app.get(
+    "/validar-token",
+    autenticar,
+    (req,res)=>{
+
+        res.json({
+            sucesso:true,
+            usuario:req.usuario
+        });
+
+    }
+);
 
 app.listen(PORT, "0.0.0.0", () => {
 
@@ -126,43 +177,6 @@ app.post("/login", async (req, res) => {
         const usuarioDb =
             resultado.rows[0];
 
-        console.log(
-    "Senha recebida:",
-    JSON.stringify(senha)
-);
-
-console.log(
-    "Hash banco:",
-    usuarioDb.senha
-);
-
-console.log(
-    "Tamanho hash:",
-    usuarioDb.senha.length
-);
-
-const senhaValida =
-    await bcrypt.compare(
-        senha,
-        usuarioDb.senha
-    );
-
-console.log(
-    "Senha válida:",
-    senhaValida
-);
-
-// TESTE TEMPORÁRIO
-const teste =
-    await bcrypt.compare(
-        "SuaSenha123",
-        usuarioDb.senha
-    );
-
-console.log(
-    "Teste fixo:",
-    teste
-);
 
         if(!senhaValida){
 
@@ -172,6 +186,24 @@ console.log(
             });
 
         }
+
+
+        const token =
+    jwt.sign(
+        {
+            id: usuarioDb.id,
+            email: usuarioDb.email
+        },
+        process.env.JWT_SECRET,
+        {
+            expiresIn: "8h"
+        }
+    );
+
+return res.json({
+    sucesso:true,
+    token
+});
 
         // restante do login...
 

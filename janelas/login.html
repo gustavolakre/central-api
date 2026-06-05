@@ -19,6 +19,14 @@
 
 <script>
 
+
+if(localStorage.getItem("token")){
+
+    window.location.href =
+        "/janelas/inicial.html";
+
+}
+
 async function entrar(){
 
     const resposta =
@@ -49,10 +57,6 @@ async function entrar(){
     
         await resposta.json();
 
-        console.log("senha digitada:", senha);
-        console.log("hash banco:", user.senha);
-        console.log("começa com $2a?:", user.senha.startsWith("$2a$"));
-
         console.log(dados);
 
     if(dados.token){
@@ -63,12 +67,12 @@ async function entrar(){
         );
 
         window.location.href =
-            "/janelas/tela-inicial.html";
+            "/janelas/inicial.html";
 
     }else{
 
         alert(
-            "Login inválido"
+            dados.erro || "Login inválido"
         );
 
     }

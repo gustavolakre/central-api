@@ -6,7 +6,38 @@ const pool = require("../src/db/database");
 const router = express.Router();
 
 const upload = multer({
-  storage: multer.memoryStorage()
+  storage: multer.memoryStorage(),
+
+  limits: {
+    fileSize: 20 * 1024 * 1024
+  },
+
+  fileFilter: (req, file, cb) => {
+
+    const permitidos = [
+      ".xlsx",
+      ".xls"
+    ];
+
+    const nome =
+      file.originalname.toLowerCase();
+
+    const valido =
+      permitidos.some(ext =>
+        nome.endsWith(ext)
+      );
+
+    if (!valido) {
+      return cb(
+        new Error(
+          "Apenas arquivos Excel são permitidos"
+        )
+      );
+    }
+
+    cb(null, true);
+
+  }
 });
 
 const BATCH_SIZE = 500;
@@ -25,16 +56,21 @@ function texto(valor) {
   return String(valor).trim();
 }
 
-router.get("/", (req, res) => {
+router.get(
+  "/",
+  autenticar,
+  (req, res) => {
 
-  res.send(
-    "ROTA IMPORTAR PARCEIROS EXCEL OK"
-  );
+    res.send(
+      "ROTA IMPORTAR PARCEIROS EXCEL OK"
+    );
 
-});
+  }
+);
 
 router.post(
   "/",
+  autenticar,
   upload.single("arquivo"),
   async (req, res) => {
 
@@ -74,6 +110,17 @@ router.post(
         "TOTAL PARCEIROS:",
         dados.length
       );
+
+      const LIMITE_LINHAS = 50000;
+
+      if (dados.length > LIMITE_LINHAS) {
+
+              return res.status(400).json({
+             erro:
+            `Planilha excede o limite de ${LIMITE_LINHAS} linhas`
+        });
+
+      }
 
       console.time(
         "IMPORTACAO_PARCEIROS"

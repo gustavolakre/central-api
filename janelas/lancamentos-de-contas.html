@@ -872,7 +872,62 @@ tr:hover{
 
 <script>
 
+
+async function validarLogin(){
+
+    const token =
+        localStorage.getItem("token");
+
+    if(!token){
+
+        window.location.href =
+            "/login.html";
+
+        return false;
+    }
+
+    const resposta =
+        await fetch(
+            `${API}/validar-token`,
+            {
+                headers:{
+                    Authorization:
+                        `Bearer ${token}`
+                }
+            }
+        );
+
+    if(!resposta.ok){
+
+        localStorage.removeItem(
+            "token"
+        );
+
+        window.location.href =
+            "/login.html";
+
+        return false;
+    }
+
+    return true;
+}
+
 const API = "https://api-production-6670.up.railway.app"
+
+
+
+function authHeaders(extra = {}){
+
+    return {
+        ...extra,
+
+        Authorization:
+            `Bearer ${
+                localStorage.getItem("token")
+            }`
+    };
+
+}
 
 async function salvarLancamento(){
 
@@ -948,9 +1003,9 @@ async function salvarLancamento(){
 
                 method:metodo,
 
-                headers:{
-                    "Content-Type":"application/json"
-                },
+                headers: authHeaders({
+                   "Content-Type":"application/json"
+             }),
 
                 body:JSON.stringify(body)
 
@@ -1072,9 +1127,10 @@ async function excluirLancamento(id){
             `${API}/financeiro/${id}`,
 
             {
-                method:"DELETE"
-            }
+               method:"DELETE",
 
+               headers: authHeaders()
+            }
         )
 
         carregarLancamentos()
@@ -1096,9 +1152,12 @@ async function carregarContasGerenciais(){
 
     try{
 
-        const response = await fetch(
-            `${API}/contas-gerenciais`
-        )
+       const response = await fetch(
+            `${API}/contas-gerenciais`,
+        {
+             headers: authHeaders()
+        }
+    )
 
         const contas = await response.json()
 
@@ -1146,7 +1205,12 @@ async function carregarParceiros(){
     try{
 
         const response =
-            await fetch("/buscarParceiros")
+          await fetch(
+            "/buscarParceiros",
+         {
+              headers: authHeaders()
+         }
+       )
 
         const parceiros =
             await response.json()
@@ -1199,7 +1263,12 @@ async function carregarBancosBaixa(){
     try{
 
         const response =
-            await fetch(`${API}/bancos`)
+           await fetch(
+            `${API}/bancos`,
+          {
+             headers: authHeaders()
+         }
+      )
 
         const bancos =
             await response.json()
@@ -1449,7 +1518,9 @@ async function excluirBaixaParcial(){
             `${API}/financeiro/${lancamentoAtual}/anular-baixa`,
 
             {
-                method:"PUT"
+               method:"PUT",
+
+              headers: authHeaders()
             }
 
         )
@@ -1536,9 +1607,9 @@ async function confirmarBaixa(){
 
                 method:"PUT",
 
-                headers:{
-                    "Content-Type":"application/json"
-                },
+                headers: authHeaders({
+                     "Content-Type":"application/json"
+                }),
 
                 body:JSON.stringify({
 
@@ -1583,7 +1654,12 @@ async function carregarLancamentos(){
     try{
 
         const response =
-            await fetch(`${API}/financeiro`)
+         await fetch(
+            `${API}/financeiro`,
+        {
+            headers: authHeaders()
+        }
+    )
 
         const dados =
             await response.json()
@@ -1994,10 +2070,24 @@ document.getElementById(
     .split("T")[0]
 
 
-carregarParceiros()
-carregarLancamentos()
-carregarBancosBaixa()
-carregarContasGerenciais()
+(async()=>{
+
+    const autorizado =
+        await validarLogin();
+
+    if(!autorizado){
+        return;
+    }
+
+    carregarParceiros();
+
+    carregarLancamentos();
+
+    carregarBancosBaixa();
+
+    carregarContasGerenciais();
+
+})();
 
 </script>
 
