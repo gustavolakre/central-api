@@ -4,7 +4,6 @@ const path = require("path")
 const express = require("express")
 const cors = require("cors")
 
-const importarParceiros = require("./routes/importarParceiros")
 const gerarFaturamento = require("./routes/gerarFaturamento")
 const buscarCargas = require("./routes/buscarCargas")
 const buscarParceiros = require("./routes/buscarParceiros")
@@ -42,7 +41,6 @@ app.get("/login", (req, res) => {
 // Todas as demais janelas protegidas
 app.use(
   "/janelas",
-  autenticar,
   express.static(path.join(__dirname, "janelas"))
 );
 
@@ -89,30 +87,10 @@ app.use(
     importarCargasExcel
 );
 
-app.get("/login", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "janelas", "login.html")
-  );
+
+app.get("/", (req, res) => {
+  res.redirect("/login");
 });
-
-
-app.get("/", async (req, res) => {
-
-  try {
-
-    await pool.query("SELECT NOW()")
-
-    res.status(200).send("API ONLINE")
-
-  } catch (err) {
-
-    console.error(err)
-
-    res.status(500).send("ERRO DB")
-
-  }
-
-})
 
 const PORT = process.env.PORT || 3000
 
