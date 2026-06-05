@@ -34,6 +34,7 @@ app.use(express.json())
 
 app.use(
   "/janelas",
+  autenticar,
   express.static(path.join(__dirname, "janelas"))
 )
 
@@ -43,7 +44,11 @@ app.use(
   importarParceirosExcel
 );
 
-app.use("/gerar-faturamento", gerarFaturamento)
+app.use(
+    "/gerar-faturamento",
+    autenticar,
+    gerarFaturamento
+);
 
 
 app.use(
@@ -69,19 +74,6 @@ app.use(
     autenticar,
     contasGerenciaisRoutes
 );
-
-app.use(
-    "/financeiro",
-    autenticar,
-    financeiro
- );
-
-app.use(
-    "/bancos",
-    autenticar,
-    bancos
- );
-
 
 app.use(
     "/importar-cargas",

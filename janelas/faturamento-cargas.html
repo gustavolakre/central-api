@@ -128,6 +128,9 @@
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script src="/janelas/auth.js"></script>
+
 </head>
 
 <body>
@@ -247,37 +250,18 @@
 
         function getAuthHeaders() {
 
-            async function verificar401(response) {
-
-            if (response.status === 401) {
-
-                localStorage.removeItem("token")
-
-                alert("Sessão expirada. Faça login novamente.")
-
-                location.href = "login.html"
-
-                throw new Error("Token expirado")
-            }
-
-                return response
-           }
-
            const token = localStorage.getItem("token")
 
-        if (!token) {
+           if (!token) {
+             location.href = "login.html"
+             throw new Error("Sem token")
+           }
 
-            alert("Sessão expirada")
-            location.href = "login.html"
-
-            throw new Error("Sem token")
-        }
-
-        return {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          }
-        }
+           return {
+             "Content-Type": "application/json",
+             "Authorization": `Bearer ${token}`
+            }
+         }
 
 
         function abrirSessao() {
@@ -1420,16 +1404,11 @@ async function salvarCard(id) {
 
         try {
 
-          const response = await fetch(
-             `${API_URL}/pipefy`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({ cards })
-            }
-          )
+          const response = await fetch(`${API_URL}/pipefy`, {
+             method: "POST",
+             headers: getAuthHeaders(),
+             body: JSON.stringify({ cards })
+          })
 
           await verificar401(response)
 
@@ -1589,15 +1568,12 @@ async function criarCardsPipefy() {
 
   try {
 
-    let res = await fetch(`${API_URL}/importar-pipefy`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        createCards: lista
-      })
-    })
+    let res = await fetch(`${API_URL}/pipefy`, {
+          method: "POST",
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ cards })
+     })
+
 
     let data = await res.json()
 
@@ -1773,6 +1749,22 @@ async function enviarFaturadosParaPipefy() {
 }
 
 
+async function verificar401(response) {
+
+  if (response.status === 401) {
+
+    localStorage.removeItem("token")
+
+    alert("Sessão expirada. Faça login novamente.")
+
+    location.href = "login.html"
+
+    throw new Error("Não autorizado")
+  }
+
+}
+
+
 
 async function carregarDadosBanco() {
 
@@ -1781,9 +1773,7 @@ async function carregarDadosBanco() {
         const response = await fetch(
           `${API_URL}/buscarDados`,
         {
-            headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
+            headers: getAuthHeaders()
         }
     )
 
@@ -1921,9 +1911,7 @@ try {
     const response = await fetch(
         `${API_URL}/buscarParceiros`,
     {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
+        headers: getAuthHeaders()
     }
 )
 
@@ -2273,11 +2261,19 @@ await verificar401(response)
   reader.readAsText(file)
 })
 
-;window.addEventListener("DOMContentLoaded", async () => {
+window.addEventListener("DOMContentLoaded", async () => {
 
-    await carregarParceirosBanco()
+    try {
 
-    await carregarDadosBanco()
+        await carregarParceirosBanco()
+
+        await carregarDadosBanco()
+
+    } catch(err) {
+
+        console.error(err)
+
+    }
 
 })
 

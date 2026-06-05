@@ -323,6 +323,8 @@
 
     </style>
 
+    <script src="/janelas/auth.js"></script>
+
 </head>
 
 <body>
@@ -475,47 +477,6 @@
 
 const API =
     "https://api-production-6670.up.railway.app"
-
-
-
-async function validarLogin(){
-
-    const token =
-        localStorage.getItem("token");
-
-    if(!token){
-
-        window.location.href =
-            "/login.html";
-
-        return false;
-    }
-
-    const resposta =
-        await fetch(
-            `${API}/validar-token`,
-            {
-                headers:{
-                    Authorization:
-                        `Bearer ${token}`
-                }
-            }
-        );
-
-    if(!resposta.ok){
-
-        localStorage.removeItem(
-            "token"
-        );
-
-        window.location.href =
-            "/login.html";
-
-        return false;
-    }
-
-    return true;
-}
 
 
 
@@ -914,13 +875,6 @@ async function carregarFluxo(){
 
 
 (async()=>{
-
-    const autorizado =
-        await validarLogin();
-
-    if(!autorizado){
-        return;
-    }
 
     carregarBancos();
 

@@ -404,9 +404,56 @@ if(
         "janelas/login.html";
 }
 
+validarToken();
+
 /* =========================================
    ABRIR TELAS
 ========================================= */
+
+
+async function validarToken(){
+
+    try{
+
+        const resposta =
+            await fetch(
+                "/validar-token",
+                {
+                    headers:{
+                        Authorization:
+                            `Bearer ${
+                                localStorage.getItem(
+                                    "token"
+                                )
+                            }`
+                    }
+                }
+            );
+
+        if(!resposta.ok){
+
+            localStorage.removeItem(
+                "token"
+            );
+
+            window.location.href =
+                "/janelas/login.html";
+
+            return;
+        }
+
+    }catch(err){
+
+        localStorage.removeItem(
+            "token"
+        );
+
+        window.location.href =
+            "/janelas/login.html";
+    }
+
+    await fetch("/validar-token")
+}
 
 function abrirCargas(){
 

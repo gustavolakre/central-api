@@ -1,3 +1,6 @@
+const API =
+    "https://api-production-6670.up.railway.app";
+
 const token =
     localStorage.getItem("token");
 
@@ -9,7 +12,7 @@ if(!token){
 }
 
 fetch(
-    "/validar-token",
+    `${API}/validar-token`,
     {
         headers:{
             Authorization:
