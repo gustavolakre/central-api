@@ -127,6 +127,8 @@
 
 
 </style>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script src="/janelas/auth.js"></script>
@@ -215,6 +217,55 @@
     <input type="file" id="arquivoSessao" style="display:none">
     <div id="resultado"></div>
 <script>
+
+async function validarLogin() {
+
+    const token =
+        localStorage.getItem("token");
+
+    if (!token) {
+
+        window.location.href =
+            "/login";
+
+        return;
+    }
+
+    try {
+
+        const resposta =
+            await fetch(
+                "/validar-token",
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+        if (!resposta.ok) {
+
+            localStorage.removeItem(
+                "token"
+            );
+
+            window.location.href =
+                "/login";
+        }
+
+    } catch {
+
+        window.location.href =
+            "/login";
+    }
+
+}
+
+validarLogin();
+
+
+
   Object.keys(localStorage)
         .filter(k =>
             k.startsWith("nf_compr_") ||

@@ -475,6 +475,52 @@
 
 <script>
 
+    async function validarLogin() {
+
+    const token =
+        localStorage.getItem("token");
+
+    if (!token) {
+
+        window.location.href =
+            "/login";
+
+        return;
+    }
+
+    try {
+
+        const resposta =
+            await fetch(
+                "/validar-token",
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+        if (!resposta.ok) {
+
+            localStorage.removeItem(
+                "token"
+            );
+
+            window.location.href =
+                "/login";
+        }
+
+    } catch {
+
+        window.location.href =
+            "/login";
+    }
+
+}
+
+validarLogin();
+
 const API =
     "https://api-production-6670.up.railway.app"
 
