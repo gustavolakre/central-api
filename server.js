@@ -123,59 +123,81 @@ app.get(
     }
 );
 
+
+app.post("/login", async (req, res) => {
+
+    try {
+
+        const { usuario, senha } = req.body;
+
+        const resultado = await pool.query(
+            `
+            SELECT *
+            FROM usuarios
+            WHERE email = $1
+            `,
+            [usuario]
+        );
+
+        if (resultado.rows.length === 0) {
+
+            return res.status(401).json({
+                sucesso: false,
+                erro: "Usuário não encontrado"
+            });
+
+        }
+
+        const usuarioDb = resultado.rows[0];
+
+        const senhaValida =
+            await bcrypt.compare(
+                senha,
+                usuarioDb.senha
+            );
+
+        if (!senhaValida) {
+
+            return res.status(401).json({
+                sucesso: false,
+                erro: "Senha inválida"
+            });
+
+        }
+
+        const token = jwt.sign(
+            {
+                id: usuarioDb.id,
+                email: usuarioDb.email,
+                perfil: usuarioDb.perfil
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "8h"
+            }
+        );
+
+        return res.json({
+            sucesso: true,
+            token
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        return res.status(500).json({
+            sucesso: false,
+            erro: err.message
+        });
+
+    }
+
+});
+
 app.listen(PORT, "0.0.0.0", () => {
 
   console.log(`Servidor rodando na porta ${PORT}`)
 
 })
 
-async function entrar(){
-
-    const resposta =
-        await fetch(
-            "/login",
-            {
-                method:"POST",
-
-                headers:{
-                    "Content-Type":
-                    "application/json"
-                },
-
-                body:JSON.stringify({
-
-                    usuario:
-                        document.getElementById("usuario").value,
-
-                    senha:
-                        document.getElementById("senha").value
-
-                })
-            }
-        );
-
-    const dados =
-        await resposta.json();
-
-    console.log("STATUS:", resposta.status);
-    console.log("DADOS:", dados);
-
-    if(dados.token){
-
-        localStorage.setItem(
-            "token",
-            dados.token
-        );
-
-        window.location.href =
-            "/janelas/inicial.html";
-
-    }else{
-
-        alert(
-            JSON.stringify(dados)
-        );
-
-    }
-
-}
