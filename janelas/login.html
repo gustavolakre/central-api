@@ -53,11 +53,10 @@ async function entrar(){
         );
 
     const dados =
-
-    
         await resposta.json();
 
-        console.log(dados);
+    console.log("STATUS:", resposta.status);
+    console.log("DADOS:", dados);
 
     if(dados.token){
 
@@ -72,7 +71,7 @@ async function entrar(){
     }else{
 
         alert(
-            dados.erro || "Login inválido"
+            JSON.stringify(dados)
         );
 
     }
