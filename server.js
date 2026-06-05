@@ -81,6 +81,12 @@ app.use(
     importarCargasExcel
 );
 
+app.get("/login", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "janelas", "login.html")
+  );
+});
+
 
 app.get("/", async (req, res) => {
 
