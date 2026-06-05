@@ -43,55 +43,45 @@ app.use(
   importarParceirosExcel
 );
 
-
-app.use("/importar-parceiros", autenticar, importarParceiros)
 app.use("/gerar-faturamento", gerarFaturamento)
 
-app.use("/buscarDados", buscarCargas)
-app.use("/buscarParceiros", buscarParceiros)
-
-app.use("/financeiro", financeiro)
-app.use("/bancos", bancos)
-
-//app.use(
-//    "/financeiro",
-//    autenticar,
-//    financeiro
-//);
-
-//app.use(
-//    "/bancos",
-//    autenticar,
-//    bancos
-//);
-
-//app.use(
-//    "/buscarParceiros",
-//    autenticar,
-//    buscarParceiros
-//);
-
-//app.use(
-//    "/contas-gerenciais",
-//    autenticar,
-//    contasGerenciaisRoutes
-//);
-
-//app.use(
-//    "/financeiro",
-//    autenticar,
-//    financeiro
-// );
-
-//app.use(
-//    "/bancos",
-//    autenticar,
-//    bancos
-// );
 
 
+app.use(
+    "/financeiro",
+    autenticar,
+    financeiro
+);
 
-app.use("/contas-gerenciais", contasGerenciaisRoutes)
+app.use(
+    "/bancos",
+    autenticar,
+    bancos
+);
+
+app.use(
+    "/buscarParceiros",
+    autenticar,
+    buscarParceiros
+);
+
+app.use(
+    "/contas-gerenciais",
+    autenticar,
+    contasGerenciaisRoutes
+);
+
+app.use(
+    "/financeiro",
+    autenticar,
+    financeiro
+ );
+
+app.use(
+    "/bancos",
+    autenticar,
+    bancos
+ );
 
 
 app.use(

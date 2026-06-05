@@ -1,6 +1,6 @@
 const express = require("express");
 const pool = require("../src/db/database");
-const validarToken = require("../middlewares/validarToken");
+const validarToken = require("../middlewares/autenticar");
 
 const router = express.Router();
 
