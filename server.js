@@ -127,20 +127,42 @@ app.post("/login", async (req, res) => {
             resultado.rows[0];
 
         console.log(
-            "Hash banco:",
-            usuarioDb.senha
-        );
+    "Senha recebida:",
+    JSON.stringify(senha)
+);
 
-        const senhaValida =
-            await bcrypt.compare(
-                senha,
-                usuarioDb.senha
-            );
+console.log(
+    "Hash banco:",
+    usuarioDb.senha
+);
 
-        console.log(
-            "Senha válida:",
-            senhaValida
-        );
+console.log(
+    "Tamanho hash:",
+    usuarioDb.senha.length
+);
+
+const senhaValida =
+    await bcrypt.compare(
+        senha,
+        usuarioDb.senha
+    );
+
+console.log(
+    "Senha válida:",
+    senhaValida
+);
+
+// TESTE TEMPORÁRIO
+const teste =
+    await bcrypt.compare(
+        "SuaSenha123",
+        usuarioDb.senha
+    );
+
+console.log(
+    "Teste fixo:",
+    teste
+);
 
         if(!senhaValida){
 
