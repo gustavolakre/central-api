@@ -165,6 +165,8 @@ app.post("/login", async (req, res) => {
 
         }
 
+        console.log("USUARIO LOGIN:", usuarioDb);
+
         const token = jwt.sign(
             {
                 id: usuarioDb.id,
