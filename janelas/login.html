@@ -62,7 +62,11 @@ async function entrar(){
         localStorage.setItem(
             "token",
             dados.token
-        );
+         );
+         console.log(
+             "TOKEN SALVO:",
+              localStorage.getItem("token")
+          );
 
         window.location.href =
             "/janelas/inicial.html";
