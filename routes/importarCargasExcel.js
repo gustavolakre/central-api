@@ -93,13 +93,13 @@ router.post(
 
     console.log("USUARIO:", req.usuario);
 
-    /*
+  
       if (req.usuario.perfil !== "admin") {
       return res.status(403).json({
         erro: "Acesso negado"
       });
     }
-    */
+  
     try {
 
       if (!req.file) {
