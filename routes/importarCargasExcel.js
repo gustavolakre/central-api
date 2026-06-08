@@ -91,7 +91,10 @@ router.post(
   upload.single("arquivo"),
   async (req, res) => {
 
-    console.log("USUARIO:", req.usuario);
+       console.log(
+      "USUARIO ROTA:",
+      req.usuario
+    );
 
   
       if (req.usuario.perfil !== "admin") {

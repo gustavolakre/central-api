@@ -36,13 +36,17 @@ module.exports = function autenticar(
     try{
 
         const payload =
-            jwt.verify(
-                token,
-                process.env.JWT_SECRET
-            );
+    jwt.verify(
+        token,
+        process.env.JWT_SECRET
+    );
 
-        req.usuario =
-            payload;
+console.log(
+    "PAYLOAD MIDDLEWARE:",
+    payload
+);
+
+req.usuario = payload;
 
         next();
 
