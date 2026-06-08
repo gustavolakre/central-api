@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
     etiquetas              AS "Etiquetas",
     nota_fiscal_venda      AS "N Nota de Venda"
     FROM controle_cargas
-    WHERE fase <> '09-CANCELADA'
+    WHERE fase <> '09-Cancelada'
     AND NOT (
         COALESCE(TRIM(nf_taxa_compr), '') <> ''
     AND COALESCE(TRIM(nf_taxa_fornec), '') <> ''
