@@ -22,7 +22,12 @@ router.get("/", async (req, res) => {
     nf_taxa_fornec         AS "NF Taxa Fornec.",
     etiquetas              AS "Etiquetas",
     nota_fiscal_venda      AS "N Nota de Venda"
-  FROM controle_cargas
+    FROM controle_cargas
+    WHERE fase <> '09-CANCELADA'
+    AND NOT (
+        COALESCE(TRIM(nf_taxa_compr), '') <> ''
+    AND COALESCE(TRIM(nf_taxa_fornec), '') <> ''
+  )
 `)
 
     res.json(result.rows)
