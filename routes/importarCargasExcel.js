@@ -91,6 +91,8 @@ router.post(
   upload.single("arquivo"),
   async (req, res) => {
 
+    console.log("USUARIO:", req.usuario);
+
       if (req.usuario.perfil !== "admin") {
       return res.status(403).json({
         erro: "Acesso negado"
