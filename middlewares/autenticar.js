@@ -20,11 +20,18 @@ module.exports = function autenticar(
 
     }
 
+    console.log(
+        "AUTH HEADER:",
+        req.headers.authorization
+      );
+
     const token =
         auth.replace(
             "Bearer ",
             ""
         );
+
+    console.log("TOKEN RECEBIDO:", token);
 
     try{
 
