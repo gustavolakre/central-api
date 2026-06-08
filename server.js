@@ -28,6 +28,9 @@ const jwt = require("jsonwebtoken");
 const autenticar =
     require("./middlewares/autenticar");
 
+const importarCargasRelatorio =
+require("./routes/importarCargasRelatorio");
+
 app.use(cors())
 app.use(express.json())
 
@@ -93,6 +96,11 @@ app.use(
     importarCargasExcel
 );
 
+app.use(
+    "/importar-cargas-relatorio",
+    autenticar,
+    importarCargasRelatorio
+);
 
 
 
@@ -192,4 +200,6 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor rodando na porta ${PORT}`)
 
 })
+
+
 

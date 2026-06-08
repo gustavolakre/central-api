@@ -501,6 +501,58 @@ async function validarToken(){
     await fetch("/validar-token")
 }
 
+
+async function atualizarCargasPipefy(){
+
+    const status =
+        document.getElementById("status");
+
+    status.innerHTML =
+        "Gerando relatório no Pipefy...";
+
+    try{
+
+        const resposta =
+            await fetch(
+                "/importar-cargas-relatorio",
+                {
+                    method:"POST",
+
+                    headers:{
+                        Authorization:
+                            `Bearer ${
+                                localStorage.getItem(
+                                    "token"
+                                )
+                            }`
+                    }
+                }
+            );
+
+        const dados =
+            await resposta.json();
+
+        if(dados.sucesso){
+
+            status.innerHTML =
+                `✅ ${dados.importados} cargas importadas`;
+
+        }else{
+
+            status.innerHTML =
+                `❌ ${dados.erro}`;
+        }
+
+    }catch(err){
+
+        console.error(err);
+
+        status.innerHTML =
+            "❌ Erro ao atualizar cargas.";
+    }
+}
+
+
 function abrirCargas(){
 
     window.location.href =
