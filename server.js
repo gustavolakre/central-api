@@ -179,6 +179,15 @@ app.post("/login", async (req, res) => {
             }
         );
 
+        console.log("TOKEN GERADO:", token);
+
+       const payload = jwt.verify(
+          token,
+          process.env.JWT_SECRET
+       );
+
+       console.log("PAYLOAD TOKEN:", payload);
+
         return res.json({
             sucesso: true,
             token
