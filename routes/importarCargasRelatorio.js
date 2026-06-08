@@ -121,6 +121,8 @@ router.post("/", async (req, res) => {
         // 3 - BAIXA XLSX
         //
 
+        console.log("URL:", fileURL);
+
         const arquivo =
             await axios.get(
                 fileURL,
@@ -128,6 +130,8 @@ router.post("/", async (req, res) => {
                     responseType:"arraybuffer"
                 }
             );
+
+        console.log("Arquivo baixado");
 
         const caminho =
             path.join(
@@ -140,6 +144,10 @@ router.post("/", async (req, res) => {
             caminho,
             arquivo.data
         );
+
+        console.log("Arquivo salvo:", caminho);
+
+        console.log("Chamando importador...");
 
         //
         // 4 - CHAMA IMPORTADOR EXISTENTE
