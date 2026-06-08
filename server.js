@@ -76,7 +76,7 @@ app.use(
 );
 
 app.use(
-    "/buscarDados",
+    "/buscarCargas",
     autenticar,
     buscarCargas
 );
