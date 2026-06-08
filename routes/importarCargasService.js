@@ -1,3 +1,49 @@
+const XLSX = require("xlsx");
+const pool = require("../src/db/database");
+
+const BATCH_SIZE = 200;
+
+function numero(valor) {
+  if (
+    valor === null ||
+    valor === undefined ||
+    valor === ""
+  ) return null;
+
+  const n = Number(
+    String(valor)
+      .replace(/\./g, "")
+      .replace(",", ".")
+  );
+
+  return Number.isNaN(n)
+    ? null
+    : n;
+}
+
+function texto(valor) {
+  if (
+    valor === null ||
+    valor === undefined ||
+    valor === ""
+  ) return null;
+
+  return String(valor).trim();
+}
+
+function data(valor) {
+  if (
+    valor === null ||
+    valor === undefined ||
+    valor === ""
+  ) {
+    return null;
+  }
+
+  return valor;
+}
+
+
 
 async function importarCargas(buffer){
 
@@ -26,10 +72,10 @@ async function importarCargas(buffer){
       const LIMITE_LINHAS = 50000;
 
        if (dados.length > LIMITE_LINHAS) {
-          return res.status(400).json({
-              erro: `Planilha excede o limite de ${LIMITE_LINHAS} linhas`
-         });
-       }
+           throw new Error(
+           `Planilha excede o limite de ${LIMITE_LINHAS} linhas`
+         );
+      }
 
       const sql = `
         INSERT INTO controle_cargas (
