@@ -76,6 +76,12 @@ app.use(
 );
 
 app.use(
+    "/buscarDados",
+    autenticar,
+    buscarCargas
+);
+
+app.use(
     "/contas-gerenciais",
     autenticar,
     contasGerenciaisRoutes
@@ -86,6 +92,8 @@ app.use(
     autenticar,
     importarCargasExcel
 );
+
+
 
 
 app.get("/", (req, res) => {
