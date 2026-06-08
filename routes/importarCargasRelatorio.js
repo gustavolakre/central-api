@@ -145,24 +145,17 @@ router.post("/", async (req, res) => {
             arquivo.data
         );
 
+        console.log(
+           "Tamanho:",
+           fs.statSync(caminho).size
+        );
+
         console.log("Arquivo salvo:", caminho);
 
-        console.log("Chamando importador...");
-
-        //
-        // 4 - CHAMA IMPORTADOR EXISTENTE
-        //
-
-        const importar =
-            require("./importarCargasExcel");
-
-        req.arquivoTemporario =
-            caminho;
-
-        return importar(
-            req,
-            res
-        );
+        return res.json({
+           sucesso: true,
+           arquivo: caminho
+        });
 
     } catch(err){
 
