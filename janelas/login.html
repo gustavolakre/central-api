@@ -55,6 +55,8 @@ async function entrar(){
     console.log("STATUS:", resposta.status);
     console.log("DADOS:", dados);
 
+    console.log("TOKEN RECEBIDO:", dados.token);
+
     if(dados.token){
 
         localStorage.setItem(
