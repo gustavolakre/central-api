@@ -1832,11 +1832,13 @@ async function carregarDadosBanco() {
 
         console.log("STATUS:", response.status);
 
-        const texto = await response.text();
+      const texto = await response.text();
 
-        console.log("RESPOSTA:", texto);
+console.log("RESPOSTA:", texto);
 
-        dadosPlanilha = dadosPlanilha.map(d => ({
+dadosPlanilha = JSON.parse(texto);
+
+dadosPlanilha = dadosPlanilha.map(d => ({
 
     ...d,
 
@@ -1877,7 +1879,7 @@ async function carregarDadosBanco() {
         d["etiqueta"] ||
         ""
 
-}))
+})); 
 
         console.log("DADOS PLANILHA:", dadosPlanilha)
 
