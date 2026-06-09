@@ -31,6 +31,9 @@ const autenticar =
 const importarCargasRelatorio =
 require("./routes/importarCargasRelatorio");
 
+const controleProcessos =
+    require("./routes/controleFaturamento");
+
 app.use(cors())
 app.use(express.json())
 
@@ -100,6 +103,11 @@ app.use(
     "/importar-cargas-relatorio",
     autenticar,
     importarCargasRelatorio
+);
+
+app.use(
+    "/controle-faturamento",
+    controleFaturamento
 );
 
 

@@ -77,6 +77,49 @@ router.post(
 
     try {
 
+      /*
+      =========================================
+      BLOQUEIO DE FATURAMENTO
+      =========================================
+      */
+
+      const bloqueio = await pool.query(`
+
+        SELECT *
+        FROM controle_processos
+
+        WHERE processo =
+          'FATURAMENTO_CARGAS'
+
+      `);
+
+      if (
+
+        bloqueio.rows.length > 0 &&
+
+        bloqueio.rows[0].status ===
+          "EM_ANDAMENTO"
+
+      ) {
+
+        return res.status(409).json({
+
+          erro:
+            `Atualização bloqueada. Faturamento iniciado por ${
+              bloqueio.rows[0].iniciado_por
+            }`
+
+        });
+
+      }
+
+
+      /*
+      =========================================
+      VALIDA ARQUIVO
+      =========================================
+      */
+
       if (!req.file) {
 
         return res.status(400).json({

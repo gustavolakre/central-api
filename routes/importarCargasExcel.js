@@ -91,47 +91,112 @@ router.post(
   upload.single("arquivo"),
   async (req, res) => {
 
-       console.log(
+    console.log(
       "USUARIO ROTA:",
       req.usuario
     );
 
-  
-      if (req.usuario.perfil !== "admin") {
+    if (req.usuario.perfil !== "admin") {
+
       return res.status(403).json({
         erro: "Acesso negado"
       });
+
     }
-  
+
     try {
 
-      if (!req.file) {
-        return res.status(400).json({
-          erro: "Nenhum arquivo enviado"
+      /*
+      =========================================
+      BLOQUEIO DE FATURAMENTO
+      =========================================
+      */
+
+      const bloqueio = await pool.query(`
+
+        SELECT *
+        FROM controle_processos
+
+        WHERE processo =
+          'FATURAMENTO_CARGAS'
+
+      `);
+
+      if (
+
+        bloqueio.rows.length > 0 &&
+
+        bloqueio.rows[0].status ===
+          "EM_ANDAMENTO"
+
+      ) {
+
+        return res.status(409).json({
+
+          erro:
+            `Atualização bloqueada. Faturamento iniciado por ${
+              bloqueio.rows[0].iniciado_por
+            }`
+
         });
+
       }
 
+
+      /*
+      =========================================
+      VALIDA ARQUIVO
+      =========================================
+      */
+
+      if (!req.file) {
+
+        return res.status(400).json({
+
+          erro: "Nenhum arquivo enviado"
+
+        });
+
+      }
+
+
+      /*
+      =========================================
+      IMPORTAÇÃO
+      =========================================
+      */
+
       const resultado = await importarCargas(
-      req.file.buffer
-   );
 
-return res.json(resultado);
-      
-    } catch (err) {
+        req.file.buffer
 
-  console.error(err);
+      );
 
-  if (err.code === "LIMIT_FILE_SIZE") {
-    return res.status(400).json({
-      erro: "Arquivo maior que 20MB"
-    });
-  }
+      return res.json(resultado);
 
-  return res.status(500).json({
-    erro: err.message
-  });
+    }
 
-}
+    catch (err) {
+
+      console.error(err);
+
+      if (err.code === "LIMIT_FILE_SIZE") {
+
+        return res.status(400).json({
+
+          erro: "Arquivo maior que 20MB"
+
+        });
+
+      }
+
+      return res.status(500).json({
+
+        erro: err.message
+
+      });
+
+    }
 
   }
 );

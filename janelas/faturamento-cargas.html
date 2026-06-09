@@ -1527,131 +1527,264 @@ function toggleTodosFaturados(valor) {
 async function criarCardsPipefy() {
 
   if (!registrosFaturados.length) {
-    alert("Nenhum faturamento disponível.")
-    return
+
+    alert("Nenhum faturamento disponível.");
+    return;
+
   }
 
-  const pipeId = 306630252
+  const pipeId = 306630252;
 
-  let selecionados = Array.from(
+  const selecionados = Array.from(
+
     document.querySelectorAll(".checkFaturado:checked")
-  ).map(cb => Number(cb.dataset.index))
+
+  ).map(cb => Number(cb.dataset.index));
+
+
+  if (selecionados.length === 0) {
+
+    alert("Selecione pelo menos um faturamento.");
+    return;
+
+  }
+
+
+  const cards = registrosFaturados
+
+    .filter((r, index) => selecionados.includes(index))
+
+    .filter(r => {
+
+      const nf = String(
+        r["Nota Fiscal"] || ""
+      )
+      .trim()
+      .toLowerCase();
+
+      // ignora "sem acordo"
+      return nf !== "sem acordo";
+
+    })
+
+    .map(r => {
+
+      const parceiroObj =
+        buscarParceiro(r["Nome"]);
+
+      const parceiroId =
+
+        parceiroObj?.["ID"] ||
+
+        parceiroObj?.["Codigo"] ||
+
+        parceiroObj?.["Código"] ||
+
+        "";
+
+
+      if (!parceiroId) {
+
+        console.warn(
+          "⚠️ Parceiro sem ID:",
+          r["Nome"]
+        );
+
+      }
+
+
+      return {
+
+        pipeId,
+
+        title:
+          `${r["Nome"]} - NF ${r["Nota Fiscal"]}`,
+
+        fields: [
+
+          {
+            field_id: "parceiro",
+            value: String(parceiroId)
+          },
+
+          {
+            field_id: "nota",
+            value: r["Nota Fiscal"] || ""
+          },
+
+          {
+            field_id: "valor_l_quido",
+            value: String(
+              r["Valor Líquido"] || ""
+            )
+          },
+
+          {
+            field_id: "data_do_vencimento",
+            value:
+              r["Data de Vencimento"] || ""
+          },
+
+          {
+            field_id: "per_odo",
+            value:
+              r["Periodo"] || ""
+          },
+
+          {
+            field_id: "respons_vel",
+            value: "304569850"
+          }
+
+        ]
+
+      };
+
+    });
+
+
+  console.log(
+    "📤 ENVIANDO PARA PIPEFY:",
+    cards
+  );
+
+
+  try {
+
+    const res = await fetch(
+
+      `${API_URL}/pipefy`,
+
+      {
+
+        method: "POST",
+
+        headers: getAuthHeaders(),
+
+        body: JSON.stringify({
+
+          cards
+
+        })
+
+      }
+
+    );
+
+
+    const data = await res.json();
+
+
+    console.log(
+
+      "📥 RESPOSTA BACKEND:",
+
+      data
+
+    );
+
+
+    if (data.sucesso > 0) {
+
+      selecionados.forEach(index => {
+
+        registrosFaturados[
+          index
+        ].enviadoPipefy = true;
+
+      });
+
+
+      fecharFaturados();
+
+      abrirFaturados();
+
+    }
+
+
+    /*
+     * Libera somente se TODOS
+     * os cards foram enviados
+     * sem erro
+     */
+
+    if (
+
+      data.sucesso > 0 &&
+
+      Number(data.erros || 0) === 0
+
+    ) {
+
+      await fetch(
+
+        `${API}/controle-faturamento/finalizar`,
+
+        {
+
+          method: "POST",
+
+          headers: authHeaders({
+
+            "Content-Type":
+              "application/json"
+
+          }),
+
+          body: JSON.stringify({
+
+            processo:
+              "FATURAMENTO_CARGAS"
+
+          })
+
+        }
+
+      );
+
+
+      console.log(
+
+        "✅ Processo FATURAMENTO_CARGAS liberado"
+
+      );
+
+    }
+
+
+    alert(
+
+      `Criados: ${data.sucesso} | Erros: ${data.erros}`
+
+    );
+
+  }
+
+  catch (err) {
+
+    console.error(
+
+      "❌ ERRO AO CRIAR CARDS:",
+
+      err
+
+    );
+
+    alert(
+
+      "Erro ao criar cards no Contas a receber"
+
+    );
+
+  }
+
+}
 
   if (selecionados.length === 0) {
     alert("Selecione pelo menos um faturamento.")
     return
   }
 
-    let lista = registrosFaturados
-
-   .filter((r, index) => selecionados.includes(index))
-   .filter(r => {
-
-    let nf = String(r["Nota Fiscal"] || "")
-        .trim()
-        .toLowerCase()
-
-    // 🔥 ignora "sem acordo"
-    return nf !== "sem acordo"
-
-  })
-   .map(r => {
-
-    // 🔍 busca parceiro na base
-    let parceiroObj = buscarParceiro(r["Nome"])
-
-    let parceiroId = parceiroObj?.["ID"] 
-      || parceiroObj?.["Codigo"] 
-      || parceiroObj?.["Código"] 
-      || ""
-
-    if (!parceiroId) {
-      console.warn("⚠️ Parceiro sem ID:", r["Nome"])
-    }
-
-    return {
-
-      pipeId,
-
-      title: `${r["Nome"]} - NF ${r["Nota Fiscal"]}`,
-
-      fields: [
-
-        // 🔥 PARCEIRO (AGORA COM ID CORRETO)
-        {
-          field_id: "parceiro",
-          value: String(parceiroId)
-        },
-
-        {
-          field_id: "nota",
-          value: r["Nota Fiscal"] || ""
-        },
-
-        {
-          field_id: "valor_l_quido",
-          value: String(r["Valor Líquido"] || "")
-        },
-
-        {
-          field_id: "data_do_vencimento",
-          value: r["Data de Vencimento"] || ""
-        },
-
-        {
-          field_id: "per_odo",
-          value: r["Periodo"] || ""
-        },
-
-        // 🔒 FIXO (como você pediu)
-        {
-          field_id: "respons_vel",
-          value: "304569850"
-        }
-
-      ]
-
-    }
-
-  })
-
-  console.log("📤 ENVIANDO PARA PIPEFY:", lista)
-
-  try {
-
-    let res = await fetch(`${API_URL}/pipefy`, {
-          method: "POST",
-          headers: getAuthHeaders(),
-          body: JSON.stringify({ cards })
-     })
-
-
-    let data = await res.json()
-
-
-    console.log("📥 RESPOSTA BACKEND:", data)
-
-    if (data.sucesso > 0) {
-
-  selecionados.forEach(index => {
-    registrosFaturados[index].enviadoPipefy = true
-  })
-
-  fecharFaturados()
-  abrirFaturados()
-
-}
-
-    alert(`Criados: ${data.sucesso} | Erros: ${data.erros}`)
-
-  } catch (err) {
-
-    console.error("❌ ERRO AO CRIAR CARDS:", err)
-    alert("Erro ao criar cards no Contas a receber")
-
-  }
-
-}
 
 
 function toggleTodasCargas(valor) {
@@ -2333,6 +2466,73 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
 })
+
+window.onload = async ()=>{
+
+    const resposta =
+        await fetch(
+
+            `${API}/controle-faturamento/FATURAMENTO_CARGAS`,
+
+            {
+
+                headers:
+                    authHeaders()
+
+            }
+
+        );
+
+    const dados =
+        await resposta.json();
+
+    if(
+        dados.status ===
+        "EM_ANDAMENTO"
+    ){
+
+        alert(
+
+            `Faturamento iniciado por ${
+                dados.iniciado_por
+            }`
+
+        );
+
+        window.location.href =
+            "/janelas/inicial.html";
+
+        return;
+
+    }
+
+    await fetch(
+
+        `${API}/controle-faturamento/iniciar`,
+
+        {
+
+            method:"POST",
+
+            headers: authHeaders({
+
+                "Content-Type":
+                    "application/json"
+
+            }),
+
+            body:JSON.stringify({
+
+                processo:
+                    "FATURAMENTO_CARGAS"
+
+            })
+
+        }
+
+    );
+
+};
 
 </script>
 </body>

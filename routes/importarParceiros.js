@@ -13,6 +13,32 @@ router.get("/", async (req, res) => {
 
   try {
 
+    const bloqueio = await pool.query(`
+
+    SELECT *
+    FROM controle_processos
+    WHERE processo = 'FATURAMENTO_CARGAS'
+
+`);
+
+if (
+
+    bloqueio.rows.length &&
+    bloqueio.rows[0].status === 'EM_ANDAMENTO'
+
+) {
+
+    return res.status(409).json({
+
+        erro:
+            `Atualização bloqueada. Faturamento iniciado por ${
+                bloqueio.rows[0].iniciado_por
+            }`
+
+    });
+
+}
+
     let totalImportados = 0;
 
     let hasNextPage = true;
