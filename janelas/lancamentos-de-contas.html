@@ -2083,14 +2083,23 @@ document.getElementById(
     .split("T")[0]
 
 
-(async()=>{
+window.onload = async () => {
 
-    carregarParceiros();
-    carregarLancamentos();
-    carregarBancosBaixa();
-    carregarContasGerenciais();
+    console.log("INICIO");
 
-})();
+    await carregarParceiros();
+    console.log("PARCEIROS OK");
+
+    await carregarLancamentos();
+    console.log("LANCAMENTOS OK");
+
+    await carregarBancosBaixa();
+    console.log("BANCOS OK");
+
+    await carregarContasGerenciais();
+    console.log("CONTAS OK");
+
+};
 
 console.log("VERSAO NOVA 09/06");
 
