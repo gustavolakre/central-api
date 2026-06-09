@@ -4,6 +4,8 @@ const express = require("express");
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
+const importarCargas =
+    require("../services/importarCargasService");
 
 const router = express.Router();
 
@@ -141,21 +143,23 @@ router.post("/", async (req, res) => {
             );
 
         fs.writeFileSync(
-            caminho,
-            arquivo.data
+          caminho,
+          arquivo.data
         );
 
         console.log(
-           "Tamanho:",
-           fs.statSync(caminho).size
+         "Tamanho:",
+         fs.statSync(caminho).size
         );
 
         console.log("Arquivo salvo:", caminho);
 
-        return res.json({
-           sucesso: true,
-           arquivo: caminho
-        });
+        const resultado =
+          await importarCargas(
+          Buffer.from(arquivo.data)
+        );
+
+    return res.json(resultado);
 
     } catch(err){
 

@@ -539,6 +539,12 @@ async function atualizarCargasPipefy(){
         const dados =
             await resposta.json();
 
+  
+            console.log(
+            "RETORNO IMPORTACAO:",
+             dados
+        );
+
         if(dados.sucesso){
 
             status.innerHTML =
