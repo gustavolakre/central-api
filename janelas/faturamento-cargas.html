@@ -125,6 +125,30 @@
 
         }
 
+        .barra-superior {
+
+    display: flex;
+
+    justify-content: flex-start;
+
+    margin-bottom: 20px;
+
+}
+
+.barra-superior button {
+
+    padding: 10px 18px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+}
+
 
 </style>
 
@@ -137,6 +161,16 @@
 
 <body>
     <h2 style="text-align:center; margin-bottom:20px;">Faturamento</h2>
+
+    <div class="barra-superior">
+
+    <button onclick="voltarInicio()">
+
+        ⬅ Voltar ao início
+
+    </button>
+
+</div>
 
     <div style="display:flex; justify-content:center; align-items:flex-start; gap:60px; flex-wrap:wrap; margin-bottom:10px;">
         <!-- CAMPOS (ESQUERDA) -->
@@ -1940,6 +1974,13 @@ async function verificar401(response) {
 
     throw new Error("Não autorizado")
   }
+
+}
+
+function voltarInicio() {
+
+    window.location.href =
+        "/janelas/inicial.html";
 
 }
 
