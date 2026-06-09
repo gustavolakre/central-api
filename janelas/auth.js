@@ -1,4 +1,4 @@
-const API =
+window.API =
     "https://api-production-6670.up.railway.app";
 
 const token =
