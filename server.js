@@ -31,7 +31,7 @@ const autenticar =
 const importarCargasRelatorio =
 require("./routes/importarCargasRelatorio");
 
-const controleProcessos =
+const controleFaturamento =
     require("./routes/controleFaturamento");
 
 app.use(cors())
