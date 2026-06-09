@@ -41,10 +41,6 @@ module.exports = function autenticar(
         process.env.JWT_SECRET
     );
 
-console.log(
-    "PAYLOAD MIDDLEWARE:",
-    payload
-);
 
 req.usuario = payload;
 

@@ -52,11 +52,7 @@ async function entrar(){
     const dados =
         await resposta.json();
 
-    console.log("STATUS:", resposta.status);
-    console.log("DADOS:", dados);
-
-    console.log("TOKEN RECEBIDO:", dados.token);
-
+   
     if(dados.token){
 
         localStorage.setItem(
