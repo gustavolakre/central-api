@@ -632,16 +632,18 @@ function montarPainelDireito(linhas){
 
     linhas.forEach(item => {
 
-        if(!item.semana || !item.etiqueta) return;
+        if(!item.semana || !item.etiquetas) return;
 
         const semana = item.semana;
-        let dia = item.etiqueta.split(",")[0].trim().toLowerCase();
+        let dia = item.etiquetas.split(",")[0].trim().toLowerCase();
 
         // normalização forte
         dia = dia
-             .replace("-feira", "")
-             .replace("feira", "")
-             .trim();
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace("-feira", "")
+        .replace("feira", "")
+        .trim();
         const qtd = Number(item.quantidade || 0);
 
         if(!semanas[semana]){
