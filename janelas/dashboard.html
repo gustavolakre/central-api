@@ -329,117 +329,118 @@ async function carregarPipeline(){
 
 function montarPipeline(linhas){
 
-    const agrupado = {};
+    const responsaveis = {};
 
     linhas.forEach(item => {
 
-        const chave =
-            item.responsaveis +
-            "|" +
-            item.semana;
+        const nome = item.responsaveis;
 
-        if(!agrupado[chave]){
-
-            agrupado[chave] = {
-                responsavel:item.responsaveis,
-                semana:item.semana,
-                fases:{}
-            };
-
+        if(!responsaveis[nome]){
+            responsaveis[nome] = {};
         }
 
-        agrupado[chave]
+        if(!responsaveis[nome][item.semana]){
+            responsaveis[nome][item.semana] = {
+                fases:{}
+            };
+        }
+
+        responsaveis[nome][item.semana]
             .fases[item.fase] =
-                Number(item.quantidade);
+            Number(item.quantidade);
 
     });
 
     const container =
-        document.getElementById(
-            "listaPipeline"
-        );
+        document.getElementById("listaPipeline");
 
     container.innerHTML = "";
 
-    Object.values(agrupado)
-        .forEach(item => {
+    Object.entries(responsaveis)
+        .forEach(([nome,semanas])=>{
 
-        const total =
-            Object.values(item.fases)
-            .reduce((a,b)=>a+b,0);
+        let htmlSemanas = "";
 
-        
+        Object.entries(semanas)
+            .sort((a,b)=> b[0].localeCompare(a[0]))
+            .forEach(([semana,dados])=>{
 
-        let barra = "";
+            const total =
+                Object.values(dados.fases)
+                .reduce((a,b)=>a+b,0);
 
-        Object.entries(item.fases)
-            .forEach(([fase,qtd])=>{
+            let barra = "";
 
-            const largura =
-                (qtd/total)*100;
+            Object.entries(dados.fases)
+                .forEach(([fase,qtd])=>{
 
-            barra += `
-           <div
-               class="fase"
-               style="
-                  width:${largura}%;
-                  background:${CORES[fase]};
-                  display:flex;
-                  align-items:center;
-                  justify-content:center;
-                  color:white;
-                  font-size:12px;
-                  font-weight:bold;
-                  min-width:28px;
-            "
-            title="${fase}: ${qtd}"
-        >
-            ${qtd}
-        </div>
-     `;
+                const largura =
+                    (qtd / total) * 100;
+
+                barra += `
+                    <div
+                        class="fase"
+                        style="
+                            width:${largura}%;
+                            background:${CORES[fase]};
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            color:white;
+                            font-size:12px;
+                            font-weight:bold;
+                            min-width:28px;
+                        "
+                        title="${fase}: ${qtd}"
+                    >
+                        ${qtd}
+                    </div>
+                `;
+            });
+
+            htmlSemanas += `
+                <div class="linha-semana">
+
+                    <div class="semana">
+                        ${semana}
+                    </div>
+
+                    <div class="pipeline-barra">
+                        ${barra}
+                    </div>
+
+                    <div class="total">
+                        ${total}
+                    </div>
+
+                </div>
+            `;
 
         });
 
-     container.innerHTML += `
+        container.innerHTML += `
 
-<div class="pipeline-item">
+            <div class="card-responsavel">
 
-    <div class="responsavel">
+                <div class="cabecalho-responsavel">
 
-        <img
-          class="foto-usuario"
-          src="${FOTOS[item.responsavel]}"
-          alt="${item.responsavel}"
-        >
+                    <img
+                        class="foto-usuario"
+                        src="${FOTOS[nome]}"
+                        alt="${nome}"
+                    >
 
-        ${item.responsavel}
+                    <div class="nome-responsavel">
+                        ${nome}
+                    </div>
 
-    </div>
+                </div>
 
-    <div class="semana">
-        ${item.semana}
-    </div>
+                ${htmlSemanas}
 
-    <div>
-
-     
-        <div class="pipeline-linha">
-
-            <div class="pipeline-barra">
-                ${barra}
             </div>
 
-            <div class="total">
-                ${total}
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-`;
+        `;
 
     });
 
