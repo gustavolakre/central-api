@@ -26,11 +26,8 @@ router.get("/pipeline", async (req, res) => {
                 WHEN responsaveis ILIKE '%Vânia Riva%'
                     THEN 'Vânia Riva'
 
-                WHEN responsaveis ILIKE '%Rael de Lima%'
-                    THEN 'Rael de Lima'
-
                 WHEN responsaveis ILIKE '%Rafael de Lima%'
-                    THEN 'Rael de Lima'
+                    THEN 'Rafael de Lima'
 
             END
 
@@ -51,7 +48,6 @@ router.get("/pipeline", async (req, res) => {
                 responsaveis ILIKE '%Adelar Schuh%'
                 OR responsaveis ILIKE '%Enário dos Santos%'
                 OR responsaveis ILIKE '%Vânia Riva%'
-                OR responsaveis ILIKE '%Rael de Lima%'
                 OR responsaveis ILIKE '%Rafael de Lima%'
             )
             AND fase IN (
