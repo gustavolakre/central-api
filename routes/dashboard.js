@@ -15,10 +15,7 @@ router.get("/pipeline", async (req, res) => {
                     SPLIT_PART(
                         etiquetas,
                         ',',
-                        array_length(
-                            string_to_array(etiquetas, ','),
-                            1
-                        )
+                       1
                     )
                 ) AS semana,
                 fase,
