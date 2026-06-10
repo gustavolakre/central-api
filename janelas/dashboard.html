@@ -639,31 +639,25 @@ function montarPainelDireito(linhas){
 
     linhas.forEach(item => {
 
-        if(!item.semana) return;
+        if(!item.etiquetas) return;
 
-        const semana = item.semana;
+        // separa: "02-Segunda" e "2026/20"
+        const partes = item.etiquetas.split(",");
 
-        // aceita vários nomes possíveis de campo
-        const etiqueta = item.etiquetas || item.etiqueta || "";
+        const diaRaw = (partes[0] || "").trim().toLowerCase();
+        const semana = (partes[1] || "").trim();
 
-        if(!etiqueta) return;
+        if(!semana) return;
 
-        let dia = etiqueta.split(",")[0]
-          .trim()
-          .toLowerCase();
+        // limpa dia
+        let dia = diaRaw
+            .replace(/^\d{2}-/, "") // remove "02-"
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace("-feira", "")
+            .trim();
 
-        // remove número tipo "02-"
-         dia = dia.replace(/^\d{2}-/, "");
-
-        // normaliza acentos
-        dia = dia
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace("-feira", "")
-          .replace("feira", "")
-          .trim();
-
-        const qtd = Number(item.quantidade ?? 1);
+        const qtd = Number(item.quantidade || 1);
 
         if(!semanas[semana]){
             semanas[semana] = {};
