@@ -642,7 +642,7 @@ function montarPainelDireito(linhas){
              .replace("-feira", "")
              .replace("feira", "")
              .trim();
-        const qtd = Number(item.quantidade);
+        const qtd = Number(item.quantidade || 0);
 
         if(!semanas[semana]){
             semanas[semana] = {};
