@@ -51,17 +51,16 @@ body{
 }
 
 .pipeline-item{
-    margin-bottom:16px;
-    padding-bottom:16px;
+    display:grid;
+    grid-template-columns:220px 100px 1fr;
+    gap:15px;
+    align-items:center;
+    padding:12px 0;
     border-bottom:1px solid #ececec;
 }
 
 .pipeline-header{
-    display:grid;
-    grid-template-columns:220px 90px 1fr;
-    gap:10px;
-    align-items:center;
-    margin-bottom:8px;
+    display:contents;
 }
 
 .responsavel{
@@ -131,6 +130,26 @@ body{
     color:#9ca3af;
     font-size:18px;
 }
+
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#2563eb;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    margin-right:10px;
+}
+
+.responsavel{
+    display:flex;
+    align-items:center;
+    font-weight:600;
+}
+
 
 </style>
 </head>
@@ -288,6 +307,25 @@ function montarPipeline(linhas){
             Object.values(item.fases)
             .reduce((a,b)=>a+b,0);
 
+        let numeros = "";
+
+        Object.entries(item.fases)
+          .forEach(([fase,qtd])=>{
+
+        numeros += `
+        <span
+            style="
+                color:${CORES[fase]};
+                font-weight:bold;
+                margin-right:10px;
+            "
+        >
+            ${qtd}
+        </span>
+    `;
+
+});
+
         let barra = "";
 
         Object.entries(item.fases)
@@ -309,37 +347,50 @@ function montarPipeline(linhas){
 
         });
 
-        container.innerHTML += `
+     container.innerHTML += `
 
-            <div class="pipeline-item">
+<div class="pipeline-item">
 
-                <div class="pipeline-header">
+    <div class="responsavel">
 
-                    <div class="responsavel">
-                        👤 ${item.responsavel}
-                    </div>
+        <div class="avatar">
+            ${item.responsavel.charAt(0)}
+        </div>
 
-                    <div class="semana">
-                        ${item.semana}
-                    </div>
+        ${item.responsavel}
 
-                </div>
+    </div>
 
-                <div class="pipeline-linha">
+    <div class="semana">
+        ${item.semana}
+    </div>
 
-                    <div class="pipeline-barra">
-                        ${barra}
-                    </div>
+    <div>
 
-                    <div class="total">
-                        ${total}
-                    </div>
+        <div style="
+            margin-bottom:6px;
+            font-size:14px;
+        ">
+            ${numeros}
+        </div>
 
-                </div>
+        <div class="pipeline-linha">
 
+            <div class="pipeline-barra">
+                ${barra}
             </div>
 
-        `;
+            <div class="total">
+                ${total}
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+`;
 
     });
 
