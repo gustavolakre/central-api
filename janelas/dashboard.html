@@ -541,8 +541,8 @@ function montarPipeline(linhas){
             .forEach(([semana,dados])=>{
 
             const total =
-                Object.values(dados.fases)
-                .reduce((a,b)=>a+b,0);
+               Object.values(dados.fases || {})
+               .reduce((a,b)=>a+b,0);
 
             let barra = "";
 
