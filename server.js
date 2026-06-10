@@ -34,6 +34,9 @@ require("./routes/importarCargasRelatorio");
 const controleFaturamento =
     require("./routes/controleFaturamento");
 
+const dashboard =
+    require("./routes/dashboard");
+
 app.use(cors())
 app.use(express.json())
 
@@ -110,6 +113,11 @@ app.use(
     controleFaturamento
 );
 
+app.use(
+    "/dashboard",
+    autenticar,
+    dashboard
+);
 
 
 app.get("/", (req, res) => {
