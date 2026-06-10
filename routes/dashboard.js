@@ -28,7 +28,7 @@ router.get("/pipeline", async (req, res) => {
                 'Adelar Schuh',
                 'Enário dos Santos',
                 'Vânia Riva',
-                'Rafel de Lima'
+                'Rafael de Lima'
             )
             AND fase IN (
                 '01-Negociado',
