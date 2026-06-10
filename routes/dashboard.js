@@ -13,7 +13,10 @@ router.get("/pipeline", async (req, res) => {
 
     CASE
 
-        WHEN fase = '06-Doc. Pendentes' THEN
+        WHEN fase IN (
+           '04-Fechamento Fiscal',
+           '06-Doc. Pendentes'
+        ) THEN
 
             CASE
 
