@@ -18,11 +18,16 @@
 
 body{
     background:#e5e7eb;
-    padding:0;
+    margin:0;
+    overflow-x:hidden;
 }
 
 .container{
     margin-top:20px;
+}
+
+.painel{
+    min-width:0;
 }
 
 .topo-dashboard{
@@ -52,9 +57,11 @@ body{
 
 .container{
     display:grid;
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
     gap:20px;
-    height:calc(100vh - 40px);
+    padding:20px;
+    height:calc(100vh - 70px);
+    overflow:hidden;
 }
 
 .painel{
@@ -299,7 +306,9 @@ body{
 <div class="topbar-dashboard">
 
     <div class="topbar-left">
-        Dashboard Operacional
+      <button class="btnAtualizarPipefy" onclick="atualizarCargasPipefy()">
+        Atualizar Pipefy
+      </button>
     </div>
 
     <div class="topbar-right">
