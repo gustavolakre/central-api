@@ -424,7 +424,7 @@ const FOTOS = {
 
 async function carregarPipeline(){
 
-       const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
     if(!token){
         alert("Sessão expirada. Faça login novamente.");
@@ -433,27 +433,34 @@ async function carregarPipeline(){
 
     try{
 
-        const resposta = await fetch(
-            "/dashboard/pipeline",
-            {
-                headers:{
-                    Authorization:`Bearer ${token}`
-                }
+        const resposta = await fetch("/dashboard/pipeline", {
+            headers:{
+                Authorization:`Bearer ${token}`
             }
-        );
+        });
+
+        // 🔴 importante: checar 401 antes de tudo
+        if(!resposta.ok){
+            console.error("Erro HTTP:", resposta.status);
+            alert("Erro ao carregar dados (login inválido).");
+            return;
+        }
 
         const dados = await resposta.json();
 
-        montarPipeline(dados);
+        // 🔴 validação importante
+        if(!Array.isArray(dados)){
+            console.error("Resposta inválida:", dados);
+            alert("Backend não retornou lista de dados.");
+            return;
+        }
 
+        montarPipeline(dados);
         montarPainelDireito(dados);
 
     }catch(erro){
-
         console.error(erro);
-
     }
-
 }
 
 
