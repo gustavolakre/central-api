@@ -649,17 +649,19 @@ function montarPainelDireito(linhas){
         if(!etiqueta) return;
 
         let dia = etiqueta.split(",")[0]
-            .trim()
-            .toLowerCase();
+          .trim()
+          .toLowerCase();
 
-        // normalização forte
+        // remove número tipo "02-"
+         dia = dia.replace(/^\d{2}-/, "");
+
+        // normaliza acentos
         dia = dia
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace("-feira", "")
-            .replace("feira", "")
-            .replace(/\s/g, "")
-            .trim();
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace("-feira", "")
+          .replace("feira", "")
+          .trim();
 
         const qtd = Number(item.quantidade ?? 1);
 
