@@ -264,10 +264,52 @@ body{
     border:2px solid #e5e7eb;
 }
 
+.topbar-dashboard{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 20px;
+    background:#0f172a;
+    border-bottom:1px solid #374151;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.topbar-left{
+    font-size:18px;
+    font-weight:700;
+    color:#f9fafb;
+}
+
+.topbar-right{
+    display:flex;
+    gap:10px;
+}
+
 </style>
 </head>
 
 <body>
+
+<div class="topbar-dashboard">
+
+    <div class="topbar-left">
+        Dashboard Operacional
+    </div>
+
+    <div class="topbar-right">
+
+        <button
+            class="btnPipefy"
+            onclick="atualizarCargasPipefy()"
+        >
+            Atualizar Pipefy
+        </button>
+
+    </div>
+
+</div>
 
 <div class="container">
 
