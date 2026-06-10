@@ -204,6 +204,48 @@ body{
     margin-bottom:10px;
 }
 
+.grupo-responsavel{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:15px;
+    margin-bottom:18px;
+    padding-bottom:18px;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.info-responsavel{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+}
+
+.nome-responsavel{
+    font-size:16px;
+    font-weight:700;
+    color:#111827;
+}
+
+.lista-semanas{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.linha-semana{
+    display:grid;
+    grid-template-columns:80px 1fr 40px;
+    gap:10px;
+    align-items:center;
+}
+
+.foto-usuario{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #e5e7eb;
+}
+
 </style>
 </head>
 
@@ -292,7 +334,6 @@ const CORES = {
     "02-Planejamento":"#dc2626",
     "03-Programado":"#2563eb",
     "04-Fechamento Fiscal":"#ca8a04",
-    "05-Verificação":"#16a34a",
     "06-Doc. Pendentes":"#9333ea"
 };
 
@@ -428,27 +469,31 @@ function montarPipeline(linhas){
 
         container.innerHTML += `
 
-            <div class="card-responsavel">
+           <div class="grupo-responsavel">
 
-                <div class="cabecalho-responsavel">
+               <div class="info-responsavel">
 
-                    <img
-                        class="foto-usuario"
-                        src="${FOTOS[nome]}"
-                        alt="${nome}"
-                    >
+                <img
+                  class="foto-usuario"
+                  src="${FOTOS[nome]}"
+                  alt="${nome}"
+                >
 
-                    <div class="nome-responsavel">
-                        ${nome}
-                    </div>
-
-                </div>
-
-                ${htmlSemanas}
+                <div class="nome-responsavel">
+                 ${nome}
+              </div>
 
             </div>
 
-        `;
+            <div class="lista-semanas">
+
+           ${htmlSemanas}
+
+        </div>
+
+      </div>
+
+`;
 
     });
 
