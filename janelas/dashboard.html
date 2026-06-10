@@ -21,6 +21,31 @@ body{
     padding:20px;
 }
 
+.topo-dashboard{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 24px;
+    background:#111827;
+    border-bottom:1px solid #374151;
+}
+
+.btnAtualizarPipefy{
+    background:#ea580c;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:10px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.btnAtualizarPipefy:hover{
+    transform:translateY(-2px);
+    background:#fb923c;
+}
+
 .container{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -254,6 +279,13 @@ body{
             Evolução de Cargas por Semana e Programador
         </div>
 
+           <button
+        class="btnAtualizarPipefy"
+        onclick="atualizarCargasPipefy()"
+    >
+        Atualizar Pipefy
+    </button>
+
 
 <div class="legenda-topo">
 
@@ -273,7 +305,7 @@ body{
     </div>
 
     <div class="legenda-item">
-        <div class="legenda-cor" style="background:#ca8a04"></div>
+        <div class="legenda-cor" style="background:#e7ad30"></div>
         Fech. Fiscal
     </div>
 
@@ -362,6 +394,34 @@ async function carregarPipeline(){
 
     }
 
+}
+
+
+async function atualizarCargasPipefy(){
+    const status = document.getElementById("status");
+
+    status.innerHTML = "Gerando relatório no Pipefy...";
+
+    try{
+        const resposta = await fetch("/importar-cargas-relatorio", {
+            method:"POST",
+            headers:{
+                Authorization:`Bearer ${localStorage.getItem("token")}`
+            }
+        });
+
+        const dados = await resposta.json();
+
+        if(dados.sucesso){
+            status.innerHTML = `✅ ${dados.importados} cargas importadas`;
+        }else{
+            status.innerHTML = `❌ ${dados.erro}`;
+        }
+
+    }catch(err){
+        console.error(err);
+        status.innerHTML = "❌ Erro ao atualizar cargas.";
+    }
 }
 
 
