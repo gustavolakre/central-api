@@ -159,6 +159,15 @@ body{
     background:#fafafa;
 }
 
+.foto-usuario{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #e5e7eb;
+    margin-right:10px;
+}
+
 
 </style>
 </head>
@@ -250,6 +259,20 @@ const CORES = {
     "04-Fechamento Fiscal":"#ca8a04",
     "05-Verificação":"#16a34a",
     "06-Doc. Pendentes":"#9333ea"
+};
+
+const FOTOS = {
+    "Adelar Schuh":
+        "imagens/usuarios/adelar.jpeg",
+
+    "Enário dos Santos":
+        "imagens/usuarios/enario.jpeg",
+
+    "Rael de Lima":
+        "imagens/usuarios/rafael.jpeg",
+
+    "Vânia Riva":
+        "imagens/usuarios/vania.jpg"
 };
 
 async function carregarPipeline(){
@@ -356,9 +379,11 @@ function montarPipeline(linhas){
 
     <div class="responsavel">
 
-        <div class="avatar">
-            ${item.responsavel.charAt(0)}
-        </div>
+        <img
+          class="foto-usuario"
+          src="${FOTOS[item.responsavel]}"
+          alt="${item.responsavel}"
+        >
 
         ${item.responsavel}
 
