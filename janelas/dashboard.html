@@ -298,6 +298,11 @@ body{
     gap:10px;
 }
 
+.topbar-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
 </style>
 </head>
 
@@ -309,6 +314,8 @@ body{
       <button class="btnAtualizarPipefy" onclick="atualizarCargasPipefy()">
         Atualizar Pipefy
       </button>
+
+      <div id="status" style="margin-left:12px; display:inline-block;"></div>
       
     </div>
 
@@ -410,6 +417,13 @@ const FOTOS = {
 };
 
 async function carregarPipeline(){
+
+       const token = localStorage.getItem("token");
+
+    if(!token){
+        alert("Sessão expirada. Faça login novamente.");
+        return;
+    }
 
     try{
 
