@@ -12,8 +12,8 @@ router.get("/pipeline", async (req, res) => {
             SELECT
                 responsaveis,
                 COALESCE(
-                     substring(etiquetas from '[0-9]{4}/[0-9]{2}'),
-                     TRIM(etiquetas)
+                   substring(etiquetas from '[0-9]{4}/[0-9]{2}'),
+                   TRIM(etiquetas)
                 ) AS semana
                 fase,
                 COUNT(*) AS quantidade
