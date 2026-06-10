@@ -150,6 +150,15 @@ body{
     font-weight:600;
 }
 
+.legenda-topo{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    padding:12px 20px;
+    border-bottom:1px solid #e5e7eb;
+    background:#fafafa;
+}
+
 
 </style>
 </head>
@@ -166,44 +175,49 @@ body{
             Pipeline de Cargas por Semana
         </div>
 
+        <div class="titulo">
+    Pipeline de Cargas por Semana
+</div>
+
+<div class="legenda-topo">
+
+    <div class="legenda-item">
+        <div class="legenda-cor" style="background:#f97316"></div>
+        Negociado
+    </div>
+
+    <div class="legenda-item">
+        <div class="legenda-cor" style="background:#dc2626"></div>
+        Planejamento
+    </div>
+
+    <div class="legenda-item">
+        <div class="legenda-cor" style="background:#2563eb"></div>
+        Programado
+    </div>
+
+    <div class="legenda-item">
+        <div class="legenda-cor" style="background:#ca8a04"></div>
+        Fech. Fiscal
+    </div>
+
+    <div class="legenda-item">
+        <div class="legenda-cor" style="background:#16a34a"></div>
+        Verificação
+    </div>
+
+    <div class="legenda-item">
+        <div class="legenda-cor" style="background:#9333ea"></div>
+        Doc. Pendentes
+    </div>
+
+</div>
+
         <div class="conteudo">
 
             <div id="listaPipeline"></div>
 
-            <div class="legenda">
-
-                <div class="legenda-item">
-                    <div class="legenda-cor" style="background:#f97316"></div>
-                    Negociado
-                </div>
-
-                <div class="legenda-item">
-                    <div class="legenda-cor" style="background:#dc2626"></div>
-                    Planejamento
-                </div>
-
-                <div class="legenda-item">
-                    <div class="legenda-cor" style="background:#2563eb"></div>
-                    Programado
-                </div>
-
-                <div class="legenda-item">
-                    <div class="legenda-cor" style="background:#ca8a04"></div>
-                    Fech. Fiscal
-                </div>
-
-                <div class="legenda-item">
-                    <div class="legenda-cor" style="background:#16a34a"></div>
-                    Verificação
-                </div>
-
-                <div class="legenda-item">
-                    <div class="legenda-cor" style="background:#9333ea"></div>
-                    Doc. Pendentes
-                </div>
-
-            </div>
-
+           
         </div>
 
     </div>
@@ -307,24 +321,7 @@ function montarPipeline(linhas){
             Object.values(item.fases)
             .reduce((a,b)=>a+b,0);
 
-        let numeros = "";
-
-        Object.entries(item.fases)
-          .forEach(([fase,qtd])=>{
-
-        numeros += `
-        <span
-            style="
-                color:${CORES[fase]};
-                font-weight:bold;
-                margin-right:10px;
-            "
-        >
-            ${qtd}
-        </span>
-    `;
-
-});
+        
 
         let barra = "";
 
@@ -335,15 +332,24 @@ function montarPipeline(linhas){
                 (qtd/total)*100;
 
             barra += `
-                <div
-                    class="fase"
-                    style="
-                        width:${largura}%;
-                        background:${CORES[fase]};
-                    "
-                    title="${fase}: ${qtd}"
-                ></div>
-            `;
+           <div
+               class="fase"
+               style="
+                  width:${largura}%;
+                  background:${CORES[fase]};
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  color:white;
+                  font-size:12px;
+                  font-weight:bold;
+                  min-width:28px;
+            "
+            title="${fase}: ${qtd}"
+        >
+            ${qtd}
+        </div>
+     `;
 
         });
 
@@ -367,13 +373,7 @@ function montarPipeline(linhas){
 
     <div>
 
-        <div style="
-            margin-bottom:6px;
-            font-size:14px;
-        ">
-            ${numeros}
-        </div>
-
+     
         <div class="pipeline-linha">
 
             <div class="pipeline-barra">
