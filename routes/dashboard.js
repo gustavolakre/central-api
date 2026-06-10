@@ -10,13 +10,15 @@ router.get("/pipeline", async (req, res) => {
 
         const resultado = await pool.query(`
             SELECT
-                responsaveis,
-                COALESCE(
-                   substring(etiquetas from '[0-9]{4}/[0-9]{2}'),
-                   TRIM(etiquetas)
-                ) AS semana
-                fase,
-                COUNT(*) AS quantidade
+              responsaveis,
+
+              substring(
+                etiquetas
+                from '[0-9]{4}/[0-9]{2}'
+              ) AS semana,
+
+            fase,
+            COUNT(*) AS quantidade
             FROM controle_cargas
             WHERE responsaveis IN (
                 'Adelar Schuh',
