@@ -216,7 +216,7 @@ body{
     <div class="painel">
 
         <div class="titulo">
-            Evolução de Cargas por Semana por Programador
+            Evolução de Cargas por Semana e Programador
         </div>
 
 
@@ -341,7 +341,7 @@ function montarPipeline(linhas){
 
     linhas.forEach(item => {
 
-        const nome = item.responsaveis;
+        const nome = item.responsavel_dashboard;
 
         if(!responsaveis[nome]){
             responsaveis[nome] = {};

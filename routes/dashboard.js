@@ -10,21 +10,49 @@ router.get("/pipeline", async (req, res) => {
 
         const resultado = await pool.query(`
             SELECT
-              responsaveis,
 
-              substring(
+    CASE
+
+        WHEN fase = '06-Doc. Pendentes' THEN
+
+            CASE
+
+                WHEN responsaveis ILIKE '%Adelar Schuh%'
+                    THEN 'Adelar Schuh'
+
+                WHEN responsaveis ILIKE '%Enário dos Santos%'
+                    THEN 'Enário dos Santos'
+
+                WHEN responsaveis ILIKE '%Vânia Riva%'
+                    THEN 'Vânia Riva'
+
+                WHEN responsaveis ILIKE '%Rael de Lima%'
+                    THEN 'Rael de Lima'
+
+                WHEN responsaveis ILIKE '%Rafael de Lima%'
+                    THEN 'Rael de Lima'
+
+            END
+
+        ELSE responsaveis
+
+    END AS responsavel_dashboard,
+
+            substring(
                 etiquetas
                 from '[0-9]{4}/[0-9]{2}'
-              ) AS semana,
+            ) AS semana,
 
             fase,
             COUNT(*) AS quantidade
             FROM controle_cargas
-            WHERE responsaveis IN (
-                'Adelar Schuh',
-                'Enário dos Santos',
-                'Vânia Riva',
-                'Rafael de Lima'
+            WHERE
+            (
+                responsaveis ILIKE '%Adelar Schuh%'
+                OR responsaveis ILIKE '%Enário dos Santos%'
+                OR responsaveis ILIKE '%Vânia Riva%'
+                OR responsaveis ILIKE '%Rael de Lima%'
+                OR responsaveis ILIKE '%Rafael de Lima%'
             )
             AND fase IN (
                 '01-Negociado',
@@ -35,12 +63,12 @@ router.get("/pipeline", async (req, res) => {
                 '06-Doc. Pendentes'
             )
             GROUP BY
-                responsaveis,
+                responsavel_dashboard,
                 semana,
                 fase
             ORDER BY
                 semana DESC,
-                responsaveis
+                responsavel_dashboard
         `);
 
         res.json(resultado.rows);
