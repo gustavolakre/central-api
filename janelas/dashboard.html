@@ -639,22 +639,29 @@ function montarPainelDireito(linhas){
 
     linhas.forEach(item => {
 
-        if(!item.semana || !item.etiquetas) return;
+        if(!item.semana) return;
 
         const semana = item.semana;
 
-        // pega só antes da vírgula
-        let dia = item.etiquetas.split(",")[0].trim().toLowerCase();
+        // aceita vários nomes possíveis de campo
+        const etiqueta = item.etiquetas || item.etiqueta || "";
 
-        // remove acentos + padroniza
+        if(!etiqueta) return;
+
+        let dia = etiqueta.split(",")[0]
+            .trim()
+            .toLowerCase();
+
+        // normalização forte
         dia = dia
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")
             .replace("-feira", "")
             .replace("feira", "")
+            .replace(/\s/g, "")
             .trim();
 
-        const qtd = Number(item.quantidade || 0);
+        const qtd = Number(item.quantidade ?? 1);
 
         if(!semanas[semana]){
             semanas[semana] = {};
@@ -697,7 +704,7 @@ function montarPainelDireito(linhas){
 
                 const qtd = dados[dia] || 0;
 
-                let largura = totalSemana > 0
+                const largura = totalSemana > 0
                     ? (qtd / totalSemana) * 100
                     : 0;
 
@@ -750,7 +757,7 @@ function montarPainelDireito(linhas){
             `;
         });
 
-    container.innerHTML = html;
+    container.innerHTML = html || "<div class='vazio'>Sem dados</div>";
 }
 
 carregarPipeline();
