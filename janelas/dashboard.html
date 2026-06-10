@@ -635,7 +635,13 @@ function montarPainelDireito(linhas){
         if(!item.semana || !item.etiqueta) return;
 
         const semana = item.semana;
-        const dia = item.etiqueta.split(",")[0].trim().toLowerCase();
+        let dia = item.etiqueta.split(",")[0].trim().toLowerCase();
+
+        // normalização forte
+        dia = dia
+             .replace("-feira", "")
+             .replace("feira", "")
+             .trim();
         const qtd = Number(item.quantidade);
 
         if(!semanas[semana]){
@@ -650,13 +656,13 @@ function montarPainelDireito(linhas){
     });
 
     const diasOrdem = [
-        "domingo",
-        "segunda",
-        "terça",
-        "quarta",
-        "quinta",
-        "sexta",
-        "sábado"
+      "domingo",
+      "segunda",
+      "terca",
+      "quarta",
+      "quinta",
+      "sexta",
+      "sabado"
     ];
 
     const container = document.querySelectorAll(".painel")[1].querySelector(".conteudo");
