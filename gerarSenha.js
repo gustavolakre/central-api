@@ -4,7 +4,7 @@ async function gerar() {
 
     const hash =
         await bcrypt.hash(
-            "123la",
+            "123je",
             10
         );
 
