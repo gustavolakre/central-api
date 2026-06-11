@@ -491,7 +491,6 @@ async function carregarPipeline(){
         }
 
         const dados = await resposta.json();
-
         const programados = dados.filter(x =>
            x.semana === "2026/25" &&
            x.fase === "03-Programado"
