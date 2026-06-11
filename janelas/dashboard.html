@@ -780,13 +780,9 @@ function montarPainelDireito(linhas){
 
     let html = "";
 
-    const ultimas3Semanas = Object.keys(semanas)
-    .sort((a,b) => b.localeCompare(a))
-    .slice(0,3);
-
-ultimas3Semanas.forEach(semana => {
-
-    const dias = semanas[semana];
+    Object.entries(semanas)
+    .sort((a,b) => b[0].localeCompare(a[0]))
+    .forEach(([semana,dias]) => {
 
     let linhasDias = "";
 
