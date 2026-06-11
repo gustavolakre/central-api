@@ -53,7 +53,9 @@ router.get("/pipeline", async (req, res) => {
         '02-Planejamento',
         '03-Programado',
         '04-Fechamento Fiscal',
-        '06-Doc. Pendentes'
+        '05-Verificação',
+        '06-Doc. Pendentes',
+        '07-Pagamento'
     )
 
     GROUP BY
