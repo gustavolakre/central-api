@@ -113,7 +113,7 @@ body{
 .semana{
     color:#d1d5db;
     font-weight:700;
-    font-size:14px;
+    font-size:18px;
 }
 
 .pipeline-linha{
@@ -123,7 +123,7 @@ body{
 }
 
 .pipeline-barra{
-    height:34px;
+    height:42px;
     display:flex;
     overflow:hidden;
     border-radius:8px;
@@ -139,7 +139,9 @@ body{
     text-align:right;
     font-weight:700;
     color:#f9fafb;
+    font-size:18px;
 }
+
 .legenda{
     display:flex;
     flex-wrap:wrap;
@@ -152,15 +154,16 @@ body{
 .legenda-item{
     display:flex;
     align-items:center;
-    gap:6px;
-    font-size:13px;
-    color:#e5e7eb
+    gap:10px;
+    font-size:16px;
+    font-weight:700;
+    color:#e5e7eb;
 }
 
 .legenda-cor{
-    width:14px;
-    height:14px;
-    border-radius:4px;
+    width:20px;
+    height:20px;
+    border-radius:5px;
 }
 
 .vazio{
@@ -195,8 +198,8 @@ body{
 .legenda-topo{
     display:flex;
     flex-wrap:wrap;
-    gap:16px;
-    padding:14px 24px;
+    gap:22px;
+    padding:18px 24px;
     background:#111827;
     border-bottom:1px solid #374151;
 }
@@ -624,7 +627,7 @@ function montarPipeline(linhas){
                             align-items:center;
                             justify-content:center;
                             color:white;
-                            font-size:12px;
+                            font-size:16px;
                             font-weight:bold;
                             min-width:28px;
                         "
@@ -824,7 +827,7 @@ ultimas3Semanas.forEach(semana => {
                         align-items:center;
                         justify-content:center;
                         color:white;
-                        font-size:11px;
+                        font-size:16px;
                         font-weight:bold;
                     ">
                         ${qtd}
