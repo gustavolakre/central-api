@@ -719,91 +719,148 @@ function montarPainelDireito(linhas){
     let html = "";
 
     Object.entries(semanas)
-        .sort((a,b) => b[0].localeCompare(a[0]))
-        .forEach(([semana,dias]) => {
+    .sort((a,b) => b[0].localeCompare(a[0]))
+    .forEach(([semana,dias]) => {
 
-            let linhasDias = "";
+        let linhasDias = "";
 
-            diasOrdem.forEach(dia => {
+        diasOrdem.forEach(dia => {
 
-                const dadosDia = dias[dia];
+            const dadosDia = dias[dia];
 
-                if(!dadosDia){
-                    return;
-                }
+            if(!dadosDia){
+                return;
+            }
 
-                const fases = dadosDia.fases;
+            const fases = dadosDia.fases;
 
-                const total = Object.values(fases)
-                    .reduce((a,b) => a + b, 0);
+            const total = Object.values(fases)
+                .reduce((a,b) => a + b, 0);
 
-                let barra = "";
+            let barra = "";
 
-                Object.entries(fases).forEach(([fase,qtd]) => {
+            Object.entries(fases).forEach(([fase,qtd]) => {
 
-                    const largura = (qtd / total) * 100;
+                const largura = (qtd / total) * 100;
 
-                    barra += `
-                        <div style="
-                            width:${largura}%;
-                            background:${
-                                fase === "01-Negociado" ? "#f97316" :
-                                fase === "02-Planejamento" ? "#dc2626" :
-                                fase === "03-Programado" ? "#2563eb" :
-                                fase === "04-Fechamento Fiscal" ? "#e7ad30" :
-                                "#9333ea"
-                            };
-                            height:100%;
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            color:white;
-                            font-size:11px;
-                            font-weight:bold;
-                        ">
-                            ${qtd}
-                        </div>
-                    `;
-                });
-
-                linhasDias += `
-                    <div class="linha-semana">
-
-                        <div class="semana">
-                            ${dia}
-                        </div>
-
-                        <div class="pipeline-barra">
-                            ${barra}
-                        </div>
-
-                        <div class="total">
-                            ${total}
-                        </div>
-
+                barra += `
+                    <div style="
+                        width:${largura}%;
+                        background:${
+                            fase === "01-Negociado" ? "#f97316" :
+                            fase === "02-Planejamento" ? "#dc2626" :
+                            fase === "03-Programado" ? "#2563eb" :
+                            fase === "04-Fechamento Fiscal" ? "#e7ad30" :
+                            "#9333ea"
+                        };
+                        height:100%;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        color:white;
+                        font-size:11px;
+                        font-weight:bold;
+                    ">
+                        ${qtd}
                     </div>
                 `;
             });
 
-            html += `
-                <div class="grupo-responsavel">
+            linhasDias += `
+                <div class="linha-semana">
 
-                    <div class="info-responsavel">
-                        <div class="nome-responsavel">
-                            Semana ${semana}
-                        </div>
+                    <div class="semana">
+                        ${dia}
                     </div>
 
-                    <div class="lista-semanas">
-                        ${linhasDias}
+                    <div class="pipeline-barra">
+                        ${barra}
+                    </div>
+
+                    <div class="total">
+                        ${total}
                     </div>
 
                 </div>
             `;
         });
 
-    container.innerHTML = html;
-}
+        // NOVO BLOCO
+        if(
+            dias._semDia &&
+            dias._semDia.fases &&
+            Object.keys(dias._semDia.fases).length
+        ){
+
+            const fases = dias._semDia.fases;
+
+            const total = Object.values(fases)
+                .reduce((a,b) => a + b, 0);
+
+            let barra = "";
+
+            Object.entries(fases).forEach(([fase,qtd]) => {
+
+                const largura = (qtd / total) * 100;
+
+                barra += `
+                    <div style="
+                        width:${largura}%;
+                        background:${
+                            fase === "01-Negociado" ? "#f97316" :
+                            fase === "02-Planejamento" ? "#dc2626" :
+                            fase === "03-Programado" ? "#2563eb" :
+                            fase === "04-Fechamento Fiscal" ? "#e7ad30" :
+                            "#9333ea"
+                        };
+                        height:100%;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        color:white;
+                        font-size:11px;
+                        font-weight:bold;
+                    ">
+                        ${qtd}
+                    </div>
+                `;
+            });
+
+            linhasDias += `
+                <div class="linha-semana">
+
+                    <div class="semana">
+                        Sem dia
+                    </div>
+
+                    <div class="pipeline-barra">
+                        ${barra}
+                    </div>
+
+                    <div class="total">
+                        ${total}
+                    </div>
+
+                </div>
+            `;
+        }
+
+        html += `
+            <div class="grupo-responsavel">
+
+                <div class="info-responsavel">
+                    <div class="nome-responsavel">
+                        Semana ${semana}
+                    </div>
+                </div>
+
+                <div class="lista-semanas">
+                    ${linhasDias}
+                </div>
+
+            </div>
+        `;
+    });
 
 carregarPipeline();
 
