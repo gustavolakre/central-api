@@ -511,30 +511,27 @@ function montarPipeline(linhas){
 
     linhas.forEach(item => {
 
-    const semana = item.semana;
-    const dia = item.dia;
-    const qtd = Number(item.quantidade || 0);
+             if(item.semana && item.semana.includes("2025")){
+            return;
+        }
 
-    // ❌ remove semanas de 2025
-    if(!semana || semana.includes("2025")) return;
+        const nome = item.responsavel_dashboard;
 
-    // ❌ remove linhas sem dia válido
-    if(
-        !dia ||
-        dia.trim() === "" ||
-        dia === "Semana Sem data definida"
-    ) return;
+        if(!responsaveis[nome]){
+            responsaveis[nome] = {};
+        }
 
-    if(!semanas[semana]){
-        semanas[semana] = {};
-    }
+        if(!responsaveis[nome][item.semana]){
+            responsaveis[nome][item.semana] = {
+                fases:{}
+            };
+        }
 
-    if(!semanas[semana][dia]){
-        semanas[semana][dia] = 0;
-    }
+        responsaveis[nome][item.semana]
+            .fases[item.fase] =
+            Number(item.quantidade);
 
-    semanas[semana][dia] += qtd;
-});
+    });
 
     const container =
         document.getElementById("listaPipeline");
@@ -642,26 +639,30 @@ function montarPainelDireito(linhas){
 
     linhas.forEach(item => {
 
-        const semana = item.semana;
-        const dia = item.dia;
-        const qtd = Number(item.quantidade || 0);
+    const semana = item.semana;
+    const dia = item.dia;
+    const qtd = Number(item.quantidade || 0);
 
-        // ❌ 1. remove semanas de 2025
-        if(!semana || semana.includes("2025")) return;
+    // ❌ remove semanas de 2025
+    if(!semana || semana.includes("2025")) return;
 
-        // ❌ 2. remove dias vazios
-        if(!dia || dia.trim() === "") return;
+    // ❌ remove linhas sem dia válido
+    if(
+        !dia ||
+        dia.trim() === "" ||
+        dia === "Semana Sem data definida"
+    ) return;
 
-        if(!semanas[semana]){
-            semanas[semana] = {};
-        }
+    if(!semanas[semana]){
+        semanas[semana] = {};
+    }
 
-        if(!semanas[semana][dia]){
-            semanas[semana][dia] = 0;
-        }
+    if(!semanas[semana][dia]){
+        semanas[semana][dia] = 0;
+    }
 
-        semanas[semana][dia] += qtd;
-    });
+    semanas[semana][dia] += qtd;
+});
 
     const diasOrdem = [
         "domingo",
