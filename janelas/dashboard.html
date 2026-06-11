@@ -251,10 +251,10 @@ body{
 .grupo-responsavel{
     display:grid;
     grid-template-columns:220px 1fr;
-    gap:15px;
-    margin-bottom:26px;
-    padding-bottom:16px;
-    border-bottom:1px solid #e5e7eb;
+    gap:10px;
+    margin-bottom:10px;
+    padding-bottom:8px;
+    border-bottom:1px solid #374151;
 }
 
 .info-responsavel{
@@ -266,14 +266,15 @@ body{
 .lista-semanas{
     display:flex;
     flex-direction:column;
-    gap:6px;
+    gap:2px;
 }
 
 .linha-semana{
     display:grid;
     grid-template-columns:80px 1fr 40px;
-    gap:10px;
+    gap:6px;
     align-items:center;
+    min-height:28px;
 }
 
 .foto-usuario{
@@ -312,6 +313,11 @@ body{
     align-items:center;
     gap:12px;
 }
+
+.conteudo-esquerdo{
+    overflow:hidden;
+}
+
 </style>
 </head>
 
@@ -370,12 +376,9 @@ body{
 
 </div>
 
-        <div class="conteudo">
-
-            <div id="listaPipeline"></div>
-
-           
-        </div>
+        <div class="conteudo conteudo-esquerdo">
+              <div id="listaPipeline"></div>
+       </div>
 
     </div>
 
