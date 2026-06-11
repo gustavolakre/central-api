@@ -668,6 +668,10 @@ function montarPainelDireito(linhas){
         .replace("feira", "")
         .trim();
 
+    if (dia.includes("sem data definida")) {
+    dia = "sem definição";
+}
+
     if (!semanas[semana]) {
         semanas[semana] = {
             _semDia: {} // 👈 fallback para quem não tem dia
