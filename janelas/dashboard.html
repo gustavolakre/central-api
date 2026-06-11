@@ -511,27 +511,30 @@ function montarPipeline(linhas){
 
     linhas.forEach(item => {
 
-             if(item.semana && item.semana.includes("2025")){
-            return;
-        }
+    const semana = item.semana;
+    const dia = item.dia;
+    const qtd = Number(item.quantidade || 0);
 
-        const nome = item.responsavel_dashboard;
+    // ❌ remove semanas de 2025
+    if(!semana || semana.includes("2025")) return;
 
-        if(!responsaveis[nome]){
-            responsaveis[nome] = {};
-        }
+    // ❌ remove linhas sem dia válido
+    if(
+        !dia ||
+        dia.trim() === "" ||
+        dia === "Semana Sem data definida"
+    ) return;
 
-        if(!responsaveis[nome][item.semana]){
-            responsaveis[nome][item.semana] = {
-                fases:{}
-            };
-        }
+    if(!semanas[semana]){
+        semanas[semana] = {};
+    }
 
-        responsaveis[nome][item.semana]
-            .fases[item.fase] =
-            Number(item.quantidade);
+    if(!semanas[semana][dia]){
+        semanas[semana][dia] = 0;
+    }
 
-    });
+    semanas[semana][dia] += qtd;
+});
 
     const container =
         document.getElementById("listaPipeline");
