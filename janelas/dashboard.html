@@ -634,126 +634,14 @@ function montarPipeline(linhas){
 
 
 function montarPainelDireito(linhas){
-
-    const semanas = {};
-
-    linhas.forEach(item => {
-
-        if(!item.etiquetas) return;
-
-        // separa: "02-Segunda" e "2026/20"
-        const partes = item.etiquetas.split(",");
-
-        const diaRaw = (partes[0] || "").trim().toLowerCase();
-        const semana = (partes[1] || "").trim();
-
-        if(!semana) return;
-
-        // limpa dia
-        let dia = diaRaw
-            .replace(/^\d{2}-/, "") // remove "02-"
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace("-feira", "")
-            .trim();
-
-        const qtd = Number(item.quantidade || 1);
-
-        if(!semanas[semana]){
-            semanas[semana] = {};
-        }
-
-        if(!semanas[semana][dia]){
-            semanas[semana][dia] = 0;
-        }
-
-        semanas[semana][dia] += qtd;
-    });
-
-    const diasOrdem = [
-        "domingo",
-        "segunda",
-        "terca",
-        "quarta",
-        "quinta",
-        "sexta",
-        "sabado"
-    ];
-
     const container =
         document.querySelectorAll(".painel")[1]
         .querySelector(".conteudo");
 
-    let html = "";
-
-    Object.entries(semanas)
-        .sort((a,b)=> b[0].localeCompare(a[0]))
-        .forEach(([semana,dados])=>{
-
-            let totalSemana =
-                Object.values(dados)
-                .reduce((a,b)=>a+b,0);
-
-            let linhasDias = "";
-
-            diasOrdem.forEach(dia => {
-
-                const qtd = dados[dia] || 0;
-
-                const largura = totalSemana > 0
-                    ? (qtd / totalSemana) * 100
-                    : 0;
-
-                linhasDias += `
-                    <div class="linha-semana">
-
-                        <div class="semana">
-                            ${dia}
-                        </div>
-
-                        <div class="pipeline-barra">
-                            <div style="
-                                width:${largura}%;
-                                background:#2563eb;
-                                height:100%;
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                color:white;
-                                font-size:12px;
-                                font-weight:bold;
-                                min-width:28px;
-                            ">
-                                ${qtd}
-                            </div>
-                        </div>
-
-                        <div class="total">
-                            ${qtd}
-                        </div>
-
-                    </div>
-                `;
-            });
-
-            html += `
-                <div class="grupo-responsavel">
-
-                    <div class="info-responsavel">
-                        <div class="nome-responsavel">
-                            Semana ${semana}
-                        </div>
-                    </div>
-
-                    <div class="lista-semanas">
-                        ${linhasDias}
-                    </div>
-
-                </div>
-            `;
-        });
-
-    container.innerHTML = html || "<div class='vazio'>Sem dados</div>";
+    container.innerHTML =
+        "<pre style='color:white'>" +
+        JSON.stringify(linhas, null, 2) +
+        "</pre>";
 }
 
 carregarPipeline();
