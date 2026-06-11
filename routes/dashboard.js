@@ -34,18 +34,25 @@ router.get("/pipeline", async (req, res) => {
 
             END
 
-        ELSE responsaveis
+            ELSE responsives
+               END AS responsavel_dashboard,
 
-    END AS responsavel_dashboard,
+           -- SEMANA (depois da vírgula)
+            TRIM(split_part(etiquetas, ',', 2)) AS semana,
 
-            substring(
-                etiquetas
-                from '[0-9]{4}/[0-9]{2}'
-            ) AS semana,
+           -- DIA (antes da vírgula)
+             LOWER(
+             REGEXP_REPLACE(
+                TRIM(split_part(etiquetas, ',', 1)),
+               '^[0-9]+-',
+               ''
+            )
+            ) AS dia,
 
             fase,
             COUNT(*) AS quantidade
-            FROM controle_cargas
+
+             FROM controle_cargas
             WHERE
             (
                 responsaveis ILIKE '%Adelar Schuh%'
