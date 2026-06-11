@@ -448,6 +448,8 @@ async function carregarPipeline(){
 
         const dados = await resposta.json();
 
+        console.log(dados[0]);
+
         // 🔴 validação importante
         if(!Array.isArray(dados)){
             console.error("Resposta inválida:", dados);
