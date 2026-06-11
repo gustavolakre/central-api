@@ -582,11 +582,19 @@ function montarPipeline(linhas){
         };
     }
 
+    if(
+    !responsaveis[nome][item.semana]
+        .fases[item.fase]
+    ){
     responsaveis[nome][item.semana]
-        .fases[item.fase] =
-        Number(item.quantidade);
+        .fases[item.fase] = 0;
+    }
 
-});
+    responsaveis[nome][item.semana]
+     .fases[item.fase] +=
+     Number(item.quantidade);
+
+    });
 
     const container =
         document.getElementById("listaPipeline");
