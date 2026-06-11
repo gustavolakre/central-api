@@ -777,21 +777,25 @@ function montarPainelDireito(linhas){
 
     let html = "";
 
-    Object.entries(semanas)
-    .sort((a,b) => b[0].localeCompare(a[0]))
-    .forEach(([semana,dias]) => {
+    const ultimas3Semanas = Object.keys(semanas)
+    .sort((a,b) => b.localeCompare(a))
+    .slice(0,3);
 
-        let linhasDias = "";
+ultimas3Semanas.forEach(semana => {
 
-        diasOrdem.forEach(dia => {
+    const dias = semanas[semana];
 
-            const dadosDia = dias[dia];
+    let linhasDias = "";
 
-            if(!dadosDia){
-                return;
-            }
+    diasOrdem.forEach(dia => {
 
-            const fases = dadosDia.fases;
+        const dadosDia = dias[dia];
+
+        if(!dadosDia){
+            return;
+        }
+
+           const fases = dadosDia.fases;
 
             const total = Object.values(fases)
                 .reduce((a,b) => a + b, 0);
