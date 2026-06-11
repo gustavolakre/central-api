@@ -639,48 +639,78 @@ function montarPainelDireito(linhas){
 
     linhas.forEach(item => {
 
-        const semana = item.semana;
-        const dia = item.dia;
-        const fase = item.fase;
-        const qtd = Number(item.quantidade || 0);
+    const semana = item.semana;
+    const diaRaw = item.etiquetas || item.dia || "";
+    const fase = item.fase;
+    const qtd = Number(item.quantidade || 0);
 
-        const diaLower = (dia || "").toString().trim().toLowerCase();
+    const diaLower = diaRaw.toString().trim().toLowerCase();
 
-        if(
-            !semana ||
-            !diaLower ||
-            semana.includes("2025") ||
-            diaLower.includes("semana sem data definida")
-        ){
-            return;
+    // ignora lixo
+    if (
+        !semana ||
+        semana.includes("2025") ||
+        diaLower.includes("semana sem data definida")
+    ) {
+        return;
+    }
+
+    // extrai dia antes da vírgula
+    let dia = diaLower.split(",")[0].trim();
+
+    // normalização básica
+    dia = dia
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace("-feira", "")
+        .replace("feira", "")
+        .trim();
+
+    if (!semanas[semana]) {
+        semanas[semana] = {
+            _semDia: {} // 👈 fallback para quem não tem dia
+        };
+    }
+
+    // 🚨 CASO 1: tem dia
+    if (dia && dia !== semana) {
+
+        if (!semanas[semana][dia]) {
+            semanas[semana][dia] = { fases: {} };
         }
 
-        if(!semanas[semana]){
-            semanas[semana] = {};
+        if (!semanas[semana][dia].fases[fase]) {
+            semanas[semana][dia].fases[fase] = 0;
         }
 
-        if(!semanas[semana][diaLower]){
-            semanas[semana][diaLower] = {
-                fases: {}
-            };
+        semanas[semana][dia].fases[fase] += qtd;
+
+    }
+    // 🚨 CASO 2: só semana (sem dia)
+    else {
+
+        if (!semanas[semana]._semDia.fases) {
+            semanas[semana]._semDia.fases = {};
         }
 
-        if(!semanas[semana][diaLower].fases[fase]){
-            semanas[semana][diaLower].fases[fase] = 0;
+        if (!semanas[semana]._semDia.fases[fase]) {
+            semanas[semana]._semDia.fases[fase] = 0;
         }
 
-        semanas[semana][diaLower].fases[fase] += qtd;
-    });
+        semanas[semana]._semDia.fases[fase] += qtd;
+    }
+});
 
     const diasOrdem = [
-        "domingo",
-        "segunda",
-        "terca",
-        "quarta",
-        "quinta",
-        "sexta",
-        "sabado"
-    ];
+           "domingo",
+           "segunda",
+           "terca",
+           "quarta",
+           "quinta",
+           "sexta",
+           "sabado",
+           "sem definição"
+        ];
 
     const container = document
         .querySelectorAll(".painel")[1]
