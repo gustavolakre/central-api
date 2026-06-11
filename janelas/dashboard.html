@@ -639,12 +639,15 @@ function montarPainelDireito(linhas){
 
     linhas.forEach(item => {
 
-        // agora o backend já manda isso pronto
         const semana = item.semana;
-        const dia = item.dia; 
+        const dia = item.dia;
         const qtd = Number(item.quantidade || 0);
 
-        if(!semana || !dia) return;
+        // ❌ 1. remove semanas de 2025
+        if(!semana || semana.includes("2025")) return;
+
+        // ❌ 2. remove dias vazios
+        if(!dia || dia.trim() === "") return;
 
         if(!semanas[semana]){
             semanas[semana] = {};
