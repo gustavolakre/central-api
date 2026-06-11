@@ -491,25 +491,14 @@ async function carregarPipeline(){
         }
 
         const dados = await resposta.json();
+        
         const programados = dados.filter(x =>
-           x.semana === "2026/25" &&
-           x.fase === "03-Programado"
-        );
+    x.semana === "2026/25" &&
+    x.fase === "03-Programado"
+);
 
-        console.log("PROGRAMADOS 2026/25");
-        console.table(programados);
-
-        montarPipeline(dados);
-        montarPainelDireito(dados);
-
-        console.log(dados[0]);
-
-        // 🔴 validação importante
-        if(!Array.isArray(dados)){
-            console.error("Resposta inválida:", dados);
-            alert("Backend não retornou lista de dados.");
-            return;
-        }
+console.log("PROGRAMADOS 2026/25");
+console.table(programados);
 
         montarPipeline(dados);
         montarPainelDireito(dados);
