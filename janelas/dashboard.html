@@ -554,27 +554,39 @@ function montarPipeline(linhas){
 
     linhas.forEach(item => {
 
-             if(item.semana && item.semana.includes("2025")){
-            return;
-        }
+    if(item.semana && item.semana.includes("2025")){
+        return;
+    }
 
-        const nome = item.responsavel_dashboard;
+    const fasesPainelEsquerdo = [
+        "01-Negociado",
+        "02-Planejamento",
+        "03-Programado",
+        "04-Fechamento Fiscal",
+        "06-Doc. Pendentes"
+    ];
 
-        if(!responsaveis[nome]){
-            responsaveis[nome] = {};
-        }
+    if(!fasesPainelEsquerdo.includes(item.fase)){
+        return;
+    }
 
-        if(!responsaveis[nome][item.semana]){
-            responsaveis[nome][item.semana] = {
-                fases:{}
-            };
-        }
+    const nome = item.responsavel_dashboard;
 
-        responsaveis[nome][item.semana]
-            .fases[item.fase] =
-            Number(item.quantidade);
+    if(!responsaveis[nome]){
+        responsaveis[nome] = {};
+    }
 
-    });
+    if(!responsaveis[nome][item.semana]){
+        responsaveis[nome][item.semana] = {
+            fases:{}
+        };
+    }
+
+    responsaveis[nome][item.semana]
+        .fases[item.fase] =
+        Number(item.quantidade);
+
+});
 
     const container =
         document.getElementById("listaPipeline");
