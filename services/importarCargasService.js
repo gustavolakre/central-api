@@ -339,6 +339,9 @@ async function importarCargas(buffer){
             observacao_pagamento = EXCLUDED.observacao_pagamento,
             motivo_cancelamento = EXCLUDED.motivo_cancelamento,
             raw_data = EXCLUDED.raw_data
+
+            WHERE controle_cargas.raw_data
+            IS DISTINCT FROM EXCLUDED.raw_data
         `;
 
         await pool.query(
