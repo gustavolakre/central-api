@@ -1,13 +1,25 @@
 window.API =
     "https://api-production-6670.up.railway.app";
 
+function logoutSessaoExpirada(){
+
+    localStorage.setItem(
+        "paginaDestino",
+        window.location.pathname
+    );
+
+    localStorage.removeItem("token");
+
+    window.location.href =
+        "/janelas/login.html";
+}
+
 const token =
     localStorage.getItem("token");
 
 if(!token){
 
-    window.location.href =
-        "/janelas/login.html";
+    logoutSessaoExpirada();
 
 }
 
@@ -24,19 +36,13 @@ fetch(
 
     if(!r.ok){
 
-        localStorage.removeItem("token");
-
-        window.location.href =
-            "/janelas/login.html";
+        logoutSessaoExpirada();
 
     }
 
 })
 .catch(() => {
 
-    localStorage.removeItem("token");
-
-    window.location.href =
-        "/janelas/login.html";
+    logoutSessaoExpirada();
 
 });

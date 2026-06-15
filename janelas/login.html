@@ -22,8 +22,16 @@
 
 if(localStorage.getItem("token")){
 
+    const destino =
+        localStorage.getItem("paginaDestino")
+        || "/janelas/dashboard.html";
+
+    localStorage.removeItem(
+        "paginaDestino"
+    );
+
     window.location.href =
-         "/janelas/dashboard.html";
+        destino;
 
 }
 
@@ -56,18 +64,21 @@ async function entrar(){
     if(dados.token){
 
         localStorage.setItem(
-            "token",
-            dados.token
-         );
-         console.log(
-             "TOKEN SALVO:",
-              localStorage.getItem("token")
-          );
+          "token",
+          dados.token
+      );
 
-        window.location.href =
-         "/janelas/dashboard.html";
+      const destino =
+        localStorage.getItem("paginaDestino")
+          || "/janelas/dashboard.html";
 
-    }else{
+       localStorage.removeItem(
+          "paginaDestino"
+     );
+
+      window.location.href =
+        destino;
+     }else{
 
         alert(
             JSON.stringify(dados)
