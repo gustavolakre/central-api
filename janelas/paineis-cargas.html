@@ -320,31 +320,38 @@ document.getElementById("totalCargasProxima").innerText =
     }
 );
 
-const compradores =
-    resultado.compradores;
+const compradores = resultado.compradores;
 
 new Chart(
-    document.getElementById(
-        "graficoComprador"
-    ),
+    document.getElementById("graficoComprador"),
     {
         type:"bar",
         data:{
-            labels:
-                compradores.map(
-                    x => x.comprador
-                ),
-            datasets:[{
-                label:"Suínos",
-                data:
-                    compradores.map(
-                        x => x.total_suinos
-                    )
-            }]
+            labels: compradores.map(x => x.comprador),
+            datasets:[
+                {
+                    label:"Suínos",
+                    data: compradores.map(x => x.total_suinos),
+                    backgroundColor:"#2563eb"
+                },
+                {
+                    label:"Cargas",
+                    data: compradores.map(x => x.total_cargas),
+                    backgroundColor:"#16a34a",
+                    type:"line",
+                    yAxisID:"y1"
+                }
+            ]
         },
         plugins:[ChartDataLabels],
         options:{
             indexAxis:"y",
+            scales:{
+                y1:{
+                    position:"right",
+                    grid:{ drawOnChartArea:false }
+                }
+            },
             plugins:{
                 datalabels:{
                     anchor:"end",
@@ -355,31 +362,38 @@ new Chart(
     }
 );
 
-const fornecedores =
-    resultado.fornecedores;
+const fornecedores = resultado.fornecedores;
 
 new Chart(
-    document.getElementById(
-        "graficoFornecedor"
-    ),
+    document.getElementById("graficoFornecedor"),
     {
         type:"bar",
         data:{
-            labels:
-                fornecedores.map(
-                    x => x.fornecedor
-                ),
-            datasets:[{
-                label:"Suínos",
-                data:
-                    fornecedores.map(
-                        x => x.total_suinos
-                    )
-            }]
+            labels: fornecedores.map(x => x.fornecedor),
+            datasets:[
+                {
+                    label:"Suínos",
+                    data: fornecedores.map(x => x.total_suinos),
+                    backgroundColor:"#2563eb"
+                },
+                {
+                    label:"Cargas",
+                    data: fornecedores.map(x => x.total_cargas),
+                    backgroundColor:"#f59e0b",
+                    type:"line",
+                    yAxisID:"y1"
+                }
+            ]
         },
         plugins:[ChartDataLabels],
         options:{
             indexAxis:"y",
+            scales:{
+                y1:{
+                    position:"right",
+                    grid:{ drawOnChartArea:false }
+                }
+            },
             plugins:{
                 datalabels:{
                     anchor:"end",
@@ -390,33 +404,40 @@ new Chart(
     }
 );
 
-const negociacoes =
-    resultado.negociacoes;
+const negociacoes = resultado.negociacoes;
 
 new Chart(
-    document.getElementById(
-        "graficoNegociacoes"
-    ),
+    document.getElementById("graficoNegociacoes"),
     {
         type:"bar",
         data:{
-            labels:
-                negociacoes.map(
-                    x =>
-                    `${x.comprador} → ${x.fornecedor}`
-                ),
-
-            datasets:[{
-                label:"Suínos",
-                data:
-                    negociacoes.map(
-                        x => x.total_suinos
-                    )
-            }]
+            labels: negociacoes.map(
+                x => `${x.comprador} x ${x.fornecedor}`
+            ),
+            datasets:[
+                {
+                    label:"Suínos",
+                    data: negociacoes.map(x => x.total_suinos),
+                    backgroundColor:"#2563eb"
+                },
+                {
+                    label:"Cargas",
+                    data: negociacoes.map(x => x.total_cargas),
+                    backgroundColor:"#dc2626",
+                    type:"line",
+                    yAxisID:"y1"
+                }
+            ]
         },
         plugins:[ChartDataLabels],
         options:{
             indexAxis:"y",
+            scales:{
+                y1:{
+                    position:"right",
+                    grid:{ drawOnChartArea:false }
+                }
+            },
             plugins:{
                 datalabels:{
                     anchor:"end",
