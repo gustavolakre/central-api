@@ -68,8 +68,16 @@ body{
 
 .graficos{
     display:grid;
-    grid-template-columns:1fr 1fr 1fr;
     gap:20px;
+    margin-top:20px;
+}
+
+.graficos:first-of-type{
+    grid-template-columns:1fr 1fr;
+}
+
+.graficos:last-of-type{
+    grid-template-columns:1fr 1fr 1fr;
 }
 
 .grafico{
@@ -103,40 +111,26 @@ canvas{
 
 <div class="cards">
 
+    <div class="cards">
+
     <div class="card">
-
-        <div
-             id="tituloSuinos"
-             class="card-titulo"
-        >
-             Total de Suínos
-        </div>
-
-        <div
-            id="totalSuinos"
-            class="card-valor"
-        >
-            0
-        </div>
-
+        <div id="tituloSuinosAtual" class="card-titulo"></div>
+        <div id="totalSuinosAtual" class="card-valor">0</div>
     </div>
 
     <div class="card">
+        <div id="tituloCargasAtual" class="card-titulo"></div>
+        <div id="totalCargasAtual" class="card-valor">0</div>
+    </div>
 
-        <div
-           id="tituloCargas"
-           class="card-titulo"
-        >
-           Total de Cargas
-        </div>
+    <div class="card">
+        <div id="tituloSuinosProxima" class="card-titulo"></div>
+        <div id="totalSuinosProxima" class="card-valor">0</div>
+    </div>
 
-        <div
-            id="totalCargas"
-            class="card-valor"
-        >
-            0
-        </div>
-
+    <div class="card">
+        <div id="tituloCargasProxima" class="card-titulo"></div>
+        <div id="totalCargasProxima" class="card-valor">0</div>
     </div>
 
 </div>
@@ -144,44 +138,35 @@ canvas{
 <div class="graficos">
 
     <div class="grafico">
-
-        <h3>
-            Quantidade de Suínos por Semana
-        </h3>
-
+        <h3>Suínos por Semana</h3>
         <canvas id="graficoSuinos"></canvas>
-
     </div>
 
     <div class="grafico">
-
-        <h3>
-            Quantidade de Cargas por Semana
-        </h3>
-
+        <h3>Cargas por Semana</h3>
         <canvas id="graficoCargas"></canvas>
-
     </div>
 
-    <div class="graficos">
+</div>
 
-        gráfico suínos
+<div class="graficos">
 
-        gráfico cargas
-
+    <div class="grafico">
+        <h3>Suínos por Comprador</h3>
+        <canvas id="graficoComprador"></canvas>
     </div>
 
-    <div class="graficos">
-
-        comprador
-
-        fornecedor
-
-        negociações
-
+    <div class="grafico">
+        <h3>Suínos por Fornecedor</h3>
+        <canvas id="graficoFornecedor"></canvas>
     </div>
 
+    <div class="grafico">
+        <h3>Negociações</h3>
+        <canvas id="graficoNegociacoes"></canvas>
     </div>
+
+</div>
 
 <script>
 
@@ -237,33 +222,39 @@ async function carregarGraficos(){
             )
         );
 
-        const ultimaSemana =
-            dados[dados.length-1];
+        const semanaAtual =
+          dados[dados.length-2];
 
-        document.getElementById(
-          "tituloSuinos"
-        ).innerText =
-          `Total de Suínos (${ultimaSemana.semana})`;
+        const proximaSemana =
+          dados[dados.length-1];
 
-        document.getElementById(
-           "tituloCargas"
-        ).innerText =
-          `Total de Cargas (${ultimaSemana.semana})`;
+        document.getElementById("tituloSuinosAtual").innerText =
+         `Suínos (${semanaAtual.semana})`;
 
-        document.getElementById(
-            "totalSuinos"
-        ).innerText =
-            Number(
-                ultimaSemana.total_suinos
-            ).toLocaleString("pt-BR");
+document.getElementById("tituloCargasAtual").innerText =
+    `Cargas (${semanaAtual.semana})`;
 
-        document.getElementById(
-            "totalCargas"
-        ).innerText =
-            Number(
-                ultimaSemana.total_cargas
-            ).toLocaleString("pt-BR");
+document.getElementById("tituloSuinosProxima").innerText =
+    `Suínos (${proximaSemana.semana})`;
 
+document.getElementById("tituloCargasProxima").innerText =
+    `Cargas (${proximaSemana.semana})`;
+
+document.getElementById("totalSuinosAtual").innerText =
+    Number(semanaAtual.total_suinos)
+        .toLocaleString("pt-BR");
+
+document.getElementById("totalCargasAtual").innerText =
+    Number(semanaAtual.total_cargas)
+        .toLocaleString("pt-BR");
+
+document.getElementById("totalSuinosProxima").innerText =
+    Number(proximaSemana.total_suinos)
+        .toLocaleString("pt-BR");
+
+document.getElementById("totalCargasProxima").innerText =
+    Number(proximaSemana.total_cargas)
+        .toLocaleString("pt-BR");
        new Chart(
 
     document.getElementById(
