@@ -37,6 +37,9 @@ const controleFaturamento =
 const dashboard =
     require("./routes/dashboard");
 
+const paineisCargas =
+    require("./routes/paineis-cargas");
+
 app.use(cors())
 app.use(express.json())
 
@@ -117,6 +120,11 @@ app.use(
     "/dashboard",
     autenticar,
     dashboard
+);
+
+app.use(
+    "/paineis-cargas",
+    paineisCargas
 );
 
 
