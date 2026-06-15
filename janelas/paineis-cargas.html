@@ -343,116 +343,29 @@ document.getElementById("totalCargasProxima").innerText =
     }
 );
 
-const compradores = resultado.compradores;
+document.getElementById("listaComprador").innerHTML =
+    compradores.map(x => `
+        <div class="lista-item">
+            <strong>${x.comprador}</strong>
+            <span>Suínos: ${x.total_suinos} | Cargas: ${x.total_cargas}</span>
+        </div>
+    `).join("");
 
-new Chart(
-    document.getElementById("graficoComprador"),
-    {
-        type:"bar",
-        data:{
-            labels: compradores.map(x => x.comprador),
-            datasets:[
-                {
-                    label:"Quantidade",
-                    data: compradores.map(x => x.total_suinos),
-                    backgroundColor:"#2563eb"
-                },
-                {
-                    label:"Cargas",
-                    data: compradores.map(x => x.total_cargas),
-                    backgroundColor:"#16a34a"
-                }
-            ]
-        },
-        options:{
-            responsive:true,
-            maintainAspectRatio:false,
-            plugins:{
-                legend:{ position:"top" },
-                datalabels:{
-                    anchor:"end",
-                    align:"top",
-                    font:{ weight:"bold", size:10 }
-                }
-            }
-        }
-    }
-);
+document.getElementById("listaFornecedor").innerHTML =
+    fornecedores.map(x => `
+        <div class="lista-item">
+            <strong>${x.fornecedor}</strong>
+            <span>Suínos: ${x.total_suinos} | Cargas: ${x.total_cargas}</span>
+        </div>
+    `).join("");
 
-const fornecedores = resultado.fornecedores;
-
-new Chart(
-    document.getElementById("graficoFornecedor"),
-    {
-        type:"bar",
-        data:{
-            labels: fornecedores.map(x => x.fornecedor),
-            datasets:[
-                {
-                    label:"Quantidade",
-                    data: fornecedores.map(x => x.total_suinos),
-                    backgroundColor:"#2563eb"
-                },
-                {
-                    label:"Cargas",
-                    data: fornecedores.map(x => x.total_cargas),
-                    backgroundColor:"#f59e0b"
-                }
-            ]
-        },
-        options:{
-            responsive:true,
-            maintainAspectRatio:false,
-            plugins:{
-                legend:{ position:"top" },
-                datalabels:{
-                    anchor:"end",
-                    align:"top",
-                    font:{ weight:"bold", size:10 }
-                }
-            }
-        }
-    }
-);
-
-const negociacoes = resultado.negociacoes;
-
-new Chart(
-    document.getElementById("graficoNegociacoes"),
-    {
-        type:"bar",
-        data:{
-            labels: negociacoes.map(
-                x => `${x.comprador} x ${x.fornecedor}`
-            ),
-            datasets:[
-                {
-                    label:"Quantidade",
-                    data: negociacoes.map(x => x.total_suinos),
-                    backgroundColor:"#2563eb"
-                },
-                {
-                    label:"Cargas",
-                    data: negociacoes.map(x => x.total_cargas),
-                    backgroundColor:"#dc2626"
-                }
-            ]
-        },
-        options:{
-            responsive:true,
-            maintainAspectRatio:false,
-            plugins:{
-                legend:{ position:"top" },
-                datalabels:{
-                    anchor:"end",
-                    align:"top",
-                    font:{ weight:"bold", size:10 }
-                }
-            }
-        }
-    }
-);
-
+document.getElementById("listaNegociacoes").innerHTML =
+    negociacoes.map(x => `
+        <div class="lista-item">
+            <strong>${x.comprador} → ${x.fornecedor}</strong>
+            <span>Suínos: ${x.total_suinos} | Cargas: ${x.total_cargas}</span>
+        </div>
+    `).join("");
 
 
 
@@ -464,32 +377,6 @@ new Chart(
 
 }
 
-document.getElementById("listaComprador").innerHTML =
-    compradores.map(x => `
-        <div class="lista-item">
-            <strong>${x.comprador}</strong>
-            <span>Suínos: ${x.total_suinos} | Cargas: ${x.total_cargas}</span>
-        </div>
-    `).join("");
-    
-    
-document.getElementById("listaFornecedor").innerHTML =
-    fornecedores.map(x => `
-        <div class="lista-item">
-            <strong>${x.fornecedor}</strong>
-            <span>Suínos: ${x.total_suinos} | Cargas: ${x.total_cargas}</span>
-        </div>
-    `).join("");
-    
-document.getElementById("listaNegociacoes").innerHTML =
-    negociacoes.map(x => `
-        <div class="lista-item">
-            <strong>${x.comprador} → ${x.fornecedor}</strong>
-            <span>Suínos: ${x.total_suinos} | Cargas: ${x.total_cargas}</span>
-        </div>
-    `).join("");
-
-    
 
 carregarGraficos();
 
