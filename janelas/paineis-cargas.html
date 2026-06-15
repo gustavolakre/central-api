@@ -109,6 +109,22 @@ canvas{
     height:auto !important;
 }
 
+.lista-item{
+    display:flex;
+    justify-content:space-between;
+    padding:8px 10px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+}
+
+.lista-item strong{
+    color:#111827;
+}
+
+.lista-item span{
+    color:#6b7280;
+}
+
 </style>
 </head>
 
@@ -164,17 +180,17 @@ canvas{
 
     <div class="grafico">
         <h3>Suínos por Comprador</h3>
-        <canvas id="graficoComprador"></canvas>
+        <div id="listaComprador"></div>
     </div>
 
     <div class="grafico">
         <h3>Suínos por Fornecedor</h3>
-        <canvas id="graficoFornecedor"></canvas>
+        <div id="listaFornecedor"></div>
     </div>
 
     <div class="grafico">
         <h3>Negociações</h3>
-        <canvas id="graficoNegociacoes"></canvas>
+        <div id="listaNegociacoes"></div>
     </div>
 
 </div>
