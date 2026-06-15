@@ -453,6 +453,9 @@ new Chart(
     }
 );
 
+
+
+
     }catch(erro){
 
         console.error(erro);
@@ -460,6 +463,33 @@ new Chart(
     }
 
 }
+
+document.getElementById("listaComprador").innerHTML =
+    compradores.map(x => `
+        <div class="lista-item">
+            <strong>${x.comprador}</strong>
+            <span>Suínos: ${x.total_suinos} | Cargas: ${x.total_cargas}</span>
+        </div>
+    `).join("");
+    
+    
+document.getElementById("listaFornecedor").innerHTML =
+    fornecedores.map(x => `
+        <div class="lista-item">
+            <strong>${x.fornecedor}</strong>
+            <span>Suínos: ${x.total_suinos} | Cargas: ${x.total_cargas}</span>
+        </div>
+    `).join("");
+    
+document.getElementById("listaNegociacoes").innerHTML =
+    negociacoes.map(x => `
+        <div class="lista-item">
+            <strong>${x.comprador} → ${x.fornecedor}</strong>
+            <span>Suínos: ${x.total_suinos} | Cargas: ${x.total_cargas}</span>
+        </div>
+    `).join("");
+
+    
 
 carregarGraficos();
 
