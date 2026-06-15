@@ -72,8 +72,18 @@ body{
     margin-top:20px;
 }
 
-.graficos:first-of-type{
+.graficos{
+    display:grid;
+    gap:20px;
+    margin-top:20px;
+}
+
+.graficos.top{
     grid-template-columns:1fr 1fr;
+}
+
+.graficos.bottom{
+    grid-template-columns:1fr 1fr 1fr;
 }
 
 .graficos:last-of-type{
@@ -254,98 +264,60 @@ document.getElementById("totalSuinosProxima").innerText =
 document.getElementById("totalCargasProxima").innerText =
     Number(proximaSemana.total_cargas)
         .toLocaleString("pt-BR");
-       new Chart(
 
-    document.getElementById(
-        "graficoSuinos"
-    ),
 
+      new Chart(
+    document.getElementById("graficoSuinos"),
     {
-
         type:"bar",
-
         data:{
-
-            labels:
-                dados.map(
-                    x=>x.semana
-                ),
-
+            labels: dados.map(x=>x.semana),
             datasets:[{
-
                 label:"Suínos",
-
-                data:
-                    dados.map(
-                        x=>x.total_suinos
-                    ),
-
+                data: dados.map(x=>x.total_suinos),
                 backgroundColor:"#2563eb"
-
             }]
         },
-
-        plugins:{
-            legend:{
-                display:false
+        plugins:[ChartDataLabels],
+        options:{
+            plugins:{
+                legend:{ display:false },
+                datalabels:{
+                    anchor:"end",
+                    align:"top",
+                    font:{ weight:"bold" }
+                }
             }
         }
-
     }
-
 );
 
-     new Chart(
-
-    document.getElementById(
-        "graficoCargas"
-    ),
-
+    new Chart(
+    document.getElementById("graficoCargas"),
     {
-
         type:"line",
-
         data:{
-
-            labels:
-                dados.map(
-                    x=>x.semana
-                ),
-
+            labels: dados.map(x=>x.semana),
             datasets:[{
-
                 label:"Cargas",
-
-                data:
-                    dados.map(
-                        x=>x.total_cargas
-                    ),
-
+                data: dados.map(x=>x.total_cargas),
                 borderColor:"#dc2626",
-
                 backgroundColor:"#dc2626",
-
-                tension:0.3
-
+                tension:0.3,
+                fill:false
             }]
         },
-
         plugins:[ChartDataLabels],
-
         options:{
             plugins:{
                 datalabels:{
                     anchor:"end",
                     align:"top",
-                    font:{
-                        weight:"bold"
-                    }
+                    font:{ weight:"bold" }
                 }
             }
         }
-
     }
-
 );
 
 const compradores =
