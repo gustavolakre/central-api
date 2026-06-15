@@ -9,6 +9,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script src="/janelas/auth.js"></script>
+
 <style>
 
 *{
@@ -148,15 +150,8 @@ canvas{
 
 <script>
 
-const token =
-    localStorage.getItem("token");
 
-if(!token){
 
-    window.location.href =
-        "login.html";
-
-}
 
 async function carregarGraficos(){
 
@@ -173,18 +168,13 @@ async function carregarGraficos(){
                 }
             );
 
-        if(!resposta.ok){
-
-            localStorage.removeItem(
-                "token"
-            );
-
-            window.location.href =
-                "login.html";
-
-            return;
-
-        }
+        if(
+         resposta.status === 401 ||
+         resposta.status === 403
+     ){
+         logoutSessaoExpirada();
+         return;
+     }
 
         const dados =
             await resposta.json();
