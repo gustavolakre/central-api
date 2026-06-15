@@ -347,6 +347,8 @@ new Chart(
         },
         plugins:[ChartDataLabels],
         options:{
+            responsive:true,
+            maintainAspectRatio:false,
             indexAxis:"y",
             plugins:{
                 legend:{
@@ -384,7 +386,9 @@ new Chart(
         },
         plugins:[ChartDataLabels],
         options:{
-            indexAxis:"y",
+            responsive:true,
+            maintainAspectRatio:false,
+             indexAxis:"y",
             plugins:{
                 legend:{ position:"top" },
                 datalabels:{
@@ -423,6 +427,8 @@ new Chart(
         options:{
             indexAxis:"y",
             plugins:{
+                responsive:true,
+                maintainAspectRatio:false,
                 legend:{ position:"top" },
                 datalabels:{
                     anchor:"end",
