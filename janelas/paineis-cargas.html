@@ -343,6 +343,7 @@ document.getElementById("totalCargasProxima").innerText =
     }
 );
 
+const compradores = resultado.compradores;
 document.getElementById("listaComprador").innerHTML =
     compradores.map(x => `
         <div class="lista-item">
@@ -351,6 +352,7 @@ document.getElementById("listaComprador").innerHTML =
         </div>
     `).join("");
 
+const fornecedores = resultado.fornecedores;   
 document.getElementById("listaFornecedor").innerHTML =
     fornecedores.map(x => `
         <div class="lista-item">
@@ -359,6 +361,7 @@ document.getElementById("listaFornecedor").innerHTML =
         </div>
     `).join("");
 
+const negociacoes = resultado.negociacoes;
 document.getElementById("listaNegociacoes").innerHTML =
     negociacoes.map(x => `
         <div class="lista-item">
