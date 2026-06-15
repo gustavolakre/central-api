@@ -9,6 +9,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
 <script src="/janelas/auth.js"></script>
 
 <style>
@@ -64,11 +66,16 @@ body{
     color:#111827;
 }
 
+.graficos{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
 .grafico{
     background:white;
     border-radius:16px;
     padding:20px;
-    margin-bottom:20px;
     box-shadow:0 4px 12px rgba(0,0,0,.08);
 }
 
@@ -98,8 +105,11 @@ canvas{
 
     <div class="card">
 
-        <div class="card-titulo">
-            Total de Suínos (Última Semana)
+        <div
+             id="tituloSuinos"
+             class="card-titulo"
+        >
+             Total de Suínos
         </div>
 
         <div
@@ -113,8 +123,11 @@ canvas{
 
     <div class="card">
 
-        <div class="card-titulo">
-            Total de Cargas (Última Semana)
+        <div
+           id="tituloCargas"
+           class="card-titulo"
+        >
+           Total de Cargas
         </div>
 
         <div
@@ -128,23 +141,27 @@ canvas{
 
 </div>
 
-<div class="grafico">
+<div class="graficos">
 
-    <h3>
-        Quantidade de Suínos por Semana
-    </h3>
+    <div class="grafico">
 
-    <canvas id="graficoSuinos"></canvas>
+        <h3>
+            Quantidade de Suínos por Semana
+        </h3>
 
-</div>
+        <canvas id="graficoSuinos"></canvas>
 
-<div class="grafico">
+    </div>
 
-    <h3>
-        Quantidade de Cargas por Semana
-    </h3>
+    <div class="grafico">
 
-    <canvas id="graficoCargas"></canvas>
+        <h3>
+            Quantidade de Cargas por Semana
+        </h3>
+
+        <canvas id="graficoCargas"></canvas>
+
+    </div>
 
 </div>
 
@@ -206,6 +223,16 @@ async function carregarGraficos(){
             dados[dados.length-1];
 
         document.getElementById(
+          "tituloSuinos"
+        ).innerText =
+          `Total de Suínos (${ultimaSemana.semana})`;
+
+        document.getElementById(
+           "tituloCargas"
+        ).innerText =
+          `Total de Cargas (${ultimaSemana.semana})`;
+
+        document.getElementById(
             "totalSuinos"
         ).innerText =
             Number(
@@ -219,82 +246,99 @@ async function carregarGraficos(){
                 ultimaSemana.total_cargas
             ).toLocaleString("pt-BR");
 
-        new Chart(
+       new Chart(
 
-            document.getElementById(
-                "graficoSuinos"
-            ),
+    document.getElementById(
+        "graficoSuinos"
+    ),
 
-            {
+    {
 
-                type:"bar",
+        type:"bar",
 
-                data:{
+        data:{
 
-                    labels:
-                        dados.map(
-                            x=>x.semana
-                        ),
+            labels:
+                dados.map(
+                    x=>x.semana
+                ),
 
-                    datasets:[{
+            datasets:[{
 
-                        label:"Suínos",
+                label:"Suínos",
 
-                        data:
-                            dados.map(
-                                x=>x.total_suinos
-                            ),
+                data:
+                    dados.map(
+                        x=>x.total_suinos
+                    ),
 
-                        backgroundColor:
-                            "#2563eb"
+                backgroundColor:"#2563eb"
 
-                    }]
-                }
+            }]
+        },
 
+        plugins:{
+            legend:{
+                display:false
             }
+        }
 
-        );
+    }
 
-        new Chart(
+);
 
-            document.getElementById(
-                "graficoCargas"
-            ),
+     new Chart(
 
-            {
+    document.getElementById(
+        "graficoCargas"
+    ),
 
-                type:"line",
+    {
 
-                data:{
+        type:"line",
 
-                    labels:
-                        dados.map(
-                            x=>x.semana
-                        ),
+        data:{
 
-                    datasets:[{
+            labels:
+                dados.map(
+                    x=>x.semana
+                ),
 
-                        label:"Cargas",
+            datasets:[{
 
-                        data:
-                            dados.map(
-                                x=>x.total_cargas
-                            ),
+                label:"Cargas",
 
-                        borderColor:
-                            "#dc2626",
+                data:
+                    dados.map(
+                        x=>x.total_cargas
+                    ),
 
-                        backgroundColor:
-                            "#dc2626",
+                borderColor:"#dc2626",
 
-                        tension:0.3
+                backgroundColor:"#dc2626",
 
-                    }]
+                tension:0.3
+
+            }]
+        },
+
+        plugins:[ChartDataLabels],
+
+        options:{
+            plugins:{
+                datalabels:{
+                    anchor:"end",
+                    align:"top",
+                    font:{
+                        weight:"bold"
+                    }
                 }
-
             }
+        }
 
-        );
+    }
+
+);
 
     }catch(erro){
 
