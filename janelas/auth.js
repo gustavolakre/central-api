@@ -45,4 +45,5 @@ fetch(
 
     logoutSessaoExpirada();
 
+    
 });
