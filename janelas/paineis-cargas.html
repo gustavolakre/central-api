@@ -111,8 +111,6 @@ canvas{
 
 <div class="cards">
 
-    <div class="cards">
-
     <div class="card">
         <div id="tituloSuinosAtual" class="card-titulo"></div>
         <div id="totalSuinosAtual" class="card-valor">0</div>
@@ -132,7 +130,7 @@ canvas{
         <div id="tituloCargasProxima" class="card-titulo"></div>
         <div id="totalCargasProxima" class="card-valor">0</div>
     </div>
-
+</div>
 </div>
 
 <div class="graficos">
@@ -203,16 +201,17 @@ async function carregarGraficos(){
         if(
          resposta.status === 401 ||
          resposta.status === 403
-     ){
+         ){
          logoutSessaoExpirada();
          return;
-     }
+        }
 
-        const dados =
-            await resposta.json();
+        const resultado = await resposta.json();
 
-        if(!dados.length){
-            return;
+        const dados = resultado.semanas;
+
+        if(!dados || !dados.length){
+             return;
         }
 
         dados.sort(
