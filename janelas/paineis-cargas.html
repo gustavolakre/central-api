@@ -68,27 +68,24 @@ body{
 
 .graficos{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
     gap:20px;
     margin-top:20px;
 }
 
-.graficos.top{
+/* linha 1 = 2 colunas */
+.linha1{
     grid-template-columns:1fr 1fr;
 }
 
-.graficos.bottom{
-    grid-template-columns:1fr 1fr 1fr;
-}
-
-.graficos:last-of-type{
+/* linha 2 = 3 colunas */
+.linha2{
     grid-template-columns:1fr 1fr 1fr;
 }
 
 .grafico{
     background:white;
     border-radius:16px;
-    padding:15px;
+    padding:20px;
     box-shadow:0 4px 12px rgba(0,0,0,.08);
     height:360px;
     display:flex;
@@ -98,7 +95,6 @@ body{
 .grafico h3{
     margin-bottom:10px;
     font-size:16px;
-    color:#111827;
 }
 
 canvas{
@@ -142,7 +138,7 @@ canvas{
 </div>
 </div>
 
-<div class="graficos top">
+<div class="graficos linha1">
 
     <div class="grafico">
         <h3>Suínos por Semana</h3>
@@ -156,7 +152,7 @@ canvas{
 
 </div>
 
-<div class="graficos bottom">
+<div class="graficos linha2">
 
     <div class="grafico">
         <h3>Suínos por Comprador</h3>
