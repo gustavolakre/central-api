@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../src/db/database");
 
-router.get("/dashboard/graficos", async (req,res)=>{
+router.get("/", async (req,res)=>{
 
     try{
 
