@@ -79,7 +79,10 @@ body{
 
 /* 3 gráficos */
 .linha2{
+    display:grid;
     grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:20px;
+    margin-top:20px;
 }
 
 .grafico{
@@ -334,7 +337,7 @@ new Chart(
             labels: compradores.map(x => x.comprador),
             datasets:[
                 {
-                    label:"Suínos",
+                    label:"Quantidade",
                     data: compradores.map(x => x.total_suinos),
                     backgroundColor:"#2563eb"
                 },
@@ -345,18 +348,15 @@ new Chart(
                 }
             ]
         },
-        plugins:[ChartDataLabels],
         options:{
             responsive:true,
             maintainAspectRatio:false,
-            indexAxis:"y",
             plugins:{
-                legend:{
-                    position:"top"
-                },
+                legend:{ position:"top" },
                 datalabels:{
                     anchor:"end",
-                    align:"right"
+                    align:"top",
+                    font:{ weight:"bold", size:10 }
                 }
             }
         }
@@ -373,7 +373,7 @@ new Chart(
             labels: fornecedores.map(x => x.fornecedor),
             datasets:[
                 {
-                    label:"Suínos",
+                    label:"Quantidade",
                     data: fornecedores.map(x => x.total_suinos),
                     backgroundColor:"#2563eb"
                 },
@@ -384,16 +384,15 @@ new Chart(
                 }
             ]
         },
-        plugins:[ChartDataLabels],
         options:{
             responsive:true,
             maintainAspectRatio:false,
-             indexAxis:"y",
             plugins:{
                 legend:{ position:"top" },
                 datalabels:{
                     anchor:"end",
-                    align:"right"
+                    align:"top",
+                    font:{ weight:"bold", size:10 }
                 }
             }
         }
@@ -412,7 +411,7 @@ new Chart(
             ),
             datasets:[
                 {
-                    label:"Suínos",
+                    label:"Quantidade",
                     data: negociacoes.map(x => x.total_suinos),
                     backgroundColor:"#2563eb"
                 },
@@ -423,16 +422,15 @@ new Chart(
                 }
             ]
         },
-        plugins:[ChartDataLabels],
         options:{
-            indexAxis:"y",
+            responsive:true,
+            maintainAspectRatio:false,
             plugins:{
-                responsive:true,
-                maintainAspectRatio:false,
                 legend:{ position:"top" },
                 datalabels:{
                     anchor:"end",
-                    align:"right"
+                    align:"top",
+                    font:{ weight:"bold", size:10 }
                 }
             }
         }
