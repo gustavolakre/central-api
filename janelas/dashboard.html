@@ -493,11 +493,32 @@ async function carregarPipeline(){
         });
 
         // 🔴 importante: checar 401 antes de tudo
-        if(!resposta.ok){
-            console.error("Erro HTTP:", resposta.status);
-            alert("Erro ao carregar dados (login inválido).");
-            return;
-        }
+        if(resposta.status === 401){
+
+    localStorage.clear();
+
+    document.cookie.split(";").forEach(cookie => {
+
+        const nome = cookie
+            .split("=")[0]
+            .trim();
+
+        document.cookie =
+            nome +
+            "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
+
+    });
+
+    window.location.href = "login.html";
+
+    return;
+}
+
+if(!resposta.ok){
+    throw new Error(
+        `Erro HTTP ${resposta.status}`
+    );
+}
 
         const dados = await resposta.json();
         
