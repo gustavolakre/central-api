@@ -160,16 +160,26 @@ async function carregarGraficos(){
         const API =
            "https://api-production-6670.up.railway.app";
 
-        const resposta =
-           await fetch(
-              `${API}/dashboard/graficos`,
-            {
-                headers:{
-                Authorization:`Bearer ${token}`
-            }
-        }
-    );
+           console.log(
+            `${API}/paineis-cargas`
+          );
 
+       const resposta =
+            await fetch(
+                `${API}/paineis-cargas`,
+                {
+                  headers:{
+                    Authorization:
+                      `Bearer ${token}`
+                 }
+             }
+        );
+
+        console.log(
+    "STATUS:",
+    resposta.status
+);
+        
         if(
          resposta.status === 401 ||
          resposta.status === 403
