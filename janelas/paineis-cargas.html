@@ -72,22 +72,31 @@ body{
     margin-top:20px;
 }
 
-/* linha 1 = 2 colunas */
 .linha1{
-    grid-template-columns:1fr 1fr;
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:20px;
+    width:100%;
 }
 
-/* linha 2 = 3 colunas */
 .linha2{
-    grid-template-columns:1fr 1fr 1fr;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+    width:100%;
 }
 
 .grafico{
     background:white;
     border-radius:16px;
-    padding:20px;
+    padding:16px;
     box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+    width:100%;
+    min-width:0;
+
     height:360px;
+
     display:flex;
     flex-direction:column;
 }
@@ -98,7 +107,8 @@ body{
 }
 
 canvas{
-    flex:1;
+    width:100% !important;
+    height:100% !important;
 }
 
 </style>
