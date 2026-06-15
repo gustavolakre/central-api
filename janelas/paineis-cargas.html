@@ -348,6 +348,113 @@ document.getElementById("totalCargasProxima").innerText =
 
 );
 
+const compradores =
+    resultado.compradores;
+
+new Chart(
+    document.getElementById(
+        "graficoComprador"
+    ),
+    {
+        type:"bar",
+        data:{
+            labels:
+                compradores.map(
+                    x => x.comprador
+                ),
+            datasets:[{
+                label:"Suínos",
+                data:
+                    compradores.map(
+                        x => x.total_suinos
+                    )
+            }]
+        },
+        plugins:[ChartDataLabels],
+        options:{
+            indexAxis:"y",
+            plugins:{
+                datalabels:{
+                    anchor:"end",
+                    align:"right"
+                }
+            }
+        }
+    }
+);
+
+const fornecedores =
+    resultado.fornecedores;
+
+new Chart(
+    document.getElementById(
+        "graficoFornecedor"
+    ),
+    {
+        type:"bar",
+        data:{
+            labels:
+                fornecedores.map(
+                    x => x.fornecedor
+                ),
+            datasets:[{
+                label:"Suínos",
+                data:
+                    fornecedores.map(
+                        x => x.total_suinos
+                    )
+            }]
+        },
+        plugins:[ChartDataLabels],
+        options:{
+            indexAxis:"y",
+            plugins:{
+                datalabels:{
+                    anchor:"end",
+                    align:"right"
+                }
+            }
+        }
+    }
+);
+
+const negociacoes =
+    resultado.negociacoes;
+
+new Chart(
+    document.getElementById(
+        "graficoNegociacoes"
+    ),
+    {
+        type:"bar",
+        data:{
+            labels:
+                negociacoes.map(
+                    x =>
+                    `${x.comprador} → ${x.fornecedor}`
+                ),
+
+            datasets:[{
+                label:"Suínos",
+                data:
+                    negociacoes.map(
+                        x => x.total_suinos
+                    )
+            }]
+        },
+        plugins:[ChartDataLabels],
+        options:{
+            indexAxis:"y",
+            plugins:{
+                datalabels:{
+                    anchor:"end",
+                    align:"right"
+                }
+            }
+        }
+    }
+);
+
     }catch(erro){
 
         console.error(erro);
