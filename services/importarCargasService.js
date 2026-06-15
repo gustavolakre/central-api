@@ -128,6 +128,7 @@ async function importarCargas(buffer){
           documentacao,
           observacao_pagamento,
           motivo_cancelamento,
+          responsavel,
           raw_data
 
         )
@@ -150,7 +151,7 @@ async function importarCargas(buffer){
 
         lote.forEach((carga, index) => {
 
-          const base = index * 49;
+          const base = index * 50;
 
           placeholders.push(`(
 
@@ -202,7 +203,8 @@ async function importarCargas(buffer){
             $${base + 46},
             $${base + 47},
             $${base + 48},
-            $${base + 49}
+            $${base + 49},
+            $${base + 50}
 
           )`);
 
@@ -278,6 +280,8 @@ async function importarCargas(buffer){
             texto(carga["Observação pagamento"]),
             texto(carga["Motivo do Cancelamento"]),
 
+            texto(carga["Responsável"]),
+
             JSON.stringify(carga)
 
           );
@@ -338,6 +342,7 @@ async function importarCargas(buffer){
             documentacao = EXCLUDED.documentacao,
             observacao_pagamento = EXCLUDED.observacao_pagamento,
             motivo_cancelamento = EXCLUDED.motivo_cancelamento,
+            responsavel = EXCLUDED.responsavel,
             raw_data = EXCLUDED.raw_data
 
             WHERE controle_cargas.raw_data

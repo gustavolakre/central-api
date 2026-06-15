@@ -17,12 +17,12 @@ router.get("/pipeline", async (req, res) => {
            '06-Doc. Pendentes'
         ) THEN
             CASE
-                WHEN responsaveis ILIKE '%Adelar Schuh%' THEN 'Adelar Schuh'
-                WHEN responsaveis ILIKE '%Enário dos Santos%' THEN 'Enário dos Santos'
-                WHEN responsaveis ILIKE '%Vânia Riva%' THEN 'Vânia Riva'
-                WHEN responsaveis ILIKE '%Rafael de Lima%' THEN 'Rafael de Lima'
+                WHEN responsavel ILIKE '%Adelar Schuh%' THEN 'Adelar Schuh'
+                WHEN responsavel ILIKE '%Enário dos Santos%' THEN 'Enário dos Santos'
+                WHEN responsavel ILIKE '%Vânia Riva%' THEN 'Vânia Riva'
+                WHEN responsavel ILIKE '%Rafael de Lima%' THEN 'Rafael de Lima'
             END
-        ELSE responsaveis
+        ELSE responsavel
     END AS responsavel_dashboard,
 
     TRIM(split_part(etiquetas, ',', 2)) AS semana,
@@ -42,10 +42,10 @@ router.get("/pipeline", async (req, res) => {
 
     WHERE
         (
-            responsaveis ILIKE '%Adelar Schuh%'
-            OR responsaveis ILIKE '%Enário dos Santos%'
-            OR responsaveis ILIKE '%Vânia Riva%'
-            OR responsaveis ILIKE '%Rafael de Lima%'
+            responsavel ILIKE '%Adelar Schuh%'
+            OR responsavel ILIKE '%Enário dos Santos%'
+            OR responsavel ILIKE '%Vânia Riva%'
+            OR responsavel ILIKE '%Rafael de Lima%'
         )
 
     AND fase IN (
@@ -65,12 +65,12 @@ router.get("/pipeline", async (req, res) => {
                '06-Doc. Pendentes'
             ) THEN
                 CASE
-                    WHEN responsaveis ILIKE '%Adelar Schuh%' THEN 'Adelar Schuh'
-                    WHEN responsaveis ILIKE '%Enário dos Santos%' THEN 'Enário dos Santos'
-                    WHEN responsaveis ILIKE '%Vânia Riva%' THEN 'Vânia Riva'
-                    WHEN responsaveis ILIKE '%Rafael de Lima%' THEN 'Rafael de Lima'
+                    WHEN responsavel ILIKE '%Adelar Schuh%' THEN 'Adelar Schuh'
+                    WHEN responsavel ILIKE '%Enário dos Santos%' THEN 'Enário dos Santos'
+                    WHEN responsavel ILIKE '%Vânia Riva%' THEN 'Vânia Riva'
+                    WHEN responsavel ILIKE '%Rafael de Lima%' THEN 'Rafael de Lima'
                 END
-            ELSE responsaveis
+            ELSE responsavel
         END,
 
         TRIM(split_part(etiquetas, ',', 2)),
