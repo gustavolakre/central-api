@@ -337,22 +337,17 @@ new Chart(
                 {
                     label:"Cargas",
                     data: compradores.map(x => x.total_cargas),
-                    backgroundColor:"#16a34a",
-                    type:"line",
-                    yAxisID:"y1"
+                    backgroundColor:"#16a34a"
                 }
             ]
         },
         plugins:[ChartDataLabels],
         options:{
             indexAxis:"y",
-            scales:{
-                y1:{
-                    position:"right",
-                    grid:{ drawOnChartArea:false }
-                }
-            },
             plugins:{
+                legend:{
+                    position:"top"
+                },
                 datalabels:{
                     anchor:"end",
                     align:"right"
@@ -379,22 +374,15 @@ new Chart(
                 {
                     label:"Cargas",
                     data: fornecedores.map(x => x.total_cargas),
-                    backgroundColor:"#f59e0b",
-                    type:"line",
-                    yAxisID:"y1"
+                    backgroundColor:"#f59e0b"
                 }
             ]
         },
         plugins:[ChartDataLabels],
         options:{
             indexAxis:"y",
-            scales:{
-                y1:{
-                    position:"right",
-                    grid:{ drawOnChartArea:false }
-                }
-            },
             plugins:{
+                legend:{ position:"top" },
                 datalabels:{
                     anchor:"end",
                     align:"right"
@@ -423,22 +411,15 @@ new Chart(
                 {
                     label:"Cargas",
                     data: negociacoes.map(x => x.total_cargas),
-                    backgroundColor:"#dc2626",
-                    type:"line",
-                    yAxisID:"y1"
+                    backgroundColor:"#dc2626"
                 }
             ]
         },
         plugins:[ChartDataLabels],
         options:{
             indexAxis:"y",
-            scales:{
-                y1:{
-                    position:"right",
-                    grid:{ drawOnChartArea:false }
-                }
-            },
             plugins:{
+                legend:{ position:"top" },
                 datalabels:{
                     anchor:"end",
                     align:"right"
