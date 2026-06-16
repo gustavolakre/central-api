@@ -25,13 +25,28 @@ body{
     margin-bottom:25px;
 }
 
-.box{
-    background:#fff;
-    padding:15px;
-    border-radius:12px;
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
+body{
+    background:#e5e7eb;
+    margin:0;
+    padding:0;
+    overflow-x:hidden;
+}
+
+.topo{
     display:flex;
-    flex-direction:column;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.titulo{
+    font-size:28px;
+    font-weight:700;
+    color:#111827;
+}
+
+.conteudo{
+    padding:20px;
 }
 
 h3{
@@ -57,25 +72,31 @@ canvas{
 }
 
 .topbar-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
     font-size:18px;
     font-weight:700;
     color:#f9fafb;
 }
 
+.topbar-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
 .topbar-right a{
+    color:#e5e7eb;
+    text-decoration:none;
+    font-weight:700;
     padding:8px 12px;
     border-radius:8px;
-    transition:0.2s;
+    transition:.2s;
 }
 
 .topbar-right a:hover{
     background:#1f2937;
-}
-
-.topbar-left{
-    display:flex;
-    align-items:center;
-    gap:12px;
 }
 
 .filtros-topo{
@@ -145,7 +166,11 @@ canvas{
 
 </div>
 
-<h2>Painel de Suínos - Filtros Avançados</h2>
+<div class="topo">
+    <div class="titulo">
+        Painel de Suínos - Filtros Avançados
+    </div>
+</div>
 
 <!-- LINHA 1 -->
 <div class="linha">
