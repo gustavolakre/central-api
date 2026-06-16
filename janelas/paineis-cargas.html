@@ -95,7 +95,7 @@
 .grafico{
     background:#1f2937;
     border-radius:16px;
-    padding:20px;
+    padding:22px 22px 28px 22px;
     box-shadow:0 4px 12px rgba(0,0,0,.30);
     min-width:0;
     height:360px;
@@ -131,11 +131,11 @@ canvas{
     display:flex;
     justify-content:space-between;
     font-weight:700;
-    font-size:13px;
+    font-size:14px;
     padding-bottom:8px;
     border-bottom:2px solid #4b5563;
     margin-bottom:8px;
-    color:#f9fafb;
+    color:#ffffff;
 }
 
 .lista-container{
@@ -188,6 +188,30 @@ body{
 .graficos{
     padding-left:20px;
     padding-right:20px;
+}
+
+.lista-container{
+    overflow-y:auto;
+    height:280px;
+    padding-right:8px;
+}
+
+/* Chrome */
+.lista-container::-webkit-scrollbar{
+    width:8px;
+}
+
+.lista-container::-webkit-scrollbar-track{
+    background:#111827;
+}
+
+.lista-container::-webkit-scrollbar-thumb{
+    background:#4b5563;
+    border-radius:10px;
+}
+
+.lista-container::-webkit-scrollbar-thumb:hover{
+    background:#6b7280;
 }
 
 
@@ -391,15 +415,33 @@ async function carregarGraficos(){
         },
         plugins:[ChartDataLabels],
         options:{
+
+            layout:{
+              padding:{
+              top:30,
+              right:20,
+              bottom:20,
+              left:20
+             }
+           },
             responsive:true,
             maintainAspectRatio:false,
             plugins:{
                 legend:{ display:false },
                 datalabels:{
-                    anchor:"end",
-                    align:"top",
-                    font:{ weight:"bold" }
-                }
+                 color:"#f9fafb",
+                 anchor:"end",
+                 align:"top",
+                 offset:8,
+
+               font:{
+                  size:14,
+                  weight:"bold"
+               },
+
+    textStrokeColor:"#111827",
+    textStrokeWidth:3
+}
             }
         }
     }
@@ -422,14 +464,32 @@ async function carregarGraficos(){
         },
         plugins:[ChartDataLabels],
         options:{
+
+            layout:{
+               padding:{
+               top:30,
+               right:20,
+               bottom:20,
+               left:20
+               }
+            },
             responsive:true,
             maintainAspectRatio:false,
              plugins:{
                 datalabels:{
-                    anchor:"end",
-                    align:"top",
-                    font:{ weight:"bold" }
-                }
+                color:"#f9fafb",
+                anchor:"end",
+                align:"top",
+                offset:8,
+
+             font:{
+                size:14,
+                weight:"bold"
+             },
+
+               textStrokeColor:"#111827",
+               textStrokeWidth:3
+            }
             }
         }
     }
