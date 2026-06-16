@@ -40,7 +40,7 @@ const dashboard =
 const paineisCargas =
     require("./routes/paineis-cargas");
 
-const paineisCargas =
+const paineisCargas2 =
     require("./routes/paineis-cargas-2");
 
 app.use(cors())
@@ -132,7 +132,7 @@ app.use(
 
 app.use(
     "/paineis-cargas-2",
-    paineisCargas
+    paineisCargas2
 );
 
 
