@@ -106,12 +106,14 @@ canvas{
 }
 
 .filtro-item{
-    display:flex;
-    align-items:flex-start;
-    gap:6px;
-    margin-bottom:4px;
-    font-size:13px;
+    display:block;
     width:100%;
+    margin-bottom:4px;
+}
+
+.filtro-item label{
+    display:inline-block;
+    font-size:13px;
 }
 
 </style>
@@ -465,11 +467,11 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                         ticks:{
                             color:"#111827",
                             font:{
-                                size:13,
+                                size:14,
                                 weight:"bold"
                             },
-                            maxRotation:45,
-                            minRotation:45
+                            maxRotation:0,
+                            minRotation:0
                         },
 
                         grid:{
@@ -483,7 +485,7 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                         ticks:{
                             color:"#111827",
                             font:{
-                                size:12,
+                                size:16,
                                 weight:"bold"
                             },
 
@@ -505,9 +507,10 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                         color:"#111827",
                         anchor:"end",
                         align:"top",
+                        offset:6,
 
                         font:{
-                            size:14,
+                            size:18,
                             weight:"bold"
                         },
 
