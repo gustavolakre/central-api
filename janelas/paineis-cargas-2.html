@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-    
+
 body{
     background:#e5e7eb;
     margin:0;
@@ -159,8 +159,8 @@ let chartFornecedor, chartComprador, chartEstFornecedor, chartEstComprador;
 async function carregar(){
     const API = "https://api-production-6670.up.railway.app";
 
-    const res = await fetch(`${API}/paineis-cargas`);
-    const json = await res.json();
+    const res = await fetch(`${API}/paineis-cargas-2`);
+    dadosGlobais = await res.json();
 
     dadosGlobais = json.semanas || [];
 
