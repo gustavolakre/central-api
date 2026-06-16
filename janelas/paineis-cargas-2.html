@@ -78,26 +78,41 @@ canvas{
 
 .filtros-topo{
     display:flex;
-    gap:20px;
+    gap:12px;
     margin-bottom:12px;
-    flex-wrap:wrap;
 }
 
 .filtro-box{
-    background:#f3f4f6;
-    padding:8px;
+    flex:1;
+    min-width:0;
+    background:#f8fafc;
+    border:1px solid #d1d5db;
     border-radius:8px;
-    min-width:220px;
-    max-height:120px;
+    padding:8px;
+}
+
+.filtro-titulo{
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.filtro-lista{
+    height:80px;
     overflow-y:auto;
+    overflow-x:hidden;
 }
 
 .filtro-item{
     display:flex;
-    gap:6px;
     align-items:center;
+    gap:6px;
     margin-bottom:4px;
     font-size:13px;
+}
+
+.filtro-item label{
+    cursor:pointer;
 }
 
 </style>
@@ -139,39 +154,47 @@ canvas{
 <div class="linha">
 
     <div class="box">
+
         <h3>Suínos por Semana - Fornecedor</h3>
-     <div class="filtros-topo">
 
-        <div>
-            <label>Fornecedor</label>
-            <div id="filtroFornecedor"></div>
-         </div>
+        <div class="filtros-topo">
 
-        <div>
-           <label>Tipo Suíno</label>
-           <div id="filtroTipoFornecedor"></div>
+            <div class="filtro-box">
+                <div class="filtro-titulo">Fornecedor</div>
+                <div id="filtroFornecedor" class="filtro-lista"></div>
+            </div>
+
+            <div class="filtro-box">
+                <div class="filtro-titulo">Tipo Suíno</div>
+                <div id="filtroTipoFornecedor" class="filtro-lista"></div>
+            </div>
+
         </div>
 
-    </div>
         <canvas id="graficoFornecedor"></canvas>
+
     </div>
 
     <div class="box">
+
         <h3>Suínos por Semana - Comprador</h3>
+
         <div class="filtros-topo">
 
-    <div>
-        <label>Comprador</label>
-        <div id="filtroComprador"></div>
-    </div>
+            <div class="filtro-box">
+                <div class="filtro-titulo">Comprador</div>
+                <div id="filtroComprador" class="filtro-lista"></div>
+            </div>
 
-    <div>
-        <label>Tipo Suíno</label>
-        <div id="filtroTipoComprador"></div>
-    </div>
+            <div class="filtro-box">
+                <div class="filtro-titulo">Tipo Suíno</div>
+                <div id="filtroTipoComprador" class="filtro-lista"></div>
+            </div>
 
-</div>
+        </div>
+
         <canvas id="graficoComprador"></canvas>
+
     </div>
 
 </div>
@@ -180,42 +203,47 @@ canvas{
 <div class="linha">
 
     <div class="box">
+
         <h3>Suínos por Semana - Estado Fornecedor</h3>
+
         <div class="filtros-topo">
 
-    <div>
-      <label>UF Fornecedor</label>
-      <div id="filtroEstadoFornecedor"></div>
-    </div>
+            <div class="filtro-box">
+                <div class="filtro-titulo">UF Fornecedor</div>
+                <div id="filtroEstadoFornecedor" class="filtro-lista"></div>
+            </div>
 
-    <div>
-       <label>Tipo Suíno</label>
-       <div id="filtroTipoEstadoFornecedor"></div>
-   </div>
+            <div class="filtro-box">
+                <div class="filtro-titulo">Tipo Suíno</div>
+                <div id="filtroTipoEstadoFornecedor" class="filtro-lista"></div>
+            </div>
 
-</div>
+        </div>
+
         <canvas id="graficoEstadoFornecedor"></canvas>
+
     </div>
-
-
-
 
     <div class="box">
+
         <h3>Suínos por Semana - Estado Comprador</h3>
+
         <div class="filtros-topo">
 
-    <div>
-       <label>UF Comprador</label>
-       <div id="filtroEstadoComprador"></div>
-   </div>
+            <div class="filtro-box">
+                <div class="filtro-titulo">UF Comprador</div>
+                <div id="filtroEstadoComprador" class="filtro-lista"></div>
+            </div>
 
-   <div>
-    <label>Tipo Suíno</label>
-    <div id="filtroTipoEstadoComprador"></div>
-</div>
+            <div class="filtro-box">
+                <div class="filtro-titulo">Tipo Suíno</div>
+                <div id="filtroTipoEstadoComprador" class="filtro-lista"></div>
+            </div>
 
-    </div>
+        </div>
+
         <canvas id="graficoEstadoComprador"></canvas>
+
     </div>
 
 </div>
