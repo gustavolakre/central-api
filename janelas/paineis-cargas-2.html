@@ -8,6 +8,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
 <style>
 
 body{
@@ -105,14 +107,11 @@ canvas{
 
 .filtro-item{
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     gap:6px;
     margin-bottom:4px;
     font-size:13px;
-}
-
-.filtro-item label{
-    cursor:pointer;
+    width:100%;
 }
 
 </style>
@@ -436,47 +435,94 @@ function destruir(chart){
     }
 }
 
-function criarGrafico(
-    canvas,
-    labels,
-    valores,
-    cor
-){
+function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
 
     return new Chart(
-
-        document.getElementById(canvas),
-
+        document.getElementById(canvasId),
         {
-            type:"bar",
+            type: tipo,
+
+            plugins:[ChartDataLabels],
 
             data:{
-
                 labels,
-
                 datasets:[{
-
                     label:"Suínos",
-
-                    data:valores,
-
-                    backgroundColor:cor
-
+                    data,
+                    backgroundColor:cor,
+                    borderColor:cor,
+                    borderWidth:1
                 }]
-
             },
 
             options:{
-
                 responsive:true,
+                maintainAspectRatio:false,
 
-                maintainAspectRatio:false
+                scales:{
+
+                    x:{
+                        ticks:{
+                            color:"#111827",
+                            font:{
+                                size:13,
+                                weight:"bold"
+                            },
+                            maxRotation:45,
+                            minRotation:45
+                        },
+
+                        grid:{
+                            display:false
+                        }
+                    },
+
+                    y:{
+                        beginAtZero:true,
+
+                        ticks:{
+                            color:"#111827",
+                            font:{
+                                size:12,
+                                weight:"bold"
+                            },
+
+                            callback:(value)=>
+                                Number(value)
+                                    .toLocaleString("pt-BR")
+                        }
+                    }
+
+                },
+
+                plugins:{
+
+                    legend:{
+                        display:false
+                    },
+
+                    datalabels:{
+                        color:"#111827",
+                        anchor:"end",
+                        align:"top",
+
+                        font:{
+                            size:14,
+                            weight:"bold"
+                        },
+
+                        formatter:(value)=>
+                            Number(value)
+                                .toLocaleString("pt-BR")
+                    }
+
+                }
 
             }
 
         }
-
     );
+
 }
 
 function atualizarGraficos(){
