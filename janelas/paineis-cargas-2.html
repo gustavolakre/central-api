@@ -27,11 +27,12 @@ body{
 
 .box{
     background:#fff;
-    padding:15px;
+    padding:20px;
     border-radius:12px;
     box-shadow:0 4px 12px rgba(0,0,0,.08);
     display:flex;
     flex-direction:column;
+    min-height:650px;
 }
 
 h3{
@@ -39,9 +40,9 @@ h3{
     font-size:16px;
 }
 
-
 canvas{
-    height:320px !important;
+    width:100% !important;
+    height:450px !important;
 }
 
 .topbar-dashboard{
@@ -447,17 +448,29 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
             data:{
                 labels,
                 datasets:[{
-                    label:"Suínos",
-                    data,
-                    backgroundColor:cor,
-                    borderColor:cor,
-                    borderWidth:1
+                   label:"Suínos",
+                   data,
+                   backgroundColor:cor,
+                   borderColor:cor,
+                   borderWidth:2,
+                   borderRadius:4,
+                   barPercentage:0.8,
+                   categoryPercentage:0.8
                 }]
             },
 
             options:{
                 responsive:true,
                 maintainAspectRatio:false,
+
+                layout:{
+                  padding:{
+                  top:30,
+                  right:20,
+                  left:10,
+                  bottom:10
+                  }
+                },
 
                 scales:{
 
