@@ -193,7 +193,7 @@ h2{
 
         <div class="filtros-topo">
 
-            <div class="filtro-box">
+            <div class="filtro-box filtro-grande"></div>
                 <div class="filtro-titulo">Fornecedor</div>
                 <div id="filtroFornecedor" class="filtro-lista"></div>
             </div>
@@ -215,7 +215,7 @@ h2{
 
         <div class="filtros-topo">
 
-            <div class="filtro-box">
+            <div class="filtro-box filtro-grande"></div>
                 <div class="filtro-titulo">Comprador</div>
                 <div id="filtroComprador" class="filtro-lista"></div>
             </div>
@@ -240,18 +240,14 @@ h2{
 
         <h3>Suínos por Semana - Estado Fornecedor</h3>
 
-        <div class="filtros-topo">
+        <div class="filtro-box">
+            <div class="filtro-titulo">UF Fornecedor</div>
+            <div id="filtroEstadoFornecedor" class="filtro-lista"></div>
+        </div>
 
-            <div class="filtro-box filtro-grande"></div>
-                <div class="filtro-titulo">UF Fornecedor</div>
-                <div id="filtroEstadoFornecedor" class="filtro-lista"></div>
-            </div>
-
-            <div class="filtro-box">
-                <div class="filtro-titulo">Tipo Suíno</div>
-                <div id="filtroTipoEstadoFornecedor" class="filtro-lista"></div>
-            </div>
-
+        <div class="filtro-box">
+             <div class="filtro-titulo">Tipo Suíno</div>
+             <div id="filtroTipoEstadoFornecedor" class="filtro-lista"></div>
         </div>
 
         <canvas id="graficoEstadoFornecedor"></canvas>
@@ -264,16 +260,14 @@ h2{
 
         <div class="filtros-topo">
 
-            <div class="filtro-box filtro-grande"></div>
-                <div class="filtro-titulo">UF Comprador</div>
-                <div id="filtroEstadoComprador" class="filtro-lista"></div>
-            </div>
+           <div class="filtro-box">
+               <div class="filtro-titulo">UF Comprador</div>
+               <div id="filtroEstadoComprador" class="filtro-lista"></div>
+           </div>
 
-            <div class="filtro-box">
-                <div class="filtro-titulo">Tipo Suíno</div>
-                <div id="filtroTipoEstadoComprador" class="filtro-lista"></div>
-            </div>
-
+        <div class="filtro-box">
+               <div class="filtro-titulo">Tipo Suíno</div>
+               <div id="filtroTipoEstadoComprador" class="filtro-lista"></div>
         </div>
 
         <canvas id="graficoEstadoComprador"></canvas>
