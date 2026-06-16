@@ -36,14 +36,15 @@ body{
 }
 
 h3{
-    margin-bottom:10px;
+    margin-top:0;
+    margin-bottom:4px;
     font-size:16px;
     color:#f9fafb;
 }
 
 canvas{
     width:100% !important;
-    height:450px !important;
+    height:520px !important;
 }
 
 .topbar-dashboard{
@@ -89,7 +90,7 @@ canvas{
 .filtros-topo{
     display:flex;
     gap:12px;
-    margin-bottom:12px;
+    margin-bottom:6px;
 }
 
 .filtro-box{
@@ -107,9 +108,8 @@ canvas{
 }
 
 .filtro-lista{
-    height:80px;
-    overflow-y:auto;
-    overflow-x:hidden;
+    display:flex;
+    flex-direction:column;
 }
 
 .filtro-item{
@@ -145,6 +145,16 @@ h2{
 
 .filtro-pesquisa::placeholder{
     color:#9ca3af;
+}
+
+.lista-checkbox{
+    height:80px;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+
+.filtro-grande{
+    width:12cm;
 }
 
 </style>
@@ -232,7 +242,7 @@ h2{
 
         <div class="filtros-topo">
 
-            <div class="filtro-box">
+            <div class="filtro-box filtro-grande"></div>
                 <div class="filtro-titulo">UF Fornecedor</div>
                 <div id="filtroEstadoFornecedor" class="filtro-lista"></div>
             </div>
@@ -254,7 +264,7 @@ h2{
 
         <div class="filtros-topo">
 
-            <div class="filtro-box">
+            <div class="filtro-box filtro-grande"></div>
                 <div class="filtro-titulo">UF Comprador</div>
                 <div id="filtroEstadoComprador" class="filtro-lista"></div>
             </div>
