@@ -302,9 +302,14 @@ body{
     color:#f9fafb;
 }
 
-.topbar-right{
-    display:flex;
-    gap:10px;
+.topbar-right a{
+    padding:8px 12px;
+    border-radius:8px;
+    transition:0.2s;
+}
+
+.topbar-right a:hover{
+    background:#1f2937;
 }
 
 .topbar-left{
@@ -320,12 +325,32 @@ body{
 <div class="topbar-dashboard">
 
     <div class="topbar-left">
-      <button class="btnAtualizarPipefy" onclick="atualizarCargasPipefy()">
-        Atualizar Pipefy
-      </button>
 
-      <div id="status" style="margin-left:12px; display:inline-block;"></div>
-      
+        <button class="btnAtualizarPipefy" onclick="atualizarCargasPipefy()">
+            Atualizar Pipefy
+        </button>
+
+        <div id="status" style="margin-left:12px; color:#e5e7eb;"></div>
+
+    </div>
+
+    <div class="topbar-right">
+
+        <a href="/janelas/dashboard-operacional.html"
+           style="color:#e5e7eb; text-decoration:none; font-weight:700;">
+            Dashboard
+        </a>
+
+        <a href="/janelas/paineis-cargas.html"
+           style="color:#e5e7eb; text-decoration:none; font-weight:700;">
+            Indicadores
+        </a>
+
+        <a href="/janelas/painel-suinos-avancado.html"
+           style="color:#e5e7eb; text-decoration:none; font-weight:700;">
+            Suínos
+        </a>
+
     </div>
 
 </div>
