@@ -214,6 +214,32 @@ body{
     background:#6b7280;
 }
 
+.filtro-semanas{
+    max-height:120px;
+    overflow-y:auto;
+    margin-bottom:12px;
+    padding:10px;
+    background:#111827;
+    border:1px solid #374151;
+    border-radius:10px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.filtro-semanas label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    color:#f9fafb;
+    cursor:pointer;
+}
+
+.filtro-semanas input{
+    cursor:pointer;
+}
+
 
 </style>
 </head>
@@ -289,16 +315,25 @@ body{
 
     <div class="grafico">
         <h3>Top 20 Compradores</h3>
+
+        <div id="filtroSemanasComprador" class="filtro-semanas"></div>
+
         <div id="listaComprador"></div>
     </div>
 
     <div class="grafico">
         <h3>Top 20 Fornecedores</h3>
+
+        <div id="filtroSemanasFornecedor" class="filtro-semanas"></div>
+
         <div id="listaFornecedor"></div>
     </div>
 
     <div class="grafico">
         <h3>Top 20 Negociações</h3>
+
+        <div id="filtroSemanasNegociacoes" class="filtro-semanas"></div>
+
         <div id="listaNegociacoes"></div>
     </div>
 
@@ -307,7 +342,9 @@ body{
 <script>
 
 
-
+let compradores = [];
+let fornecedores = [];
+let negociacoes = [];
 
 async function carregarGraficos(){
 
@@ -345,6 +382,17 @@ async function carregarGraficos(){
         }
 
         const resultado = await resposta.json();
+
+        console.log(resultado.compradores[0]);
+        console.log(resultado.fornecedores[0]);
+        console.log(resultado.negociacoes[0]);
+
+        const semanasDisponiveis = [
+         ...new Set(
+        (resultado.semanas || [])
+            .map(x => x.semana)
+            )
+        ].sort();
 
         const filtrar = (item) => {
         const texto = JSON.stringify(item).toLowerCase();
@@ -495,74 +543,32 @@ async function carregarGraficos(){
     }
 );
 
-const compradores = (resultado.compradores || []).filter(filtrar);
-const topCompradores = [...compradores]
-    .sort((a,b) => b.total_suinos - a.total_suinos)
-    .slice(0,20);
+compradores = (resultado.compradores || []).filter(filtrar);
 
-document.getElementById("listaComprador").innerHTML = `
-    <div class="lista-container">
+fornecedores = (resultado.fornecedores || []).filter(filtrar);
 
-        <div class="lista-header">
-            <span>Comprador</span>
-            <span>Suínos | Cargas</span>
-        </div>
+negociacoes = (resultado.negociacoes || []).filter(filtrar);
 
-        ${topCompradores.map(x => `
-            <div class="lista-item">
-                <strong>${x.comprador}</strong>
-                <span>${x.total_suinos} | ${x.total_cargas}</span>
-            </div>
-        `).join("")}
 
-    </div>
-`;
+criarFiltroSemanas(
+    "filtroSemanasComprador",
+    semanasDisponiveis,
+    atualizarListas
+);
 
-const fornecedores = (resultado.fornecedores || []).filter(filtrar);
-const topFornecedores = [...fornecedores]
-    .sort((a,b) => b.total_suinos - a.total_suinos)
-    .slice(0,20);
+criarFiltroSemanas(
+    "filtroSemanasFornecedor",
+    semanasDisponiveis,
+    atualizarListas
+);
 
-document.getElementById("listaFornecedor").innerHTML = `
-    <div class="lista-container">
+criarFiltroSemanas(
+    "filtroSemanasNegociacoes",
+    semanasDisponiveis,
+    atualizarListas
+);
 
-        <div class="lista-header">
-            <span>Fornecedor</span>
-            <span>Suínos | Cargas</span>
-        </div>
-
-        ${topFornecedores.map(x => `
-            <div class="lista-item">
-                <strong>${x.fornecedor}</strong>
-                <span>${x.total_suinos} | ${x.total_cargas}</span>
-            </div>
-        `).join("")}
-
-    </div>
-`;
-
-const negociacoes = (resultado.negociacoes || []).filter(filtrar);
-const topNegociacoes = [...negociacoes]
-    .sort((a,b) => b.total_suinos - a.total_suinos)
-    .slice(0,20);
-
-document.getElementById("listaNegociacoes").innerHTML = `
-    <div class="lista-container">
-
-        <div class="lista-header">
-            <span>Comprador → Fornecedor</span>
-            <span>Suínos | Cargas</span>
-        </div>
-
-        ${topNegociacoes.map(x => `
-            <div class="lista-item">
-                <strong>${x.comprador} → ${x.fornecedor}</strong>
-                <span>${x.total_suinos} | ${x.total_cargas}</span>
-            </div>
-        `).join("")}
-
-    </div>
-`;
+atualizarListas();
 
 
 
@@ -572,6 +578,135 @@ document.getElementById("listaNegociacoes").innerHTML = `
 
     }
 
+}
+
+function criarFiltroSemanas(id, semanas, callback){
+
+    const container = document.getElementById(id);
+
+    container.innerHTML = semanas.map(semana => `
+        <label>
+            <input type="checkbox"
+                   value="${semana}"
+                   checked>
+            ${semana}
+        </label>
+    `).join("");
+
+    container.querySelectorAll("input").forEach(cb => {
+        cb.addEventListener("change", callback);
+    });
+}
+
+function semanasSelecionadas(id){
+
+    return Array.from(
+        document.querySelectorAll(
+            `#${id} input:checked`
+        )
+    ).map(x => x.value);
+
+}
+
+function atualizarListas(){
+
+    // Compradores
+    const semanasComprador =
+        semanasSelecionadas("filtroSemanasComprador");
+
+    const compradoresFiltrados =
+        compradores.filter(x =>
+            semanasComprador.includes(x.semana)
+        );
+
+    const topCompradores =
+        compradoresFiltrados
+        .sort((a,b) => b.total_suinos - a.total_suinos)
+        .slice(0,20);
+
+    document.getElementById("listaComprador").innerHTML = `
+        <div class="lista-container">
+
+            <div class="lista-header">
+                <span>Comprador</span>
+                <span>Suínos | Cargas</span>
+            </div>
+
+            ${topCompradores.map(x => `
+                <div class="lista-item">
+                    <strong>${x.comprador}</strong>
+                    <span>${x.total_suinos} | ${x.total_cargas}</span>
+                </div>
+            `).join("")}
+
+        </div>
+    `;
+
+
+    // Fornecedores
+    const semanasFornecedor =
+        semanasSelecionadas("filtroSemanasFornecedor");
+
+    const fornecedoresFiltrados =
+        fornecedores.filter(x =>
+            semanasFornecedor.includes(x.semana)
+        );
+
+    const topFornecedores =
+        fornecedoresFiltrados
+        .sort((a,b) => b.total_suinos - a.total_suinos)
+        .slice(0,20);
+
+    document.getElementById("listaFornecedor").innerHTML = `
+        <div class="lista-container">
+
+            <div class="lista-header">
+                <span>Fornecedor</span>
+                <span>Suínos | Cargas</span>
+            </div>
+
+            ${topFornecedores.map(x => `
+                <div class="lista-item">
+                    <strong>${x.fornecedor}</strong>
+                    <span>${x.total_suinos} | ${x.total_cargas}</span>
+                </div>
+            `).join("")}
+
+        </div>
+    `;
+
+
+    // Negociações
+    const semanasNegociacoes =
+        semanasSelecionadas("filtroSemanasNegociacoes");
+
+    const negociacoesFiltradas =
+        negociacoes.filter(x =>
+            semanasNegociacoes.includes(x.semana)
+        );
+
+    const topNegociacoes =
+        negociacoesFiltradas
+        .sort((a,b) => b.total_suinos - a.total_suinos)
+        .slice(0,20);
+
+    document.getElementById("listaNegociacoes").innerHTML = `
+        <div class="lista-container">
+
+            <div class="lista-header">
+                <span>Comprador → Fornecedor</span>
+                <span>Suínos | Cargas</span>
+            </div>
+
+            ${topNegociacoes.map(x => `
+                <div class="lista-item">
+                    <strong>${x.comprador} → ${x.fornecedor}</strong>
+                    <span>${x.total_suinos} | ${x.total_cargas}</span>
+                </div>
+            `).join("")}
+
+        </div>
+    `;
 }
 
 
