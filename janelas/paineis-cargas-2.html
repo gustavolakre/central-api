@@ -81,6 +81,30 @@ canvas{
     gap:12px;
 }
 
+.filtros-topo{
+    display:flex;
+    gap:20px;
+    margin-bottom:12px;
+    flex-wrap:wrap;
+}
+
+.filtro-box{
+    background:#f3f4f6;
+    padding:8px;
+    border-radius:8px;
+    max-height:120px;
+    overflow:auto;
+    min-width:180px;
+}
+
+.filtro-item{
+    display:flex;
+    gap:6px;
+    align-items:center;
+    margin-bottom:4px;
+    font-size:13px;
+}
+
 </style>
 </head>
 
@@ -121,13 +145,37 @@ canvas{
 
     <div class="box">
         <h3>Suínos por Semana - Fornecedor</h3>
-        <select id="filtroFornecedor" multiple></select>
+     <div class="filtros-topo">
+
+        <div>
+            <label>Fornecedor</label>
+            <div id="filtroFornecedor"></div>
+         </div>
+
+        <div>
+           <label>Tipo Suíno</label>
+           <div id="filtroTipoFornecedor"></div>
+        </div>
+
+    </div>
         <canvas id="graficoFornecedor"></canvas>
     </div>
 
     <div class="box">
         <h3>Suínos por Semana - Comprador</h3>
-        <select id="filtroComprador" multiple></select>
+        <div class="filtros-topo">
+
+    <div>
+        <label>Comprador</label>
+        <div id="filtroComprador"></div>
+    </div>
+
+    <div>
+        <label>Tipo Suíno</label>
+        <div id="filtroTipoComprador"></div>
+    </div>
+
+</div>
         <canvas id="graficoComprador"></canvas>
     </div>
 
@@ -138,13 +186,37 @@ canvas{
 
     <div class="box">
         <h3>Suínos por Semana - Estado Fornecedor</h3>
-        <select id="filtroEstadoFornecedor" multiple></select>
+        <div class="filtros-topo">
+
+    <div>
+        <label>Fornecedor</label>
+        <div id="filtroEstadoFornecedor"></div>
+    </div>
+
+    <div>
+        <label>Tipo Suíno</label>
+        <div id="filtroEstadoFornecedor"></div>
+    </div>
+
+</div>
         <canvas id="graficoEstadoFornecedor"></canvas>
     </div>
 
     <div class="box">
         <h3>Suínos por Semana - Estado Comprador</h3>
-        <select id="filtroEstadoComprador" multiple></select>
+        <div class="filtros-topo">
+
+    <div>
+        <label>Comprador</label>
+        <div id="filtroEstadoComprador"></div>
+    </div>
+
+    <div>
+        <label>Tipo Suíno</label>
+        <div id="filtroEstadoComprador"></div>
+    </div>
+
+</div>
         <canvas id="graficoEstadoComprador"></canvas>
     </div>
 
@@ -154,150 +226,363 @@ canvas{
 
 let dadosGlobais = [];
 
-let chartFornecedor, chartComprador, chartEstFornecedor, chartEstComprador;
+let chartFornecedor;
+let chartComprador;
+let chartEstFornecedor;
+let chartEstComprador;
 
 async function carregar(){
 
-    const API = "https://api-production-6670.up.railway.app";
+    const API =
+        "https://api-production-6670.up.railway.app";
 
-    const res = await fetch(`${API}/paineis-cargas-2`);
+    const res =
+        await fetch(`${API}/paineis-cargas-2`);
 
     console.log("STATUS:", res.status);
 
-    const json = await res.json();
+    dadosGlobais = await res.json();
 
-    dadosGlobais = Array.isArray(json)
-      ? json
-      : (json.semanas || []);
+    console.log(dadosGlobais);
 
-    popularFiltros();
+    criarFiltrosCheckbox();
+
     atualizarGraficos();
 }
 
-function valoresSelecionados(id){
-    return [...document.getElementById(id).selectedOptions]
-        .map(o => o.value);
+function criarFiltrosCheckbox(){
+
+    criarFiltro(
+        "filtroFornecedor",
+        [...new Set(
+            dadosGlobais.map(x=>x.fornecedor)
+        )].sort()
+    );
+
+    criarFiltro(
+        "filtroComprador",
+        [...new Set(
+            dadosGlobais.map(x=>x.comprador)
+        )].sort()
+    );
+
+    criarFiltro(
+        "filtroEstadoFornecedor",
+        [...new Set(
+            dadosGlobais.map(x=>x.estado_fornecedor)
+        )].sort()
+    );
+
+    criarFiltro(
+        "filtroEstadoComprador",
+        [...new Set(
+            dadosGlobais.map(x=>x.estado_comprador)
+        )].sort()
+    );
+
+    criarFiltro(
+        "filtroTipoFornecedor",
+        [...new Set(
+            dadosGlobais.map(x=>x.tipo_suino)
+        )].sort()
+    );
+
+    criarFiltro(
+        "filtroTipoComprador",
+        [...new Set(
+            dadosGlobais.map(x=>x.tipo_suino)
+        )].sort()
+    );
+
+    criarFiltro(
+        "filtroTipoEstadoFornecedor",
+        [...new Set(
+            dadosGlobais.map(x=>x.tipo_suino)
+        )].sort()
+    );
+
+    criarFiltro(
+        "filtroTipoEstadoComprador",
+        [...new Set(
+            dadosGlobais.map(x=>x.tipo_suino)
+        )].sort()
+    );
+
+    document
+        .querySelectorAll("input[type=checkbox]")
+        .forEach(c=>{
+
+            c.addEventListener(
+                "change",
+                atualizarGraficos
+            );
+
+        });
 }
 
-function popularFiltros(){
+function criarFiltro(id, valores){
 
-    const fornecedores = [...new Set(dadosGlobais.map(d => d.fornecedor || "N/A"))];
-    const compradores = [...new Set(dadosGlobais.map(d => d.comprador || "N/A"))];
-    const estadosF = [...new Set(dadosGlobais.map(d => d.estado_fornecedor || "N/A"))];
-    const estadosC = [...new Set(dadosGlobais.map(d => d.estado_comprador || "N/A"))];
+    const el =
+        document.getElementById(id);
 
-    preencher("filtroFornecedor", fornecedores);
-    preencher("filtroComprador", compradores);
-    preencher("filtroEstadoFornecedor", estadosF);
-    preencher("filtroEstadoComprador", estadosC);
-
-    document.querySelectorAll("select").forEach(s=>{
-        s.addEventListener("change", atualizarGraficos);
-    });
+    el.innerHTML =
+        valores
+        .filter(Boolean)
+        .map(v=>`
+            <label style="
+                display:flex;
+                align-items:center;
+                gap:4px;
+                margin-right:10px;
+                font-size:12px;
+                white-space:nowrap;
+            ">
+                <input
+                    type="checkbox"
+                    value="${v}"
+                >
+                ${v}
+            </label>
+        `)
+        .join("");
 }
 
-function preencher(id, lista){
-    const el = document.getElementById(id);
-    el.innerHTML = lista.map(v => `<option value="${v}">${v}</option>`).join("");
+function valoresMarcados(id){
+
+    return [
+        ...document.querySelectorAll(
+            `#${id} input:checked`
+        )
+    ].map(x=>x.value);
 }
 
-function filtrar(base, campo, valores){
-    if(!valores.length) return base;
-    return base.filter(d => valores.includes(d[campo] || "N/A"));
+function filtrar(lista,campo,valores){
+
+    if(!valores.length)
+        return lista;
+
+    return lista.filter(x=>
+        valores.includes(
+            x[campo]
+        )
+    );
 }
 
 function agruparPorSemana(lista){
+
     const mapa = {};
 
-    lista.forEach(d=>{
-        mapa[d.semana] = (mapa[d.semana] || 0) + Number(d.total_suinos || 0);
+    lista.forEach(item=>{
+
+        if(!mapa[item.semana]){
+
+            mapa[item.semana] = 0;
+
+        }
+
+        mapa[item.semana] +=
+            Number(item.quantidade || 0);
+
     });
 
-    const labels = Object.keys(mapa).sort();
-    const valores = labels.map(l => mapa[l]);
+    const semanas =
+        Object.keys(mapa)
+        .sort()
+        .slice(-20);
 
-    return { labels, valores };
+    return {
+
+        labels: semanas,
+
+        valores: semanas.map(
+            s=>mapa[s]
+        )
+
+    };
 }
 
 function destruir(chart){
-    if(chart) chart.destroy();
+
+    if(chart){
+
+        chart.destroy();
+
+    }
 }
 
-function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
+function criarGrafico(
+    canvas,
+    labels,
+    valores,
+    cor
+){
 
-    return new Chart(document.getElementById(canvasId),{
-        type:tipo,
-        data:{
-            labels,
-            datasets:[{
-                label:"Suínos",
-                data,
-                backgroundColor:cor,
-                borderColor:cor
-            }]
-        },
-        options:{
-            responsive:true,
-            maintainAspectRatio:false
+    return new Chart(
+
+        document.getElementById(canvas),
+
+        {
+            type:"bar",
+
+            data:{
+
+                labels,
+
+                datasets:[{
+
+                    label:"Suínos",
+
+                    data:valores,
+
+                    backgroundColor:cor
+
+                }]
+
+            },
+
+            options:{
+
+                responsive:true,
+
+                maintainAspectRatio:false
+
+            }
+
         }
-    });
+
+    );
 }
 
 function atualizarGraficos(){
 
-    const fFornecedor = valoresSelecionados("filtroFornecedor");
-    const fComprador = valoresSelecionados("filtroComprador");
-    const fEstF = valoresSelecionados("filtroEstadoFornecedor");
-    const fEstC = valoresSelecionados("filtroEstadoComprador");
+    let fornecedor =
+        filtrar(
+            dadosGlobais,
+            "fornecedor",
+            valoresMarcados(
+                "filtroFornecedor"
+            )
+        );
 
-    // FORNECEDOR
-    let d1 = filtrar(dadosGlobais, "fornecedor", fFornecedor);
-    let g1 = agruparPorSemana(d1);
+    fornecedor =
+        filtrar(
+            fornecedor,
+            "tipo_suino",
+            valoresMarcados(
+                "filtroTipoFornecedor"
+            )
+        );
 
-    // COMPRADOR
-    let d2 = filtrar(dadosGlobais, "comprador", fComprador);
-    let g2 = agruparPorSemana(d2);
+    let comprador =
+        filtrar(
+            dadosGlobais,
+            "comprador",
+            valoresMarcados(
+                "filtroComprador"
+            )
+        );
 
-    // EST FORNECEDOR
-    let d3 = filtrar(dadosGlobais, "estado_fornecedor", fEstF);
-    let g3 = agruparPorSemana(d3);
+    comprador =
+        filtrar(
+            comprador,
+            "tipo_suino",
+            valoresMarcados(
+                "filtroTipoComprador"
+            )
+        );
 
-    // EST COMPRADOR
-    let d4 = filtrar(dadosGlobais, "estado_comprador", fEstC);
-    let g4 = agruparPorSemana(d4);
+    let estFornecedor =
+        filtrar(
+            dadosGlobais,
+            "estado_fornecedor",
+            valoresMarcados(
+                "filtroEstadoFornecedor"
+            )
+        );
+
+    estFornecedor =
+        filtrar(
+            estFornecedor,
+            "tipo_suino",
+            valoresMarcados(
+                "filtroTipoEstadoFornecedor"
+            )
+        );
+
+    let estComprador =
+        filtrar(
+            dadosGlobais,
+            "estado_comprador",
+            valoresMarcados(
+                "filtroEstadoComprador"
+            )
+        );
+
+    estComprador =
+        filtrar(
+            estComprador,
+            "tipo_suino",
+            valoresMarcados(
+                "filtroTipoEstadoComprador"
+            )
+        );
+
+    const g1 =
+        agruparPorSemana(
+            fornecedor
+        );
+
+    const g2 =
+        agruparPorSemana(
+            comprador
+        );
+
+    const g3 =
+        agruparPorSemana(
+            estFornecedor
+        );
+
+    const g4 =
+        agruparPorSemana(
+            estComprador
+        );
 
     destruir(chartFornecedor);
     destruir(chartComprador);
     destruir(chartEstFornecedor);
     destruir(chartEstComprador);
 
-    chartFornecedor = criarGrafico(
-        "graficoFornecedor",
-        g1.labels,
-        g1.valores,
-        "#2563eb"
-    );
+    chartFornecedor =
+        criarGrafico(
+            "graficoFornecedor",
+            g1.labels,
+            g1.valores,
+            "#2563eb"
+        );
 
-    chartComprador = criarGrafico(
-        "graficoComprador",
-        g2.labels,
-        g2.valores,
-        "#16a34a"
-    );
+    chartComprador =
+        criarGrafico(
+            "graficoComprador",
+            g2.labels,
+            g2.valores,
+            "#16a34a"
+        );
 
-    chartEstFornecedor = criarGrafico(
-        "graficoEstadoFornecedor",
-        g3.labels,
-        g3.valores,
-        "#f59e0b"
-    );
+    chartEstFornecedor =
+        criarGrafico(
+            "graficoEstadoFornecedor",
+            g3.labels,
+            g3.valores,
+            "#f59e0b"
+        );
 
-    chartEstComprador = criarGrafico(
-        "graficoEstadoComprador",
-        g4.labels,
-        g4.valores,
-        "#dc2626"
-    );
+    chartEstComprador =
+        criarGrafico(
+            "graficoEstadoComprador",
+            g4.labels,
+            g4.valores,
+            "#dc2626"
+        );
 }
 
 carregar();
