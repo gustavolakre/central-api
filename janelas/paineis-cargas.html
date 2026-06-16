@@ -244,7 +244,14 @@ async function carregarGraficos(){
 
         const resultado = await resposta.json();
 
-        const dados = resultado.semanas;
+        const filtrar = (item) => {
+        const texto = JSON.stringify(item).toLowerCase();
+
+         return !texto.includes("lakre") &&
+             !texto.includes("09-cancelada");
+        };
+
+        const dados = (resultado.semanas || []).filter(filtrar);
 
         if(!dados || !dados.length){
              return;
@@ -350,7 +357,7 @@ async function carregarGraficos(){
     }
 );
 
-const compradores = resultado.compradores || [];
+const compradores = (resultado.compradores || []).filter(filtrar);
 const topCompradores = [...compradores]
     .sort((a,b) => b.total_suinos - a.total_suinos)
     .slice(0,20);
@@ -373,7 +380,7 @@ document.getElementById("listaComprador").innerHTML = `
     </div>
 `;
 
-const fornecedores = resultado.fornecedores || [];
+const fornecedores = (resultado.fornecedores || []).filter(filtrar);
 const topFornecedores = [...fornecedores]
     .sort((a,b) => b.total_suinos - a.total_suinos)
     .slice(0,20);
@@ -396,7 +403,7 @@ document.getElementById("listaFornecedor").innerHTML = `
     </div>
 `;
 
-const negociacoes = resultado.negociacoes || [];
+const negociacoes = (resultado.negociacoes || []).filter(filtrar);
 const topNegociacoes = [...negociacoes]
     .sort((a,b) => b.total_suinos - a.total_suinos)
     .slice(0,20);
