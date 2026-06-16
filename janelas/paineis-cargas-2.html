@@ -57,31 +57,25 @@ canvas{
 }
 
 .topbar-left{
-    display:flex;
-    align-items:center;
-    gap:12px;
     font-size:18px;
     font-weight:700;
     color:#f9fafb;
 }
 
-.topbar-right{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
 .topbar-right a{
-    color:#e5e7eb;
-    text-decoration:none;
-    font-weight:700;
     padding:8px 12px;
     border-radius:8px;
-    transition:.2s;
+    transition:0.2s;
 }
 
 .topbar-right a:hover{
     background:#1f2937;
+}
+
+.topbar-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
 }
 
 .filtros-topo{
@@ -129,26 +123,25 @@ canvas{
 
 <body>
 
-<div class="topbar-dashboard">
 
 <div class="topbar-dashboard">
 
-    <div class="topbar-left"></div>
 
-    <div class="topbar-right" style="display:flex; gap:10px; align-items:center;">
+    <div class="topbar-right">
 
-         <a href="/janelas/dashboard.html"
-           style="color:#e5e7eb; text-decoration:none; font-weight:700;">
+        <a href="/janelas/dashboard.html">
             Por Responsáveis
         </a>
 
-         <a href="/janelas/paineis-cargas.html"
-           style="color:#e5e7eb; text-decoration:none; font-weight:700;">
+        <a href="/janelas/paineis-cargas.html">
             Por Cargas
         </a>
-    </div>
 
-</div>
+        <a href="/janelas/paineis-cargas-2.html">
+            Suínos
+        </a>
+
+    </div>
 
 </div>
 
