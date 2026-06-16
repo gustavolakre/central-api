@@ -138,9 +138,38 @@ canvas{
 }
 
 body{
-    overflow-x:hidden;
+    background:#e5e7eb;
+    padding:0;
 }
 
+.topbar-dashboard{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 20px;
+    background:#111827;
+    border-bottom:1px solid #374151;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.topbar-right a{
+    padding:8px 12px;
+    border-radius:8px;
+    transition:0.2s;
+}
+
+.topbar-right a:hover{
+    background:#1f2937;
+}
+
+.container,
+.cards,
+.graficos{
+    padding-left:20px;
+    padding-right:20px;
+}
 
 
 </style>
@@ -152,7 +181,11 @@ body{
 
     <div class="topbar-left">
 
-         </div>
+        <div class="titulo" style="color:#f9fafb; font-size:18px;">
+            Sistema Operacional
+        </div>
+
+    </div>
 
     <div class="topbar-right" style="display:flex; gap:10px; align-items:center;">
 
