@@ -5,6 +5,8 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 
+console.log("ROTA IMPORTAR FRETES CARREGADA");
+
 const importarFretes =
     require("../services/importarFretesService");
 
