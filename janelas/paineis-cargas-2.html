@@ -106,14 +106,16 @@ canvas{
 }
 
 .filtro-item{
-    display:block;
+    display:flex;
+    align-items:center;
+    gap:6px;
     width:100%;
-    margin-bottom:4px;
+    margin-bottom:3px;
 }
 
 .filtro-item label{
-    display:inline-block;
-    font-size:13px;
+    font-size:12px;
+    cursor:pointer;
 }
 
 </style>
@@ -356,20 +358,18 @@ function criarFiltro(id, valores){
         valores
         .filter(Boolean)
         .map(v=>`
-            <label style="
-                display:inline-flex;
-                align-items:center;
-                gap:4px;
-                margin-right:10px;
-                font-size:12px;
-                white-space:nowrap;
-            ">
+            <div class="filtro-item">
+
                 <input
                     type="checkbox"
                     value="${v}"
                 >
-                ${v}
-            </label>
+
+                <label>
+                    ${v}
+                </label>
+
+            </div>
         `)
         .join("");
 }
