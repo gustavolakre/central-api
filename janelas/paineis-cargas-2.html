@@ -132,6 +132,21 @@ h2{
     font-size:28px;
 }
 
+.filtro-pesquisa{
+    width:100%;
+    box-sizing:border-box;
+    padding:6px 8px;
+    margin-bottom:6px;
+    border:1px solid #374151;
+    border-radius:6px;
+    background:#1f2937;
+    color:#f9fafb;
+}
+
+.filtro-pesquisa::placeholder{
+    color:#9ca3af;
+}
+
 </style>
 </head>
 
@@ -278,6 +293,10 @@ async function carregar(){
 
     dadosGlobais = await res.json();
 
+    dadosGlobais = dadosGlobais.filter(
+    item => item.fase !== "09-Cancelada"
+    );
+
     console.log(dadosGlobais);
 
     criarFiltrosCheckbox();
@@ -357,13 +376,12 @@ function criarFiltrosCheckbox(){
 
 function criarFiltro(id, valores){
 
-    const el =
-        document.getElementById(id);
+    const el = document.getElementById(id);
 
-    el.innerHTML =
-        valores
+    const itens = valores
         .filter(Boolean)
-        .map(v=>`
+        .sort()
+        .map(v => `
             <div class="filtro-item">
 
                 <input
@@ -371,13 +389,45 @@ function criarFiltro(id, valores){
                     value="${v}"
                 >
 
-                <label>
-                    ${v}
-                </label>
+                <label>${v}</label>
 
             </div>
         `)
         .join("");
+
+    el.innerHTML = `
+        <input
+            type="text"
+            class="filtro-pesquisa"
+            placeholder="Pesquisar..."
+            oninput="filtrarListaCheckbox('${id}', this.value)"
+        >
+
+        <div class="lista-checkbox">
+            ${itens}
+        </div>
+    `;
+}
+
+function filtrarListaCheckbox(id, texto){
+
+    const busca = texto.toLowerCase();
+
+    document
+        .querySelectorAll(`#${id} .filtro-item`)
+        .forEach(item => {
+
+            const nome = item
+                .querySelector("label")
+                .textContent
+                .toLowerCase();
+
+            item.style.display =
+                nome.includes(busca)
+                    ? "flex"
+                    : "none";
+
+        });
 }
 
 function valoresMarcados(id){
