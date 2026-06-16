@@ -614,10 +614,7 @@ function atualizarListas(){
     const semanasComprador =
         semanasSelecionadas("filtroSemanasComprador");
 
-    const compradoresFiltrados =
-        compradores.filter(x =>
-            semanasComprador.includes(x.semana)
-        );
+    const compradoresFiltrados = compradores;
 
     const topCompradores =
         compradoresFiltrados
@@ -647,10 +644,7 @@ function atualizarListas(){
     const semanasFornecedor =
         semanasSelecionadas("filtroSemanasFornecedor");
 
-    const fornecedoresFiltrados =
-        fornecedores.filter(x =>
-            semanasFornecedor.includes(x.semana)
-        );
+    const fornecedoresFiltrados = fornecedores;
 
     const topFornecedores =
         fornecedoresFiltrados
@@ -680,10 +674,7 @@ function atualizarListas(){
     const semanasNegociacoes =
         semanasSelecionadas("filtroSemanasNegociacoes");
 
-    const negociacoesFiltradas =
-        negociacoes.filter(x =>
-            semanasNegociacoes.includes(x.semana)
-        );
+    const negociacoesFiltradas = negociacoes;
 
     const topNegociacoes =
         negociacoesFiltradas
