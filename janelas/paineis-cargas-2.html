@@ -37,11 +37,6 @@ h3{
     font-size:16px;
 }
 
-select{
-    width:100%;
-    padding:8px;
-    margin-bottom:10px;
-}
 
 canvas{
     height:320px !important;
@@ -189,34 +184,37 @@ canvas{
         <div class="filtros-topo">
 
     <div>
-        <label>Fornecedor</label>
-        <div id="filtroEstadoFornecedor"></div>
+      <label>UF Fornecedor</label>
+      <div id="filtroEstadoFornecedor"></div>
     </div>
 
     <div>
-        <label>Tipo Suíno</label>
-        <div id="filtroEstadoFornecedor"></div>
-    </div>
+       <label>Tipo Suíno</label>
+       <div id="filtroTipoEstadoFornecedor"></div>
+   </div>
 
 </div>
         <canvas id="graficoEstadoFornecedor"></canvas>
     </div>
+
+
+
 
     <div class="box">
         <h3>Suínos por Semana - Estado Comprador</h3>
         <div class="filtros-topo">
 
     <div>
-        <label>Comprador</label>
-        <div id="filtroEstadoComprador"></div>
-    </div>
+       <label>UF Comprador</label>
+       <div id="filtroEstadoComprador"></div>
+   </div>
 
-    <div>
-        <label>Tipo Suíno</label>
-        <div id="filtroEstadoComprador"></div>
-    </div>
-
+   <div>
+    <label>Tipo Suíno</label>
+    <div id="filtroTipoEstadoComprador"></div>
 </div>
+
+    </div>
         <canvas id="graficoEstadoComprador"></canvas>
     </div>
 
@@ -330,7 +328,7 @@ function criarFiltro(id, valores){
         .filter(Boolean)
         .map(v=>`
             <label style="
-                display:flex;
+                display:inline-flex;
                 align-items:center;
                 gap:4px;
                 margin-right:10px;
