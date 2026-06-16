@@ -321,6 +321,20 @@ input[type=file]{
 
 </div>
 
+<div class="blocoImportacao">
+
+    <h3>Importação de Contratação de Fretes</h3>
+
+    <button
+         id="btnImportarFretes"
+         class="btnPipefy"
+         onclick="importarFretesPipefy()"
+     >
+    Atualizar via Pipefy
+</button>
+
+</div>
+
 
 
     <!-- MENU -->
@@ -776,6 +790,59 @@ async function importarParceirosPipefy(){
         "status"
     ).innerHTML =
         "✅ Parceiros atualizados via Pipefy";
+}
+
+
+async function importarFretesPipefy(){
+
+    const status =
+        document.getElementById("status");
+
+    status.innerHTML =
+        "Atualizando contratação de fretes via Pipefy...";
+
+    try{
+
+        const resposta =
+            await fetch(
+                "/importar-fretes-relatorio",
+                {
+                    method: "POST",
+
+                    headers:{
+                        Authorization:
+                            `Bearer ${
+                                localStorage.getItem(
+                                    "token"
+                                )
+                            }`
+                    }
+                }
+            );
+
+        const dados =
+            await resposta.json();
+
+        if(dados.sucesso){
+
+            status.innerHTML =
+                `✅ ${dados.importados} fretes importados`;
+
+        }else{
+
+            status.innerHTML =
+                `❌ ${dados.erro}`;
+        }
+
+    }catch(err){
+
+        console.error(err);
+
+        status.innerHTML =
+            "❌ Erro ao importar fretes.";
+
+    }
+
 }
 
 
