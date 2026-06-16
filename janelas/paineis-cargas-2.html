@@ -157,10 +157,14 @@ let dadosGlobais = [];
 let chartFornecedor, chartComprador, chartEstFornecedor, chartEstComprador;
 
 async function carregar(){
+
     const API = "https://api-production-6670.up.railway.app";
 
     const res = await fetch(`${API}/paineis-cargas-2`);
-    dadosGlobais = await res.json();
+
+    const json = await res.json();
+
+    console.log(json);
 
     dadosGlobais = json.semanas || [];
 
