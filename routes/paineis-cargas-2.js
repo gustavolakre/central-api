@@ -21,12 +21,12 @@ router.get("/", async (req, res) => {
                 c.comprador,
 
                 COALESCE(
-                    pf.estado,
+                    pf.uf,
                     'N/A'
                 ) as estado_fornecedor,
 
                 COALESCE(
-                    pc.estado,
+                    pc.uf,
                     'N/A'
                 ) as estado_comprador,
 
@@ -37,24 +37,20 @@ router.get("/", async (req, res) => {
             FROM controle_cargas c
 
             LEFT JOIN parceiros_negocio pf
-                ON trim(lower(pf.nome))
+                ON trim(lower(pf.nome_usual))
                  = trim(lower(c.fornecedor))
 
             LEFT JOIN parceiros_negocio pc
-                ON trim(lower(pc.nome))
+                ON trim(lower(pc.nome_usual))
                  = trim(lower(c.comprador))
 
             GROUP BY
 
                 semana,
-
                 c.fornecedor,
-
                 c.comprador,
-
-                pf.estado,
-
-                pc.estado
+                pf.uf,
+                pc.uf
 
             ORDER BY semana
 
