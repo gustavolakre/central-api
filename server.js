@@ -43,6 +43,9 @@ const paineisCargas =
 const paineisCargas2 =
     require("./routes/paineis-cargas-2");
 
+const importarFretesRelatorio =
+    require("./routes/importarFretesRelatorio");
+
 
 app.use(cors())
 app.use(express.json())
@@ -134,6 +137,11 @@ app.use(
 app.use(
     "/paineis-cargas-2",
     paineisCargas2
+);
+
+app.use(
+    "/importar-fretes-relatorio",
+    importarFretesRelatorio
 );
 
 
