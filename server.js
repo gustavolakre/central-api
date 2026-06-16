@@ -40,6 +40,9 @@ const dashboard =
 const paineisCargas =
     require("./routes/paineis-cargas");
 
+const paineisCargas =
+    require("./routes/paineis-cargas-2");
+
 app.use(cors())
 app.use(express.json())
 
@@ -124,6 +127,11 @@ app.use(
 
 app.use(
     "/paineis-cargas",
+    paineisCargas
+);
+
+app.use(
+    "/paineis-cargas-2",
     paineisCargas
 );
 
