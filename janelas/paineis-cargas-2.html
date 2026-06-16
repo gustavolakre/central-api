@@ -236,23 +236,27 @@ h2{
 <!-- LINHA 2 -->
 <div class="linha">
 
-    <h3>Suínos por Semana - Estado Fornecedor</h3>
+    <div class="box">
 
-<div class="filtros-topo">
+        <h3>Suínos por Semana - Estado Fornecedor</h3>
 
-    <div class="filtro-box">
-        <div class="filtro-titulo">UF Fornecedor</div>
-        <div id="filtroEstadoFornecedor" class="filtro-lista"></div>
+        <div class="filtros-topo">
+
+            <div class="filtro-box">
+                <div class="filtro-titulo">UF Fornecedor</div>
+                <div id="filtroEstadoFornecedor" class="filtro-lista"></div>
+            </div>
+
+            <div class="filtro-box">
+                <div class="filtro-titulo">Tipo Suíno</div>
+                <div id="filtroTipoEstadoFornecedor" class="filtro-lista"></div>
+            </div>
+
+        </div>
+
+        <canvas id="graficoEstadoFornecedor"></canvas>
+
     </div>
-
-    <div class="filtro-box">
-        <div class="filtro-titulo">Tipo Suíno</div>
-        <div id="filtroTipoEstadoFornecedor" class="filtro-lista"></div>
-    </div>
-
-</div>
-
-<canvas id="graficoEstadoFornecedor"></canvas>
 
     <div class="box">
 
@@ -260,15 +264,16 @@ h2{
 
         <div class="filtros-topo">
 
-           <div class="filtro-box">
-               <div class="filtro-titulo">UF Comprador</div>
-               <div id="filtroEstadoComprador" class="filtro-lista"></div>
-           </div>
+            <div class="filtro-box">
+                <div class="filtro-titulo">UF Comprador</div>
+                <div id="filtroEstadoComprador" class="filtro-lista"></div>
+            </div>
 
-        <div class="filtro-box">
-               <div class="filtro-titulo">Tipo Suíno</div>
-               <div id="filtroTipoEstadoComprador" class="filtro-lista"></div>
-          </div>
+            <div class="filtro-box">
+                <div class="filtro-titulo">Tipo Suíno</div>
+                <div id="filtroTipoEstadoComprador" class="filtro-lista"></div>
+            </div>
+
         </div>
 
         <canvas id="graficoEstadoComprador"></canvas>
