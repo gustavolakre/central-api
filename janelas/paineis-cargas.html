@@ -77,6 +77,13 @@ body{
     grid-template-columns:repeat(2, minmax(0, 1fr));
 }
 
+/* 3 gráficos */
+.linha2{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:20px;
+    margin-top:20px;
+}
 
 .grafico{
     background:white;
@@ -259,30 +266,30 @@ async function carregarGraficos(){
         document.getElementById("tituloSuinosAtual").innerText =
          `Suínos (${semanaAtual.semana})`;
 
-document.getElementById("tituloCargasAtual").innerText =
-    `Cargas (${semanaAtual.semana})`;
+        document.getElementById("tituloCargasAtual").innerText =
+         `Cargas (${semanaAtual.semana})`;
 
-document.getElementById("tituloSuinosProxima").innerText =
-    `Suínos (${proximaSemana.semana})`;
+        document.getElementById("tituloSuinosProxima").innerText =
+         `Suínos (${proximaSemana.semana})`;
 
-document.getElementById("tituloCargasProxima").innerText =
-    `Cargas (${proximaSemana.semana})`;
+        document.getElementById("tituloCargasProxima").innerText =
+         `Cargas (${proximaSemana.semana})`;
 
-document.getElementById("totalSuinosAtual").innerText =
-    Number(semanaAtual.total_suinos)
-        .toLocaleString("pt-BR");
+        document.getElementById("totalSuinosAtual").innerText =
+          Number(semanaAtual.total_suinos)
+               .toLocaleString("pt-BR");
 
-document.getElementById("totalCargasAtual").innerText =
-    Number(semanaAtual.total_cargas)
-        .toLocaleString("pt-BR");
+        document.getElementById("totalCargasAtual").innerText =
+          Number(semanaAtual.total_cargas)
+                .toLocaleString("pt-BR");
 
-document.getElementById("totalSuinosProxima").innerText =
-    Number(proximaSemana.total_suinos)
-        .toLocaleString("pt-BR");
+        document.getElementById("totalSuinosProxima").innerText =
+          Number(proximaSemana.total_suinos)
+                .toLocaleString("pt-BR");
 
-document.getElementById("totalCargasProxima").innerText =
-    Number(proximaSemana.total_cargas)
-        .toLocaleString("pt-BR");
+        document.getElementById("totalCargasProxima").innerText =
+          Number(proximaSemana.total_cargas)
+                .toLocaleString("pt-BR");
 
 
       new Chart(
@@ -343,6 +350,7 @@ document.getElementById("totalCargasProxima").innerText =
     }
 );
 
+const compradores = resultado.compradores || [];
 const topCompradores = [...compradores]
     .sort((a,b) => b.total_suinos - a.total_suinos)
     .slice(0,20);
@@ -365,6 +373,7 @@ document.getElementById("listaComprador").innerHTML = `
     </div>
 `;
 
+const fornecedores = resultado.fornecedores || [];
 const topFornecedores = [...fornecedores]
     .sort((a,b) => b.total_suinos - a.total_suinos)
     .slice(0,20);
@@ -387,6 +396,7 @@ document.getElementById("listaFornecedor").innerHTML = `
     </div>
 `;
 
+const negociacoes = resultado.negociacoes || [];
 const topNegociacoes = [...negociacoes]
     .sort((a,b) => b.total_suinos - a.total_suinos)
     .slice(0,20);
