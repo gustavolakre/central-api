@@ -327,6 +327,10 @@ body{
     <div class="grafico grafico-lista">
         <h3>ABC Compradores</h3>
 
+        <button onclick="limparFiltro('filtroSemanasComprador')">
+             Limpar
+        </button>
+
         <div id="filtroSemanasComprador" class="filtro-semanas"></div>
 
         <div id="listaComprador"></div>
@@ -335,6 +339,10 @@ body{
     <div class="grafico grafico-lista">
         <h3>ABC Fornecedores</h3>
 
+        <button onclick="limparFiltro('filtroSemanasFornecedor')">
+             Limpar
+        </button>
+
         <div id="filtroSemanasFornecedor" class="filtro-semanas"></div>
 
         <div id="listaFornecedor"></div>
@@ -342,6 +350,10 @@ body{
 
     <div class="grafico grafico-lista">
         <h3>ABC Negociações</h3>
+
+        <button onclick="limparFiltro('filtroSemanasNegociacoes')">
+             Limpar
+        </button>
 
         <div id="filtroSemanasNegociacoes" class="filtro-semanas"></div>
 
@@ -621,6 +633,15 @@ function semanasSelecionadas(id){
         )
     ).map(x => x.value);
 
+}
+
+function limparFiltro(idFiltro){
+
+    document
+        .querySelectorAll(`#${idFiltro} input[type="checkbox"]`)
+        .forEach(cb => cb.checked = false);
+
+    atualizarListas();
 }
 
 function atualizarListas(){
