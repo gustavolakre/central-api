@@ -138,10 +138,6 @@ canvas{
     color:#ffffff;
 }
 
-.lista-container{
-    overflow-y:auto;
-    height:560px;
-}
 
 body{
     background:#111827;
@@ -192,7 +188,8 @@ body{
 
 .lista-container{
     overflow-y:auto;
-    height:280px;
+    height:100%;
+    flex:1;
     padding-right:8px;
 }
 
@@ -249,7 +246,9 @@ body{
 }
 
 .grafico-lista{
-    height:700px;
+    height:800px;
+    display:flex;
+    flex-direction:column;
 }
 
 
@@ -661,7 +660,7 @@ function atualizarListas(){
         .sort((a,b) => b.total_suinos - a.total_suinos);
 
     document.getElementById("listaComprador").innerHTML = `
-        <div class="lista-container">
+        <<div class="lista-container" style="flex:1;">
 
             <div class="lista-header">
                 <span>Comprador</span>
@@ -722,7 +721,7 @@ function atualizarListas(){
         .sort((a,b) => b.total_suinos - a.total_suinos);
 
     document.getElementById("listaFornecedor").innerHTML = `
-        <div class="lista-container">
+        <div class="lista-container" style="flex:1;">
 
             <div class="lista-header">
                 <span>Fornecedor</span>
@@ -787,7 +786,8 @@ function atualizarListas(){
         .sort((a,b) => b.total_suinos - a.total_suinos);
 
     document.getElementById("listaNegociacoes").innerHTML = `
-        <div class="lista-container">
+        <div class="lista-container" style="flex:1;">
+        
 
             <div class="lista-header">
                 <span>Comprador → Fornecedor</span>
