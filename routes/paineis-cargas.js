@@ -36,77 +36,97 @@ router.get("/", async (req,res)=>{
 
         const compradores = await pool.query(`
 
-            SELECT
+        SELECT
 
-                comprador,
+            substring(
+               etiquetas
+               from '[0-9]{4}/[0-9]{2}'
+            ) as semana,
 
-                SUM(quantidade) as total_suinos,
+            comprador,
 
-                COUNT(*) as total_cargas
+            SUM(quantidade) as total_suinos,
 
+            COUNT(*) as total_cargas
+ 
             FROM controle_cargas
 
             WHERE comprador IS NOT NULL
-              AND comprador <> ''
+            AND comprador <> ''
 
-            GROUP BY comprador
+            GROUP BY
+               semana,
+               comprador
 
             ORDER BY
                 SUM(quantidade) DESC
 
-            LIMIT 20
+       
 
         `);
 
         const fornecedores = await pool.query(`
 
-            SELECT
+         SELECT
 
-                fornecedor,
+             substring(
+             etiquetas
+             from '[0-9]{4}/[0-9]{2}'
+         ) as semana,
 
-                SUM(quantidade) as total_suinos,
+             fornecedor,
 
-                COUNT(*) as total_cargas
+             SUM(quantidade) as total_suinos,
 
-            FROM controle_cargas
+             COUNT(*) as total_cargas
+ 
+             FROM controle_cargas
 
-            WHERE fornecedor IS NOT NULL
-              AND fornecedor <> ''
+             WHERE fornecedor IS NOT NULL
+             AND fornecedor <> ''
 
-            GROUP BY fornecedor
+        GROUP BY
+             semana,
+             fornecedor
 
             ORDER BY
                 SUM(quantidade) DESC
 
-            LIMIT 20
+           
 
         `);
 
         const negociacoes = await pool.query(`
 
-            SELECT
+         SELECT
 
-                comprador,
+            substring(
+            etiquetas
+            from '[0-9]{4}/[0-9]{2}'
+         ) as semana,
 
-                fornecedor,
+            comprador,
 
-                SUM(quantidade) as total_suinos,
+            fornecedor,
 
-                COUNT(*) as total_cargas
+            SUM(quantidade) as total_suinos,
 
-            FROM controle_cargas
+            COUNT(*) as total_cargas
 
-            WHERE comprador IS NOT NULL
-              AND fornecedor IS NOT NULL
+        FROM controle_cargas
 
-            GROUP BY
-                comprador,
-                fornecedor
+        WHERE comprador IS NOT NULL
+          AND fornecedor IS NOT NULL
+
+        GROUP BY
+            semana,
+            comprador,
+            fornecedor
 
             ORDER BY
                 SUM(quantidade) DESC
 
-            LIMIT 20
+         
 
         `);
 
