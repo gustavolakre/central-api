@@ -678,7 +678,19 @@ async function carregarFretesBanco(){
             )
 
         dadosPlanilha =
-            await response.json()
+           (await response.json())
+           .filter(linha => {
+
+            let semana =
+                extrairSemana(
+                linha["Etiquetas"]
+            )
+
+            return String(
+                semana || ""
+            ).startsWith("2026/")
+
+        })
 
         console.log(
             "Fretes:",
@@ -978,13 +990,16 @@ function toggleAgruparSelecionados(valor){
                     d["Etiquetas"]
                 )
 
-                if (semana) {
+                if (
+                    semana &&
+                    String(semana).startsWith("2026/")
+                ) {
 
                     semanasSelecionadas.add(semana)
 
-                }
+               }
 
-            })
+         })
 
             montarListaSemanas()
             montarAgrupamento()
