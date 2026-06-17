@@ -493,6 +493,30 @@ text-align:center;
      let transportadorasSelecionadas = new Set()
      let agruparSelecionados = false
 
+     function getAuthHeaders() {
+
+       const token =
+        localStorage.getItem("token")
+
+     if (!token) {
+
+        alert("Sessão expirada")
+
+        location.href = "/login"
+
+        throw new Error("Sem token")
+
+    }
+
+    return {
+
+        Authorization:
+            `Bearer ${token}`
+
+    }
+
+}
+
      window.onload = () => {
 
          document.getElementById(
@@ -610,6 +634,80 @@ text-align:center;
         )
 
         })
+
+
+        async function carregarParceirosBanco(){
+
+    try{
+
+        const response =
+            await fetch(
+                "/buscarParceiros",
+                {
+                    headers:getAuthHeaders()
+                }
+            )
+
+        baseParceiros =
+            await response.json()
+
+        console.log(
+            "Parceiros:",
+            baseParceiros.length
+        )
+
+    }catch(err){
+
+        console.error(err)
+
+    }
+
+}
+
+
+async function carregarFretesBanco(){
+
+    try{
+
+        const response =
+            await fetch(
+                "/buscarFretes",
+                {
+                    headers:getAuthHeaders()
+                }
+            )
+
+        dadosPlanilha =
+            await response.json()
+
+        console.log(
+            "Fretes:",
+            dadosPlanilha.length
+        )
+
+        montarListaSemanas()
+
+        montarListaTransportadoras()
+
+        carregarFaturadosExistentes()
+
+        montarAgrupamento()
+
+        gerarRelatorio()
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+        alert(
+            "Erro ao carregar fretes"
+        )
+
+    }
+
+}
 
         function extrairSemana(valor) {
 
@@ -2576,6 +2674,18 @@ function(e){
             location.reload()
 
         }
+
+
+    window.addEventListener(
+       "DOMContentLoaded",
+       async ()=>{
+
+          await carregarParceirosBanco()
+
+          await carregarFretesBanco()
+
+        }
+     )
 
     
     </script>
