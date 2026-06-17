@@ -54,97 +54,107 @@ router.get("/", async (req,res)=>{
 
         `);
 
-        const compradores = await pool.query(`
+       const compradores = await pool.query(`
 
-        SELECT
+    SELECT
 
-            substring(
-               etiquetas
-               from '[0-9]{4}/[0-9]{2}'
-            ) as semana,
-
-            comprador,
-
-            SUM(quantidade) as total_suinos,
-
-            COUNT(*) as total_cargas
- 
-            FROM controle_cargas
-
-            WHERE comprador IS NOT NULL
-            AND comprador <> ''
-
-            GROUP BY
-               semana,
-               comprador
-
-            ORDER BY
-                SUM(quantidade) DESC
-
-       
-
-        `);
-
-        const fornecedores = await pool.query(`
-
-         SELECT
-
-             substring(
-             etiquetas
-             from '[0-9]{4}/[0-9]{2}'
-         ) as semana,
-
-             fornecedor,
-
-             SUM(quantidade) as total_suinos,
-
-             COUNT(*) as total_cargas
- 
-             FROM controle_cargas
-
-             WHERE fornecedor IS NOT NULL
-             AND fornecedor <> ''
-
-        GROUP BY
-             semana,
-             fornecedor
-
-            ORDER BY
-                SUM(quantidade) DESC
-
-           
-
-        `);
-
-        const negociacoes = await pool.query(`
-
-         SELECT
-
-            substring(
+        substring(
             etiquetas
             from '[0-9]{4}/[0-9]{2}'
-         ) as semana,
+        ) as semana,
 
-            comprador,
+        comprador,
 
-            fornecedor,
+        SUM(quantidade) as total_suinos,
 
-            SUM(quantidade) as total_suinos,
+        COUNT(*) as total_cargas
 
-            COUNT(*) as total_cargas
+    FROM controle_cargas
 
-        FROM controle_cargas
+    WHERE comprador IS NOT NULL
+      AND comprador <> ''
+      AND substring(
+            etiquetas
+            from '[0-9]{4}/[0-9]{2}'
+          ) IS NOT NULL
 
-        WHERE comprador IS NOT NULL
-          AND fornecedor IS NOT NULL
+    GROUP BY
+        semana,
+        comprador
 
-        GROUP BY
-            semana,
-            comprador,
-            fornecedor
+    ORDER BY
+        SUM(quantidade) DESC
 
-            ORDER BY
-                SUM(quantidade) DESC
+`);
+
+const fornecedores = await pool.query(`
+
+    SELECT
+
+        substring(
+            etiquetas
+            from '[0-9]{4}/[0-9]{2}'
+        ) as semana,
+
+        fornecedor,
+
+        SUM(quantidade) as total_suinos,
+
+        COUNT(*) as total_cargas
+
+    FROM controle_cargas
+
+    WHERE fornecedor IS NOT NULL
+      AND fornecedor <> ''
+      AND substring(
+            etiquetas
+            from '[0-9]{4}/[0-9]{2}'
+          ) IS NOT NULL
+
+    GROUP BY
+        semana,
+        fornecedor
+
+    ORDER BY
+        SUM(quantidade) DESC
+
+`);
+
+const negociacoes = await pool.query(`
+
+    SELECT
+
+        substring(
+            etiquetas
+            from '[0-9]{4}/[0-9]{2}'
+        ) as semana,
+
+        comprador,
+
+        fornecedor,
+
+        SUM(quantidade) as total_suinos,
+
+        COUNT(*) as total_cargas
+
+    FROM controle_cargas
+
+    WHERE comprador IS NOT NULL
+      AND fornecedor IS NOT NULL
+      AND substring(
+            etiquetas
+            from '[0-9]{4}/[0-9]{2}'
+          ) IS NOT NULL
+
+    GROUP BY
+        semana,
+        comprador,
+        fornecedor
+
+    ORDER BY
+        SUM(quantidade) DESC
+
+`);
 
          
 
@@ -154,6 +164,9 @@ router.get("/", async (req,res)=>{
 
             semanas:
                 semanas.rows,
+
+            todasSemanas: 
+                todasSemanas.rows,
 
             compradores:
                 compradores.rows,
