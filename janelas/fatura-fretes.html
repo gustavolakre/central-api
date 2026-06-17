@@ -837,14 +837,17 @@ async function carregarFretesBanco(){
     lista.sort()
 
     if(
-        transportadorasSelecionadas.size === 0
+         primeiraCargaTransportadoras &&
+         transportadorasSelecionadas.size === 0
     ){
 
         lista.forEach(t =>
 
-            transportadorasSelecionadas.add(t)
+        transportadorasSelecionadas.add(t)
 
-        )
+      )
+
+       primeiraCargaTransportadoras = false
 
     }
 
