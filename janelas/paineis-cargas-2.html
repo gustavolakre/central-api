@@ -157,6 +157,37 @@ h2{
     width:12cm;
 }
 
+.layout-fornecedor{
+    display:flex;
+    gap:15px;
+    flex:1;
+}
+
+.grafico-fornecedor{
+    flex:1;
+}
+
+.filtros-laterais{
+    width:4cm;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.filtro-fornecedor{
+    flex:7;
+}
+
+.filtro-tipo{
+    flex:3;
+}
+
+.filtro-fornecedor .lista-checkbox,
+.filtro-tipo .lista-checkbox{
+    height:100%;
+    overflow-y:auto;
+}
+
 </style>
 </head>
 
@@ -189,24 +220,29 @@ h2{
 
     <div class="box">
 
-        <h3>Suínos por Semana - Fornecedor</h3>
+       <h3>Suínos por Semana - Fornecedor</h3>
 
-        <div class="filtros-topo">
+<div class="layout-fornecedor">
 
-            <div class="filtro-box filtro-grande">
-                 <div class="filtro-titulo">Fornecedor</div>
-                 <div id="filtroFornecedor" class="filtro-lista"></div>
-            </div>
+    <div class="grafico-fornecedor">
+        <canvas id="graficoFornecedor"></canvas>
+    </div>
 
-            <div class="filtro-box">
-                <div class="filtro-titulo">Tipo Suíno</div>
-                <div id="filtroTipoFornecedor" class="filtro-lista"></div>
-            </div>
+    <div class="filtros-laterais">
 
+        <div class="filtro-box filtro-fornecedor">
+            <div class="filtro-titulo">Fornecedor</div>
+            <div id="filtroFornecedor" class="filtro-lista"></div>
         </div>
 
-        <canvas id="graficoFornecedor"></canvas>
+        <div class="filtro-box filtro-tipo">
+            <div class="filtro-titulo">Tipo Suíno</div>
+            <div id="filtroTipoFornecedor" class="filtro-lista"></div>
+        </div>
 
+    </div>
+
+</div>
     </div>
 
     <div class="box">
