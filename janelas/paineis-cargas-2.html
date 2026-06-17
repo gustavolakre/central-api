@@ -153,46 +153,9 @@ h2{
     overflow-x:hidden;
 }
 
-.layout-fornecedor{
-    display:flex;
-    gap:16px;
-    flex:1;
+.filtro-grande{
+    width:12cm;
 }
-
-.grafico-fornecedor{
-    flex:1;
-    min-width:0;
-}
-
-.filtros-fornecedor{
-    width:4cm;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-}
-
-.fornecedor-box{
-    flex:7;
-}
-
-.tipo-box{
-    flex:3;
-}
-
-.fornecedor-box .lista-checkbox,
-.tipo-box .lista-checkbox{
-    height:100%;
-    min-height:0;
-    overflow-y:auto;
-}
-
-.filtro-lateral{
-    background:#111827;
-    border:1px solid #374151;
-    border-radius:8px;
-    padding:8px;
-}
-
 
 </style>
 </head>
@@ -226,29 +189,25 @@ h2{
 
     <div class="box">
 
-    <h3>Suínos por Semana - Fornecedor</h3>
+        <h3>Suínos por Semana - Fornecedor</h3>
 
-    <div class="layout-fornecedor">
+        <div class="filtros-topo">
 
-    <div class="grafico-fornecedor">
+            <div class="filtro-box filtro-grande">
+                 <div class="filtro-titulo">Fornecedor</div>
+                 <div id="filtroFornecedor" class="filtro-lista"></div>
+            </div>
+
+            <div class="filtro-box">
+                <div class="filtro-titulo">Tipo Suíno</div>
+                <div id="filtroTipoFornecedor" class="filtro-lista"></div>
+            </div>
+
+        </div>
+
         <canvas id="graficoFornecedor"></canvas>
-    </div>
-
-    <div class="filtros-fornecedor">
-
-        <div class="filtro-box filtro-lateral fornecedor-box">
-            <div class="filtro-titulo">Fornecedor</div>
-            <div id="filtroFornecedor" class="filtro-lista"></div>
-        </div>
-
-        <div class="filtro-box filtro-lateral tipo-box">
-            <div class="filtro-titulo">Tipo Suíno</div>
-            <div id="filtroTipoFornecedor" class="filtro-lista"></div>
-        </div>
 
     </div>
-
-</div>
 
     <div class="box">
 
@@ -544,13 +503,7 @@ function destruir(chart){
     }
 }
 
-function criarGrafico(
-    canvasId,
-    labels,
-    data,
-    cor,
-    tipo="bar"
-){
+function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
 
     return new Chart(
         document.getElementById(canvasId),
@@ -562,14 +515,14 @@ function criarGrafico(
             data:{
                 labels,
                 datasets:[{
-                    label:"Suínos",
-                    data,
-                    backgroundColor:cor,
-                    borderColor:cor,
-                    borderWidth:2,
-                    borderRadius:4,
-                    barPercentage:0.8,
-                    categoryPercentage:0.8
+                   label:"Suínos",
+                   data,
+                   backgroundColor:cor,
+                   borderColor:cor,
+                   borderWidth:2,
+                   borderRadius:4,
+                   barPercentage:0.8,
+                   categoryPercentage:0.8
                 }]
             },
 
@@ -577,33 +530,26 @@ function criarGrafico(
                 responsive:true,
                 maintainAspectRatio:false,
 
-                indexAxis: horizontal ? "y" : "x",
-
                 layout:{
-                    padding:{
-                        top:30,
-                        right:20,
-                        left:10,
-                        bottom:10
-                    }
+                  padding:{
+                  top:30,
+                  right:20,
+                  left:10,
+                  bottom:10
+                  }
                 },
 
                 scales:{
 
                     x:{
                         ticks:{
-                            color:"#f9fafb",
+                           color:"#f9fafb",
                             font:{
                                 size:14,
                                 weight:"bold"
                             },
                             maxRotation:0,
-                            minRotation:0,
-
-                            callback:(value)=>
-                                horizontal
-                                    ? Number(value).toLocaleString("pt-BR")
-                                    : value
+                            minRotation:0
                         },
 
                         grid:{
@@ -622,10 +568,8 @@ function criarGrafico(
                             },
 
                             callback:(value)=>
-                                horizontal
-                                    ? value
-                                    : Number(value)
-                                        .toLocaleString("pt-BR")
+                                Number(value)
+                                    .toLocaleString("pt-BR")
                         }
                     }
 
@@ -639,18 +583,9 @@ function criarGrafico(
 
                     datalabels:{
                         color:"#f9fafb",
-
-                        anchor: horizontal
-                            ? "end"
-                            : "end",
-
-                        align: horizontal
-                            ? "right"
-                            : "top",
-
-                        offset: horizontal
-                            ? 4
-                            : 6,
+                        anchor:"end",
+                        align:"top",
+                        offset:6,
 
                         font:{
                             size:18,
@@ -770,13 +705,13 @@ function atualizarGraficos(){
     destruir(chartEstFornecedor);
     destruir(chartEstComprador);
 
-   chartFornecedor =
-    criarGrafico(
-        "graficoFornecedor",
-        g1.labels,
-        g1.valores,
-        "#2563eb"
-    );
+    chartFornecedor =
+        criarGrafico(
+            "graficoFornecedor",
+            g1.labels,
+            g1.valores,
+            "#2563eb"
+        );
 
     chartComprador =
         criarGrafico(
