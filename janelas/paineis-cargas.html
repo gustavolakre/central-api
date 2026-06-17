@@ -188,9 +188,12 @@ body{
 
 .lista-container{
     flex:1;
+    min-height:0;
+
     overflow-y:auto;
     overflow-x:hidden;
-    min-height:0;
+
+    height:0;
     padding-right:8px;
 }
 
@@ -340,7 +343,9 @@ body{
 
         <div id="filtroSemanasComprador" class="filtro-semanas"></div>
 
-        <div id="listaComprador" style="flex:1; display:flex;"></div>
+        <div id="listaComprador"
+                style="flex:1; display:flex; min-height:0;">
+        </div>
     </div>
 
     <div class="grafico grafico-lista">
@@ -358,7 +363,9 @@ body{
 
         <div id="filtroSemanasFornecedor" class="filtro-semanas"></div>
 
-        <div id="listaFornecedor" style="flex:1; display:flex;"></div>
+        <div id="listaFornecedor"
+              style="flex:1; display:flex; min-height:0;">
+        </div>
     </div>
 
     <div class="grafico grafico-lista">
@@ -376,7 +383,9 @@ body{
 
         <div id="filtroSemanasNegociacoes" class="filtro-semanas"></div>
 
-        <div id="listaNegociacoes" style="flex:1; display:flex;"></div>
+        <div id="listaNegociacoes"
+               style="flex:1; display:flex; min-height:0;">
+        </div>
     </div>
 
 </div>
