@@ -12,251 +12,84 @@
 
 <style>
 
-body{
-    background:#111827;
-    margin:0;
-    overflow-x:hidden;
-}
-
-.linha{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-    margin-bottom:25px;
-}
-
-.box{
-    background:#1f2937;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 4px 12px rgba(0,0,0,.30);
-
-    display:flex;
-    flex-direction:column;
-
-    min-height:650px;
-}
-
-h2{
-    color:#f9fafb;
-    margin:20px;
-    font-size:28px;
-}
-
-h3{
-    margin-top:0;
-    margin-bottom:8px;
-    font-size:16px;
-    color:#f9fafb;
-}
-
-canvas{
-    width:100% !important;
-    height:520px !important;
-}
-
 /* ==========================
-   TOPBAR
+   GRÁFICOS COM FILTROS LATERAIS
 ========================== */
 
-.topbar-dashboard{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px 20px;
-    background:#0f172a;
-    border-bottom:1px solid #374151;
-    position:sticky;
-    top:0;
-    z-index:1000;
-}
-
-.topbar-left{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    font-size:18px;
-    font-weight:700;
-    color:#f9fafb;
-}
-
-.topbar-right{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.topbar-right a{
-    color:#e5e7eb;
-    text-decoration:none;
-    font-weight:700;
-    padding:8px 12px;
-    border-radius:8px;
-    transition:.2s;
-}
-
-.topbar-right a:hover{
-    background:#1f2937;
-}
-
-/* ==========================
-   FILTROS PADRÃO
-========================== */
-
-.filtros-topo{
-    display:flex;
-    gap:12px;
-    margin-bottom:6px;
-}
-
-.filtro-box{
-    background:#111827;
-    border:1px solid #374151;
-    border-radius:8px;
-    padding:8px;
-}
-
-.filtro-titulo{
-    font-size:13px;
-    font-weight:700;
-    margin-bottom:6px;
-    color:#f9fafb;
-}
-
-.filtro-lista{
-    display:flex;
-    flex-direction:column;
-}
-
-.filtro-item{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    width:100%;
-    margin-bottom:3px;
-}
-
-.filtro-item label{
-    font-size:12px;
-    cursor:pointer;
-    color:#e5e7eb;
-}
-
-.filtro-pesquisa{
-    width:100%;
-    box-sizing:border-box;
-    padding:6px 8px;
-    margin-bottom:6px;
-    border:1px solid #374151;
-    border-radius:6px;
-    background:#1f2937;
-    color:#f9fafb;
-}
-
-.filtro-pesquisa::placeholder{
-    color:#9ca3af;
-}
-
-.lista-checkbox{
-    height:80px;
-    overflow-y:auto;
-    overflow-x:hidden;
-}
-
-.filtro-grande{
-    width:12cm;
-}
-
-/* ==========================
-   PRIMEIRO GRÁFICO
-========================== */
-
-.layout-fornecedor{
+.layout-fornecedor,
+.layout-comprador,
+.layout-estado-fornecedor,
+.layout-estado-comprador{
     display:flex;
     gap:15px;
     align-items:flex-start;
 }
 
-.grafico-fornecedor{
+.grafico-fornecedor,
+.grafico-comprador,
+.grafico-estado-fornecedor,
+.grafico-estado-comprador{
     flex:1;
     min-width:0;
 }
 
-#graficoFornecedor{
-    height:670px !important;
-}
-
-.filtros-laterais{
-    width:5cm;
-    min-width:5cm;
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-}
-
-.filtro-fornecedor{
-    flex:8;
-}
-
-.filtro-tipo{
-    flex:3;
-}
-
-.filtro-fornecedor .lista-checkbox{
-    height:420px;
-}
-
-.filtro-tipo .lista-checkbox{
-    height:80px;
-}
-
-/* ==========================
-   SEGUNDO GRÁFICO
-========================== */
-
-.layout-comprador{
-    display:flex;
-    gap:15px;
-    align-items:flex-start;
-}
-
-.grafico-comprador{
-    flex:1;
-    min-width:0;
-}
-
+#graficoFornecedor,
 #graficoComprador{
     height:670px !important;
 }
 
-.filtros-laterais-comprador{
+.filtros-laterais,
+.filtros-laterais-comprador,
+.filtros-laterais-estado-fornecedor,
+.filtros-laterais-estado-comprador{
     width:5cm;
     min-width:5cm;
+
+    margin-top:-10px;
 
     display:flex;
     flex-direction:column;
     gap:20px;
 }
 
-.filtro-comprador{
+/* FILTRO PRINCIPAL */
+
+.filtro-fornecedor,
+.filtro-comprador,
+.filtro-estado-fornecedor,
+.filtro-estado-comprador{
     flex:8;
 }
 
-.filtro-tipo-comprador{
-    flex:3;
-}
-
-.filtro-comprador .lista-checkbox{
+.filtro-fornecedor .lista-checkbox,
+.filtro-comprador .lista-checkbox,
+.filtro-estado-fornecedor .lista-checkbox,
+.filtro-estado-comprador .lista-checkbox{
     height:420px;
 }
 
-.filtro-tipo-comprador .lista-checkbox{
+/* FILTRO TIPO */
+
+.filtro-tipo,
+.filtro-tipo-comprador,
+.filtro-tipo-estado-fornecedor,
+.filtro-tipo-estado-comprador{
+    flex:3;
+}
+
+.filtro-tipo .lista-checkbox,
+.filtro-tipo-comprador .lista-checkbox,
+.filtro-tipo-estado-fornecedor .lista-checkbox,
+.filtro-tipo-estado-comprador .lista-checkbox{
     height:80px;
 }
+
+/* BOTÃO LIMPAR */
 
 .btn-limpar-filtro{
     width:100%;
     margin-bottom:6px;
+
     padding:6px 8px;
 
     border:none;
@@ -269,6 +102,8 @@ canvas{
     font-weight:700;
 
     cursor:pointer;
+
+    transition:.2s;
 }
 
 .btn-limpar-filtro:hover{
@@ -370,21 +205,27 @@ canvas{
 
         <h3>Suínos por Semana - Estado Fornecedor</h3>
 
-        <div class="filtros-topo">
+<div class="layout-estado-fornecedor">
 
-            <div class="filtro-box">
-                <div class="filtro-titulo">UF Fornecedor</div>
-                <div id="filtroEstadoFornecedor" class="filtro-lista"></div>
-            </div>
+    <div class="grafico-estado-fornecedor">
+        <canvas id="graficoEstadoFornecedor"></canvas>
+    </div>
 
-            <div class="filtro-box">
-                <div class="filtro-titulo">Tipo Suíno</div>
-                <div id="filtroTipoEstadoFornecedor" class="filtro-lista"></div>
-            </div>
+    <div class="filtros-laterais-estado-fornecedor">
 
+        <div class="filtro-box filtro-estado-fornecedor">
+            <div class="filtro-titulo">UF Fornecedor</div>
+            <div id="filtroEstadoFornecedor" class="filtro-lista"></div>
         </div>
 
-        <canvas id="graficoEstadoFornecedor"></canvas>
+        <div class="filtro-box filtro-tipo-estado-fornecedor">
+            <div class="filtro-titulo">Tipo Suíno</div>
+            <div id="filtroTipoEstadoFornecedor" class="filtro-lista"></div>
+        </div>
+
+    </div>
+
+</div>
 
     </div>
 
@@ -392,21 +233,27 @@ canvas{
 
         <h3>Suínos por Semana - Estado Comprador</h3>
 
-        <div class="filtros-topo">
+<div class="layout-estado-comprador">
 
-            <div class="filtro-box">
-                <div class="filtro-titulo">UF Comprador</div>
-                <div id="filtroEstadoComprador" class="filtro-lista"></div>
-            </div>
+    <div class="grafico-estado-comprador">
+        <canvas id="graficoEstadoComprador"></canvas>
+    </div>
 
-            <div class="filtro-box">
-                <div class="filtro-titulo">Tipo Suíno</div>
-                <div id="filtroTipoEstadoComprador" class="filtro-lista"></div>
-            </div>
+    <div class="filtros-laterais-estado-comprador">
 
+        <div class="filtro-box filtro-estado-comprador">
+            <div class="filtro-titulo">UF Comprador</div>
+            <div id="filtroEstadoComprador" class="filtro-lista"></div>
         </div>
 
-        <canvas id="graficoEstadoComprador"></canvas>
+        <div class="filtro-box filtro-tipo-estado-comprador">
+            <div class="filtro-titulo">Tipo Suíno</div>
+            <div id="filtroTipoEstadoComprador" class="filtro-lista"></div>
+        </div>
+
+    </div>
+
+</div>
 
     </div>
 
