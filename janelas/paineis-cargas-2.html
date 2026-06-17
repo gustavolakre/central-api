@@ -210,6 +210,50 @@ canvas{
     height:80px;
 }
 
+/* ==========================
+   SEGUNDO GRÁFICO
+========================== */
+
+.layout-comprador{
+    display:flex;
+    gap:15px;
+    align-items:flex-start;
+}
+
+.grafico-comprador{
+    flex:1;
+    min-width:0;
+}
+
+#graficoComprador{
+    height:670px !important;
+}
+
+.filtros-laterais-comprador{
+    width:5cm;
+    min-width:5cm;
+
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.filtro-comprador{
+    flex:8;
+}
+
+.filtro-tipo-comprador{
+    flex:3;
+}
+
+.filtro-comprador .lista-checkbox{
+    height:420px;
+}
+
+.filtro-tipo-comprador .lista-checkbox{
+    height:80px;
+}
+
 
 </style>
 </head>
@@ -270,25 +314,31 @@ canvas{
 
     <div class="box">
 
-        <h3>Suínos por Semana - Comprador</h3>
+    <h3>Suínos por Semana - Comprador</h3>
 
-        <div class="filtros-topo">
+    <div class="layout-comprador">
 
-            <div class="filtro-box filtro-grande">
+        <div class="grafico-comprador">
+            <canvas id="graficoComprador"></canvas>
+        </div>
+
+        <div class="filtros-laterais-comprador">
+
+            <div class="filtro-box filtro-comprador">
                 <div class="filtro-titulo">Comprador</div>
                 <div id="filtroComprador" class="filtro-lista"></div>
             </div>
 
-            <div class="filtro-box">
+            <div class="filtro-box filtro-tipo-comprador">
                 <div class="filtro-titulo">Tipo Suíno</div>
                 <div id="filtroTipoComprador" class="filtro-lista"></div>
             </div>
 
         </div>
 
-        <canvas id="graficoComprador"></canvas>
-
     </div>
+
+</div>
 
 </div>
 
