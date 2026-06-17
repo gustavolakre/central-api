@@ -468,14 +468,7 @@ async function carregarGraficos(){
           )
         ].sort();
 
-        const normalizar = (v) =>
-           String(v)
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "") // remove acentos
-            .replace(/[^a-z0-9]/g, "");      // remove espaços, hífen etc
-
-         const filtrar = (item) => {
+        const filtrar = (item) => {
             const texto = normalizar(JSON.stringify(item));
 
             return !texto.includes("lakre") &&
