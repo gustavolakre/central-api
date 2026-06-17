@@ -154,7 +154,6 @@ const negociacoes = await pool.query(`
     ORDER BY
         SUM(quantidade) DESC
 
-`);
 
          
 
