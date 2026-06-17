@@ -153,15 +153,10 @@ h2{
     overflow-x:hidden;
 }
 
-.filtro-grande{
-    width:12cm;
-}
-
 .layout-fornecedor{
     display:flex;
-    gap:20px;
+    gap:16px;
     flex:1;
-    min-height:560px;
 }
 
 .grafico-fornecedor{
@@ -170,13 +165,10 @@ h2{
 }
 
 .filtros-fornecedor{
+    width:4cm;
     display:flex;
     flex-direction:column;
     gap:12px;
-}
-
-.filtro-lateral{
-    width:4cm;
 }
 
 .fornecedor-box{
@@ -191,11 +183,16 @@ h2{
 .tipo-box .lista-checkbox{
     height:100%;
     min-height:0;
+    overflow-y:auto;
 }
 
-#graficoFornecedor{
-    height:560px !important;
+.filtro-lateral{
+    background:#111827;
+    border:1px solid #374151;
+    border-radius:8px;
+    padding:8px;
 }
+
 
 </style>
 </head>
@@ -552,8 +549,7 @@ function criarGrafico(
     labels,
     data,
     cor,
-    tipo = "bar",
-    horizontal = false
+    tipo="bar"
 ){
 
     return new Chart(
@@ -774,14 +770,12 @@ function atualizarGraficos(){
     destruir(chartEstFornecedor);
     destruir(chartEstComprador);
 
-    chartFornecedor =
-       criarGrafico(
+   chartFornecedor =
+    criarGrafico(
         "graficoFornecedor",
         g1.labels,
         g1.valores,
-        "#2563eb",
-        "bar",
-        true
+        "#2563eb"
     );
 
     chartComprador =
