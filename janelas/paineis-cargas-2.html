@@ -254,6 +254,27 @@ canvas{
     height:80px;
 }
 
+.btn-limpar-filtro{
+    width:100%;
+    margin-bottom:6px;
+    padding:6px 8px;
+
+    border:none;
+    border-radius:6px;
+
+    background:#374151;
+    color:#f9fafb;
+
+    font-size:12px;
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+.btn-limpar-filtro:hover{
+    background:#4b5563;
+}
+
 
 </style>
 </head>
@@ -515,6 +536,12 @@ function criarFiltro(id, valores){
         .join("");
 
     el.innerHTML = `
+
+          <button
+              class="btn-limpar-filtro"
+              onclick="limparFiltro('${id}')">
+              Limpar Seleção
+          </button>
         <input
             type="text"
             class="filtro-pesquisa"
@@ -568,6 +595,23 @@ function filtrar(lista,campo,valores){
             x[campo]
         )
     );
+}
+
+
+function limparFiltro(id){
+
+    document
+        .querySelectorAll(
+            `#${id} input[type=checkbox]`
+        )
+        .forEach(cb=>{
+
+            cb.checked = false;
+
+        });
+
+    atualizarGraficos();
+
 }
 
 function agruparPorSemana(lista){
