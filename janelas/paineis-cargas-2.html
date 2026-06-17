@@ -160,15 +160,18 @@ h2{
 .layout-fornecedor{
     display:flex;
     gap:15px;
-    flex:1;
+    align-items:stretch;
 }
 
 .grafico-fornecedor{
     flex:1;
+    min-width:0;
 }
 
 .filtros-laterais{
     width:4cm;
+    min-width:4cm;
+
     display:flex;
     flex-direction:column;
     gap:10px;
@@ -176,16 +179,25 @@ h2{
 
 .filtro-fornecedor{
     flex:7;
+    display:flex;
+    flex-direction:column;
 }
 
 .filtro-tipo{
     flex:3;
+    display:flex;
+    flex-direction:column;
 }
 
 .filtro-fornecedor .lista-checkbox,
 .filtro-tipo .lista-checkbox{
-    height:100%;
+    flex:1;
+    height:auto;
     overflow-y:auto;
+}
+
+#graficoFornecedor{
+    width:100% !important;
 }
 
 </style>
@@ -225,7 +237,9 @@ h2{
 <div class="layout-fornecedor">
 
     <div class="grafico-fornecedor">
-        <canvas id="graficoFornecedor"></canvas>
+         <div style="height:520px;">
+             <canvas id="graficoFornecedor"></canvas>
+        </div>
     </div>
 
     <div class="filtros-laterais">
