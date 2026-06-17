@@ -34,7 +34,7 @@ body{
     display:flex;
     flex-direction:column;
 
-    height:650px;
+    min-height:650px;
 }
 
 h2{
@@ -52,6 +52,7 @@ h3{
 
 canvas{
     width:100% !important;
+    height:520px !important;
 }
 
 /* ==========================
@@ -173,40 +174,28 @@ canvas{
 .layout-fornecedor{
     display:flex;
     gap:15px;
-    flex:1;
+    align-items:flex-start;
 }
 
 .grafico-fornecedor{
     flex:1;
     min-width:0;
-    min-height:0;
-    display:flex;
-}
-
-#graficoFornecedor{
-    flex:1;
-    width:100% !important;
 }
 
 .filtros-laterais{
     width:4cm;
     min-width:4cm;
-
     display:flex;
     flex-direction:column;
     gap:10px;
 }
 
 .filtro-fornecedor{
-    flex:7;
-    display:flex;
-    flex-direction:column;
+    flex:none;
 }
 
 .filtro-tipo{
-    flex:3;
-    display:flex;
-    flex-direction:column;
+    flex:none;
 }
 
 </style>
@@ -245,11 +234,9 @@ canvas{
 
 <div class="layout-fornecedor">
 
-    <div class="grafico-fornecedor">
-         <div style="height:520px;">
-             <canvas id="graficoFornecedor"></canvas>
-        </div>
-    </div>
+     <div class="grafico-fornecedor">
+              <canvas id="graficoFornecedor"></canvas>
+     </div>
 
     <div class="filtros-laterais">
 
