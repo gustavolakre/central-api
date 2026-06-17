@@ -7,6 +7,7 @@ const cors = require("cors")
 const gerarFaturamento = require("./routes/gerarFaturamento")
 const buscarCargas = require("./routes/buscarCargas")
 const buscarParceiros = require("./routes/buscarParceiros")
+const buscarFretes = require("./routes/buscarFretes")
 const financeiro = require("./routes/financeiro")
 const bancos = require("./routes/bancos")
 const contasGerenciaisRoutes = require("./routes/contasGerenciais")
@@ -143,6 +144,11 @@ app.use(
     "/importar-fretes-relatorio",
     importarFretesRelatorio
 );
+
+app.use(
+    "/buscarFretes",
+    require("./routes/buscarFretes")
+)
 
 
 app.get("/", (req, res) => {
