@@ -1027,6 +1027,8 @@ function toggleAgruparSelecionados(valor){
             return
         }
 
+        
+
         let nfServico = String(
             linha["NF Serviço"] ||
             linha["NF SERVIÇO"] ||
@@ -2581,6 +2583,12 @@ function(e){
                     dados
                     .semanasSelecionadas
                     || []
+                )
+
+            semanasSelecionadas =
+                new Set(
+                   [...semanasSelecionadas]
+                   .filter(s => s >= "2026/01")
                 )
 
             estadoCampos =
