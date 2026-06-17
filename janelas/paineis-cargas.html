@@ -187,9 +187,10 @@ body{
 }
 
 .lista-container{
-    overflow-y:auto;
-    height:100%;
     flex:1;
+    overflow-y:auto;
+    overflow-x:hidden;
+    min-height:0;
     padding-right:8px;
 }
 
@@ -339,7 +340,7 @@ body{
 
         <div id="filtroSemanasComprador" class="filtro-semanas"></div>
 
-        <div id="listaComprador"></div>
+        <div id="listaComprador" style="flex:1; display:flex;"></div>
     </div>
 
     <div class="grafico grafico-lista">
@@ -357,7 +358,7 @@ body{
 
         <div id="filtroSemanasFornecedor" class="filtro-semanas"></div>
 
-        <div id="listaFornecedor"></div>
+        <div id="listaFornecedor" style="flex:1; display:flex;"></div>
     </div>
 
     <div class="grafico grafico-lista">
@@ -375,7 +376,7 @@ body{
 
         <div id="filtroSemanasNegociacoes" class="filtro-semanas"></div>
 
-        <div id="listaNegociacoes"></div>
+        <div id="listaNegociacoes" style="flex:1; display:flex;"></div>
     </div>
 
 </div>
@@ -712,7 +713,7 @@ function atualizarListas(){
         .sort((a,b) => b.total_suinos - a.total_suinos);
 
     document.getElementById("listaComprador").innerHTML = `
-        <div class="lista-container" style="flex:1;">
+        <div class="lista-container">
 
             <div class="lista-header">
                 <span>Comprador</span>
@@ -773,7 +774,7 @@ function atualizarListas(){
         .sort((a,b) => b.total_suinos - a.total_suinos);
 
     document.getElementById("listaFornecedor").innerHTML = `
-        <div class="lista-container" style="flex:1;">
+        <div class="lista-container">
 
             <div class="lista-header">
                 <span>Fornecedor</span>
@@ -838,7 +839,7 @@ function atualizarListas(){
         .sort((a,b) => b.total_suinos - a.total_suinos);
 
     document.getElementById("listaNegociacoes").innerHTML = `
-        <div class="lista-container" style="flex:1;">
+        <div class="lista-container">
         
 
             <div class="lista-header">
