@@ -1013,6 +1013,13 @@ function toggleAgruparSelecionados(valor){
                 linha["Etiquetas"]
             )
 
+            if(
+                !String(semana || "")
+                .startsWith("2026/")
+            ){
+                 return
+            }
+
         if (
             !semana ||
             !semanasSelecionadas.has(semana)
