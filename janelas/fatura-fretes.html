@@ -717,21 +717,23 @@ async function carregarFretesBanco(){
 
         }
 
-        function buscarParceiro(nome) {
+        function buscarParceiro(nome){
 
-            if (!baseParceiros.length) {
-                 return null
+            if(!baseParceiros.length){
+               return null
             }
 
             return baseParceiros.find(p =>
 
-              String(p["Nome Usual"] || "")
+                String(
+                   p.nome_usual || ""
+                )
                 .trim()
                 .toUpperCase()
 
                 ===
 
-              String(nome || "")
+                String(nome || "")
                .trim()
                .toUpperCase()
 
@@ -1498,26 +1500,18 @@ function exportarExcel(){
 
         let cpfCnpj =
 
-           parceiro?.["CPF/CNPJ"]
-           ||
+            parceiro?.cnpj
+            ||
 
-           parceiro?.["CNPJ"]
+            parceiro?.cpf
+            ||
 
-           ||
-
-           parceiro?.["CPF"]
-
-           ||
 
            ""
 
            let ie =
 
-           parceiro?.["Inscrição Estadual"]
-
-           ||
-
-           parceiro?.["IE"]
+           parceiro?.inscricao_estadual
 
            ||
 
