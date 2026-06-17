@@ -618,27 +618,43 @@ function semanasSelecionadas(id){
 
 function atualizarListas(){
 
-console.log("Primeiro comprador:", compradores[0]);
-console.log("Primeiro fornecedor:", fornecedores[0]);
-console.log("Primeira negociação:", negociacoes[0]);
+    // ==========================
+    // COMPRADORES
+    // ==========================
 
-    // Compradores
     const semanasComprador =
         semanasSelecionadas("filtroSemanasComprador");
 
-        console.log(
-        "Compradores filtrados:",
+    const compradoresFiltrados =
         compradores.filter(x =>
             semanasComprador.includes(x.semana)
-        ).length
-    );
+        );
 
-    const compradoresFiltrados = compradores;
+    const compradoresAgrupados = {};
 
-    const topCompradores =
-        compradoresFiltrados
-        .sort((a,b) => b.total_suinos - a.total_suinos)
-        .slice(0,20);
+    compradoresFiltrados.forEach(item => {
+
+        if(!compradoresAgrupados[item.comprador]){
+
+            compradoresAgrupados[item.comprador] = {
+                comprador: item.comprador,
+                total_suinos: 0,
+                total_cargas: 0
+            };
+
+        }
+
+        compradoresAgrupados[item.comprador].total_suinos +=
+            Number(item.total_suinos);
+
+        compradoresAgrupados[item.comprador].total_cargas +=
+            Number(item.total_cargas);
+
+    });
+
+    const listaCompradores =
+        Object.values(compradoresAgrupados)
+        .sort((a,b) => b.total_suinos - a.total_suinos);
 
     document.getElementById("listaComprador").innerHTML = `
         <div class="lista-container">
@@ -648,10 +664,14 @@ console.log("Primeira negociação:", negociacoes[0]);
                 <span>Suínos | Cargas</span>
             </div>
 
-            ${topCompradores.map(x => `
+            ${listaCompradores.map(x => `
                 <div class="lista-item">
                     <strong>${x.comprador}</strong>
-                    <span>${x.total_suinos} | ${x.total_cargas}</span>
+                    <span>
+                        ${Number(x.total_suinos).toLocaleString("pt-BR")}
+                        |
+                        ${Number(x.total_cargas).toLocaleString("pt-BR")}
+                    </span>
                 </div>
             `).join("")}
 
@@ -659,16 +679,43 @@ console.log("Primeira negociação:", negociacoes[0]);
     `;
 
 
-    // Fornecedores
+    // ==========================
+    // FORNECEDORES
+    // ==========================
+
     const semanasFornecedor =
         semanasSelecionadas("filtroSemanasFornecedor");
 
-    const fornecedoresFiltrados = fornecedores;
+    const fornecedoresFiltrados =
+        fornecedores.filter(x =>
+            semanasFornecedor.includes(x.semana)
+        );
 
-    const topFornecedores =
-        fornecedoresFiltrados
-        .sort((a,b) => b.total_suinos - a.total_suinos)
-        .slice(0,20);
+    const fornecedoresAgrupados = {};
+
+    fornecedoresFiltrados.forEach(item => {
+
+        if(!fornecedoresAgrupados[item.fornecedor]){
+
+            fornecedoresAgrupados[item.fornecedor] = {
+                fornecedor: item.fornecedor,
+                total_suinos: 0,
+                total_cargas: 0
+            };
+
+        }
+
+        fornecedoresAgrupados[item.fornecedor].total_suinos +=
+            Number(item.total_suinos);
+
+        fornecedoresAgrupados[item.fornecedor].total_cargas +=
+            Number(item.total_cargas);
+
+    });
+
+    const listaFornecedores =
+        Object.values(fornecedoresAgrupados)
+        .sort((a,b) => b.total_suinos - a.total_suinos);
 
     document.getElementById("listaFornecedor").innerHTML = `
         <div class="lista-container">
@@ -678,10 +725,14 @@ console.log("Primeira negociação:", negociacoes[0]);
                 <span>Suínos | Cargas</span>
             </div>
 
-            ${topFornecedores.map(x => `
+            ${listaFornecedores.map(x => `
                 <div class="lista-item">
                     <strong>${x.fornecedor}</strong>
-                    <span>${x.total_suinos} | ${x.total_cargas}</span>
+                    <span>
+                        ${Number(x.total_suinos).toLocaleString("pt-BR")}
+                        |
+                        ${Number(x.total_cargas).toLocaleString("pt-BR")}
+                    </span>
                 </div>
             `).join("")}
 
@@ -689,16 +740,47 @@ console.log("Primeira negociação:", negociacoes[0]);
     `;
 
 
-    // Negociações
+    // ==========================
+    // NEGOCIAÇÕES
+    // ==========================
+
     const semanasNegociacoes =
         semanasSelecionadas("filtroSemanasNegociacoes");
 
-    const negociacoesFiltradas = negociacoes;
+    const negociacoesFiltradas =
+        negociacoes.filter(x =>
+            semanasNegociacoes.includes(x.semana)
+        );
 
-    const topNegociacoes =
-        negociacoesFiltradas
-        .sort((a,b) => b.total_suinos - a.total_suinos)
-        .slice(0,20);
+    const negociacoesAgrupadas = {};
+
+    negociacoesFiltradas.forEach(item => {
+
+        const chave =
+            `${item.comprador}|${item.fornecedor}`;
+
+        if(!negociacoesAgrupadas[chave]){
+
+            negociacoesAgrupadas[chave] = {
+                comprador: item.comprador,
+                fornecedor: item.fornecedor,
+                total_suinos: 0,
+                total_cargas: 0
+            };
+
+        }
+
+        negociacoesAgrupadas[chave].total_suinos +=
+            Number(item.total_suinos);
+
+        negociacoesAgrupadas[chave].total_cargas +=
+            Number(item.total_cargas);
+
+    });
+
+    const listaNegociacoes =
+        Object.values(negociacoesAgrupadas)
+        .sort((a,b) => b.total_suinos - a.total_suinos);
 
     document.getElementById("listaNegociacoes").innerHTML = `
         <div class="lista-container">
@@ -708,10 +790,19 @@ console.log("Primeira negociação:", negociacoes[0]);
                 <span>Suínos | Cargas</span>
             </div>
 
-            ${topNegociacoes.map(x => `
+            ${listaNegociacoes.map(x => `
                 <div class="lista-item">
-                    <strong>${x.comprador} → ${x.fornecedor}</strong>
-                    <span>${x.total_suinos} | ${x.total_cargas}</span>
+                    <strong>
+                        ${x.comprador}
+                        →
+                        ${x.fornecedor}
+                    </strong>
+
+                    <span>
+                        ${Number(x.total_suinos).toLocaleString("pt-BR")}
+                        |
+                        ${Number(x.total_cargas).toLocaleString("pt-BR")}
+                    </span>
                 </div>
             `).join("")}
 
