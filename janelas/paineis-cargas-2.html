@@ -12,84 +12,252 @@
 
 <style>
 
+body{
+    background:#111827;
+    margin:0;
+    overflow-x:hidden;
+}
+
+.linha{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.box{
+    background:#1f2937;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,.30);
+
+    display:flex;
+    flex-direction:column;
+
+    min-height:650px;
+}
+
+h2{
+    color:#f9fafb;
+    margin:20px;
+    font-size:28px;
+}
+
+h3{
+    margin-top:0;
+    margin-bottom:8px;
+    font-size:16px;
+    color:#f9fafb;
+}
+
+canvas{
+    width:100% !important;
+    height:520px !important;
+}
+
 /* ==========================
-   GRÁFICOS COM FILTROS LATERAIS
+   TOPBAR
 ========================== */
 
-.layout-fornecedor,
-.layout-comprador,
-.layout-estado-fornecedor,
-.layout-estado-comprador{
+.topbar-dashboard{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 20px;
+    background:#0f172a;
+    border-bottom:1px solid #374151;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.topbar-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:18px;
+    font-weight:700;
+    color:#f9fafb;
+}
+
+.topbar-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.topbar-right a{
+    color:#e5e7eb;
+    text-decoration:none;
+    font-weight:700;
+    padding:8px 12px;
+    border-radius:8px;
+    transition:.2s;
+}
+
+.topbar-right a:hover{
+    background:#1f2937;
+}
+
+/* ==========================
+   FILTROS PADRÃO
+========================== */
+
+.filtros-topo{
+    display:flex;
+    gap:12px;
+    margin-bottom:6px;
+}
+
+.filtro-box{
+    background:#111827;
+    border:1px solid #374151;
+    border-radius:8px;
+    padding:8px;
+}
+
+.filtro-titulo{
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:6px;
+    color:#f9fafb;
+}
+
+.filtro-lista{
+    display:flex;
+    flex-direction:column;
+}
+
+.filtro-item{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    width:100%;
+    margin-bottom:3px;
+}
+
+.filtro-item label{
+    font-size:12px;
+    cursor:pointer;
+    color:#e5e7eb;
+}
+
+.filtro-pesquisa{
+    width:100%;
+    box-sizing:border-box;
+    padding:6px 8px;
+    margin-bottom:6px;
+    border:1px solid #374151;
+    border-radius:6px;
+    background:#1f2937;
+    color:#f9fafb;
+}
+
+.filtro-pesquisa::placeholder{
+    color:#9ca3af;
+}
+
+.lista-checkbox{
+    height:80px;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+
+.filtro-grande{
+    width:12cm;
+}
+
+/* ==========================
+   PRIMEIRO GRÁFICO
+========================== */
+
+.layout-fornecedor{
     display:flex;
     gap:15px;
     align-items:flex-start;
 }
 
-.grafico-fornecedor,
-.grafico-comprador,
-.grafico-estado-fornecedor,
-.grafico-estado-comprador{
+.grafico-fornecedor{
     flex:1;
     min-width:0;
 }
 
-#graficoFornecedor,
-#graficoComprador{
+#graficoFornecedor{
     height:670px !important;
 }
 
-.filtros-laterais,
-.filtros-laterais-comprador,
-.filtros-laterais-estado-fornecedor,
-.filtros-laterais-estado-comprador{
+.filtros-laterais{
+    margin-top:-10px;
     width:5cm;
     min-width:5cm;
-
-    margin-top:-10px;
-
     display:flex;
     flex-direction:column;
     gap:20px;
 }
 
-/* FILTRO PRINCIPAL */
-
-.filtro-fornecedor,
-.filtro-comprador,
-.filtro-estado-fornecedor,
-.filtro-estado-comprador{
+.filtro-fornecedor{
     flex:8;
 }
 
-.filtro-fornecedor .lista-checkbox,
-.filtro-comprador .lista-checkbox,
-.filtro-estado-fornecedor .lista-checkbox,
-.filtro-estado-comprador .lista-checkbox{
-    height:420px;
-}
-
-/* FILTRO TIPO */
-
-.filtro-tipo,
-.filtro-tipo-comprador,
-.filtro-tipo-estado-fornecedor,
-.filtro-tipo-estado-comprador{
+.filtro-tipo{
     flex:3;
 }
 
-.filtro-tipo .lista-checkbox,
-.filtro-tipo-comprador .lista-checkbox,
-.filtro-tipo-estado-fornecedor .lista-checkbox,
-.filtro-tipo-estado-comprador .lista-checkbox{
+.filtro-fornecedor .lista-checkbox{
+    height:420px;
+}
+
+.filtro-tipo .lista-checkbox{
     height:80px;
 }
 
-/* BOTÃO LIMPAR */
+/* ==========================
+   SEGUNDO GRÁFICO
+========================== */
+
+.layout-comprador{
+    display:flex;
+    gap:15px;
+    align-items:flex-start;
+}
+
+.grafico-comprador{
+    flex:1;
+    min-width:0;
+}
+
+#graficoComprador{
+    height:670px !important;
+}
+
+.filtros-laterais-comprador{
+    width:5cm;
+    min-width:5cm;
+    margin-top:-10px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.filtro-comprador{
+    flex:8;
+}
+
+.filtro-tipo-comprador{
+    flex:3;
+}
+
+.filtro-comprador .lista-checkbox{
+    height:420px;
+}
+
+.filtro-tipo-comprador .lista-checkbox{
+    height:80px;
+}
 
 .btn-limpar-filtro{
     width:100%;
     margin-bottom:6px;
-
     padding:6px 8px;
 
     border:none;
@@ -102,12 +270,100 @@
     font-weight:700;
 
     cursor:pointer;
-
-    transition:.2s;
 }
 
 .btn-limpar-filtro:hover{
     background:#4b5563;
+}
+
+/* ==========================
+   TERCEIRO GRÁFICO
+========================== */
+
+.layout-estado-fornecedor{
+    display:flex;
+    gap:15px;
+    align-items:flex-start;
+}
+
+.grafico-estado-fornecedor{
+    flex:1;
+    min-width:0;
+}
+
+#graficoEstadoFornecedor{
+    height:670px !important;
+}
+
+.filtros-laterais-estado-fornecedor{
+    width:5cm;
+    min-width:5cm;
+    margin-top:-10px;
+
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.filtro-estado-fornecedor{
+    flex:8;
+}
+
+.filtro-tipo-estado-fornecedor{
+    flex:3;
+}
+
+.filtro-estado-fornecedor .lista-checkbox{
+    height:420px;
+}
+
+.filtro-tipo-estado-fornecedor .lista-checkbox{
+    height:80px;
+}
+
+/* ==========================
+   QUARTO GRÁFICO
+========================== */
+
+.layout-estado-comprador{
+    display:flex;
+    gap:15px;
+    align-items:flex-start;
+}
+
+.grafico-estado-comprador{
+    flex:1;
+    min-width:0;
+}
+
+#graficoEstadoComprador{
+    height:670px !important;
+}
+
+.filtros-laterais-estado-comprador{
+    width:5cm;
+    min-width:5cm;
+    margin-top:-10px;
+
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.filtro-estado-comprador{
+    flex:8;
+}
+
+.filtro-tipo-estado-comprador{
+    flex:3;
+}
+
+.filtro-estado-comprador .lista-checkbox{
+    height:420px;
+}
+
+.filtro-tipo-estado-comprador .lista-checkbox{
+    height:80px;
 }
 
 
@@ -192,7 +448,6 @@
 
         </div>
 
-    </div>
 
 </div>
 
