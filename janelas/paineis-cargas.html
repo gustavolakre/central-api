@@ -891,6 +891,21 @@ function atualizarListas(){
     `;
 }
 
+function normalizar(v) {
+  return String(v)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function filtrar(item) {
+  const texto = normalizar(JSON.stringify(item));
+
+  return !texto.includes("lakre") &&
+         !texto.includes("09cancelada");
+}
+
 
 carregarGraficos();
 
