@@ -325,7 +325,7 @@ body{
 <div class="graficos linha2">
 
     <div class="grafico grafico-lista">
-        <h3>Top 20 Compradores</h3>
+        <h3>ABC Compradores</h3>
 
         <div id="filtroSemanasComprador" class="filtro-semanas"></div>
 
@@ -333,7 +333,7 @@ body{
     </div>
 
     <div class="grafico grafico-lista">
-        <h3>Top 20 Fornecedores</h3>
+        <h3>ABC Fornecedores</h3>
 
         <div id="filtroSemanasFornecedor" class="filtro-semanas"></div>
 
@@ -341,7 +341,7 @@ body{
     </div>
 
     <div class="grafico grafico-lista">
-        <h3>Top 20 Negociações</h3>
+        <h3>ABC Negociações</h3>
 
         <div id="filtroSemanasNegociacoes" class="filtro-semanas"></div>
 
@@ -399,10 +399,10 @@ async function carregarGraficos(){
         console.log(resultado.negociacoes[0]);
 
         const semanasDisponiveis = [
-         ...new Set(
-        (resultado.semanas || [])
-            .map(x => x.semana)
-            )
+              ...new Set(
+                 (resultado.todasSemanas || [])
+                    .map(x => x.semana)
+             )
         ].sort();
 
         const filtrar = (item) => {
@@ -412,7 +412,11 @@ async function carregarGraficos(){
              !texto.includes("09-cancelada");
         };
 
-        const dados = (resultado.semanas || []).filter(filtrar);
+        const dadosCompletos =
+            (resultado.semanas || []).filter(filtrar);
+ 
+        const dados =
+             dadosCompletos.slice(0,20).reverse();
 
         if(!dados || !dados.length){
              return;

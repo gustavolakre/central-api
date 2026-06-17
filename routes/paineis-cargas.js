@@ -6,6 +6,26 @@ router.get("/", async (req,res)=>{
 
     try{
 
+        const todasSemanas = await pool.query(`
+
+          SELECT DISTINCT
+
+               substring(
+               etiquetas
+               from '[0-9]{4}/[0-9]{2}'
+           ) as semana
+
+          FROM controle_cargas
+
+          WHERE substring(
+             etiquetas
+             from '[0-9]{4}/[0-9]{2}'
+          ) IS NOT NULL
+
+           ORDER BY semana DESC
+
+        `);
+
         const semanas = await pool.query(`
 
             SELECT
@@ -30,7 +50,7 @@ router.get("/", async (req,res)=>{
 
             ORDER BY semana DESC
 
-            LIMIT 20
+    
 
         `);
 
