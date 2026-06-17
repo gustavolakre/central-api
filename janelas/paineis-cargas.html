@@ -626,6 +626,13 @@ console.log("Primeira negociação:", negociacoes[0]);
     const semanasComprador =
         semanasSelecionadas("filtroSemanasComprador");
 
+        console.log(
+        "Compradores filtrados:",
+        compradores.filter(x =>
+            semanasComprador.includes(x.semana)
+        ).length
+    );
+
     const compradoresFiltrados = compradores;
 
     const topCompradores =
