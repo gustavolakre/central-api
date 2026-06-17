@@ -327,9 +327,15 @@ body{
     <div class="grafico grafico-lista">
         <h3>ABC Compradores</h3>
 
-        <button onclick="limparFiltro('filtroSemanasComprador')">
-             Limpar
-        </button>
+        <div style="display:flex; gap:6px; margin-bottom:8px;">
+            <button onclick="selecionarTodas('filtroSemanasComprador')">
+                Todas
+            </button>
+
+            <button onclick="limparFiltro('filtroSemanasComprador')">
+               Limpar
+            </button>
+        </div>
 
         <div id="filtroSemanasComprador" class="filtro-semanas"></div>
 
@@ -339,9 +345,15 @@ body{
     <div class="grafico grafico-lista">
         <h3>ABC Fornecedores</h3>
 
-        <button onclick="limparFiltro('filtroSemanasFornecedor')">
-             Limpar
-        </button>
+         <div style="display:flex; gap:6px; margin-bottom:8px;">
+            <button onclick="selecionarTodas('filtroSemanasFornecedor')">
+               Todas
+            </button>
+
+            <button onclick="limparFiltro('filtroSemanasFornecedor')">
+               Limpar
+           </button>
+         </div>
 
         <div id="filtroSemanasFornecedor" class="filtro-semanas"></div>
 
@@ -351,9 +363,15 @@ body{
     <div class="grafico grafico-lista">
         <h3>ABC Negociações</h3>
 
-        <button onclick="limparFiltro('filtroSemanasNegociacoes')">
-             Limpar
-        </button>
+        <div style="display:flex; gap:6px; margin-bottom:8px;">
+             <button onclick="selecionarTodas('filtroSemanasNegociacoes')">
+                 Todas
+             </button>
+
+             <button onclick="limparFiltro('filtroSemanasNegociacoes')">
+               Limpar
+             </button>
+        </div>
 
         <div id="filtroSemanasNegociacoes" class="filtro-semanas"></div>
 
@@ -633,6 +651,15 @@ function semanasSelecionadas(id){
         )
     ).map(x => x.value);
 
+}
+
+function selecionarTodas(idFiltro){
+
+    document
+        .querySelectorAll(`#${idFiltro} input[type="checkbox"]`)
+        .forEach(cb => cb.checked = true);
+
+    atualizarListas();
 }
 
 function limparFiltro(idFiltro){
