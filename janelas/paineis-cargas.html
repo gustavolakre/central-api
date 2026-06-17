@@ -446,18 +446,26 @@ async function carregarGraficos(){
         console.log(resultado.negociacoes[0]);
 
         const semanasDisponiveis = [
-              ...new Set(
-                 (resultado.todasSemanas || [])
-                    .map(x => x.semana)
-             )
+            ...new Set(
+            (resultado.todasSemanas || [])
+            .map(x => x.semana)
+            .filter(s => !normalizar(s).includes("09cancelada"))
+          )
         ].sort();
 
-        const filtrar = (item) => {
-        const texto = JSON.stringify(item).toLowerCase();
+        const normalizar = (v) =>
+           String(v)
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "") // remove acentos
+            .replace(/[^a-z0-9]/g, "");      // remove espaços, hífen etc
 
-         return !texto.includes("lakre") &&
-             !texto.includes("09-cancelada");
-        };
+         const filtrar = (item) => {
+            const texto = normalizar(JSON.stringify(item));
+
+            return !texto.includes("lakre") &&
+            !texto.includes("09cancelada");
+         };
 
         const dadosCompletos =
             (resultado.semanas || []).filter(filtrar);
