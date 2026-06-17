@@ -746,22 +746,22 @@ async function carregarFretesBanco(){
         function montarListaSemanas() {
 
            let semanas = [
-             ...new Set(
-               dadosPlanilha
-                  .map(d =>
-                     extrairSemana(
-                       d["Etiquetas"]
+              ...new Set(
+                  dadosPlanilha
+                    .map(d =>
+                       extrairSemana(
+                           d["Etiquetas"]
+                       )
                     )
-                )
-               .filter(v => {
+                     .filter(v => {
 
-                  if(!v) return false
+                         if (!v) return false
 
-                   return String(v)
-                    .startsWith("2026/")
-                })
-           )
-        ]
+                         return v >= "2026/01"
+
+                      })
+               )
+           ]
 
             semanas.sort()
 
