@@ -385,9 +385,18 @@ validarLogin();
       
 
         function buscarParceiro(nomeUsual) {
-            if (!baseParceiros.length) return null
-            return baseParceiros.find(p => String(p["Nome Usual"]).trim().toUpperCase() == String(nomeUsual).trim().toUpperCase())
-        }
+           if (!baseParceiros.length) return null
+
+           return baseParceiros.find(p =>
+               String(p.nome_usual || "")
+                   .trim()
+                   .toUpperCase()
+               ===
+              String(nomeUsual || "")
+                  .trim()
+                  .toUpperCase()
+                )
+           }
 
         function montarListasSeparadas() {
             if (!dadosPlanilha.length) return
@@ -562,7 +571,7 @@ validarLogin();
                 if (agruparSelecionados && agrupado[chave].participantes) {
                     razao = "GRUPO: " + Array.from(agrupado[chave].participantes).join(", ")
                 } else {
-                    razao = parceiro?.["Razão Social"] || chave
+                    razao = parceiro?.razao_social || chave
                 }
                 let nf = estadoCampos[id]?.nf || ""
                 let venc = estadoCampos[id]?.venc || ""
@@ -634,8 +643,8 @@ validarLogin();
                     cnpj = listaDocs.join("<br>")
                     ie = listaIE.join("<br>")
                 } else {
-                    cnpj = parceiro?.["CNPJ"] || parceiro?.["CPF"] || ""
-                    ie = parceiro?.["Inscrição Estadual"] || ""
+                    cnpj = parceiro?.cnpj || parceiro?.cpf || ""
+                    ie = parceiro?.inscricao_estadual || ""
                 }
                 html += `<div class="titulo">${razao}</div>
                     <div style="margin-bottom:12px; padding:8px 10px; background:#f1f1f1; border-left:4px solid #4CAF50; border-radius:4px; font-size:14px;">
@@ -1607,14 +1616,11 @@ async function criarCardsPipefy() {
         buscarParceiro(r["Nome"]);
 
       const parceiroId =
-
-        parceiroObj?.["ID"] ||
-
-        parceiroObj?.["Codigo"] ||
-
-        parceiroObj?.["Código"] ||
-
-        "";
+          parceiroObj?.id ||
+          parceiroObj?.ID ||
+          parceiroObj?.Codigo ||
+          parceiroObj?.["Código"] ||
+          "";
 
 
       if (!parceiroId) {
