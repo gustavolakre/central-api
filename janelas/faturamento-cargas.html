@@ -1602,6 +1602,11 @@ async function criarCardsPipefy() {
 
     .filter(r => {
 
+        console.log(
+        "📤 CARDS MONTADOS:",
+        JSON.stringify(cards, null, 2)
+      );
+
       const nf = String(
         r["Nota Fiscal"] || ""
       )
