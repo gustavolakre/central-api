@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
       FROM controle_cargas
       WHERE
         substring(etiquetas from '[0-9]{4}/[0-9]{2}') IS NOT NULL
-        AND lower(etiquetas) NOT LIKE '%09-Cancelada%'
+        AND COALESCE(fase, '') <> '09-Cancelada'
       ORDER BY semana DESC
     `);
 
@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
       FROM controle_cargas
       WHERE
         substring(etiquetas from '[0-9]{4}/[0-9]{2}') IS NOT NULL
-        AND lower(etiquetas) NOT LIKE '%09-Cancelada%'
+        AND COALESCE(fase, '') <> '09-Cancelada'
       GROUP BY semana
       ORDER BY semana DESC
     `);
@@ -48,7 +48,7 @@ router.get("/", async (req, res) => {
         comprador IS NOT NULL
         AND comprador <> ''
         AND substring(etiquetas from '[0-9]{4}/[0-9]{2}') IS NOT NULL
-        AND lower(etiquetas) NOT LIKE '%09-Cancelada%'
+        AND COALESCE(fase, '') <> '09-Cancelada'
       GROUP BY semana, comprador
       ORDER BY SUM(quantidade) DESC
     `);
@@ -67,7 +67,7 @@ router.get("/", async (req, res) => {
         fornecedor IS NOT NULL
         AND fornecedor <> ''
         AND substring(etiquetas from '[0-9]{4}/[0-9]{2}') IS NOT NULL
-        AND lower(etiquetas) NOT LIKE '%09-Cancelada%'
+        AND COALESCE(fase, '') <> '09-Cancelada'
       GROUP BY semana, fornecedor
       ORDER BY SUM(quantidade) DESC
     `);
@@ -87,7 +87,7 @@ router.get("/", async (req, res) => {
         comprador IS NOT NULL
         AND fornecedor IS NOT NULL
         AND substring(etiquetas from '[0-9]{4}/[0-9]{2}') IS NOT NULL
-        AND lower(etiquetas) NOT LIKE '%09-Cancelada%'
+        AND COALESCE(fase, '') <> '09-Cancelada'
       GROUP BY semana, comprador, fornecedor
       ORDER BY SUM(quantidade) DESC
     `);

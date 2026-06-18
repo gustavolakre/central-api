@@ -1,3 +1,18 @@
+//FUNÇÕES DO ARQUIVO
+
+//Recebe um arquivo Excel (.xlsx) em memória.
+//Lê a primeira aba da planilha.
+//Converte as linhas para JSON.
+//Mapeia as colunas do relatório do Pipefy para os campos da tabela controle_cargas.
+//Trata números, textos e datas.
+//Insere os registros no PostgreSQL.
+//Atualiza registros existentes usando pipefy_card_id como chave única.
+//Só atualiza quando os dados realmente mudaram (raw_data IS DISTINCT FROM).
+//Processa tudo em lotes de 200 registros para ganhar desempenho.
+
+//RESUMO: Converte uma planilha exportada do Pipefy em registros da tabela controle_cargas.
+
+
 const XLSX = require("xlsx");
 const pool = require("../src/db/database");
 

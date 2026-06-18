@@ -1,3 +1,12 @@
+//FUNÇÃO DO ARQUIVO:
+//Consulta a tabela no raliway.
+//Filtra apenas os registros desejados.
+//Converte o resultado para JSON.
+//Envia os dados para o navegador.
+
+
+
+
 const express = require("express")
 const router = express.Router()
 

@@ -1,3 +1,18 @@
+
+// FUNÇÃO DO ARQUIVO:
+//Recebe uma requisição HTTP (POST).
+//Chama a API GraphQL do Pipefy.
+//Solicita a geração de um relatório específico (pipeId e pipeReportId).
+//Aguarda o Pipefy terminar a exportação.
+//Obtém a URL do arquivo gerado.
+//Baixa o arquivo Excel.
+//Envia esse arquivo para importarCargas().
+//Retorna ao usuário o resultado da importação.
+
+// resummo:Busca o relatório mais recente no Pipefy e manda os dados para o importador gravar no banco.
+
+
+
 require("dotenv").config();
 
 const express = require("express");
