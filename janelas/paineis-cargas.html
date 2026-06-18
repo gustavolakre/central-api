@@ -1047,8 +1047,13 @@ function atualizarListas(){
     });
 
     const listaNegociacoes =
-        Object.values(negociacoesAgrupadas)
-        .sort((a,b) => b.total_suinos - a.total_suinos);
+         Object.values(negociacoesAgrupadas)
+           .sort((a,b) =>
+            a.comprador.localeCompare(
+            b.comprador,
+            "pt-BR"
+        )
+    );
 
     document.getElementById("listaNegociacoes").innerHTML = `
         <div class="lista-container">
