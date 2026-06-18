@@ -366,6 +366,27 @@ canvas{
     height:80px;
 }
 
+.btnAtualizarPipefy{
+
+    background:#ea580c;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:10px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.2s;
+
+}
+
+
+.btnAtualizarPipefy:hover{
+
+    transform:translateY(-2px);
+    background:#fb923c;
+
+}
+
 
 </style>
 </head>
@@ -375,7 +396,18 @@ canvas{
 
 <div class="topbar-dashboard">
 
-    <div class="topbar-left"></div>
+    <div class="topbar-left">
+
+        <button class="btnAtualizarPipefy" onclick="atualizarCargasPipefy()">
+            Atualizar Pipefy
+        </button>
+
+        <div id="status" style="margin-left:12px; color:#e5e7eb;"></div>
+
+        <div id="ultimaAtualizacao" style="margin-left:20px; color:#9ca3af;">
+        </div>
+
+    </div>
 
     <div class="topbar-right" style="display:flex; gap:10px; align-items:center;">
 
@@ -994,6 +1026,154 @@ function atualizarGraficos(){
         );
 }
 
+function mostrarUltimaAtualizacao(){
+
+    const campo =
+        document.getElementById("ultimaAtualizacao");
+
+
+    if(!campo){
+        return;
+    }
+
+
+    const ultima =
+        localStorage.getItem(
+            "ultimaAtualizacaoPipefy"
+        );
+
+
+    if(ultima){
+
+        campo.innerHTML =
+        `🕒 Última atualização: ${ultima}`;
+
+    }else{
+
+        campo.innerHTML =
+        "🕒 Ainda não atualizado";
+
+    }
+
+}
+
+async function atualizarCargasPipefy(){
+
+    const status =
+        document.getElementById("status");
+
+
+    if(status){
+
+        status.innerHTML =
+        "Gerando relatório no Pipefy...";
+
+    }
+
+
+    try{
+
+
+        const resposta =
+            await fetch(
+                "/importar-cargas-relatorio",
+                {
+
+                method:"POST",
+
+                headers:{
+
+                    Authorization:
+                    `Bearer ${localStorage.getItem("token")}`
+
+                }
+
+            });
+
+
+
+        const dados =
+            await resposta.json();
+
+
+
+        if(dados.sucesso){
+
+
+            const agora =
+                new Date();
+
+
+
+            const dataHora =
+                agora.toLocaleDateString("pt-BR")
+                +
+                " "
+                +
+                agora.toLocaleTimeString("pt-BR");
+
+
+
+            localStorage.setItem(
+                "ultimaAtualizacaoPipefy",
+                dataHora
+            );
+
+
+
+            if(status){
+
+                status.innerHTML =
+                `✅ ${dados.importados} cargas importadas`;
+
+            }
+
+
+            mostrarUltimaAtualizacao();
+
+
+
+            setTimeout(()=>{
+
+                location.reload();
+
+            },1500);
+
+
+
+        }else{
+
+
+            if(status){
+
+                status.innerHTML =
+                `❌ ${dados.erro}`;
+
+            }
+
+        }
+
+
+
+    }catch(err){
+
+
+        console.error(err);
+
+
+        if(status){
+
+            status.innerHTML =
+            "❌ Erro ao atualizar cargas.";
+
+        }
+
+    }
+
+}
+
+
+mostrarUltimaAtualizacao();
 carregar();
 
 </script>
