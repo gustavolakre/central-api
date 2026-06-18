@@ -141,6 +141,9 @@ async function importarCargas(buffer){
           nota_fiscal,
           cnpj,
           documentacao,
+          verificacao_peso,
+          verificacao_condenacoes,
+          verificacao_mortalidade,
           observacao_pagamento,
           motivo_cancelamento,
           responsavel,
@@ -166,7 +169,7 @@ async function importarCargas(buffer){
 
         lote.forEach((carga, index) => {
 
-          const base = index * 50;
+          const base = index * 53;
 
           placeholders.push(`(
 
@@ -219,7 +222,10 @@ async function importarCargas(buffer){
             $${base + 47},
             $${base + 48},
             $${base + 49},
-            $${base + 50}
+            $${base + 50},
+            $${base + 51},
+            $${base + 52},
+            $${base + 53}
 
           )`);
 
@@ -291,6 +297,9 @@ async function importarCargas(buffer){
             texto(carga["CNPJ"]),
 
             texto(carga["Documentação"]),
+            texto(carga["Peso"]),
+            texto(carga["Condenações"]),
+            texto(carga["Mortalidade"]),
 
             texto(carga["Observação pagamento"]),
             texto(carga["Motivo do Cancelamento"]),
@@ -355,6 +364,9 @@ async function importarCargas(buffer){
             nota_fiscal = EXCLUDED.nota_fiscal,
             cnpj = EXCLUDED.cnpj,
             documentacao = EXCLUDED.documentacao,
+            verificacao_peso = EXCLUDED.verificacao_peso,
+            verificacao_condenacoes = EXCLUDED.verificacao_condenacoes,
+            verificacao_mortalidade = EXCLUDED.verificacao_mortalidade,
             observacao_pagamento = EXCLUDED.observacao_pagamento,
             motivo_cancelamento = EXCLUDED.motivo_cancelamento,
             responsavel = EXCLUDED.responsavel,

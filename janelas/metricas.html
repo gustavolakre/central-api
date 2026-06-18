@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Métricas</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background: #f1f5f9;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #0f172a;
+        margin-bottom: 20px;
+    }
+
+    .topo {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .upload {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .card h3 {
+        color: #64748b;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .card .valor {
+        font-size: 30px;
+        font-weight: bold;
+        color: #2563eb;
+    }
+
+    .grafico-box {
+        background: white;
+        height: 320px;
+        padding: 20px;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    th {
+        background: #2563eb;
+        color: white;
+        padding: 14px;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #e2e8f0;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    tr:hover {
+        background: #f8fafc;
+    }
+
+    .responsavel {
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .valorLiquido {
+        color: #16a34a;
+        font-weight: bold;
+    }
+
+</style>
+</head>
+<body>
+
+<h1>Dashboard de Métricas por Responsável</h1>
+
+<div class="topo">
+    <div class="upload">
+        <button onclick="carregarPlanilha()" style="padding:10px 20px; background:#2563eb; color:white; border:none; border-radius:8px; cursor:pointer;">
+            Atualizar Dados
+        </button>
+    </div>
+</div>
+
+<div style="margin-bottom:20px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+    <label><strong>Filtrar Responsável:</strong></label>
+
+    <select id="filtroResponsavel" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1; min-width:250px;">
+        <option value="Todos">Todos</option>
+    </select>
+
+    <label><strong>Semana:</strong><br><small style="color:#64748b;">CTRL + clique para selecionar múltiplas</small></label>
+
+    <select id="filtroSemana" multiple size="6" style="padding:10px; border-radius:8px; border:1px solid #cbd5e1; min-width:220px; height:auto;">
+        <option value="Todas" selected>Todas</option>
+    </select>
+</div>
+
+<div id="infoFiltros" style="margin-bottom:15px; color:#334155; font-weight:bold;"></div>
+
+
+
+<div class="grafico-box">
+    <canvas id="graficoResponsaveis" style="max-height:260px;"></canvas>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Responsável</th>
+            <th>CRM</th>
+            <th>Nota Fiscal</th>
+            <th>CNPJ</th>
+            <th>Documentação</th>
+            <th>Peso</th>
+            <th>Condenações</th>
+            <th>Mortalidade</th>
+            
+        </tr>
+    </thead>
+
+    <tbody id="tbody"></tbody>
+</table>
+
+<div id="listaTitulos" style="background:white; padding:15px; border-radius:12px; margin-top:25px; box-shadow:0 2px 8px rgba(0,0,0,0.08); max-height:350px; overflow:auto;"></div>
+
+<script>
+
+
+let chart;
+
+document.getElementById('filtroResponsavel').addEventListener('change', () => {
+    if (window.dadosOriginais) {
+        processarDados(window.dadosOriginais);
+    }
+});
+
+document.getElementById('filtroSemana').addEventListener('change', (e) => {
+
+    const todasOption = Array.from(e.target.options).find(opt => opt.value === 'Todas');
+
+    const selecionadas = Array.from(e.target.selectedOptions).map(opt => opt.value);
+
+    if (selecionadas.includes('Todas') && selecionadas.length > 1) {
+        todasOption.selected = false;
+    }
+
+    if (selecionadas.length === 0) {
+        todasOption.selected = true;
+    }
+
+    if (window.dadosOriginais) {
+        processarDados(window.dadosOriginais);
+    }
+});
+
+async function carregarPlanilha() {
+
+    try {
+
+        const API =
+            "https://api-production-6670.up.railway.app";
+
+        const response = await fetch(
+            `${API}/metricas`,
+            {
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            }
+        );
+
+        if(
+            response.status === 401 ||
+            response.status === 403
+        ){
+            logoutSessaoExpirada();
+            return;
+        }
+
+        const json = await response.json();
+
+        window.dadosOriginais = json;
+
+        preencherFiltro();
+        processarDados(json);
+
+    } catch (erro) {
+
+        console.error(erro);
+        alert("Erro ao carregar métricas");
+
+    }
+
+}
+
+window.onload = carregarPlanilha;
+
+function preencherFiltro() {
+
+    preencherFiltroSemana();
+
+    const select = document.getElementById('filtroResponsavel');
+
+    select.innerHTML =
+        '<option value="Todos">Todos</option>';
+
+    const responsaveis = [
+        ...new Set(
+            (window.dadosOriginais || [])
+                .map(x => x.responsavel)
+                .filter(Boolean)
+        )
+    ].sort();
+
+    responsaveis.forEach(nome => {
+        select.innerHTML += `
+            <option value="${nome}">
+                ${nome}
+            </option>
+        `;
+    });
+}
+
+function preencherFiltroSemana() {
+
+    const select = document.getElementById('filtroSemana');
+
+    const semanas = new Set();
+
+    (window.dadosOriginais || []).forEach(item => {
+
+        const etiquetas = String(item.etiquetas || '').trim();
+
+        if (etiquetas.includes(',')) {
+
+            const partes = etiquetas.split(',');
+            const semana = partes[partes.length - 1]?.trim();
+
+            if (semana) {
+                semanas.add(semana);
+            }
+        }
+    });
+
+    select.innerHTML = '<option value="Todas" selected>Todas</option>';
+
+    [...semanas].sort().forEach(semana => {
+        select.innerHTML += `<option value="${semana}">${semana}</option>`;
+    });
+}
+
+function processarDados(dados) {
+
+    const metricas = {};
+
+    let totalPendencias = 0;
+    
+
+    dados.forEach(item => {
+
+        const possuiPendencia = [
+            item.crm,
+            item.nota_fiscal,
+            item.cnpj,  
+            item.documentacao,
+            item.verificacao_peso,
+            item.verificacao_condenacoes,
+            item.verificacao_mortalidade
+        ].some(campo => {
+            const valor = String(campo || '').trim().toLowerCase();
+            return valor === 'não' || valor === 'nao';
+        });
+
+        if (!possuiPendencia) {
+            return;
+        };
+
+        const responsavel = item.responsavel || '';
+
+        if (!responsaveisValidos.includes(responsavel)) {
+            return;
+        }
+
+        const filtroSelecionado = document.getElementById('filtroResponsavel').value;
+        const filtroSemana = Array.from(
+            document.getElementById('filtroSemana').selectedOptions
+        ).map(option => option.value);
+
+        if (filtroSelecionado !== 'Todos' && responsavel !== filtroSelecionado) {
+            return;
+        }
+
+        const etiquetas = String(item.etiquetas || '').trim();
+
+        let semanaItem = '';
+
+        if (etiquetas.includes(',')) {
+            const partes = etiquetas.split(',');
+            semanaItem = partes[partes.length - 1]?.trim() || '';
+        }
+
+        const semanasSelecionadas = filtroSemana.map(s => s.toLowerCase());
+
+        if (
+            !semanasSelecionadas.includes('todas') &&
+            !semanasSelecionadas.includes(semanaItem.toLowerCase())
+        ) {
+            return;
+        };;
+
+        if (!metricas[responsavel]) {
+            metricas[responsavel] = {
+                crm: 0,
+                notaFiscal: 0,
+                cnpj: 0,
+                documentacao: 0,
+                peso: 0,
+                condenacoes: 0,
+                mortalidade: 0,
+                
+                totalErros: 0
+            }
+        }
+
+        function contarNao(campo) {
+            return String(campo).trim().toLowerCase() === 'não' ||
+                   String(campo).trim().toLowerCase() === 'nao';
+        }
+
+        if (contarNao(item['CRM'])) {
+            metricas[responsavel].crm++;
+            metricas[responsavel].totalErros++;
+            totalPendencias++;
+        }
+
+        if (contarNao(item['Nota Fiscal'])) {
+            metricas[responsavel].notaFiscal++;
+            metricas[responsavel].totalErros++;
+            totalPendencias++;
+        }
+
+        if (contarNao(item['CNPJ'])) {
+            metricas[responsavel].cnpj++;
+            metricas[responsavel].totalErros++;
+            totalPendencias++;
+        }
+
+        if (contarNao(item['Documentação'])) {
+            metricas[responsavel].documentacao++;
+            metricas[responsavel].totalErros++;
+            totalPendencias++;
+        }
+
+       if (contarNao(item.verificacao_peso)) {
+            metricas[responsavel].peso++;
+            metricas[responsavel].totalErros++;
+        }
+
+       if (contarNao(item.verificacao_condenacoes)) {
+            metricas[responsavel].condenacoes++;
+            metricas[responsavel].totalErros++;
+        }
+
+       if (contarNao(item.verificacao_mortalidade)) {
+            metricas[responsavel].mortalidade++;
+            metricas[responsavel].totalErros++;
+        }
+
+        
+    });
+
+    montarTabela(metricas);
+    
+    gerarGrafico(metricas);
+    atualizarDescricaoFiltros();
+    atualizarListaTitulos(dados);
+}
+
+function montarTabela(metricas) {
+
+    const tbody = document.getElementById('tbody');
+    tbody.innerHTML = '';
+
+    Object.entries(metricas)
+    .sort((a, b) => b[1].totalErros - a[1].totalErros)
+    .forEach(([responsavel, dados]) => {
+
+        tbody.innerHTML += `
+            <tr>
+                <td class="responsavel">${responsavel}</td>
+                <td>${dados.crm}</td>
+                <td>${dados.notaFiscal}</td>
+                <td>${dados.cnpj}</td>
+                <td>${dados.documentacao}</td>
+                <td>${dados.peso}</td>
+                <td>${dados.condenacoes}</td>
+                <td>${dados.mortalidade}</td>
+                
+            </tr>
+        `;
+    });
+}
+
+
+
+function atualizarListaTitulos(dados) {
+
+    const container = document.getElementById('listaTitulos');
+
+    const filtroResponsavel = document.getElementById('filtroResponsavel').value;
+
+    const semanasSelecionadas = Array.from(
+        document.getElementById('filtroSemana').selectedOptions
+    ).map(option => option.value.toLowerCase());
+
+    let html = '<h3 style="margin-bottom:12px; color:#0f172a;">Lançamentos com Pendências</h3>';
+
+    dados.forEach(item => {
+
+        const possuiPendencia = [
+            item['CRM'],
+            item['Nota Fiscal'],
+            item['CNPJ'],
+            item['Documentação'],
+            item['Peso'],
+            item['Condenações'],
+            item['Mortalidade']
+        ].some(campo => {
+            const valor = String(campo || '').trim().toLowerCase();
+            return valor === 'não' || valor === 'nao';
+        });
+
+        if (!possuiPendencia) {
+            return;
+        }
+
+        const responsavel = item.responsavel || '';
+
+        if (
+            filtroResponsavel !== 'Todos' &&
+            responsavel !== filtroResponsavel
+        ) {
+            return;
+        }
+
+        const etiquetas = String(item.etiquetas || '').trim();
+
+        let semanaItem = '';
+
+        if (etiquetas.includes(',')) {
+            const partes = etiquetas.split(',');
+            semanaItem = partes[partes.length - 1]?.trim() || '';
+        }
+
+        if (
+            !semanasSelecionadas.includes('todas') &&
+            !semanasSelecionadas.includes(semanaItem.toLowerCase())
+        ) {
+            return;
+        }
+
+        const titulo = item.titulo || '-';
+
+        html += `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #e2e8f0; gap:15px;">
+                <div>${titulo}</div>
+                <div style="font-weight:bold; color:#2563eb; white-space:nowrap;">${semanaItem}</div>
+            </div>
+        `;
+    });
+
+    if (html === '<h3 style="margin-bottom:12px; color:#0f172a;">Lançamentos com Pendências</h3>') {
+        html += '<div style="color:#64748b;">Nenhum lançamento com pendência encontrado.</div>';
+    }
+
+    container.innerHTML = html;
+}
+
+function atualizarDescricaoFiltros() {
+
+    const responsavel = document.getElementById('filtroResponsavel').value;
+    const semana = Array.from(document.getElementById('filtroSemana').selectedOptions)
+        .map(option => option.value)
+        .join(', ') || 'Todas';
+
+    document.getElementById('infoFiltros').innerHTML = `
+        Responsável: <strong>${responsavel}</strong>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        Semana: <strong>${semana}</strong>
+    `;
+}
+
+function gerarGrafico(metricas) {
+
+    const labels = [
+        'CRM',
+        'Nota Fiscal',
+        'CNPJ',
+        'Documentação',
+        'Peso',
+        'Condenações',
+        'Mortalidade'
+    ];
+
+    const valores = [0,0,0,0,0,0,0];
+
+    Object.entries(metricas).forEach(([responsavel, dados]) => {
+
+        valores[0] += dados.crm;
+        valores[1] += dados.notaFiscal;
+        valores[2] += dados.cnpj;
+        valores[3] += dados.documentacao;
+        valores[4] += dados.peso;
+        valores[5] += dados.condenacoes;
+        valores[6] += dados.mortalidade;
+    });
+
+    const ctx = document.getElementById('graficoResponsaveis');
+
+    if (chart) {
+        chart.destroy();
+    }
+
+    Chart.register(ChartDataLabels);
+
+    chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Quantidade de Não',
+                data: valores,
+                borderWidth: 1,
+                datalabels: {
+                    anchor: 'end',
+                    align: 'right'
+                }
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+</script>
+
+</body>
+</html>

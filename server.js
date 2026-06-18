@@ -150,6 +150,8 @@ app.use(
     require("./routes/buscarFretes")
 )
 
+app.use("/metricas", require("./routes/metricas"));
+
 
 app.get("/", (req, res) => {
   res.redirect("/login");
