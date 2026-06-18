@@ -1581,6 +1581,7 @@ async function criarCardsPipefy() {
 
   const pipeId = 306630252;
 
+
   const selecionados = Array.from(
 
     document.querySelectorAll(".checkFaturado:checked")
@@ -1602,26 +1603,25 @@ async function criarCardsPipefy() {
 
     .filter(r => {
 
-        console.log(
-        "📤 CARDS MONTADOS:",
-        JSON.stringify(cards, null, 2)
-      );
-
       const nf = String(
         r["Nota Fiscal"] || ""
       )
       .trim()
       .toLowerCase();
 
+
       // ignora "sem acordo"
       return nf !== "sem acordo";
 
     })
 
+
     .map(r => {
+
 
       const parceiroObj =
         buscarParceiro(r["Nome"]);
+
 
       const parceiroId =
           parceiroObj?.id ||
@@ -1631,17 +1631,13 @@ async function criarCardsPipefy() {
           "";
 
 
-      if (!parceiroId) {
-
-     }
-
-
       return {
 
         pipeId,
 
         title:
           `${r["Nome"]} - NF ${r["Nota Fiscal"]}`,
+
 
         fields: [
 
@@ -1650,10 +1646,12 @@ async function criarCardsPipefy() {
             value: String(parceiroId)
           },
 
+
           {
             field_id: "nota",
             value: r["Nota Fiscal"] || ""
           },
+
 
           {
             field_id: "valor_l_quido",
@@ -1662,17 +1660,20 @@ async function criarCardsPipefy() {
             )
           },
 
+
           {
             field_id: "data_do_vencimento",
             value:
               r["Data de Vencimento"] || ""
           },
 
+
           {
             field_id: "per_odo",
             value:
               r["Periodo"] || ""
           },
+
 
           {
             field_id: "respons_vel",
@@ -1683,14 +1684,16 @@ async function criarCardsPipefy() {
 
       };
 
-      
-    console.log(
-  "📤 CARDS MONTADOS:",
-  JSON.stringify(cards, null, 2)
-);
-
 
     });
+
+
+
+  console.log(
+    "📤 CARDS MONTADOS:",
+    JSON.stringify(cards, null, 2)
+  );
+
 
   console.log(
     "📤 ENVIANDO PARA PIPEFY:",
@@ -1698,7 +1701,9 @@ async function criarCardsPipefy() {
   );
 
 
+
   try {
+
 
     const res = await fetch(
 
@@ -1721,7 +1726,9 @@ async function criarCardsPipefy() {
     );
 
 
+
     const data = await res.json();
+
 
 
     console.log(
@@ -1733,29 +1740,28 @@ async function criarCardsPipefy() {
     );
 
 
+
     if (data.sucesso > 0) {
+
 
       selecionados.forEach(index => {
 
-        registrosFaturados[
-          index
-        ].enviadoPipefy = true;
+
+        registrosFaturados[index].enviadoPipefy = true;
+
 
       });
+
 
 
       fecharFaturados();
 
       abrirFaturados();
 
+
     }
 
 
-    /*
-     * Libera somente se TODOS
-     * os cards foram enviados
-     * sem erro
-     */
 
     if (
 
@@ -1764,6 +1770,7 @@ async function criarCardsPipefy() {
       Number(data.erros || 0) === 0
 
     ) {
+
 
       await fetch(
 
@@ -1780,6 +1787,7 @@ async function criarCardsPipefy() {
 
           }),
 
+
           body: JSON.stringify({
 
             processo:
@@ -1792,13 +1800,16 @@ async function criarCardsPipefy() {
       );
 
 
+
       console.log(
 
         "✅ Processo FATURAMENTO_CARGAS liberado"
 
       );
 
+
     }
+
 
 
     alert(
@@ -1807,9 +1818,12 @@ async function criarCardsPipefy() {
 
     );
 
+
+
   }
 
   catch (err) {
+
 
     console.error(
 
@@ -1819,11 +1833,13 @@ async function criarCardsPipefy() {
 
     );
 
+
     alert(
 
       "Erro ao criar cards no Contas a receber"
 
     );
+
 
   }
 
