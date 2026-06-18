@@ -266,7 +266,11 @@ function preencherFiltro() {
     const responsaveis = [
         ...new Set(
             (window.dadosOriginais || [])
-                .map(x => x.responsavel)
+                .map(x =>
+                   String(x.responsavel || '')
+                   .split(',')[0]
+                   .trim()
+                )
                 .filter(Boolean)
         )
     ].sort();
@@ -334,7 +338,36 @@ function processarDados(dados) {
             return;
         };
 
-        const responsavel = item.responsavel || '';
+        const responsaveisValidos = [
+           'Rafael de Lima',
+           'Enário dos Santos',
+           'Adelar Schuh',
+           'Vânia Riva'
+        ];
+
+        const responsaveis = [
+         ...new Set(
+            (window.dadosOriginais || [])
+            .map(x =>
+                String(x.responsavel || '')
+                    .split(',')[0]
+                    .trim()
+            )
+            .filter(nome =>
+                responsaveisValidos.includes(nome)
+            )
+           )
+        ].sort();
+
+        const responsavelOriginal =
+           String(item.responsavel || '').trim();
+
+        const responsavel =
+            responsavelOriginal.split(',')[0].trim();
+
+        if (!responsaveisValidos.includes(responsavel)) {
+            return;
+        }
 
         const filtroSelecionado = document.getElementById('filtroResponsavel').value;
         const filtroSemana = Array.from(
