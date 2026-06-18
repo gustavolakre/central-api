@@ -336,10 +336,6 @@ function processarDados(dados) {
 
         const responsavel = item.responsavel || '';
 
-        if (!responsaveisValidos.includes(responsavel)) {
-            return;
-        }
-
         const filtroSelecionado = document.getElementById('filtroResponsavel').value;
         const filtroSemana = Array.from(
             document.getElementById('filtroSemana').selectedOptions
@@ -386,25 +382,25 @@ function processarDados(dados) {
                    String(campo).trim().toLowerCase() === 'nao';
         }
 
-        if (contarNao(item['CRM'])) {
+        if (contarNao(item.crm)) {
             metricas[responsavel].crm++;
             metricas[responsavel].totalErros++;
             totalPendencias++;
         }
 
-        if (contarNao(item['Nota Fiscal'])) {
+        if (contarNao(item.nota_fiscal)) {
             metricas[responsavel].notaFiscal++;
             metricas[responsavel].totalErros++;
             totalPendencias++;
         }
 
-        if (contarNao(item['CNPJ'])) {
+        if (contarNao(item.cnpj)) {
             metricas[responsavel].cnpj++;
             metricas[responsavel].totalErros++;
             totalPendencias++;
         }
 
-        if (contarNao(item['Documentação'])) {
+        if (contarNao(item.documentacao)) {
             metricas[responsavel].documentacao++;
             metricas[responsavel].totalErros++;
             totalPendencias++;
@@ -477,13 +473,14 @@ function atualizarListaTitulos(dados) {
     dados.forEach(item => {
 
         const possuiPendencia = [
-            item['CRM'],
-            item['Nota Fiscal'],
-            item['CNPJ'],
-            item['Documentação'],
-            item['Peso'],
-            item['Condenações'],
-            item['Mortalidade']
+           item.crm,
+           item.nota_fiscal,
+           item.cnpj,
+           item.documentacao,
+           item.verificacao_peso,
+           item.verificacao_condenacoes,
+           item.verificacao_mortalidade
+
         ].some(campo => {
             const valor = String(campo || '').trim().toLowerCase();
             return valor === 'não' || valor === 'nao';
