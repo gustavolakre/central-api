@@ -42,6 +42,8 @@ router.get("/", async (req,res)=>{
                 from '[0-9]{4}/[0-9]{2}'
             ) IS NOT NULL
 
+                AND COALESCE(cc.fase,'') <> '09-Cancelada'
+
             GROUP BY
 
                 semana,
