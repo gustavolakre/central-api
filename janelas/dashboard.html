@@ -332,6 +332,9 @@ body{
 
         <div id="status" style="margin-left:12px; color:#e5e7eb;"></div>
 
+        <div id="ultimaAtualizacao" style="margin-left:20px; color:#9ca3af;">
+    </div>
+
     </div>
     
 
@@ -576,6 +579,33 @@ montarPainelDireito(dados);
 }
 
 
+function mostrarUltimaAtualizacao(){
+
+    const campo = document.getElementById("ultimaAtualizacao");
+
+    if(!campo){
+        return;
+    }
+
+
+    const ultima = localStorage.getItem("ultimaAtualizacaoPipefy");
+
+
+    if(ultima){
+
+        campo.innerHTML =
+        `🕒 Última atualização: ${ultima}`;
+
+    }else{
+
+        campo.innerHTML =
+        "🕒 Ainda não atualizado";
+
+    }
+
+}
+
+
 async function atualizarCargasPipefy(){
     const status = document.getElementById("status");
 
@@ -595,9 +625,28 @@ async function atualizarCargasPipefy(){
 
         if(dados.sucesso){
 
-            if (status) {
-                status.innerHTML = `✅ ${dados.importados} cargas importadas`;
-            }
+           const agora = new Date();
+
+           const dataHora =
+               agora.toLocaleDateString("pt-BR") +
+               " " +
+               agora.toLocaleTimeString("pt-BR");
+
+
+            localStorage.setItem(
+              "ultimaAtualizacaoPipefy",
+              dataHora
+            );
+
+
+if (status) {
+
+    status.innerHTML =
+    `✅ ${dados.importados} cargas importadas`;
+
+}
+
+mostrarUltimaAtualizacao();
 
                 setTimeout(() => {
                 location.reload();
@@ -1015,6 +1064,7 @@ function montarPainelDireito(linhas){
 }
 
 carregarPipeline();
+mostrarUltimaAtualizacao();
 
 </script>
 
