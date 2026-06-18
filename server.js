@@ -47,6 +47,7 @@ const paineisCargas2 =
 const importarFretesRelatorio =
     require("./routes/importarFretesRelatorio");
 
+const enviarPipefy = require("./routes/enviarPipefy");
 
 app.use(cors())
 app.use(express.json())
@@ -151,6 +152,12 @@ app.use(
 )
 
 app.use("/metricas", require("./routes/metricas"));
+
+app.use(
+    "/pipefy",
+    autenticar,
+    enviarPipefy
+);
 
 
 app.get("/", (req, res) => {

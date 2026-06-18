@@ -1498,6 +1498,9 @@ async function salvarCard(id) {
 
         try {
 
+            console.log("API_URL =", API_URL)
+            console.log("URL FINAL =", `${API_URL}/pipefy`)
+
           const response = await fetch(`${API_URL}/pipefy`, {
              method: "POST",
              headers: getAuthHeaders(),
