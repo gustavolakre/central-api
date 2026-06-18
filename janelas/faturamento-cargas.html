@@ -1633,12 +1633,7 @@ async function criarCardsPipefy() {
 
       if (!parceiroId) {
 
-        console.warn(
-          "⚠️ Parceiro sem ID:",
-          r["Nome"]
-        );
-
-      }
+     }
 
 
       return {
@@ -1688,8 +1683,14 @@ async function criarCardsPipefy() {
 
       };
 
+
     });
 
+
+    console.log(
+  "📤 CARDS MONTADOS:",
+  JSON.stringify(cards, null, 2)
+);
 
   console.log(
     "📤 ENVIANDO PARA PIPEFY:",
