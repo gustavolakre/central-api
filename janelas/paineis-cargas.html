@@ -1132,11 +1132,16 @@ function criarFiltroSemanas(id, semanas, callback){
 
     const container = document.getElementById(id);
 
-    container.innerHTML = semanas.map(semana => `
+    // garante ordem correta
+    const ordenadas = [...semanas].sort();
+
+    const ultimaSemana = ordenadas[ordenadas.length - 1];
+
+    container.innerHTML = ordenadas.map(semana => `
         <label>
             <input type="checkbox"
                    value="${semana}"
-                   checked>
+                   ${semana === ultimaSemana ? "checked" : ""}>
             ${semana}
         </label>
     `).join("");
