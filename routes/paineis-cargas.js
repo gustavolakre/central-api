@@ -98,7 +98,7 @@ router.get("/", async (req, res) => {
       SUM(quantidade) as total_suinos
     FROM controle_cargas
     WHERE
-      embarque IS NOT NULL
+      embarque >= DATE '2024-01-01'
     AND COALESCE(fase,'') <> '09-Cancelada'
     GROUP BY mes
     ORDER BY mes

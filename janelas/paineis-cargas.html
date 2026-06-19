@@ -850,7 +850,43 @@ fornecedores = (resultado.fornecedores || []).filter(filtrar);
 
 negociacoes = (resultado.negociacoes || []).filter(filtrar);
 
-criarGraficoAreaSuinos(resultado.meses || []);
+const historicoAntigo = [
+  { mes:"2021-11", total_suinos:1819 },
+  { mes:"2021-12", total_suinos:2740 },
+
+  { mes:"2022-01", total_suinos:2043 },
+  { mes:"2022-02", total_suinos:2752 },
+  { mes:"2022-03", total_suinos:3032 },
+  { mes:"2022-04", total_suinos:5175 },
+  { mes:"2022-05", total_suinos:7216 },
+  { mes:"2022-06", total_suinos:6268 },
+  { mes:"2022-07", total_suinos:7256 },
+  { mes:"2022-08", total_suinos:7566 },
+  { mes:"2022-09", total_suinos:5072 },
+  { mes:"2022-10", total_suinos:6989 },
+  { mes:"2022-11", total_suinos:6317 },
+  { mes:"2022-12", total_suinos:13129 },
+
+  { mes:"2023-01", total_suinos:8310 },
+  { mes:"2023-02", total_suinos:14415 },
+  { mes:"2023-03", total_suinos:24867 },
+  { mes:"2023-04", total_suinos:18559 },
+  { mes:"2023-05", total_suinos:27705 },
+  { mes:"2023-06", total_suinos:25736 },
+  { mes:"2023-07", total_suinos:29065 },
+  { mes:"2023-08", total_suinos:35906 },
+  { mes:"2023-09", total_suinos:30033 },
+  { mes:"2023-10", total_suinos:36137 },
+  { mes:"2023-11", total_suinos:31970 },
+  { mes:"2023-12", total_suinos:37956 }
+];
+
+const dadosGrafico = [
+  ...historicoAntigo,
+  ...(resultado.meses || [])
+];
+
+criarGraficoAreaSuinos(dadosGrafico);
 
 
 criarFiltroSemanas(
