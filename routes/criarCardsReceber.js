@@ -41,25 +41,34 @@ router.post("/", async (req, res) => {
       `;
 
       const response = await axios.post(
-        "https://api.pipefy.com/graphql",
-        { query: mutation },
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.PIPEFY_TOKEN}`
-          }
-        }
-      );
+         "https://api.pipefy.com/graphql",
+       { query: mutation },
+       {
+         headers: {
+         Authorization: `Bearer ${process.env.PIPEFY_TOKEN}`
+         }
+       }
+     );
 
-      console.log(
-        "PIPEFY CREATE:",
-        JSON.stringify(response.data, null, 2)
-      );
+       console.log(
+       "PIPEFY RETORNO:",
+       JSON.stringify(response.data, null, 2)
+     );
 
-      if (response.data.errors) {
-        erros++;
-      } else {
-        sucesso++;
-      }
+     if (response.data.errors) {
+
+         console.error(
+          "ERRO PIPEFY:",
+          JSON.stringify(response.data.errors, null, 2)
+          );
+
+       erros++;
+
+       } else {
+
+       sucesso++;
+
+    }
 
     }
 
