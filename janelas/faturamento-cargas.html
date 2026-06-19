@@ -331,7 +331,16 @@ validarLogin();
         let agruparSelecionados = false
         let registrosFaturados = []
 
-        const API_URL = "https://api-production-6670.up.railway.app"
+        await fetch(
+          `${API_URL}/controle-faturamento/finalizar`,
+        {
+          method: "POST",
+          headers: getAuthHeaders(),
+          body: JSON.stringify({
+          processo: "FATURAMENTO_CARGAS"
+          })
+          }
+        );
 
         function getAuthHeaders() {
 
@@ -1727,18 +1736,15 @@ async function criarCardsPipefy() {
 
     console.log("STATUS:", res.status);
 
-      const texto = await res.text();
+     const texto = await res.text();
 
       console.log("RESPOSTA BRUTA:", texto);
 
+      const data = JSON.parse(texto);
 
-
-    console.log(
-
+      console.log(
       "📥 RESPOSTA BACKEND:",
-
       data
-
     );
 
 
