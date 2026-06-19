@@ -94,7 +94,7 @@ router.get("/", async (req, res) => {
 
     const meses = await pool.query(`
      SELECT
-      TO_CHAR(embarque, 'YYYY-MM') as mes,
+       DATE_TRUNC('month', criado_em)::date as mes,
       SUM(quantidade) as total_suinos
     FROM controle_cargas
     WHERE
