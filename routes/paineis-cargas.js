@@ -93,19 +93,16 @@ router.get("/", async (req, res) => {
     `);
 
     const meses = await pool.query(`
-      SELECT
-        TO_CHAR(
-          DATE_TRUNC('month', criado_em),
-          'YYYY-MM'
-        ) as mes,
-        SUM(quantidade) as total_suinos
+       SELECT
+         substring(etiquetas from '[0-9]{4}/[0-9]{2}') as semana,
+         SUM(quantidade) as total_suinos
       FROM controle_cargas
       WHERE
-        criado_em >= DATE '2024-01-01'
-        AND COALESCE(fase,'') <> '09-Cancelada'
-        AND COALESCE(titulo,'') NOT ILIKE '%Lakre%'
-      GROUP BY mes
-      ORDER BY mes
+         substring(etiquetas from '[0-9]{4}/[0-9]{2}') IS NOT NULL
+         AND COALESCE(fase,'') <> '09-Cancelada'
+         AND COALESCE(titulo,'') NOT ILIKE '%Lakre%'
+      GROUP BY semana
+      ORDER BY semana
     `);
 
     // =========================
@@ -113,7 +110,7 @@ router.get("/", async (req, res) => {
     // =========================
     res.json({
       semanas: semanas.rows,
-      meses: meses.rows,
+      semanasHistorico: semanasHistorico.rows,
       todasSemanas: todasSemanas.rows,
       compradores: compradores.rows,
       fornecedores: fornecedores.rows,
