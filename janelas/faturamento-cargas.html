@@ -331,6 +331,12 @@ validarLogin();
         let agruparSelecionados = false
         let registrosFaturados = []
 
+
+        if (
+          data.sucesso > 0 &&
+          Number(data.erros || 0) === 0
+        ) 
+
         await fetch(
           `${API_URL}/controle-faturamento/finalizar`,
         {
