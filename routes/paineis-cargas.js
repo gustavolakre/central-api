@@ -110,7 +110,7 @@ router.get("/", async (req, res) => {
     // =========================
     res.json({
       semanas: semanas.rows,
-      semanasHistorico: semanasHistorico.rows,
+      semanasHistorico: semanas.rows,
       todasSemanas: todasSemanas.rows,
       compradores: compradores.rows,
       fornecedores: fornecedores.rows,
