@@ -974,9 +974,31 @@ const dadosGrafico = [
   ...(resultado.semanasHistorico || [])
 ];
 
-dadosGrafico.sort((a,b)=>
-    a.semana.localeCompare(b.semana)
+console.log(
+    "ULTIMAS SEMANAS:",
+    dadosGrafico.slice(-20)
 );
+
+console.log(
+    "semanasHistorico",
+    resultado.semanasHistorico
+);
+
+dadosGrafico.sort((a,b)=>{
+
+    const [anoA, semanaA] =
+        a.semana.split("/").map(Number);
+
+    const [anoB, semanaB] =
+        b.semana.split("/").map(Number);
+
+    if(anoA !== anoB){
+        return anoA - anoB;
+    }
+
+    return semanaA - semanaB;
+
+});
 
 criarGraficoAreaSuinos(dadosGrafico);
 
