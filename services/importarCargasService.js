@@ -170,7 +170,7 @@ async function importarCargas(buffer){
 
         lote.forEach((carga, index) => {
 
-          const base = index * 53;
+          const base = index * 54;
 
           placeholders.push(`(
 
@@ -231,7 +231,7 @@ async function importarCargas(buffer){
 
           )`);
 
-          
+
           valores.push(
 
             Number(carga["Código"]),
