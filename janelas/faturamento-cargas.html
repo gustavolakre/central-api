@@ -1780,12 +1780,7 @@ async function criarCardsPipefy() {
 
           method: "POST",
 
-          headers: authHeaders({
-
-            "Content-Type":
-              "application/json"
-
-          }),
+          headers: getAuthHeaders(), 
 
 
           body: JSON.stringify({
