@@ -147,6 +147,7 @@ async function importarCargas(buffer){
           observacao_pagamento,
           motivo_cancelamento,
           responsavel,
+          criado_em,
           raw_data
 
         )
@@ -225,7 +226,8 @@ async function importarCargas(buffer){
             $${base + 50},
             $${base + 51},
             $${base + 52},
-            $${base + 53}
+            $${base + 53},
+            $${base + 54}
 
           )`);
 
@@ -306,6 +308,8 @@ async function importarCargas(buffer){
 
             texto(carga["Responsável"]),
 
+            data(carga["Criado em"]),
+
             JSON.stringify(carga)
 
           );
@@ -370,6 +374,7 @@ async function importarCargas(buffer){
             observacao_pagamento = EXCLUDED.observacao_pagamento,
             motivo_cancelamento = EXCLUDED.motivo_cancelamento,
             responsavel = EXCLUDED.responsavel,
+            criado_em = EXCLUDED.criado_em,
             raw_data = EXCLUDED.raw_data
 
             WHERE controle_cargas.raw_data
