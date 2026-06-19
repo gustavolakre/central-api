@@ -231,6 +231,7 @@ async function importarCargas(buffer){
 
           )`);
 
+          
           valores.push(
 
             Number(carga["Código"]),
