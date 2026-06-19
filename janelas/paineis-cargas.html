@@ -1076,52 +1076,37 @@ function criarGraficoAreaSuinos(semanas){
         plugins:[],
 
 
-        options:{
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
 
+           plugins: {
+             legend: {
+               display: false
+               }
+           },
 
-            responsive:true,
-
-            maintainAspectRatio:false,
-
-
-            plugins:{
-
-
-                legend:{
-                    display:false
-                },
-
-
+        scales: {
+        x: {
+            ticks: {
+                color: "#f9fafb"
             },
-
-
-            scales:{
-
-
-                x:{
-
-                    ticks:{
-                        color:"#f9fafb"
-                    }
-
-                },
-
-
-                y:{
-
-
-                    ticks:{
-                        color:"#f9fafb"
-                    }
-
-
-                }
-
-
+            grid: {
+                color: "rgba(255,255,255,0.06)" // mais suave
             }
+        },
 
-
+        y: {
+            ticks: {
+                color: "#f9fafb",
+                stepSize: 2500 // 👈 AQUI força 2500
+            },
+            grid: {
+                color: "rgba(255,255,255,0.08)" // 👈 quadriculado mais claro
+            }
         }
+    }
+}
 
 
     });
