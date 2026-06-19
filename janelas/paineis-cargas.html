@@ -931,9 +931,7 @@ function criarGraficoAreaSuinos(semanas){
 
         data:{
 
-            labels: meses.map(x =>
-               x.mes.substring(0,7)
-            ),
+            labels: semanas.map(x => x.mes),
 
             datasets:[{
 
