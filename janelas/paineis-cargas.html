@@ -427,6 +427,21 @@ body{
         </div>
     </div>
 
+
+    <div class="graficos">
+
+    <div class="grafico" style="width:100%; height:420px;">
+
+        <h3>
+            Evolução de Suínos por Semana
+        </h3>
+
+        <canvas id="graficoAreaSuinos"></canvas>
+
+    </div>
+
+</div>
+
 </div>
 
 <script>
@@ -661,6 +676,15 @@ async function carregarGraficos(){
         const dados =
              dadosCompletos.slice(0,20).reverse();
 
+
+        const dadosHistorico =
+            [...dadosCompletos]
+            .sort((a,b)=>
+            a.semana.localeCompare(
+            b.semana
+            )
+        );
+
         if(!dados || !dados.length){
              return;
         }
@@ -807,6 +831,8 @@ fornecedores = (resultado.fornecedores || []).filter(filtrar);
 
 negociacoes = (resultado.negociacoes || []).filter(filtrar);
 
+criarGraficoAreaSuinos(dadosHistorico);
+
 
 criarFiltroSemanas(
     "filtroSemanasComprador",
@@ -835,6 +861,130 @@ atualizarListas();
         console.error(erro);
 
     }
+
+}
+
+
+function criarGraficoAreaSuinos(semanas){
+
+
+    new Chart(
+        document.getElementById("graficoAreaSuinos"),
+        {
+
+        type:"line",
+
+        data:{
+
+            labels:
+                semanas.map(x=>x.semana),
+
+
+            datasets:[{
+
+                label:"Suínos",
+
+                data:
+                    semanas.map(x=>x.total_suinos),
+
+
+                fill:true,
+
+                tension:0.35,
+
+                borderColor:"#2563eb",
+
+                backgroundColor:"rgba(37,99,235,0.35)",
+
+
+                pointRadius:4,
+
+                pointHoverRadius:7
+
+            }]
+
+        },
+
+
+        plugins:[ChartDataLabels],
+
+
+        options:{
+
+
+            responsive:true,
+
+            maintainAspectRatio:false,
+
+
+            plugins:{
+
+
+                legend:{
+                    display:false
+                },
+
+
+                datalabels:{
+
+
+                    color:"#f9fafb",
+
+                    anchor:"end",
+
+                    align:"top",
+
+                    offset:8,
+
+
+                    font:{
+                        size:13,
+                        weight:"bold"
+                    },
+
+
+                    textStrokeColor:"#111827",
+
+                    textStrokeWidth:3
+
+
+                }
+
+
+            },
+
+
+            scales:{
+
+
+                x:{
+
+                    ticks:{
+                        color:"#f9fafb"
+                    }
+
+                },
+
+
+                y:{
+
+
+                    ticks:{
+                        color:"#f9fafb"
+                    }
+
+
+                }
+
+
+            }
+
+
+        }
+
+
+    });
+
 
 }
 
@@ -1084,9 +1234,13 @@ function atualizarListas(){
     `;
 }
 
+
 mostrarUltimaAtualizacao();
 
 carregarGraficos();
+
+
+
 
 </script>
 
