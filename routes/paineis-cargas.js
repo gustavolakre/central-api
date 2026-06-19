@@ -103,6 +103,7 @@ router.get("/", async (req, res) => {
       WHERE
         criado_em >= DATE '2024-01-01'
         AND COALESCE(fase,'') <> '09-Cancelada'
+        AND COALESCE(titulo,'') NOT ILIKE '%Lakre%'
       GROUP BY mes
       ORDER BY mes
     `);
