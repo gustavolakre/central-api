@@ -93,15 +93,18 @@ router.get("/", async (req, res) => {
     `);
 
     const meses = await pool.query(`
-     SELECT
-       DATE_TRUNC('month', criado_em)::date as mes,
-      SUM(quantidade) as total_suinos
-    FROM controle_cargas
-    WHERE
-      criado_em >= DATE '2024-01-01'
-    AND COALESCE(fase,'') <> '09-Cancelada'
-    GROUP BY mes
-    ORDER BY mes
+      SELECT
+        TO_CHAR(
+          DATE_TRUNC('month', criado_em),
+          'YYYY-MM'
+        ) as mes,
+        SUM(quantidade) as total_suinos
+      FROM controle_cargas
+      WHERE
+        criado_em >= DATE '2024-01-01'
+        AND COALESCE(fase,'') <> '09-Cancelada'
+      GROUP BY mes
+      ORDER BY mes
     `);
 
     // =========================
