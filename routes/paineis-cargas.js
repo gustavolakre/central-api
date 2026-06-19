@@ -92,11 +92,24 @@ router.get("/", async (req, res) => {
       ORDER BY SUM(quantidade) DESC
     `);
 
+    const meses = await pool.query(`
+     SELECT
+      TO_CHAR(embarque, 'YYYY-MM') as mes,
+      SUM(quantidade) as total_suinos
+    FROM controle_cargas
+    WHERE
+      embarque IS NOT NULL
+    AND COALESCE(fase,'') <> '09-Cancelada'
+    GROUP BY mes
+    ORDER BY mes
+    `);
+
     // =========================
     // RESPONSE FINAL
     // =========================
     res.json({
       semanas: semanas.rows,
+      meses: meses.rows,
       todasSemanas: todasSemanas.rows,
       compradores: compradores.rows,
       fornecedores: fornecedores.rows,
