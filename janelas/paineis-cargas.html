@@ -454,7 +454,7 @@ body{
     <div class="grafico grafico-area">
 
         <h3>
-            Evolução de Suínos por Semana
+            Evolução Mensal de Suínos
         </h3>
 
         <canvas id="graficoAreaSuinos"></canvas>
@@ -850,7 +850,11 @@ fornecedores = (resultado.fornecedores || []).filter(filtrar);
 
 negociacoes = (resultado.negociacoes || []).filter(filtrar);
 
-criarGraficoAreaSuinos(dadosHistorico);
+const dadosMensais =
+    agruparSuinosPorMes(dadosHistorico);
+
+
+criarGraficoAreaSuinos(dadosMensais);
 
 
 criarFiltroSemanas(
@@ -1006,6 +1010,70 @@ function criarGraficoAreaSuinos(semanas){
 
 
 }
+
+
+function agruparSuinosPorMes(dados){
+
+
+    const meses = {};
+
+
+    dados.forEach(item=>{
+
+
+        if(!item.embarque){
+            return;
+        }
+
+
+        const data = new Date(item.embarque);
+
+
+        if(isNaN(data)){
+            return;
+        }
+
+
+        const chave =
+            `${data.getFullYear()}-${String(data.getMonth()+1).padStart(2,"0")}`;
+
+
+        if(!meses[chave]){
+
+            meses[chave] = {
+
+                mes:
+                data.toLocaleDateString(
+                    "pt-BR",
+                    {
+                        month:"short",
+                        year:"numeric"
+                    }
+                ),
+
+                total_suinos:0
+
+            };
+
+        }
+
+
+        meses[chave].total_suinos +=
+            Number(item.total_suinos || 0);
+
+
+    });
+
+
+    return Object.values(meses)
+        .sort((a,b)=>
+            a.mes.localeCompare(
+                b.mes
+            )
+        );
+
+}
+
 
 function criarFiltroSemanas(id, semanas, callback){
 
