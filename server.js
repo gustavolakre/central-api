@@ -49,6 +49,9 @@ const importarFretesRelatorio =
 
 const enviarPipefy = require("./routes/enviarPipefy");
 
+const criarCardsReceber =
+  require("./routes/criarCardsReceber");
+
 app.use(cors())
 app.use(express.json())
 
@@ -157,6 +160,12 @@ app.use(
     "/pipefy",
     autenticar,
     enviarPipefy
+);
+
+app.use(
+  "/criar-cards-receber",
+  autenticar,
+  criarCardsReceber
 );
 
 
