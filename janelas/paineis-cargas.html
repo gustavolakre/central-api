@@ -454,7 +454,7 @@ body{
     <div class="grafico grafico-area">
 
         <h3>
-            Evolução Mensal de Suínos
+            Evolução Semanal de Suínos
         </h3>
 
         <canvas id="graficoAreaSuinos"></canvas>
@@ -973,6 +973,12 @@ const dadosGrafico = [
   ...historicoAntigo,
   ...(resultado.semanasHistorico || [])
 ];
+
+dadosGrafico.sort((a,b)=>
+    a.semana.localeCompare(b.semana)
+);
+
+criarGraficoAreaSuinos(dadosGrafico);
 
 
 criarFiltroSemanas(
