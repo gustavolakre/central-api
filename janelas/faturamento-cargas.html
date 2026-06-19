@@ -1646,8 +1646,8 @@ async function criarCardsPipefy() {
         fields: [
 
           {
-            field_id: "parceiro",
-            value: String(parceiroId)
+             field_id: "parceiro",
+             value: String(parceiroObj?.pipefy_record_id || "")
           },
 
 
@@ -1691,8 +1691,7 @@ async function criarCardsPipefy() {
 
     });
 
-
-
+    
   console.log(
     "📤 CARDS MONTADOS:",
     JSON.stringify(cards, null, 2)
