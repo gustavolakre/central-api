@@ -272,6 +272,11 @@ canvas{
 
 }
 
+#graficoSankey{
+    height:600px !important;
+    margin-top:20px;
+}
+
 
 </style>
 </head>
@@ -369,6 +374,10 @@ let periodoSelecionado = "52";
 
 let chartSankey;
 
+atualizarSankey(dados);
+
+
+
 async function carregar(){
 
     const API =
@@ -390,8 +399,6 @@ async function carregar(){
     criarFiltrosCheckbox();
 
     atualizarGraficos();
-
-    atualizarSankey(dados);
 
 }
 
