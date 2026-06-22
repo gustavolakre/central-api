@@ -692,7 +692,7 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                         ticks:{
                             color:"#f9fafb",
                             font:{
-                                size:12,
+                                size:11,
                                 weight:"600"
                             },
 
@@ -725,16 +725,9 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                            weight: "700"
                        },
 
-                       formatter: (value) => {
-                            if (value >= 1000000)
-                            return (value / 1000000).toFixed(1) + "M";
-
-                       if (value >= 1000)
-                            return (value / 1000).toFixed(1) + "K";
-
-                            return value.toLocaleString("pt-BR");
-                            }
-                        }
+                       formatter: (value) =>
+                         Number(value).toLocaleString("pt-BR")
+                         }
 
                 }
 
