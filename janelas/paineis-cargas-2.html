@@ -594,36 +594,36 @@ function limparFiltro(id){
 
 }
 
-function agruparPorSemana(lista){
+function agruparPorSemana(lista, limite52 = true) {
 
     const mapa = {};
 
-    lista.forEach(item=>{
+    lista.forEach(item => {
 
-        if(!mapa[item.semana]){
-
+        if (!mapa[item.semana]) {
             mapa[item.semana] = 0;
-
         }
 
-        mapa[item.semana] +=
-            Number(item.quantidade || 0);
+        mapa[item.semana] += Number(item.quantidade || 0);
 
     });
 
-    const semanas =
-        Object.keys(mapa)
-        .sort()
-        .slice(-52);
+    let semanas = Object.keys(mapa).sort((a, b) => {
+        const [anoA, semanaA] = a.split("/").map(Number);
+        const [anoB, semanaB] = b.split("/").map(Number);
+
+        if (anoA !== anoB) return anoA - anoB;
+        return semanaA - semanaB;
+    });
+
+    // 🔥 só corta se NÃO for "all"
+    if (limite52) {
+        semanas = semanas.slice(-52);
+    }
 
     return {
-
         labels: semanas,
-
-        valores: semanas.map(
-            s=>mapa[s]
-        )
-
+        valores: semanas.map(s => mapa[s])
     };
 }
 
@@ -806,7 +806,9 @@ else if (!isAll) {
 
 }
 
-    const g = agruparPorSemana(dados);
+    const limite52 = periodoSelecionado === "52";
+
+    const g = agruparPorSemana(dados, limite52);
 
     destruir(chartPrincipal);
 
