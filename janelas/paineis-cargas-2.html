@@ -10,6 +10,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-sankey@4"></script>
+
 <style>
 
 body{
@@ -323,9 +325,14 @@ canvas{
         <div id="filtroComprador"></div>
     </div>
 
-    <div class="filtro-box uf">
-        <div class="filtro-titulo">UF</div>
-        <div id="filtroUF"></div>
+    <div class="filtro-box uf-fornecedor">
+       <div class="filtro-titulo">UF Fornecedor</div>
+       <div id="filtroUFFornecedor"></div>
+    </div>
+
+    <div class="filtro-box uf-comprador">
+       <div class="filtro-titulo">UF Comprador</div>
+       <div id="filtroUFComprador"></div>
     </div>
 
     <div class="filtro-box tipo">
@@ -344,6 +351,8 @@ canvas{
 
 </div>
 
+<canvas id="graficoSankey"></canvas>
+
 </div>
 
 <script>
@@ -353,6 +362,8 @@ let dadosGlobais = [];
 let chartPrincipal;
 
 let periodoSelecionado = "52";
+
+let chartSankey;
 
 async function carregar(){
 
@@ -379,19 +390,23 @@ async function carregar(){
 
 
 
-function filtrarUF(lista, estados){
+function filtrarUF(lista, ufsFornecedor, ufsComprador) {
 
-    if(!estados.length)
+    if (!ufsFornecedor.length && !ufsComprador.length)
         return lista;
 
-    return lista.filter(item =>
+    return lista.filter(item => {
 
-        estados.includes(item.estado_fornecedor) ||
+        const okFornecedor =
+            !ufsFornecedor.length ||
+            ufsFornecedor.includes(item.estado_fornecedor);
 
-        estados.includes(item.estado_comprador)
+        const okComprador =
+            !ufsComprador.length ||
+            ufsComprador.includes(item.estado_comprador);
 
-    );
-
+        return okFornecedor && okComprador;
+    });
 }
 
 
@@ -418,7 +433,20 @@ function criarFiltrosCheckbox(){
     .filter(Boolean)
     .sort();
 
-    criarFiltro("filtroUF", estados);
+    const ufsFornecedor = [
+    ...new Set(dadosGlobais.map(x => x.estado_fornecedor))
+    ]
+    .filter(Boolean)
+    .sort();
+
+    const ufsComprador = [
+    ...new Set(dadosGlobais.map(x => x.estado_comprador))
+    ]
+    .filter(Boolean)
+    .sort();
+
+    criarFiltro("filtroUFFornecedor", ufsFornecedor);
+    criarFiltro("filtroUFComprador", ufsComprador);
 
     criarFiltro(
         "filtroTipo",
@@ -766,7 +794,8 @@ function atualizarGraficos(){
 
     dados = filtrarUF(
         dados,
-        valoresMarcados("filtroUF")
+        valoresMarcados("filtroUFFornecedor"),
+        valoresMarcados("filtroUFComprador")
     );
 
     dados = filtrar(
@@ -971,6 +1000,71 @@ async function atualizarCargasPipefy(){
 
     }
 
+}
+
+
+function montarFluxoSankey(lista) {
+
+    const mapa = {};
+
+    lista.forEach(item => {
+
+        const origem = item.estado_fornecedor;
+        const destino = item.estado_comprador;
+
+        if (!origem || !destino) return;
+
+        const chave = `${origem}->${destino}`;
+
+        mapa[chave] = (mapa[chave] || 0) + Number(item.quantidade || 0);
+
+    });
+
+    return Object.entries(mapa).map(([key, value]) => {
+
+        const [from, to] = key.split("->");
+
+        return {
+            from,
+            to,
+            flow: value
+        };
+
+    });
+}
+
+
+function atualizarSankey(dados) {
+
+    const data = montarFluxoSankey(dados);
+
+    if (chartSankey) chartSankey.destroy();
+
+    chartSankey = new Chart(
+        document.getElementById("graficoSankey"),
+        {
+            type: "sankey",
+            data: {
+                datasets: [{
+                    label: "Fluxo UF",
+                    data: data,
+                    colorFrom: "#f97316",
+                    colorTo: "#2563eb",
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        }
+    );
 }
 
 
