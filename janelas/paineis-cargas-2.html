@@ -104,10 +104,21 @@ canvas{
 ========================== */
 
 .filtros-topo{
-    display:flex;
-    grid-template-columns:1fr 1fr;
+
+    display:grid;
+
+    grid-template-columns:
+        2fr
+        2fr
+        1fr
+        1fr;
+
     gap:15px;
-    margin-bottom:15px;
+
+    margin-bottom:20px;
+
+    align-items:start;
+
 }
 
 .filtro-box{
@@ -156,7 +167,7 @@ canvas{
 }
 
 .lista-checkbox{
-    height:180px;
+    height:200px;
     overflow-y:auto;
     overflow-x:hidden;
 }
@@ -256,26 +267,22 @@ canvas{
 
 <div class="filtros-topo">
 
-    <div class="filtro-box filtro-grande">
+    <div class="filtro-box fornecedor">
         <div class="filtro-titulo">Fornecedor</div>
         <div id="filtroFornecedor"></div>
     </div>
 
-    <div class="filtro-box filtro-grande">
+    <div class="filtro-box comprador">
         <div class="filtro-titulo">Comprador</div>
         <div id="filtroComprador"></div>
     </div>
 
-</div>
-
-<div class="filtros-topo">
-
-    <div class="filtro-box">
+    <div class="filtro-box uf">
         <div class="filtro-titulo">UF</div>
         <div id="filtroUF"></div>
     </div>
 
-    <div class="filtro-box">
+    <div class="filtro-box tipo">
         <div class="filtro-titulo">Tipo Suíno</div>
         <div id="filtroTipo"></div>
     </div>
