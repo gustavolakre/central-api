@@ -26,16 +26,6 @@ Chart.register(
 );
 
 
-Chart.defaults.font.family = "Inter, Arial, sans-serif";
-Chart.defaults.font.size = 16;
-Chart.defaults.color = "#ffffff";
-Chart.defaults.plugins.datalabels = {
-    font: {
-        size: 18,
-        weight: "700"
-    }
-};   
-
 
 </script>
 
@@ -82,6 +72,7 @@ h3{
 canvas{
     width:100% !important;
     height:700px !important;
+    font-family: Arial, sans-serif !important;
 }
 
 /* ==========================
@@ -797,7 +788,12 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                     datalabels: {
                        color: "#ffffff",
                        textStrokeColor: "#000000",
-                       textStrokeWidth: 4,
+                       textStrokeWidth: 3,
+                       font: {
+                          size: 16,
+                          weight: "bold",
+                          family: "Arial"
+                         },
                        anchor: "end",
                        align: "top",
                        offset: 8,
@@ -1095,12 +1091,27 @@ function atualizarSankey(dados) {
             }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                }
+               responsive: true,
+               maintainAspectRatio: false,
+
+              plugins: {
+                  legend: { display: false },
+
+                  tooltip: {
+                     bodyFont: {
+                       size: 16
+                   },
+                     titleFont: {
+                     size: 16
+                   }
             }
+        },
+
+    font: {
+        family: "Arial",
+        size: 16
+    }
+}
         }
     );
 }
