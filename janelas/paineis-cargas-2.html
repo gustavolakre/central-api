@@ -286,9 +286,11 @@ canvas{
 
 }
 
-#graficoSankey{
-    height:600px !important;
-    margin-top:20px;
+#graficoSankey {
+    height: 650px !important;
+    margin-top: 20px;
+    background: #0b1220;
+    border-radius: 12px;
 }
 
 
@@ -742,9 +744,9 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
 
     x: {
         ticks: {
-            color: "#e5e7eb",
+            color: "#ffffff",
             font: {
-                size: 15,      // 👈 maior
+                size: 18,      // 👈 maior
                 weight: "700"
             },
             autoSkip: false,
@@ -761,7 +763,7 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
         ticks: {
             color: "#e5e7eb",
             font: {
-                size: 15,     // 👈 maior
+                size: 18,     // 👈 maior
                 weight: "700"
             },
             callback: (value) =>
@@ -780,22 +782,19 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                     },
 
                     datalabels: {
-                       color: "#f9fafb",
+                       color: "#ffffff",
+                       textStrokeColor: "#000000",
+                       textStrokeWidth: 4,
                        anchor: "end",
                        align: "top",
-                       offset: 4,
-
+                       offset: 8,
                        font: {
-                           size: 16,
-                           weight: "800"
+                          size: 20,
+                          weight: "900"
                        },
-
-                       color: "#ffffff",
-                       offset: 6,
-
                        formatter: (value) =>
-                         Number(value).toLocaleString("pt-BR")
-                         }
+                             Number(value).toLocaleString("pt-BR")
+                       }
 
                 }
 
@@ -1070,13 +1069,13 @@ function atualizarSankey(dados) {
                     colorMode: "gradient",
                     borderWidth: 1,
 
-                      nodeWidth: 20,
-                      nodePadding: 18,
+                      nodeWidth: 30,
+                      nodePadding: 25,
 
                     labels: {
                        font: {
-                           size: 16,      // 👈 AQUI
-                           weight: "700"
+                           size: 18,     
+                           weight: "800"
                        },
                         color: "#ffffff"
                   }
