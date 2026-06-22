@@ -220,6 +220,54 @@ canvas{
 
 }
 
+.filtro-periodo{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    margin:18px 0 25px;
+
+    flex-wrap:wrap;
+
+}
+
+.titulo-periodo{
+
+    color:#f9fafb;
+    font-weight:bold;
+
+}
+
+.btnPeriodo{
+
+    background:#374151;
+    color:white;
+
+    border:none;
+
+    padding:8px 16px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.btnPeriodo:hover{
+
+    background:#4b5563;
+
+}
+
+.btnPeriodo.ativo{
+
+    background:#2563eb;
+
+}
+
 
 </style>
 </head>
@@ -263,8 +311,6 @@ canvas{
 
 <div class="box">
 
-<h3>Suínos por Semana</h3>
-
 <div class="filtros-topo">
 
     <div class="filtro-box fornecedor">
@@ -289,6 +335,9 @@ canvas{
 
 </div>
 
+<div id="filtroPeriodo" class="filtro-periodo"></div>
+
+
 <canvas id="graficoPrincipal"></canvas>
 
 </div>
@@ -302,6 +351,8 @@ canvas{
 let dadosGlobais = [];
 
 let chartPrincipal;
+
+let periodoSelecionado = "52";
 
 async function carregar(){
 
@@ -344,42 +395,48 @@ function filtrarUF(lista, estados){
 }
 
 
-
 function criarFiltrosCheckbox(){
 
     criarFiltro(
         "filtroFornecedor",
-        [...new Set(
-        dadosGlobais.map(x => x.fornecedor)
-      )].sort()
+        [...new Set(dadosGlobais.map(x=>x.fornecedor))].sort()
     );
 
     criarFiltro(
         "filtroComprador",
-        [...new Set(dadosGlobais.map(x=>x.comprador)
-       )].sort()
+        [...new Set(dadosGlobais.map(x=>x.comprador))].sort()
     );
 
     const estados = [
         ...new Set(
-           dadosGlobais.flatMap(x=>[
-              x.estado_fornecedor,
-              x.estado_comprador
+            dadosGlobais.flatMap(x=>[
+                x.estado_fornecedor,
+                x.estado_comprador
             ])
-         )
-        ]
+        )
+    ]
     .filter(Boolean)
-     .sort();
+    .sort();
 
     criarFiltro("filtroUF", estados);
 
-
     criarFiltro(
-         "filtroTipo",
+        "filtroTipo",
         [...new Set(dadosGlobais.map(x=>x.tipo_suino))].sort()
     );
 
-    
+    // ===== NOVO CÓDIGO =====
+
+    const anos = [
+        ...new Set(
+            dadosGlobais.map(x => x.semana.substring(0,4))
+        )
+    ].sort().reverse();
+
+    criarFiltroPeriodo(anos);
+
+    // =======================
+
     document
         .querySelectorAll("input[type=checkbox]")
         .forEach(c=>{
@@ -390,7 +447,48 @@ function criarFiltrosCheckbox(){
             );
 
         });
+
 }
+
+
+function criarFiltroPeriodo(anos){
+
+    const div = document.getElementById("filtroPeriodo");
+
+    div.innerHTML = `
+        <span class="titulo-periodo">Período:</span>
+
+        <button class="btnPeriodo ativo" data-periodo="52">
+            Últimas 52 semanas
+        </button>
+
+        ${anos.map(ano => `
+            <button class="btnPeriodo" data-periodo="${ano}">
+                ${ano}
+            </button>
+        `).join("")}
+    `;
+
+    document.querySelectorAll(".btnPeriodo").forEach(btn => {
+
+        btn.onclick = () => {
+
+            document
+                .querySelectorAll(".btnPeriodo")
+                .forEach(b => b.classList.remove("ativo"));
+
+            btn.classList.add("ativo");
+
+            periodoSelecionado = btn.dataset.periodo;
+
+            atualizarGraficos();
+
+        };
+
+    });
+
+}
+
 
 function criarFiltro(id, valores){
 
@@ -663,6 +761,26 @@ function atualizarGraficos(){
         "tipo_suino",
         valoresMarcados("filtroTipo")
     );
+
+
+    if(periodoSelecionado==="52"){
+
+    dados = dados
+        .sort((a,b)=>
+            a.semana.localeCompare(b.semana)
+        )
+        .slice(-52);
+
+}
+else{
+
+    dados = dados.filter(item=>
+
+        item.semana.startsWith(periodoSelecionado)
+
+    );
+
+}
 
     const g = agruparPorSemana(dados);
 
