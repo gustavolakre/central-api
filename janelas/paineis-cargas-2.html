@@ -719,16 +719,17 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                     label: "Suínos",
                     data,
 
-                    backgroundColor: tipo === "line"
-                        ? "rgba(249, 115, 22, 0.25)"
-                        : cor,
+                    backgroundColor:
+                        tipo === "line"
+                            ? "rgba(249,115,22,.20)"
+                            : cor,
 
                     borderColor: cor,
                     borderWidth: 2,
                     borderRadius: 4,
 
-                    barPercentage: 1.0,
-                    categoryPercentage: 0.7,
+                    barPercentage: 0.9,
+                    categoryPercentage: 0.9,
 
                     fill: tipo === "line",
                     tension: 0.3
@@ -736,86 +737,107 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
             },
 
             options: {
+
                 responsive: true,
                 maintainAspectRatio: false,
 
                 layout: {
                     padding: {
-                        top: 70,
-                        right: 15,
-                        left: 15,
+                        top: 60,
+                        right: 20,
+                        left: 20,
                         bottom: 20
                     }
                 },
 
                 scales: {
+
                     x: {
-                        ticks: {
-                            color: "#e5e7eb",
-                            font: {
-                                size: 18,
-                                weight: "bold",
-                                 family: "Segoe UI"
-                            },
-                            autoSkip: false,
-                            maxRotation: 60,
-                            minRotation: 60
-                        },
                         grid: {
                             display: false
+                        },
+
+                        ticks: {
+                            color: "#e5e7eb",
+
+                            font: {
+                                family: "Segoe UI",
+                                size: 13,
+                                weight: "bold"
+                            },
+
+                            autoSkip: true,
+                            maxTicksLimit: 18,
+
+                            maxRotation: 45,
+                            minRotation: 45
                         }
                     },
 
                     y: {
+
                         beginAtZero: true,
-                        grace: "20%",
-                        ticks: {
-                            color: "#e5e7eb",
-                            font: {
-                                size: 18,
-                                weight: "bold",
-                                family: "Segoe UI"
-                                
-                            },
-                            callback: (value) =>
-                                Number(value).toLocaleString("pt-BR")
-                        },
+
+                        grace: "25%",
+
                         grid: {
-                            color: "rgba(255,255,255,0.08)"
+                            color: "rgba(255,255,255,.08)"
+                        },
+
+                        ticks: {
+
+                            color: "#e5e7eb",
+
+                            font: {
+                                family: "Segoe UI",
+                                size: 14,
+                                weight: "bold"
+                            },
+
+                            callback: value =>
+                                Number(value).toLocaleString("pt-BR")
                         }
+
                     }
+
                 },
 
                 plugins: {
+
                     legend: {
                         display: false
                     },
 
                     datalabels: {
-                        color: "#ffffff",
+
+                        color: "#fff",
 
                         font: {
-                            size: 18,
-                            weight: "bold",
-                            family: "Arial"
+                            family: "Segoe UI",
+                            size: 12,
+                            weight: "bold"
                         },
 
-                         textStrokeWidth: 0,
-                         textShadowBlur: 0,
-
                         anchor: "end",
-                        align: "enf",
-                        offset: -15,
+                        align: "end",
+                        offset: 8,
 
-                        clip: false,  
+                        clip: false,
+                        clamp: true,
 
                         formatter: (value) =>
                             Number(value).toLocaleString("pt-BR")
+
                     }
+
                 }
+
             }
+
         }
+
     );
+
 }
 
 
