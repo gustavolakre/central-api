@@ -34,7 +34,7 @@ body{
     display:flex;
     flex-direction:column;
 
-    min-height:650px;
+    min-height:auto;
 }
 
 h2{
@@ -52,7 +52,7 @@ h3{
 
 canvas{
     width:100% !important;
-    height:520px !important;
+    height:700px !important;
 }
 
 /* ==========================
@@ -104,16 +104,14 @@ canvas{
 ========================== */
 
 .filtros-topo{
-    display:flex;
-    gap:12px;
-    margin-bottom:6px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    margin-bottom:15px;
 }
 
 .filtro-box{
-    background:#111827;
-    border:1px solid #374151;
-    border-radius:8px;
-    padding:8px;
+    width:auto;
 }
 
 .filtro-titulo{
@@ -163,45 +161,10 @@ canvas{
     overflow-x:hidden;
 }
 
-.filtro-grande{
-    width:12cm;
-}
-
 /* ==========================
    PRIMEIRO GRÁFICO
 ========================== */
 
-.layout-fornecedor{
-    display:flex;
-    gap:15px;
-    align-items:flex-start;
-}
-
-.grafico-fornecedor{
-    flex:1;
-    min-width:0;
-}
-
-#graficoFornecedor{
-    height:670px !important;
-}
-
-.filtros-laterais{
-    margin-top:-10px;
-    width:5cm;
-    min-width:5cm;
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-}
-
-.filtro-fornecedor{
-    flex:8;
-}
-
-.filtro-tipo{
-    flex:3;
-}
 
 .filtro-fornecedor .lista-checkbox{
     height:420px;
@@ -215,37 +178,6 @@ canvas{
    SEGUNDO GRÁFICO
 ========================== */
 
-.layout-comprador{
-    display:flex;
-    gap:15px;
-    align-items:flex-start;
-}
-
-.grafico-comprador{
-    flex:1;
-    min-width:0;
-}
-
-#graficoComprador{
-    height:670px !important;
-}
-
-.filtros-laterais-comprador{
-    width:5cm;
-    min-width:5cm;
-    margin-top:-10px;
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-}
-
-.filtro-comprador{
-    flex:8;
-}
-
-.filtro-tipo-comprador{
-    flex:3;
-}
 
 .filtro-comprador .lista-checkbox{
     height:420px;
@@ -280,39 +212,6 @@ canvas{
    TERCEIRO GRÁFICO
 ========================== */
 
-.layout-estado-fornecedor{
-    display:flex;
-    gap:15px;
-    align-items:flex-start;
-}
-
-.grafico-estado-fornecedor{
-    flex:1;
-    min-width:0;
-}
-
-#graficoEstadoFornecedor{
-    height:670px !important;
-}
-
-.filtros-laterais-estado-fornecedor{
-    width:5cm;
-    min-width:5cm;
-    margin-top:-10px;
-
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-}
-
-.filtro-estado-fornecedor{
-    flex:8;
-}
-
-.filtro-tipo-estado-fornecedor{
-    flex:3;
-}
-
 .filtro-estado-fornecedor .lista-checkbox{
     height:420px;
 }
@@ -325,38 +224,6 @@ canvas{
    QUARTO GRÁFICO
 ========================== */
 
-.layout-estado-comprador{
-    display:flex;
-    gap:15px;
-    align-items:flex-start;
-}
-
-.grafico-estado-comprador{
-    flex:1;
-    min-width:0;
-}
-
-#graficoEstadoComprador{
-    height:670px !important;
-}
-
-.filtros-laterais-estado-comprador{
-    width:5cm;
-    min-width:5cm;
-    margin-top:-10px;
-
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-}
-
-.filtro-estado-comprador{
-    flex:8;
-}
-
-.filtro-tipo-estado-comprador{
-    flex:3;
-}
 
 .filtro-estado-comprador .lista-checkbox{
     height:420px;
@@ -427,124 +294,45 @@ canvas{
 
 <h2>Painel por Parceiros - Filtros Avançados</h2>
 
-<!-- LINHA 1 -->
 <div class="linha">
 
-    <div class="box">
+<div class="box">
 
-       <h3>Suínos por Semana - Fornecedor</h3>
+<h3>Suínos por Semana</h3>
 
-<div class="layout-fornecedor">
+<div class="filtros-topo">
 
-     <div class="grafico-fornecedor">
-              <canvas id="graficoFornecedor"></canvas>
-     </div>
-
-    <div class="filtros-laterais">
-
-        <div class="filtro-box filtro-fornecedor">
-            <div class="filtro-titulo">Fornecedor</div>
-            <div id="filtroFornecedor" class="filtro-lista"></div>
-        </div>
-
-        <div class="filtro-box filtro-tipo">
-            <div class="filtro-titulo">Tipo Suíno</div>
-            <div id="filtroTipoFornecedor" class="filtro-lista"></div>
-        </div>
-
+    <div class="filtro-box filtro-grande">
+        <div class="filtro-titulo">Fornecedor</div>
+        <div id="filtroFornecedor"></div>
     </div>
 
-</div>
-    </div>
-
-    <div class="box">
-
-    <h3>Suínos por Semana - Comprador</h3>
-
-    <div class="layout-comprador">
-
-        <div class="grafico-comprador">
-            <canvas id="graficoComprador"></canvas>
-        </div>
-
-        <div class="filtros-laterais-comprador">
-
-            <div class="filtro-box filtro-comprador">
-                <div class="filtro-titulo">Comprador</div>
-                <div id="filtroComprador" class="filtro-lista"></div>
-            </div>
-
-            <div class="filtro-box filtro-tipo-comprador">
-                <div class="filtro-titulo">Tipo Suíno</div>
-                <div id="filtroTipoComprador" class="filtro-lista"></div>
-            </div>
-
-        </div>
-
+    <div class="filtro-box filtro-grande">
+        <div class="filtro-titulo">Comprador</div>
+        <div id="filtroComprador"></div>
     </div>
 
 </div>
 
-</div>
+<div class="filtros-topo">
 
-<!-- LINHA 2 -->
-<div class="linha">
-
-    <div class="box">
-
-        <h3>Suínos por Semana - Estado Fornecedor</h3>
-
-<div class="layout-estado-fornecedor">
-
-    <div class="grafico-estado-fornecedor">
-        <canvas id="graficoEstadoFornecedor"></canvas>
+    <div class="filtro-box">
+        <div class="filtro-titulo">UF</div>
+        <div id="filtroUF"></div>
     </div>
 
-    <div class="filtros-laterais-estado-fornecedor">
-
-        <div class="filtro-box filtro-estado-fornecedor">
-            <div class="filtro-titulo">UF Fornecedor</div>
-            <div id="filtroEstadoFornecedor" class="filtro-lista"></div>
-        </div>
-
-        <div class="filtro-box filtro-tipo-estado-fornecedor">
-            <div class="filtro-titulo">Tipo Suíno</div>
-            <div id="filtroTipoEstadoFornecedor" class="filtro-lista"></div>
-        </div>
-
+    <div class="filtro-box">
+        <div class="filtro-titulo">Tipo Suíno</div>
+        <div id="filtroTipo"></div>
     </div>
 
 </div>
 
-    </div>
-
-    <div class="box">
-
-        <h3>Suínos por Semana - Estado Comprador</h3>
-
-<div class="layout-estado-comprador">
-
-    <div class="grafico-estado-comprador">
-        <canvas id="graficoEstadoComprador"></canvas>
-    </div>
-
-    <div class="filtros-laterais-estado-comprador">
-
-        <div class="filtro-box filtro-estado-comprador">
-            <div class="filtro-titulo">UF Comprador</div>
-            <div id="filtroEstadoComprador" class="filtro-lista"></div>
-        </div>
-
-        <div class="filtro-box filtro-tipo-estado-comprador">
-            <div class="filtro-titulo">Tipo Suíno</div>
-            <div id="filtroTipoEstadoComprador" class="filtro-lista"></div>
-        </div>
-
-    </div>
+<canvas id="graficoPrincipal"></canvas>
 
 </div>
 
-    </div>
+</div>
 
 </div>
 
@@ -552,10 +340,7 @@ canvas{
 
 let dadosGlobais = [];
 
-let chartFornecedor;
-let chartComprador;
-let chartEstFornecedor;
-let chartEstComprador;
+let chartPrincipal;
 
 async function carregar(){
 
@@ -580,14 +365,26 @@ async function carregar(){
     atualizarGraficos();
 }
 
-function criarFiltrosCheckbox(){
 
-    criarFiltro(
-        "filtroFornecedor",
-        [...new Set(
-            dadosGlobais.map(x=>x.fornecedor)
-        )].sort()
+
+function filtrarUF(lista, estados){
+
+    if(!estados.length)
+        return lista;
+
+    return lista.filter(item =>
+
+        estados.includes(item.estado_fornecedor) ||
+
+        estados.includes(item.estado_comprador)
+
     );
+
+}
+
+
+
+function criarFiltrosCheckbox(){
 
     criarFiltro(
         "filtroComprador",
@@ -597,47 +394,31 @@ function criarFiltrosCheckbox(){
     );
 
     criarFiltro(
-        "filtroEstadoFornecedor",
-        [...new Set(
-            dadosGlobais.map(x=>x.estado_fornecedor)
-        )].sort()
+        "filtroComprador",
+        [...new Set(dadosGlobais.map(x=>x.comprador)
+       )].sort()
     );
+
+    const estados = [
+        ...new Set(
+           dadosGlobais.flatMap(x=>[
+              x.estado_fornecedor,
+              x.estado_comprador
+            ])
+         )
+        ]
+    .filter(Boolean)
+     .sort();
+
+    criarFiltro("filtroUF", estados);
+
 
     criarFiltro(
-        "filtroEstadoComprador",
-        [...new Set(
-            dadosGlobais.map(x=>x.estado_comprador)
-        )].sort()
+         "filtroTipo",
+        [...new Set(dadosGlobais.map(x=>x.tipo_suino))].sort()
     );
 
-    criarFiltro(
-        "filtroTipoFornecedor",
-        [...new Set(
-            dadosGlobais.map(x=>x.tipo_suino)
-        )].sort()
-    );
-
-    criarFiltro(
-        "filtroTipoComprador",
-        [...new Set(
-            dadosGlobais.map(x=>x.tipo_suino)
-        )].sort()
-    );
-
-    criarFiltro(
-        "filtroTipoEstadoFornecedor",
-        [...new Set(
-            dadosGlobais.map(x=>x.tipo_suino)
-        )].sort()
-    );
-
-    criarFiltro(
-        "filtroTipoEstadoComprador",
-        [...new Set(
-            dadosGlobais.map(x=>x.tipo_suino)
-        )].sort()
-    );
-
+    
     document
         .querySelectorAll("input[type=checkbox]")
         .forEach(c=>{
@@ -897,134 +678,42 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
 
 function atualizarGraficos(){
 
-    let fornecedor =
-        filtrar(
-            dadosGlobais,
-            "fornecedor",
-            valoresMarcados(
-                "filtroFornecedor"
-            )
-        );
+    let dados=[...dadosGlobais];
 
-    fornecedor =
-        filtrar(
-            fornecedor,
-            "tipo_suino",
-            valoresMarcados(
-                "filtroTipoFornecedor"
-            )
-        );
+    dados = filtrar(
+        dados,
+        "fornecedor",
+        valoresMarcados("filtroFornecedor")
+    );
 
-    let comprador =
-        filtrar(
-            dadosGlobais,
-            "comprador",
-            valoresMarcados(
-                "filtroComprador"
-            )
-        );
+    dados = filtrar(
+        dados,
+        "comprador",
+        valoresMarcados("filtroComprador")
+    );
 
-    comprador =
-        filtrar(
-            comprador,
-            "tipo_suino",
-            valoresMarcados(
-                "filtroTipoComprador"
-            )
-        );
+    dados = filtrarUF(
+        dados,
+        valoresMarcados("filtroUF")
+    );
 
-    let estFornecedor =
-        filtrar(
-            dadosGlobais,
-            "estado_fornecedor",
-            valoresMarcados(
-                "filtroEstadoFornecedor"
-            )
-        );
+    dados = filtrar(
+        dados,
+        "tipo_suino",
+        valoresMarcados("filtroTipo")
+    );
 
-    estFornecedor =
-        filtrar(
-            estFornecedor,
-            "tipo_suino",
-            valoresMarcados(
-                "filtroTipoEstadoFornecedor"
-            )
-        );
+    const g = agruparPorSemana(dados);
 
-    let estComprador =
-        filtrar(
-            dadosGlobais,
-            "estado_comprador",
-            valoresMarcados(
-                "filtroEstadoComprador"
-            )
-        );
+    destruir(chartPrincipal);
 
-    estComprador =
-        filtrar(
-            estComprador,
-            "tipo_suino",
-            valoresMarcados(
-                "filtroTipoEstadoComprador"
-            )
-        );
+    chartPrincipal = criarGrafico(
+        "graficoPrincipal",
+        g.labels,
+        g.valores,
+        "#2563eb"
+    );
 
-    const g1 =
-        agruparPorSemana(
-            fornecedor
-        );
-
-    const g2 =
-        agruparPorSemana(
-            comprador
-        );
-
-    const g3 =
-        agruparPorSemana(
-            estFornecedor
-        );
-
-    const g4 =
-        agruparPorSemana(
-            estComprador
-        );
-
-    destruir(chartFornecedor);
-    destruir(chartComprador);
-    destruir(chartEstFornecedor);
-    destruir(chartEstComprador);
-
-    chartFornecedor =
-        criarGrafico(
-            "graficoFornecedor",
-            g1.labels,
-            g1.valores,
-            "#2563eb"
-        );
-
-    chartComprador =
-        criarGrafico(
-            "graficoComprador",
-            g2.labels,
-            g2.valores,
-            "#16a34a"
-        );
-
-    chartEstFornecedor =
-        criarGrafico(
-            "graficoEstadoFornecedor",
-            g3.labels,
-            g3.valores,
-            "#f59e0b"
-        );
-
-    chartEstComprador =
-        criarGrafico(
-            "graficoEstadoComprador",
-            g4.labels,
-            g4.valores,
-            "#dc2626"
-        );
 }
 
 function mostrarUltimaAtualizacao(){
