@@ -12,6 +12,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-sankey@4"></script>
 
+<script>
+    Chart.register(window.SankeyController, window.Flow);
+</script>
+
 <style>
 
 body{
@@ -365,6 +369,8 @@ canvas{
 </div>
 
 <script>
+
+
 
 let dadosGlobais = [];
 
@@ -853,8 +859,6 @@ function atualizarGraficos(){
         periodoSelecionado === "all" ? "line" : "bar"
     );
 
-    // 🔥 SANKEY (IMPORTANTE)
-    atualizarSankey(dados);
 }
 
 
@@ -1040,7 +1044,11 @@ function montarFluxoSankey(lista) {
 
 function atualizarSankey(dados) {
 
+    console.log("Sankey dados:", dados);
+
     const data = montarFluxoSankey(dados);
+
+    console.log("Sankey montado:", data);
 
     if (chartSankey) chartSankey.destroy();
 
@@ -1053,19 +1061,8 @@ function atualizarSankey(dados) {
                     label: "Fluxo UF",
                     data: data,
                     colorFrom: "#f97316",
-                    colorTo: "#2563eb",
-                    borderWidth: 0
+                    colorTo: "#2563eb"
                 }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
             }
         }
     );
