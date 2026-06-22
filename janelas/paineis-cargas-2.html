@@ -165,28 +165,6 @@ canvas{
    PRIMEIRO GRÁFICO
 ========================== */
 
-
-.filtro-fornecedor .lista-checkbox{
-    height:420px;
-}
-
-.filtro-tipo .lista-checkbox{
-    height:80px;
-}
-
-/* ==========================
-   SEGUNDO GRÁFICO
-========================== */
-
-
-.filtro-comprador .lista-checkbox{
-    height:420px;
-}
-
-.filtro-tipo-comprador .lista-checkbox{
-    height:80px;
-}
-
 .btn-limpar-filtro{
     width:100%;
     margin-bottom:6px;
@@ -208,30 +186,6 @@ canvas{
     background:#4b5563;
 }
 
-/* ==========================
-   TERCEIRO GRÁFICO
-========================== */
-
-.filtro-estado-fornecedor .lista-checkbox{
-    height:420px;
-}
-
-.filtro-tipo-estado-fornecedor .lista-checkbox{
-    height:80px;
-}
-
-/* ==========================
-   QUARTO GRÁFICO
-========================== */
-
-
-.filtro-estado-comprador .lista-checkbox{
-    height:420px;
-}
-
-.filtro-tipo-estado-comprador .lista-checkbox{
-    height:80px;
-}
 
 .btnAtualizarPipefy{
 
@@ -387,10 +341,10 @@ function filtrarUF(lista, estados){
 function criarFiltrosCheckbox(){
 
     criarFiltro(
-        "filtroComprador",
+        "filtroFornecedor",
         [...new Set(
-            dadosGlobais.map(x=>x.comprador)
-        )].sort()
+        dadosGlobais.map(x => x.fornecedor)
+      )].sort()
     );
 
     criarFiltro(
