@@ -729,6 +729,8 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                     borderColor: cor,
                     borderWidth: 2,
                     borderRadius: 4,
+                    barThickness: 28,
+                    maxBarThickness: 32,
 
                     barPercentage: 0.9,
                     categoryPercentage: 0.9,
@@ -813,24 +815,33 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                     },
 
                     datalabels: {
-                      color: "#fff",
+                       color: "#fff",
 
-                      font: {
-                      family: "Inter",
-                      size: 16,
-                      weight: "700"
-                    },
+                       anchor: "center",
+                       align: "center",
 
-                      anchor: "end",
-                      align: "end",
-                      offset: 4,
+                       clamp: true,
+                       clip: true,
 
-                      clamp: false,
-                      clip: false,
+                       font: (ctx) => {
+                       const value = ctx.dataset.data[ctx.dataIndex];
 
-                      formatter: (value) =>
-                      Number(value).toLocaleString("pt-BR")
-                    }
+                      // reduz fonte conforme tamanho do valor (heurística simples)
+                       let size = 14;
+
+                       if (value > 10000) size = 11;
+                       else if (value > 1000) size = 12;
+
+                       return {
+                          family: "Inter",
+                          size: size,
+                          weight: "700"
+                          };
+                       },
+
+                       formatter: (value) =>
+                          Number(value).toLocaleString("pt-BR")
+                        }
 
                 }
 
