@@ -456,18 +456,22 @@ function criarFiltroPeriodo(anos){
     const div = document.getElementById("filtroPeriodo");
 
     div.innerHTML = `
-        <span class="titulo-periodo">Período:</span>
+      <span class="titulo-periodo">Período:</span>
 
-        <button class="btnPeriodo ativo" data-periodo="52">
-            Últimas 52 semanas
-        </button>
+    <button class="btnPeriodo ativo" data-periodo="52">
+       Últimas 52 semanas
+    </button>
 
-        ${anos.map(ano => `
-            <button class="btnPeriodo" data-periodo="${ano}">
-                ${ano}
-            </button>
-        `).join("")}
-    `;
+    <button class="btnPeriodo" data-periodo="all">
+       Todo período
+    </button>
+
+    ${anos.map(ano => `
+       <button class="btnPeriodo" data-periodo="${ano}">
+        ${ano}
+       </button>
+    `).join("")}
+      `;
 
     document.querySelectorAll(".btnPeriodo").forEach(btn => {
 
@@ -646,12 +650,16 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                 datasets:[{
                    label:"Suínos",
                    data,
-                   backgroundColor:cor,
-                   borderColor:cor,
+                   backgroundColor: tipo === "line"
+                       ? "rgba(249, 115, 22, 0.25)"
+                       : "#f97316",
+                   borderColor: "#f97316", 
                    borderWidth:2,
                    borderRadius:4,
                    barPercentage:0.8,
-                   categoryPercentage:0.8
+                   categoryPercentage:0.8,
+                   fill: tipo === "line",
+                       tension: 0.3,
                 }]
             },
 
@@ -803,14 +811,20 @@ function atualizarGraficos(){
 
     destruir(chartPrincipal);
 
-    chartPrincipal = criarGrafico(
-        "graficoPrincipal",
-        g.labels,
-        g.valores,
-        "#2563eb"
-    );
+    const tipoGrafico =
+    periodoSelecionado === "all"
+        ? "line"
+        : "bar";
 
-}
+    chartPrincipal = criarGrafico(
+         "graficoPrincipal",
+         g.labels,
+         g.valores,
+         "#f97316",
+         tipoGrafico
+        );
+
+     }
 
 function mostrarUltimaAtualizacao(){
 
