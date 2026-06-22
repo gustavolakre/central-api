@@ -734,8 +734,8 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                     borderWidth: 2,
                     borderRadius: 4,
               
-                    barPercentage: 0.8,
-                    categoryPercentage: 0.8,
+                    barPercentage: 0.9,
+                    categoryPercentage: 0.9,
 
                     fill: tipo === "line",
                     tension: 0.3
@@ -810,34 +810,44 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
 
                 },
 
-                plugins: {
+               plugins: {
+  legend: {
+    display: false
+  },
 
-                    legend: {
-                        display: false
-                    },
+  datalabels: {
+    display: (ctx) => {
+      // 🔥 some quando for linha (todo período)
+      return periodoSelecionado !== "all";
+    },
 
-                    datalabels: {
-                        color: "#fff",
+    color: "#fff",
+    anchor: "end",
+    align: "top",
+    offset: 6,
 
-                        anchor: "end",     // prende no topo da barra
-                        align: "top",      // joga pra cima
+    font: {
+      family: "Oswald",
+      size: 14,
+      weight: "700"
+    },
 
-                        offset: 6,         // distância da barra
+    formatter: (value) =>
+      Number(value).toLocaleString("pt-BR")
+  },
 
-                        clamp: true,
-                        clip: false,
-
-                        font: {
-                            family: "Oswald",
-                            size: 16,
-                            weight: "700"
-                         },
-
-                        formatter: (value) =>
-                          Number(value).toLocaleString("pt-BR")
-                    }
-
-                }
+  tooltip: {
+    enabled: true, // 🔥 hover sempre ativo
+    callbacks: {
+      label: (ctx) => {
+        return `Quantidade: ${Number(ctx.raw).toLocaleString("pt-BR")}`;
+      },
+      title: (ctx) => {
+        return `Semana: ${ctx[0].label}`;
+      }
+    }
+  }
+}
 
             }
 
@@ -904,6 +914,7 @@ function atualizarGraficos(){
         g.valores,
         "#3b82f6",
         periodoSelecionado === "all" ? "line" : "bar"
+        
     );
 
     atualizarSankey(dados);
