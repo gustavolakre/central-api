@@ -1068,8 +1068,19 @@ function atualizarSankey(dados) {
                     colorFrom: "#f97316",
                     colorTo: "#2563eb",
                     colorMode: "gradient",
-                    borderWidth: 1
-                }]
+                    borderWidth: 1,
+
+                      nodeWidth: 20,
+                      nodePadding: 18,
+
+                    labels: {
+                       font: {
+                           size: 16,      // 👈 AQUI
+                           weight: "700"
+                       },
+                        color: "#ffffff"
+                  }
+            }]
             },
             options: {
                 responsive: true,
