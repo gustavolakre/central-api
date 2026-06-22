@@ -1155,7 +1155,9 @@ function atualizarSankey(dados) {
 
 
 mostrarUltimaAtualizacao();
-carregar();
+document.fonts.ready.then(() => {
+    carregar();
+});
 
 </script>
 
