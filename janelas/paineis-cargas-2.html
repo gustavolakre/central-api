@@ -13,9 +13,17 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-sankey@0.12.0"></script>
 
 <script>
-    const { SankeyController, SankeyChart } = window['chartjs-chart-sankey'];
+    const {
+  SankeyController,
+  SankeyElement,
+  SankeyDataController
+} = window['chartjs-chart-sankey'];
 
-    Chart.register(window.SankeyController);
+Chart.register(
+  SankeyController,
+  SankeyElement,
+  SankeyDataController
+);
 </script>
 
 <style>
@@ -861,6 +869,8 @@ function atualizarGraficos(){
         periodoSelecionado === "all" ? "line" : "bar"
     );
 
+    atualizarSankey(dados);
+
 }
 
 
@@ -1048,6 +1058,8 @@ function atualizarSankey(dados) {
 
     const data = montarFluxoSankey(dados);
 
+    if (!data.length) return; // 👈 evita gráfico vazio
+
     if (chartSankey) chartSankey.destroy();
 
     chartSankey = new Chart(
@@ -1056,7 +1068,7 @@ function atualizarSankey(dados) {
             type: "sankey",
             data: {
                 datasets: [{
-                    data: data,
+                    data,
                     colorFrom: "#f97316",
                     colorTo: "#2563eb",
                     colorMode: "gradient",
