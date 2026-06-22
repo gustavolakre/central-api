@@ -738,47 +738,40 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                   }
                 },
 
-                scales:{
+                scales: {
 
-                    x:{
-                        ticks:{
-                           color:"#d1d5db",
-                            font:{
-                                size:13,
-                                weight:"600"
-                            },
+    x: {
+        ticks: {
+            color: "#e5e7eb",
+            font: {
+                size: 15,      // 👈 maior
+                weight: "700"
+            },
+            autoSkip: false,
+            maxRotation: 45,
+            minRotation: 45
+        },
+        grid: {
+            display: false
+        }
+    },
 
-                            autoSkip: false, 
-                            maxRotation:45,
-                            minRotation:45
-                        },
-
-                        grid:{
-                            display:false
-                        }
-                    },
-
-                    y:{
-                        beginAtZero:true,
-
-                        ticks:{
-                            color:"#f9fafb",
-                            font:{
-                                size:13,
-                                weight:"600"
-                            },
-
-                            callback:(value)=>
-                                Number(value)
-                                    .toLocaleString("pt-BR")
-                        },
-
-                        grid: {
-                            color: "rgba(255,255,255,0.05)"
-                        }
-                    }
-
-                },
+    y: {
+        beginAtZero: true,
+        ticks: {
+            color: "#e5e7eb",
+            font: {
+                size: 15,     // 👈 maior
+                weight: "700"
+            },
+            callback: (value) =>
+                Number(value).toLocaleString("pt-BR")
+        },
+        grid: {
+            color: "rgba(255,255,255,0.08)"
+        }
+    }
+},
 
                 plugins:{
 
@@ -793,9 +786,12 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                        offset: 4,
 
                        font: {
-                           size: 13,
-                           weight: "700"
+                           size: 16,
+                           weight: "800"
                        },
+
+                       color: "#ffffff",
+                       offset: 6,
 
                        formatter: (value) =>
                          Number(value).toLocaleString("pt-BR")
