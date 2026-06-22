@@ -791,17 +791,21 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
 
                     datalabels: {
                         color: "#ffffff",
+
                         font: {
                             size: 14,
                             weight: "bold",
                             family: "Segoe UI"
                         },
 
+                         textStrokeWidth: 0,
+                         textShadowBlur: 0,
+
                         anchor: "end",
                         align: "top",
                         offset: 2,
 
-                        clip: true,   // 🔥 evita bagunça fora do gráfico
+                        clip: true,  
 
                         formatter: (value) =>
                             Number(value).toLocaleString("pt-BR")
