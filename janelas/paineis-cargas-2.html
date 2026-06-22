@@ -736,8 +736,8 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                     barThickness: 28,
                     maxBarThickness: 32,
 
-                    barPercentage: 0.9,
-                    categoryPercentage: 0.9,
+                    barPercentage: 1,
+                    categoryPercentage: 1,
 
                     fill: tipo === "line",
                     tension: 0.3
@@ -778,8 +778,8 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                             autoSkip: false,
                             maxTicksLimit: 18,
 
-                            maxRotation: 25,
-                            minRotation: 25
+                            maxRotation: 45,
+                            minRotation: 45
                         }
                     },
 
@@ -904,7 +904,7 @@ function atualizarGraficos(){
         "graficoPrincipal",
         g.labels,
         g.valores,
-        "#f97316",
+        "#3b82f6",
         periodoSelecionado === "all" ? "line" : "bar"
     );
 
