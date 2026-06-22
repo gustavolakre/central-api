@@ -744,47 +744,27 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                   }
                 },
 
-               scales: {
-   x: {
-    ticks: {
-        color: "#e5e7eb",
-        font: {
-            size: 12,
-            weight: "600",
-            family: "Inter, Arial, sans-serif"
-        },
-
-        autoSkip: false,   // mantém todas
-        maxRotation: 60,   // inclina mais
-        minRotation: 60,
-
-        padding: 8
-    },
-    grid: {
-        display: false
-    }
-},
-
-  y: {
-    beginAtZero: true,
-
-    ticks: {
-      color: "#e5e7eb",
-
-      font: {
-        size: 14,
-        weight: "600",
-        family: "Arial"
-      },
-
-      callback: (value) =>
-        Number(value).toLocaleString("pt-BR")
+    
+  scales: {
+    x: {
+        ticks: {
+            font: {
+                size: 12,
+                weight: "600",
+                family: "Inter, Arial, sans-serif"
+            }
+        }
     },
 
-    grid: {
-      color: "rgba(255,255,255,0.06)"
+    y: {
+        ticks: {
+            font: {
+                size: 12,
+                weight: "600",
+                family: "Inter, Arial, sans-serif"
+            }
+        }
     }
-  }
 },
 
                 plugins:{
