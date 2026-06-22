@@ -56,10 +56,6 @@ body{
     min-height:auto;
 }
 
-.box canvas{
-    min-height: 900px !important;
-}
-
 h2{
     color:#f9fafb;
     margin:20px;
@@ -299,10 +295,6 @@ canvas{
     margin-top: 20px;
     background: #0b1220;
     border-radius: 12px;
-}
-
-#graficoPrincipal{
-    min-height: 900px;
 }
 
 
@@ -732,8 +724,8 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                    borderColor: "#f97316", 
                    borderWidth:2,
                    borderRadius:4,
-                   barPercentage:0.6,
-                   categoryPercentage:0.7,
+                   barPercentage:0.8,
+                   categoryPercentage:0.8,
                    fill: tipo === "line",
                        tension: 0.3,
                 }]
@@ -754,7 +746,7 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
 
                scales: {
    x: {
-     ticks: {
+    ticks: {
         color: "#e5e7eb",
         font: {
             size: 12,
@@ -773,22 +765,26 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
     }
 },
 
- y: {
+  y: {
     beginAtZero: true,
+
     ticks: {
-        color: "#e5e7eb",
-        font: {
-            size: 12,
-            weight: "600",
-            family: "Inter, Arial, sans-serif"
-        },
-        callback: (value) =>
-            Number(value).toLocaleString("pt-BR")
+      color: "#e5e7eb",
+
+      font: {
+        size: 14,
+        weight: "600",
+        family: "Arial"
+      },
+
+      callback: (value) =>
+        Number(value).toLocaleString("pt-BR")
     },
+
     grid: {
-        color: "rgba(255,255,255,0.06)"
+      color: "rgba(255,255,255,0.06)"
     }
-}
+  }
 },
 
                 plugins:{
@@ -798,20 +794,21 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                     },
 
                     datalabels: {
-                       color: "#f9fafb",
+                       color: "#ffffff",
+                       textStrokeColor: "#000000",
+                       textStrokeWidth: 3,
+                       font: {
+                          size: 13,
+                          weight: 700,
+                          family: "Arial"
+                         },
                        anchor: "end",
                        align: "top",
-                       offset: 6,
-
-                       font: {
-                           size: 11,
-                           weight: "600",
-                           family: "Inter, Arial, sans-serif"
-                       },
-
+                       offset: 4,
+                       
                        formatter: (value) =>
-                       Number(value).toLocaleString("pt-BR")
-                    }
+                             Number(value).toLocaleString("pt-BR")
+                       }
 
                 }
 
