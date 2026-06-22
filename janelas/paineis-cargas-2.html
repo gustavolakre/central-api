@@ -714,21 +714,27 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                         display:false
                     },
 
-                    datalabels:{
-                        color:"#f9fafb",
-                        anchor:"end",
-                        align:"top",
-                        offset:6,
+                    datalabels: {
+                       color: "#f9fafb",
+                       anchor: "end",
+                       align: "top",
+                       offset: 4,
 
-                        font:{
-                            size:12,
-                            weight:"bold"
-                        },
+                       font: {
+                           size: 10,
+                           weight: "700"
+                       },
 
-                        formatter:(value)=>
-                            Number(value)
-                                .toLocaleString("pt-BR")
-                    }
+                       formatter: (value) => {
+                            if (value >= 1000000)
+                            return (value / 1000000).toFixed(1) + "M";
+
+                       if (value >= 1000)
+                            return (value / 1000).toFixed(1) + "K";
+
+                            return value.toLocaleString("pt-BR");
+                            }
+                        }
 
                 }
 
@@ -767,19 +773,27 @@ function atualizarGraficos(){
     );
 
 
-    if(periodoSelecionado==="52"){
+    if (periodoSelecionado === "52") {
 
-    dados = dados
-        .sort((a, b) => {
-           const [anoA, semanaA] = a.semana.split("/").map(Number);
-           const [anoB, semanaB] = b.semana.split("/").map(Number);
+    // 1. pegar semanas únicas já agregadas
+    const semanasOrdenadas = [
+        ...new Set(dados.map(x => x.semana))
+    ].sort((a, b) => {
+        const [anoA, semanaA] = a.split("/").map(Number);
+        const [anoB, semanaB] = b.split("/").map(Number);
 
-           if (anoA !== anoB) return anoA - anoB;
-           return semanaA - semanaB;
-        })
-          .slice(-52);
+        if (anoA !== anoB) return anoA - anoB;
+        return semanaA - semanaB;
+    });
 
-        }
+    // 2. pegar últimas 52 semanas
+    const ultimas52 = semanasOrdenadas.slice(-52);
+
+    // 3. filtrar dados apenas dessas semanas
+    dados = dados.filter(item =>
+        ultimas52.includes(item.semana)
+    );
+}
      else{
 
     dados = dados.filter(item=>
