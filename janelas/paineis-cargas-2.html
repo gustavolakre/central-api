@@ -776,9 +776,11 @@ function atualizarGraficos(){
     );
 
 
-    if (periodoSelecionado === "52") {
+   const is52 = periodoSelecionado === "52";
+const isAll = periodoSelecionado === "all";
 
-    // 1. pegar semanas únicas já agregadas
+if (is52) {
+
     const semanasOrdenadas = [
         ...new Set(dados.map(x => x.semana))
     ].sort((a, b) => {
@@ -789,20 +791,17 @@ function atualizarGraficos(){
         return semanaA - semanaB;
     });
 
-    // 2. pegar últimas 52 semanas
     const ultimas52 = semanasOrdenadas.slice(-52);
 
-    // 3. filtrar dados apenas dessas semanas
     dados = dados.filter(item =>
         ultimas52.includes(item.semana)
     );
+
 }
-     else{
+else if (!isAll) {
 
-    dados = dados.filter(item=>
-
+    dados = dados.filter(item =>
         item.semana.startsWith(periodoSelecionado)
-
     );
 
 }
