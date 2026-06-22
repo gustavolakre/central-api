@@ -744,39 +744,49 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                   }
                 },
 
-                scales: {
+               scales: {
+  x: {
+    ticks: {
+      color: "#e5e7eb",
 
-    x: {
-        ticks: {
-            color: "#ffffff",
-            font: {
-                size: 18,      // 👈 maior
-                weight: "700"
-            },
-            autoSkip: false,
-            maxRotation: 45,
-            minRotation: 45
-        },
-        grid: {
-            display: false
-        }
+      font: {
+        size: 14,
+        weight: "600",
+        family: "Arial"
+      },
+
+      maxRotation: 0,
+      minRotation: 0,
+
+      autoSkip: true,
+      maxTicksLimit: 12   // 🔥 ESSENCIAL
     },
 
-    y: {
-        beginAtZero: true,
-        ticks: {
-            color: "#e5e7eb",
-            font: {
-                size: 18,     // 👈 maior
-                weight: "700"
-            },
-            callback: (value) =>
-                Number(value).toLocaleString("pt-BR")
-        },
-        grid: {
-            color: "rgba(255,255,255,0.08)"
-        }
+    grid: {
+      display: false
     }
+  },
+
+  y: {
+    beginAtZero: true,
+
+    ticks: {
+      color: "#e5e7eb",
+
+      font: {
+        size: 14,
+        weight: "600",
+        family: "Arial"
+      },
+
+      callback: (value) =>
+        Number(value).toLocaleString("pt-BR")
+    },
+
+    grid: {
+      color: "rgba(255,255,255,0.06)"
+    }
+  }
 },
 
                 plugins:{
@@ -790,17 +800,14 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
                        textStrokeColor: "#000000",
                        textStrokeWidth: 3,
                        font: {
-                          size: 16,
-                          weight: "bold",
+                          size: 13,
+                          weight: 700,
                           family: "Arial"
                          },
                        anchor: "end",
                        align: "top",
-                       offset: 8,
-                       font: {
-                          size: 13,
-                          weight: "900"
-                       },
+                       offset: 4,
+                       
                        formatter: (value) =>
                              Number(value).toLocaleString("pt-BR")
                        }
