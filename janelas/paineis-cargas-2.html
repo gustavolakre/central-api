@@ -106,21 +106,17 @@ canvas{
 ========================== */
 
 .filtros-topo{
-
     display:grid;
-
-    grid-template-columns:
-        2fr
-        2fr
-        1fr
-        1fr;
-
+    grid-template-columns: repeat(5, 1fr);
     gap:15px;
-
     margin-bottom:20px;
-
     align-items:start;
+}
 
+@media (max-width: 1200px){
+    .filtros-topo{
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .filtro-box{
@@ -340,6 +336,11 @@ canvas{
         <div id="filtroTipo"></div>
     </div>
 
+    <div class="filtro-box frete">
+       <div class="filtro-titulo">Frete</div>
+    <div id="filtroFrete"></div>
+</div>
+
 </div>
 
 <div id="filtroPeriodo" class="filtro-periodo"></div>
@@ -347,9 +348,6 @@ canvas{
 
 <canvas id="graficoPrincipal"></canvas>
 
-</div>
-
-</div>
 
 <canvas id="graficoSankey"></canvas>
 
@@ -386,6 +384,9 @@ async function carregar(){
     criarFiltrosCheckbox();
 
     atualizarGraficos();
+
+    atualizarSankey(dados);
+
 }
 
 
@@ -420,6 +421,13 @@ function criarFiltrosCheckbox(){
     criarFiltro(
         "filtroComprador",
         [...new Set(dadosGlobais.map(x=>x.comprador))].sort()
+    );
+
+    criarFiltro(
+        "filtroFrete",
+         [...new Set(dadosGlobais.map(x => x.frete))]
+        .filter(Boolean)
+        .sort()
     );
 
     const estados = [
@@ -776,9 +784,16 @@ function criarGrafico(canvasId, labels, data, cor, tipo="bar"){
 
 }
 
+
+
+
 function atualizarGraficos(){
 
-    let dados=[...dadosGlobais];
+    let dados = [...dadosGlobais];
+
+    // =========================
+    // FILTROS
+    // =========================
 
     dados = filtrar(
         dados,
@@ -804,36 +819,48 @@ function atualizarGraficos(){
         valoresMarcados("filtroTipo")
     );
 
-
-   const is52 = periodoSelecionado === "52";
-const isAll = periodoSelecionado === "all";
-
-if (is52) {
-
-    const semanasOrdenadas = [
-        ...new Set(dados.map(x => x.semana))
-    ].sort((a, b) => {
-        const [anoA, semanaA] = a.split("/").map(Number);
-        const [anoB, semanaB] = b.split("/").map(Number);
-
-        if (anoA !== anoB) return anoA - anoB;
-        return semanaA - semanaB;
-    });
-
-    const ultimas52 = semanasOrdenadas.slice(-52);
-
-    dados = dados.filter(item =>
-        ultimas52.includes(item.semana)
+    dados = filtrar(
+        dados,
+        "frete",
+        valoresMarcados("filtroFrete")
     );
 
-}
-else if (!isAll) {
+    // =========================
+    // PERÍODO
+    // =========================
 
-    dados = dados.filter(item =>
-        item.semana.startsWith(periodoSelecionado)
-    );
+    const is52 = periodoSelecionado === "52";
+    const isAll = periodoSelecionado === "all";
 
-}
+    if (is52) {
+
+        const semanasOrdenadas = [
+            ...new Set(dados.map(x => x.semana))
+        ].sort((a, b) => {
+            const [anoA, semanaA] = a.split("/").map(Number);
+            const [anoB, semanaB] = b.split("/").map(Number);
+
+            if (anoA !== anoB) return anoA - anoB;
+            return semanaA - semanaB;
+        });
+
+        const ultimas52 = semanasOrdenadas.slice(-52);
+
+        dados = dados.filter(item =>
+            ultimas52.includes(item.semana)
+        );
+
+    } else if (!isAll) {
+
+        dados = dados.filter(item =>
+            item.semana.startsWith(periodoSelecionado)
+        );
+
+    }
+
+    // =========================
+    // GRÁFICO PRINCIPAL
+    // =========================
 
     const limite52 = periodoSelecionado === "52";
 
@@ -842,19 +869,27 @@ else if (!isAll) {
     destruir(chartPrincipal);
 
     const tipoGrafico =
-    periodoSelecionado === "all"
-        ? "line"
-        : "bar";
+        periodoSelecionado === "all"
+            ? "line"
+            : "bar";
 
     chartPrincipal = criarGrafico(
-         "graficoPrincipal",
-         g.labels,
-         g.valores,
-         "#f97316",
-         tipoGrafico
-        );
+        "graficoPrincipal",
+        g.labels,
+        g.valores,
+        "#f97316",
+        tipoGrafico
+    );
 
-     }
+    // =========================
+    // SANKEY (IMPORTANTE)
+    // =========================
+
+    atualizarSankey(dados);
+}
+
+
+
 
 function mostrarUltimaAtualizacao(){
 
