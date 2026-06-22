@@ -21,10 +21,13 @@ router.get("/", async (req,res)=>{
 
                 cc.tipo_suino,
 
+                cc.frete,
+
                 pf.uf as estado_fornecedor,
 
                 pc.uf as estado_comprador,
 
+              
                 SUM(
                     COALESCE(cc.quantidade,0)
                 ) as quantidade
@@ -50,6 +53,7 @@ router.get("/", async (req,res)=>{
                 cc.fornecedor,
                 cc.comprador,
                 cc.tipo_suino,
+                cc.frete,
                 pf.uf,
                 pc.uf
 
