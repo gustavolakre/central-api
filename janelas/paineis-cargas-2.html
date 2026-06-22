@@ -745,10 +745,10 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
 
                 layout: {
                     padding: {
-                        top: 90,
+                        top: 120,
                         right: 20,
                         left: 20,
-                        bottom: 30
+                        bottom: 20
                     }
                 },
 
@@ -813,27 +813,23 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                     },
 
                     datalabels: {
+                      color: "#fff",
 
-                        color: "#fff",
+                      font: {
+                      family: "Inter",
+                      size: 16,
+                      weight: "700"
+                    },
 
-                        font: {
-                            family: "Roboto Condensed",
-                            size: 17,
-                            weight: "700",
-                            lineHeight: 1.6
-                        },
+                      anchor: "end",
+                      align: "end",
+                      offset: 4,
 
-                        anchor: "end",
-                        align: "end",
-                        offset: 12,
-                        align: "start",
+                      clamp: false,
+                      clip: false,
 
-                        clip: false,
-                        clamp: true,
-
-                        formatter: (value) =>
-                            Number(value).toLocaleString("pt-BR")
-
+                      formatter: (value) =>
+                      Number(value).toLocaleString("pt-BR")
                     }
 
                 }
