@@ -13,7 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-sankey@4"></script>
 
 <script>
-    Chart.register(window.SankeyController, window.Flow);
+    Chart.register(window.SankeyController, window.SankeyDataController, window.SankeyElement);
 </script>
 
 <style>
@@ -1053,19 +1053,27 @@ function atualizarSankey(dados) {
     if (chartSankey) chartSankey.destroy();
 
     chartSankey = new Chart(
-        document.getElementById("graficoSankey"),
-        {
-            type: "sankey",
-            data: {
-                datasets: [{
-                    label: "Fluxo UF",
-                    data: data,
-                    colorFrom: "#f97316",
-                    colorTo: "#2563eb"
-                }]
+    document.getElementById("graficoSankey"),
+    {
+        type: "sankey",
+        data: {
+            datasets: [{
+                data: data,
+                colorFrom: "#f97316",
+                colorTo: "#2563eb",
+                colorMode: "gradient",
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
             }
         }
-    );
+    }
+);
 }
 
 
