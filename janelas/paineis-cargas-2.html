@@ -745,10 +745,10 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
 
                 layout: {
                     padding: {
-                        top: 60,
+                        top: 90,
                         right: 20,
                         left: 20,
-                        bottom: 20
+                        bottom: 30
                     }
                 },
 
@@ -772,8 +772,8 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                             autoSkip: true,
                             maxTicksLimit: 18,
 
-                            maxRotation: 45,
-                            minRotation: 45
+                            maxRotation: 25,
+                            minRotation: 25
                         }
                     },
 
@@ -825,7 +825,8 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
 
                         anchor: "end",
                         align: "end",
-                        offset: 8,
+                        offset: 12,
+                        align: "start",
 
                         clip: false,
                         clamp: true,
@@ -1108,6 +1109,8 @@ function atualizarSankey(dados) {
                     colorTo: "#2563eb",
                     colorMode: "gradient",
                     borderWidth: 1,
+                    barThickness: 18,
+                    maxBarThickness: 22,
 
                       nodeWidth: 30,
                       nodePadding: 25,
