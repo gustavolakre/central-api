@@ -286,6 +286,88 @@ canvas{
 }
 
 
+.perfil-grafico{
+
+    margin-top:25px;
+
+    padding:18px;
+
+    background:#111827;
+
+    border:1px solid #374151;
+
+    border-radius:10px;
+
+}
+
+.perfil-titulo{
+
+    color:white;
+
+    font-weight:bold;
+
+    margin-bottom:12px;
+
+}
+
+.perfil-linha{
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+
+}
+
+#perfilGrafico{
+
+    flex:1;
+
+    padding:10px;
+
+    background:#1f2937;
+
+    color:white;
+
+    border:1px solid #374151;
+
+    border-radius:8px;
+
+}
+
+#btnSalvarPerfil,
+#btnExcluirPerfil{
+
+    padding:10px 18px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+}
+
+#btnSalvarPerfil{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+#btnExcluirPerfil{
+
+    background:#dc2626;
+
+    color:white;
+
+}
+
+
 </style>
 </head>
 
@@ -366,6 +448,32 @@ canvas{
 
 <div class="box">
     <canvas id="graficoPrincipal"></canvas>
+
+
+    <div class="perfil-grafico">
+
+    <div class="perfil-titulo">
+        Perfil do gráfico
+    </div>
+
+    <div class="perfil-linha">
+
+        <select id="perfilGrafico">
+            <option value="">Novo perfil...</option>
+        </select>
+
+        <button id="btnSalvarPerfil">
+            💾 Salvar
+        </button>
+
+        <button id="btnExcluirPerfil">
+            🗑 Excluir
+        </button>
+
+    </div>
+
+</div>
+
 </div>
 
 
@@ -374,6 +482,8 @@ canvas{
 
 
 </div>
+
+
 
 <script>
 
@@ -385,13 +495,13 @@ let chartPrincipal;
 
 let periodoSelecionado = "52";
 
+let perfilAtual = null;
+
 
 async function carregar(){
 
     const res =
         await fetch(`${API}/paineis-cargas-2`);
-
-    console.log("STATUS:", res.status);
 
     dadosGlobais = await res.json();
 
@@ -399,11 +509,12 @@ async function carregar(){
         item => item.fase !== "09-Cancelada"
     );
 
-    console.log(dadosGlobais);
-
     criarFiltrosCheckbox();
 
-    atualizarGraficos(); 
+    atualizarGraficos();
+
+    carregarPerfis();
+
 }
 
 
@@ -1092,11 +1203,231 @@ async function atualizarCargasPipefy(){
 }
 
 
+async function salvarPerfil(){
+
+    const filtros={
+
+        periodo:periodoSelecionado,
+
+        fornecedor:valoresMarcados("filtroFornecedor"),
+
+        comprador:valoresMarcados("filtroComprador"),
+
+        ufFornecedor:valoresMarcados("filtroUFFornecedor"),
+
+        ufComprador:valoresMarcados("filtroUFComprador"),
+
+        tipo:valoresMarcados("filtroTipo"),
+
+        frete:valoresMarcados("filtroFrete")
+
+    };
+
+    let nome;
+
+    if(perfilAtual){
+
+        nome=document
+            .getElementById("perfilGrafico")
+            .selectedOptions[0].text;
+
+    }else{
+
+        nome=prompt("Nome do perfil:");
+
+        if(!nome)
+            return;
+
+    }
+
+    const metodo =
+        perfilAtual
+            ? "PUT"
+            : "POST";
+
+    const url =
+        perfilAtual
+        ? `${API}/paineis-cargas-2/perfis/${perfilAtual}`
+        : `${API}/paineis-cargas-2/perfis`;
+
+    await fetch(url,{
+
+        method:metodo,
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+
+            nome,
+
+            filtros_json:filtros
+
+        })
+
+    });
+
+    await carregarPerfis();
+
+}
+
+
+async function excluirPerfil(){
+
+    if(!perfilAtual)
+        return;
+
+    if(!confirm("Excluir perfil?"))
+        return;
+
+    await fetch(
+
+        `${API}/paineis-cargas-2/perfis/${perfilAtual}`,
+
+        {
+            method:"DELETE"
+        }
+
+    );
+
+    perfilAtual=null;
+
+    carregarPerfis();
+
+}
+
+
+async function abrirPerfil(id){
+
+    if(!id){
+
+        document.getElementById("perfilGrafico").value = "";
+        perfilAtual = null;
+
+        return;
+    }
+
+    const res = await fetch(
+        `${API}/paineis-cargas-2/perfis/${id}`
+    );
+
+    const perfil = await res.json();
+
+    perfilAtual = id;
+
+    document.getElementById("perfilGrafico").value = id;
+
+    const f = perfil.filtros_json;
+
+    // <<< COLE AQUI
+    document
+        .querySelectorAll(
+            ".lista-checkbox input[type=checkbox]"
+        )
+        .forEach(cb => cb.checked = false);
+
+    marcarFiltro(
+        "filtroFornecedor",
+        f.fornecedor
+    );
+
+    marcarFiltro(
+        "filtroComprador",
+        f.comprador
+    );
+
+    marcarFiltro(
+        "filtroUFFornecedor",
+        f.ufFornecedor
+    );
+
+    marcarFiltro(
+        "filtroUFComprador",
+        f.ufComprador
+    );
+
+    marcarFiltro(
+        "filtroTipo",
+        f.tipo
+    );
+
+    marcarFiltro(
+        "filtroFrete",
+        f.frete
+    );
+
+    periodoSelecionado = f.periodo;
+
+    document
+        .querySelectorAll(".btnPeriodo")
+        .forEach(btn => {
+
+            btn.classList.toggle(
+                "ativo",
+                btn.dataset.periodo == periodoSelecionado
+            );
+
+        });
+
+    atualizarGraficos();
+
+}
+ 
+ 
+
+async function carregarPerfis(){
+
+    const res =
+        await fetch(`${API}/paineis-cargas-2/perfis`);
+
+    const perfis =
+        await res.json();
+
+    const select =
+        document.getElementById("perfilGrafico");
+
+    select.innerHTML =
+        `<option value="">Novo perfil...</option>`;
+
+    perfis.forEach(p=>{
+
+        select.innerHTML += `
+            <option value="${p.id}">
+                ${p.nome}
+            </option>
+        `;
+
+    });
+
+}
+
+
+
 mostrarUltimaAtualizacao();
 
 
 document.fonts.ready.then(() => {
     carregar();
+});
+
+
+
+document.getElementById("btnSalvarPerfil")
+    .onclick = salvarPerfil;
+
+document.getElementById("btnExcluirPerfil")
+    .onclick = excluirPerfil;
+
+document.getElementById("perfilGrafico")
+.addEventListener("change", (e) => {
+
+    if (!e.target.value) {
+        perfilAtual = null;
+        return;
+    }
+
+    abrirPerfil(e.target.value);
 });
 
 
