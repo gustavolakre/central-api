@@ -10,8 +10,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-sankey@0.12.0"></script>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700&display=swap" rel="stylesheet">
 
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
@@ -21,19 +19,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 
 <script>
-    const {
-  SankeyController,
-  SankeyElement,
-  SankeyDataController
-} = window['chartjs-chart-sankey'];
-
-Chart.register(
-  SankeyController,
-  SankeyElement,
-  SankeyDataController
-);
-
-
 
 </script>
 
@@ -298,13 +283,6 @@ canvas{
 
 }
 
-#graficoSankey {
-    height: 650px !important;
-    margin-top: 20px;
-    background: #0b1220;
-    border-radius: 12px;
-}
-
 
 </style>
 </head>
@@ -388,8 +366,6 @@ canvas{
 <canvas id="graficoPrincipal"></canvas>
 
 
-<canvas id="graficoSankey"></canvas>
-
 </div>
 
 <script>
@@ -401,9 +377,6 @@ let dadosGlobais = [];
 let chartPrincipal;
 
 let periodoSelecionado = "52";
-
-let chartSankey;
-
 
 
 async function carregar(){
@@ -963,8 +936,6 @@ function atualizarGraficos(){
         
     );
 
-    atualizarSankey(dados);
-
 }
 
 
@@ -1116,97 +1087,6 @@ async function atualizarCargasPipefy(){
 
 }
 
-
-function montarFluxoSankey(lista) {
-
-    const mapa = {};
-
-    lista.forEach(item => {
-
-        const origem = item.estado_fornecedor;
-        const destino = item.estado_comprador;
-
-        if (!origem || !destino) return;
-
-        const chave = `${origem}->${destino}`;
-
-        mapa[chave] = (mapa[chave] || 0) + Number(item.quantidade || 0);
-
-    });
-
-    return Object.entries(mapa).map(([key, value]) => {
-
-        const [from, to] = key.split("->");
-
-        return {
-            from,
-            to,
-            flow: value
-        };
-
-    });
-}
-
-
-function atualizarSankey(dados) {
-
-    const data = montarFluxoSankey(dados);
-
-    if (!data.length) return; // 👈 evita gráfico vazio
-
-    if (chartSankey) chartSankey.destroy();
-
-    chartSankey = new Chart(
-        document.getElementById("graficoSankey"),
-        {
-            type: "sankey",
-            data: {
-                datasets: [{
-                    data,
-                    colorFrom: "#f97316",
-                    colorTo: "#2563eb",
-                    colorMode: "gradient",
-                    borderWidth: 1,
-                    barThickness: 18,
-                    maxBarThickness: 22,
-
-                      nodeWidth: 30,
-                      nodePadding: 25,
-
-                    labels: {
-                       font: {
-                           size: 18,     
-                           weight: "800"
-                       },
-                        color: "#ffffff"
-                  }
-            }]
-            },
-            options: {
-               responsive: true,
-               maintainAspectRatio: false,
-
-              plugins: {
-                  legend: { display: false },
-
-                  tooltip: {
-                     bodyFont: {
-                       size: 16
-                   },
-                     titleFont: {
-                     size: 16
-                   }
-            }
-        },
-
-    font: {
-        family: "Arial",
-        size: 16
-    }
-}
-        }
-    );
-}
 
 
 mostrarUltimaAtualizacao();
