@@ -20,6 +20,8 @@
 
 <script>
 
+    const API = "https://api-production-6670.up.railway.app";
+
 </script>
 
 <style>
@@ -403,9 +405,6 @@ let periodoSelecionado = "52";
 
 
 async function carregar(){
-
-    const API =
-        "https://api-production-6670.up.railway.app";
 
     const res =
         await fetch(`${API}/paineis-cargas-2`);
@@ -1152,29 +1151,42 @@ async function salvarFiltro(nome) {
 
 function aplicarFiltro(filtro) {
 
-    const f = filtro.filtros_json;
+    const f = typeof filtro.filtros_json === "string"
+        ? JSON.parse(filtro.filtros_json)
+        : filtro.filtros_json;
 
+    // 🔥 atualiza período global
     periodoSelecionado = f.periodo;
 
-    // 🔥 marca botão do período corretamente
+    // 🔥 sincroniza botão do período visualmente
     document.querySelectorAll(".btnPeriodo").forEach(b => {
         b.classList.remove("ativo");
-        if (b.dataset.periodo === f.periodo) {
-            b.classList.add("ativo");
-        }
     });
 
-    marcarCheckbox("filtroFornecedor", f.fornecedor);
-    marcarCheckbox("filtroComprador", f.comprador);
-    marcarCheckbox("filtroUFFornecedor", f.ufFornecedor);
-    marcarCheckbox("filtroUFComprador", f.ufComprador);
-    marcarCheckbox("filtroTipo", f.tipo);
-    marcarCheckbox("filtroFrete", f.frete);
+    const btnAtivo = document.querySelector(
+        `.btnPeriodo[data-periodo="${f.periodo}"]`
+    );
 
+    if (btnAtivo) {
+        btnAtivo.classList.add("ativo");
+    }
+
+    // 🔥 marca checkboxes (com segurança)
+    marcarCheckbox("filtroFornecedor", f.fornecedor || []);
+    marcarCheckbox("filtroComprador", f.comprador || []);
+    marcarCheckbox("filtroUFFornecedor", f.ufFornecedor || []);
+    marcarCheckbox("filtroUFComprador", f.ufComprador || []);
+    marcarCheckbox("filtroTipo", f.tipo || []);
+    marcarCheckbox("filtroFrete", f.frete || []);
+
+    // 🔥 atualiza gráfico com tudo aplicado
     atualizarGraficos();
 }
 
+
 function marcarCheckbox(id, valores = []) {
+
+    valores = valores || [];
 
     document.querySelectorAll(`#${id} input`).forEach(cb => {
         cb.checked = valores.includes(cb.value);
