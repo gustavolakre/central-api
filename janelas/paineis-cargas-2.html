@@ -734,6 +734,13 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                     borderColor: cor,
                     borderWidth: 2,
                     borderRadius: 4,
+
+                    fill: tipo === "line",
+                    tension: 0.3,
+
+                    pointRadius: tipo === "line" ? 0 : 3,
+                    pointHoverRadius: tipo === "line" ? 8 : 5,
+                    pointHitRadius: tipo === "line" ? 20 : 8,
               
                     barPercentage: 0.9,
                     categoryPercentage: 0.9,
@@ -755,12 +762,20 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                         right: 20,
                         left: 20,
                         bottom: 20
-                    }
+                    },
+
+                    interaction: {
+                        mode: "index",
+                        intersect: false
+                    },
                 },
 
                 scales: {
 
                     x: {
+
+                        display: periodoSelecionado !== "all",
+
                         grid: {
                             display: false
                         },
@@ -839,7 +854,7 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
   },
 
   tooltip: {
-    enabled: true, // 🔥 hover sempre ativo
+    enabled: true,
     callbacks: {
       label: (ctx) => {
         return `Quantidade: ${Number(ctx.raw).toLocaleString("pt-BR")}`;
