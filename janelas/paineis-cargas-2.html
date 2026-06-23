@@ -738,9 +738,11 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                     fill: tipo === "line",
                     tension: 0.3,
 
-                    pointRadius: tipo === "line" ? 0 : 3,
+                    pointRadius: tipo === "line" ? 2 : 3,
                     pointHoverRadius: tipo === "line" ? 8 : 5,
                     pointHitRadius: tipo === "line" ? 20 : 8,
+                    pointBackgroundColor: cor,
+                    pointBorderColor: cor,
               
                     barPercentage: 0.9,
                     categoryPercentage: 0.9,
@@ -764,10 +766,11 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                         bottom: 20
                     },
 
+                  },
+
                     interaction: {
-                        mode: "index",
-                        intersect: false
-                    },
+                     mode: "index",
+                     intersect: false
                 },
 
                 scales: {
