@@ -52,9 +52,6 @@ const enviarPipefy = require("./routes/enviarPipefy");
 const criarCardsReceber =
   require("./routes/criarCardsReceber");
 
-const filtrosPaineis =
-    require("./routes/filtros-paineis");
-
 
 app.use(cors())
 app.use(express.json())
@@ -169,11 +166,6 @@ app.use(
   "/criar-cards-receber",
   autenticar,
   criarCardsReceber
-);
-
-app.use(
-    "/paineis-cargas-2/filtros-paineis",
-    filtrosPaineis
 );
 
 

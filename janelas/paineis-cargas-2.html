@@ -365,28 +365,6 @@ canvas{
 <div id="filtroPeriodo" class="filtro-periodo"></div>
 
 
-<div class="box">
-
-    <canvas id="graficoPrincipal"></canvas>
-
-</div>
-
-<div class="box">
-
-    <h3>📁 Seleções Salvas</h3>
-
-    <select id="selectFiltros"></select>
-
-    <button onclick="carregarSelecionado()">Carregar</button>
-    <button onclick="excluirSelecionado()">Excluir</button>
-
-    <hr>
-
-    <input id="nomeFiltro" placeholder="Nome da seleção">
-
-    <button onclick="salvarFiltro(document.getElementById('nomeFiltro').value)">
-        💾 Salvar seleção atual
-    </button>
 
 </div>
 
@@ -1109,148 +1087,12 @@ async function atualizarCargasPipefy(){
 
 }
 
-function getFiltrosAtuais() {
-    return {
-        periodo: periodoSelecionado,
-
-        fornecedor: valoresMarcados("filtroFornecedor"),
-        comprador: valoresMarcados("filtroComprador"),
-
-        ufFornecedor: valoresMarcados("filtroUFFornecedor"),
-        ufComprador: valoresMarcados("filtroUFComprador"),
-
-        tipo: valoresMarcados("filtroTipo"),
-        frete: valoresMarcados("filtroFrete")
-    };
-}
-
-
-async function salvarFiltro(nome) {
-
-    const API = "https://api-production-6670.up.railway.app";
-
-    const payload = {
-        nome,
-        filtros_json: getFiltrosAtuais(),
-        criado_por: "usuario"
-    };
-
-    await fetch(`${API}/paineis-cargas-2/filtros-paineis`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`
-        },
-        body: JSON.stringify(payload)
-    });
-
-    carregarFiltrosSalvos();
-}
-
-
-
-function aplicarFiltro(filtro) {
-
-    const f = typeof filtro.filtros_json === "string"
-        ? JSON.parse(filtro.filtros_json)
-        : filtro.filtros_json;
-
-    periodoSelecionado = f.periodo || "52";
-
-    document.querySelectorAll(".btnPeriodo").forEach(b => {
-        b.classList.remove("ativo");
-    });
-
-    const btn = document.querySelector(
-        `.btnPeriodo[data-periodo="${periodoSelecionado}"]`
-    );
-
-    if (btn) btn.classList.add("ativo");
-
-    marcarCheckbox("filtroFornecedor", f.fornecedor || []);
-    marcarCheckbox("filtroComprador", f.comprador || []);
-    marcarCheckbox("filtroUFFornecedor", f.ufFornecedor || []);
-    marcarCheckbox("filtroUFComprador", f.ufComprador || []);
-    marcarCheckbox("filtroTipo", f.tipo || []);
-    marcarCheckbox("filtroFrete", f.frete || []);
-
-    atualizarGraficos();
-}
-
-
-function marcarCheckbox(id, valores = []) {
-
-    valores = valores || [];
-
-    document.querySelectorAll(`#${id} input`).forEach(cb => {
-        cb.checked = valores.includes(cb.value);
-    });
-}
-
-
-async function carregarFiltrosSalvos() {
-
-    const res = await fetch(`${API}/paineis-cargas-2/filtros-paineis`, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-    });
-
-    const filtros = await res.json();
-
-    const select = document.getElementById("selectFiltros");
-
-    select.innerHTML = filtros.map(f => `
-        <option value="${f.id}">
-            ${f.nome}
-        </option>
-    `).join("");
-}
-
-
-async function carregarSelecionado() {
-
-    const id = document.getElementById("selectFiltros").value;
-
-    const res = await fetch(
-        `${API}/paineis-cargas-2/filtros-paineis/${id}`,
-        {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
-        }
-    );
-
-    const filtro = await res.json();
-
-    aplicarFiltro(filtro);
-}
-
-
-async function excluirSelecionado() {
-
-    const API = "https://api-production-6670.up.railway.app";
-
-    const id = document.getElementById("selectFiltros").value;
-
-    await fetch(`${API}/paineis-cargas-2/filtros-paineis/${id}`, {
-        method: "DELETE",
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-    });
-
-    carregarFiltrosSalvos();
-}
-
-
 
 mostrarUltimaAtualizacao();
 
 
 document.fonts.ready.then(() => {
     carregar();
-    carregarFiltrosSalvos();
 });
 
 
