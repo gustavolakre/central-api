@@ -856,10 +856,13 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
       Number(value).toLocaleString("pt-BR")
   },
 
-  tooltip: {
-    enabled: true,
-
-    padding: 14,
+ tooltip: {
+    backgroundColor: "rgba(17,24,39,0.95)",
+    borderColor: "#3b82f6",
+    borderWidth: 1,
+    cornerRadius: 10,
+    padding: 16,
+    displayColors: false,
 
     titleFont: {
         family: "Source Sans 3",
@@ -875,8 +878,7 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
 
     titleSpacing: 8,
     bodySpacing: 8,
-
-    displayColors: false,
+    caretPadding: 8,
 
     callbacks: {
         title: (ctx) => `Semana: ${ctx[0].label}`,
