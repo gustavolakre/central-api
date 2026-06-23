@@ -24,15 +24,39 @@ router.get("/", async (req, res) => {
 
 
 // =====================================================
+// 📌 BUSCAR UMA SELEÇÃO POR ID
+// =====================================================
+router.get("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const resultado = await pool.query(`
+            SELECT *
+            FROM filtros_paineis
+            WHERE id = $1
+        `, [id]);
+
+        if (resultado.rowCount === 0) {
+            return res.status(404).json({
+                erro: "Filtro não encontrado"
+            });
+        }
+
+        res.json(resultado.rows[0]);
+
+    } catch (err) {
+        console.error("Erro GET filtro por id:", err);
+        res.status(500).json({ erro: err.message });
+    }
+});
+
+
+// =====================================================
 // 📌 CRIAR NOVA SELEÇÃO
 // =====================================================
 router.post("/", async (req, res) => {
     try {
-        const {
-            nome,
-            filtros_json,
-            criado_por
-        } = req.body;
+        const { nome, filtros_json, criado_por } = req.body;
 
         if (!nome || !filtros_json) {
             return res.status(400).json({
@@ -56,52 +80,6 @@ router.post("/", async (req, res) => {
 
     } catch (err) {
         console.error("Erro POST filtros_paineis:", err);
-        res.status(500).json({ erro: err.message });
-    }
-});
-
-
-// =====================================================
-// 📌 ATUALIZAR SELEÇÃO EXISTENTE
-// =====================================================
-router.put("/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const {
-            nome,
-            filtros_json
-        } = req.body;
-
-        if (!id) {
-            return res.status(400).json({
-                erro: "ID é obrigatório"
-            });
-        }
-
-        const resultado = await pool.query(`
-            UPDATE filtros_paineis
-            SET
-                nome = COALESCE($1, nome),
-                filtros_json = COALESCE($2, filtros_json),
-                atualizado_em = NOW()
-            WHERE id = $3
-            RETURNING *
-        `, [
-            nome,
-            filtros_json,
-            id
-        ]);
-
-        if (resultado.rowCount === 0) {
-            return res.status(404).json({
-                erro: "Seleção não encontrada"
-            });
-        }
-
-        res.json(resultado.rows[0]);
-
-    } catch (err) {
-        console.error("Erro PUT filtros_paineis:", err);
         res.status(500).json({ erro: err.message });
     }
 });
