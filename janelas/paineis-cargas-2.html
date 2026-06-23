@@ -363,25 +363,28 @@ canvas{
 <div id="filtroPeriodo" class="filtro-periodo"></div>
 
 
-<canvas id="graficoPrincipal"></canvas>
+<div class="box">
 
+    <canvas id="graficoPrincipal"></canvas>
+
+</div>
 
 <div class="box">
 
-<h3>📁 Seleções Salvas</h3>
+    <h3>📁 Seleções Salvas</h3>
 
-<select id="selectFiltros"></select>
+    <select id="selectFiltros"></select>
 
-<button onclick="carregarSelecionado()">Carregar</button>
-<button onclick="excluirSelecionado()">Excluir</button>
+    <button onclick="carregarSelecionado()">Carregar</button>
+    <button onclick="excluirSelecionado()">Excluir</button>
 
-<hr>
+    <hr>
 
-<input id="nomeFiltro" placeholder="Nome da seleção">
+    <input id="nomeFiltro" placeholder="Nome da seleção">
 
-<button onclick="salvarFiltro(document.getElementById('nomeFiltro').value)">
-    💾 Salvar seleção atual
-</button>
+    <button onclick="salvarFiltro(document.getElementById('nomeFiltro').value)">
+        💾 Salvar seleção atual
+    </button>
 
 </div>
 
@@ -1140,14 +1143,26 @@ async function salvarFiltro(nome) {
         body: JSON.stringify(payload)
     });
 
-    carregarFiltrosSalvos();
+    await carregarFiltrosSalvos();
+
+    document.getElementById("nomeFiltro").value = "";
 }
+
+
 
 function aplicarFiltro(filtro) {
 
     const f = filtro.filtros_json;
 
     periodoSelecionado = f.periodo;
+
+    // 🔥 marca botão do período corretamente
+    document.querySelectorAll(".btnPeriodo").forEach(b => {
+        b.classList.remove("ativo");
+        if (b.dataset.periodo === f.periodo) {
+            b.classList.add("ativo");
+        }
+    });
 
     marcarCheckbox("filtroFornecedor", f.fornecedor);
     marcarCheckbox("filtroComprador", f.comprador);
@@ -1159,17 +1174,75 @@ function aplicarFiltro(filtro) {
     atualizarGraficos();
 }
 
-function marcarCheckbox(id, valores) {
+function marcarCheckbox(id, valores = []) {
 
     document.querySelectorAll(`#${id} input`).forEach(cb => {
         cb.checked = valores.includes(cb.value);
     });
 }
 
+
+async function carregarFiltrosSalvos() {
+
+    const res = await fetch("/filtros-paineis", {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    });
+
+    const filtros = await res.json();
+
+    const select = document.getElementById("selectFiltros");
+
+    select.innerHTML = filtros.map(f => `
+        <option value='${f.id}'>
+            ${f.nome}
+        </option>
+    `).join("");
+}
+
+
+async function carregarSelecionado() {
+
+    const id = document.getElementById("selectFiltros").value;
+
+    const res = await fetch(`/filtros-paineis/${id}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    });
+
+    const filtro = await res.json();
+
+    aplicarFiltro(filtro);
+}
+
+
+async function excluirSelecionado() {
+
+    const id = document.getElementById("selectFiltros").value;
+
+    await fetch(`/filtros-paineis/${id}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    });
+
+    carregarFiltrosSalvos();
+}
+
+
+
 mostrarUltimaAtualizacao();
+
+
 document.fonts.ready.then(() => {
     carregar();
+    carregarFiltrosSalvos();
 });
+
+
 
 </script>
 
