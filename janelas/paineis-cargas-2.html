@@ -1155,23 +1155,18 @@ function aplicarFiltro(filtro) {
         ? JSON.parse(filtro.filtros_json)
         : filtro.filtros_json;
 
-    // 🔥 atualiza período global
-    periodoSelecionado = f.periodo;
+    periodoSelecionado = f.periodo || "52";
 
-    // 🔥 sincroniza botão do período visualmente
     document.querySelectorAll(".btnPeriodo").forEach(b => {
         b.classList.remove("ativo");
     });
 
-    const btnAtivo = document.querySelector(
-        `.btnPeriodo[data-periodo="${f.periodo}"]`
+    const btn = document.querySelector(
+        `.btnPeriodo[data-periodo="${periodoSelecionado}"]`
     );
 
-    if (btnAtivo) {
-        btnAtivo.classList.add("ativo");
-    }
+    if (btn) btn.classList.add("ativo");
 
-    // 🔥 marca checkboxes (com segurança)
     marcarCheckbox("filtroFornecedor", f.fornecedor || []);
     marcarCheckbox("filtroComprador", f.comprador || []);
     marcarCheckbox("filtroUFFornecedor", f.ufFornecedor || []);
@@ -1179,7 +1174,6 @@ function aplicarFiltro(filtro) {
     marcarCheckbox("filtroTipo", f.tipo || []);
     marcarCheckbox("filtroFrete", f.frete || []);
 
-    // 🔥 atualiza gráfico com tudo aplicado
     atualizarGraficos();
 }
 
@@ -1195,8 +1189,6 @@ function marcarCheckbox(id, valores = []) {
 
 
 async function carregarFiltrosSalvos() {
-
-    const API = "https://api-production-6670.up.railway.app";
 
     const res = await fetch(`${API}/paineis-cargas-2/filtros-paineis`, {
         headers: {
@@ -1218,15 +1210,16 @@ async function carregarFiltrosSalvos() {
 
 async function carregarSelecionado() {
 
-    const API = "https://api-production-6670.up.railway.app";
-
     const id = document.getElementById("selectFiltros").value;
 
-    const res = await fetch(`${API}/paineis-cargas-2/filtros-paineis/${id}`, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
+    const res = await fetch(
+        `${API}/paineis-cargas-2/filtros-paineis/${id}`,
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
         }
-    });
+    );
 
     const filtro = await res.json();
 
