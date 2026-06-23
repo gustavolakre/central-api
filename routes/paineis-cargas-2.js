@@ -2,117 +2,73 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../src/db/database");
 
+router.get("/", async (req,res)=>{
 
-// =====================================================
-// 📌 LISTAR TODAS AS SELEÇÕES SALVAS
-// =====================================================
-router.get("/", async (req, res) => {
-    try {
+    try{
+
         const resultado = await pool.query(`
-            SELECT *
-            FROM filtros_paineis
-            ORDER BY criado_em DESC
+
+            SELECT
+
+                substring(
+                    cc.etiquetas
+                    from '[0-9]{4}/[0-9]{2}'
+                ) as semana,
+
+                cc.fornecedor,
+
+                cc.comprador,
+
+                cc.tipo_suino,
+
+                pf.uf as estado_fornecedor,
+
+                pc.uf as estado_comprador,
+
+                SUM(
+                    COALESCE(cc.quantidade,0)
+                ) as quantidade
+
+            FROM controle_cargas cc
+
+            LEFT JOIN parceiros_negocio pf
+                ON pf.nome_usual = cc.fornecedor
+
+            LEFT JOIN parceiros_negocio pc
+                ON pc.nome_usual = cc.comprador
+
+            WHERE substring(
+                cc.etiquetas
+                from '[0-9]{4}/[0-9]{2}'
+            ) IS NOT NULL
+
+                AND COALESCE(cc.fase,'') <> '09-Cancelada'
+
+            GROUP BY
+
+                semana,
+                cc.fornecedor,
+                cc.comprador,
+                cc.tipo_suino,
+                pf.uf,
+                pc.uf
+
+            ORDER BY semana
+
         `);
 
         res.json(resultado.rows);
 
-    } catch (err) {
-        console.error("Erro GET filtros_paineis:", err);
-        res.status(500).json({ erro: err.message });
-    }
-});
+    }catch(erro){
 
+        console.error(erro);
 
-// =====================================================
-// 📌 BUSCAR UMA SELEÇÃO POR ID
-// =====================================================
-router.get("/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const resultado = await pool.query(`
-            SELECT *
-            FROM filtros_paineis
-            WHERE id = $1
-        `, [id]);
-
-        if (resultado.rowCount === 0) {
-            return res.status(404).json({
-                erro: "Filtro não encontrado"
-            });
-        }
-
-        res.json(resultado.rows[0]);
-
-    } catch (err) {
-        console.error("Erro GET filtro por id:", err);
-        res.status(500).json({ erro: err.message });
-    }
-});
-
-
-// =====================================================
-// 📌 CRIAR NOVA SELEÇÃO
-// =====================================================
-router.post("/", async (req, res) => {
-    try {
-        const { nome, filtros_json, criado_por } = req.body;
-
-        if (!nome || !filtros_json) {
-            return res.status(400).json({
-                erro: "nome e filtros_json são obrigatórios"
-            });
-        }
-
-        const resultado = await pool.query(`
-            INSERT INTO filtros_paineis
-                (nome, filtros_json, criado_por)
-            VALUES
-                ($1, $2, $3)
-            RETURNING *
-        `, [
-            nome,
-            filtros_json,
-            criado_por || "sistema"
-        ]);
-
-        res.json(resultado.rows[0]);
-
-    } catch (err) {
-        console.error("Erro POST filtros_paineis:", err);
-        res.status(500).json({ erro: err.message });
-    }
-});
-
-
-// =====================================================
-// 📌 EXCLUIR SELEÇÃO
-// =====================================================
-router.delete("/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const resultado = await pool.query(`
-            DELETE FROM filtros_paineis
-            WHERE id = $1
-            RETURNING id
-        `, [id]);
-
-        if (resultado.rowCount === 0) {
-            return res.status(404).json({
-                erro: "Seleção não encontrada"
-            });
-        }
-
-        res.json({
-            sucesso: true,
-            id: resultado.rows[0].id
+        res.status(500).json({
+            erro: erro.message
         });
 
-    } catch (err) {
-        console.error("Erro DELETE filtros_paineis:", err);
-        res.status(500).json({ erro: err.message });
     }
+
 });
 
 module.exports = router;
