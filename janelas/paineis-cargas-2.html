@@ -755,15 +755,22 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
 
             options: {
 
+                devicePixelRatio: 2,
+
+                barPercentage: 0.95,
+                categoryPercentage: 0.95,
+
+                borderWidth: tipo === "line" ? 4 : 2,
+
                 responsive: true,
                 maintainAspectRatio: false,
 
                 layout: {
                     padding: {
-                        top: 30,
-                        right: 20,
-                        left: 20,
-                        bottom: 20
+                        top: 40,
+                        right: 35,
+                        left: 35,
+                        bottom: 35
                     },
 
                   },
