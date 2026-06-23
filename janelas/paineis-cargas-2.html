@@ -366,6 +366,26 @@ canvas{
 <canvas id="graficoPrincipal"></canvas>
 
 
+<div class="box">
+
+<h3>📁 Seleções Salvas</h3>
+
+<select id="selectFiltros"></select>
+
+<button onclick="carregarSelecionado()">Carregar</button>
+<button onclick="excluirSelecionado()">Excluir</button>
+
+<hr>
+
+<input id="nomeFiltro" placeholder="Nome da seleção">
+
+<button onclick="salvarFiltro(document.getElementById('nomeFiltro').value)">
+    💾 Salvar seleção atual
+</button>
+
+</div>
+
+
 </div>
 
 <script>
@@ -1087,7 +1107,64 @@ async function atualizarCargasPipefy(){
 
 }
 
+function getFiltrosAtuais() {
+    return {
+        periodo: periodoSelecionado,
 
+        fornecedor: valoresMarcados("filtroFornecedor"),
+        comprador: valoresMarcados("filtroComprador"),
+
+        ufFornecedor: valoresMarcados("filtroUFFornecedor"),
+        ufComprador: valoresMarcados("filtroUFComprador"),
+
+        tipo: valoresMarcados("filtroTipo"),
+        frete: valoresMarcados("filtroFrete")
+    };
+}
+
+
+async function salvarFiltro(nome) {
+
+    const payload = {
+        nome,
+        filtros_json: getFiltrosAtuais(),
+        criado_por: "usuario"
+    };
+
+    await fetch("/filtros-paineis", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify(payload)
+    });
+
+    carregarFiltrosSalvos();
+}
+
+function aplicarFiltro(filtro) {
+
+    const f = filtro.filtros_json;
+
+    periodoSelecionado = f.periodo;
+
+    marcarCheckbox("filtroFornecedor", f.fornecedor);
+    marcarCheckbox("filtroComprador", f.comprador);
+    marcarCheckbox("filtroUFFornecedor", f.ufFornecedor);
+    marcarCheckbox("filtroUFComprador", f.ufComprador);
+    marcarCheckbox("filtroTipo", f.tipo);
+    marcarCheckbox("filtroFrete", f.frete);
+
+    atualizarGraficos();
+}
+
+function marcarCheckbox(id, valores) {
+
+    document.querySelectorAll(`#${id} input`).forEach(cb => {
+        cb.checked = valores.includes(cb.value);
+    });
+}
 
 mostrarUltimaAtualizacao();
 document.fonts.ready.then(() => {
