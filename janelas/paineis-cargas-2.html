@@ -858,15 +858,32 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
 
   tooltip: {
     enabled: true,
+
+    padding: 14,
+
+    titleFont: {
+        family: "Source Sans 3",
+        size: 16,
+        weight: "700"
+    },
+
+    bodyFont: {
+        family: "Source Sans 3",
+        size: 15,
+        weight: "600"
+    },
+
+    titleSpacing: 8,
+    bodySpacing: 8,
+
+    displayColors: false,
+
     callbacks: {
-      label: (ctx) => {
-        return `Quantidade: ${Number(ctx.raw).toLocaleString("pt-BR")}`;
-      },
-      title: (ctx) => {
-        return `Semana: ${ctx[0].label}`;
-      }
+        title: (ctx) => `Semana: ${ctx[0].label}`,
+        label: (ctx) =>
+            `Quantidade: ${Number(ctx.raw).toLocaleString("pt-BR")}`
     }
-  }
+}
 }
 
             }
