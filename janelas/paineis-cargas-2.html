@@ -725,10 +725,9 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                     label: "Suínos",
                     data,
 
-                    backgroundColor:
-                        tipo === "line"
-                            ? "rgba(249,115,22,.20)"
-                            : cor,
+                    backgroundColor: tipo === "line"
+                       ? "rgba(37,99,235,0.15)"
+                       :  cor,
 
                     borderColor: cor,
                     borderWidth: 2,
@@ -739,6 +738,7 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
 
                     fill: tipo === "line",
                     tension: 0.3
+                    
                 }]
             },
 
@@ -828,7 +828,7 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
 
     font: {
       family: "Oswald",
-      size: 14,
+      size: 16,
       weight: "700"
     },
 
