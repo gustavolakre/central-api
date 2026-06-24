@@ -22,8 +22,6 @@
 
 <script>
 
-    const API = "https://api-production-6670.up.railway.app";
-
 </script>
 
 
@@ -522,8 +520,8 @@ canvas{
 
 <script>
 
- const socket = io("https://api-production-6670.up.railway.app");
-
+const API = "https://api-production-6670.up.railway.app";
+const socket = io(API); 
 
 
 let dadosGlobais = [];
@@ -1160,7 +1158,7 @@ async function atualizarCargasPipefy(){
 
         const resposta =
             await fetch(
-                "/importar-cargas-relatorio",
+               `${API}/importar-cargas-relatorio`,
                 {
 
                 method:"POST",
