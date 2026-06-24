@@ -337,7 +337,7 @@ canvas{
 }
 
 .lista-perfis{
-    max-height: 260px;
+    max-height: 500px;
     overflow-y: auto;
     background:#1f2937;
     border:1px solid #374151;
@@ -1426,39 +1426,32 @@ function limparTodosFiltros() {
 async function carregarPerfis(){
 
     const res = await fetch(`${API}/paineis-cargas-2/perfis`, {
-       headers: {
-           Authorization: `Bearer ${localStorage.getItem("token")}`
-           }
-     });
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+    });
 
-    const perfis =
-        await res.json();
+    const perfis = await res.json();
 
     const div = document.getElementById("listaPerfis");
 
-        div.innerHTML = `
-           <div class="perfil-item" data-id="">
-           🆕 Novo perfil
+    div.innerHTML = `
+        <div class="perfil-item" data-id="">
+            🆕 Novo perfil
         </div>
 
         <div class="perfil-item" data-id="__TODOS__">
-             👁️ Visualizar tudo (sem filtros)
+            👁️ Visualizar tudo (sem filtros)
         </div>
     `;
 
-    select.innerHTML =
-        `<option value="">Novo perfil...</option>`;
-
-    perfis.forEach(p=>{
-
-        select.innerHTML += `
-            <option value="${p.id}">
+    perfis.forEach(p => {
+        div.innerHTML += `
+            <div class="perfil-item" data-id="${p.id}">
                 ${p.nome}
-            </option>
+            </div>
         `;
-
     });
-
 }
 
 
@@ -1478,30 +1471,32 @@ document.getElementById("btnSalvarPerfil")
 document.getElementById("btnExcluirPerfil")
     .onclick = excluirPerfil;
 
-document.getElementById("perfilGrafico")
-    .addEventListener("change", (e) => {
+document.addEventListener("click", (e) => {
 
-        const valor = e.target.value;
+    const item = e.target.closest(".perfil-item");
 
-        // 👇 limpar tudo (modo visualização geral)
-        if (valor === "__TODOS__" || valor === "") {
+    if (!item) return;
 
-            perfilAtual = null;
+    const id = item.dataset.id;
 
-            limparTodosFiltros(); // vamos criar abaixo
-            periodoSelecionado = "52";
+    if (id === "__TODOS__" || id === "") {
 
-            document
-                .querySelectorAll(".btnPeriodo")
-                .forEach(b => b.classList.toggle("ativo", b.dataset.periodo === "52"));
+        perfilAtual = null;
+        limparTodosFiltros();
+        periodoSelecionado = "52";
 
-            atualizarGraficos();
+        document
+            .querySelectorAll(".btnPeriodo")
+            .forEach(b =>
+                b.classList.toggle("ativo", b.dataset.periodo === "52")
+            );
 
-            return;
-        }
+        atualizarGraficos();
+        return;
+    }
 
-        abrirPerfil(valor);
-    });
+    abrirPerfil(id);
+});
 
 
 
