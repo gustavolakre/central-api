@@ -9,62 +9,41 @@ router.get("/", async (req,res)=>{
         const resultado = await pool.query(`
 
             SELECT
+    substring(cc.etiquetas from '[0-9]{4}/[0-9]{2}') as semana,
 
-                substring(
-                    cc.etiquetas
-                    from '[0-9]{4}/[0-9]{2}'
-                ) as semana,
+    cc.fornecedor,
+    cc.comprador,
+    cc.tipo_suino,
+    cc.frete,
 
-                cc.fornecedor,
+    pf.uf as estado_fornecedor,
+    pc.uf as estado_comprador,
 
-                cc.comprador,
+    SUM(COALESCE(cc.quantidade,0)) as quantidade,
 
-                cc.tipo_suino,
+    SUM(COALESCE(cc.peso,0)) as peso_total
 
-                cc.frete, 
+FROM controle_cargas cc
 
-                cc.peso,
+LEFT JOIN parceiros_negocio pf
+    ON pf.nome_usual = cc.fornecedor
 
-                cc.preco_kg,
+LEFT JOIN parceiros_negocio pc
+    ON pc.nome_usual = cc.comprador
 
-                pf.uf as estado_fornecedor,
+WHERE substring(cc.etiquetas from '[0-9]{4}/[0-9]{2}') IS NOT NULL
+  AND COALESCE(cc.fase,'') <> '09-Cancelada'
 
-                pc.uf as estado_comprador,
+GROUP BY
+    semana,
+    cc.fornecedor,
+    cc.comprador,
+    cc.tipo_suino,
+    cc.frete,
+    pf.uf,
+    pc.uf
 
-               
-
-                SUM(
-                    COALESCE(cc.quantidade,0)
-                ) as quantidade
-
-            FROM controle_cargas cc
-
-            LEFT JOIN parceiros_negocio pf
-                ON pf.nome_usual = cc.fornecedor
-
-            LEFT JOIN parceiros_negocio pc
-                ON pc.nome_usual = cc.comprador
-
-            WHERE substring(
-                cc.etiquetas
-                from '[0-9]{4}/[0-9]{2}'
-            ) IS NOT NULL
-
-                AND COALESCE(cc.fase,'') <> '09-Cancelada'
-
-            GROUP BY
-
-                semana,
-                cc.fornecedor,
-                cc.comprador,
-                cc.tipo_suino,
-                cc.frete,
-                cc.peso,
-                cc.preco_kg,
-                pf.uf,
-                pc.uf
-
-            ORDER BY semana
+ORDER BY semana;
 
         `);
 
