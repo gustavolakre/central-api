@@ -1122,39 +1122,35 @@ function atualizarGraficos(){
     // =========================
     const mapa = {};
 
-    dados.forEach(item => {
+dados.forEach(item => {
 
-        const peso = Number(item.peso);
-        const preco = Number(item.preco_kg);
+    const peso = Number(item.peso);
+    const preco = Number(item.preco_kg);
 
-        if (!peso || !preco) return;
+    if (isNaN(peso) || isNaN(preco)) return;
 
-        if (!mapa[item.semana]) {
-            mapa[item.semana] = {
-                somaPeso: 0,
-                somaValor: 0
-            };
-        }
-
-        mapa[item.semana].somaPeso += peso;
-        mapa[item.semana].somaValor += peso * preco;
-    });
-
-    let semanasMP = Object.keys(mapa).sort((a, b) => {
-        const [anoA, semanaA] = a.split("/").map(Number);
-        const [anoB, semanaB] = b.split("/").map(Number);
-        return anoA !== anoB ? anoA - anoB : semanaA - semanaB;
-    });
-
-    if (limite52) {
-        semanasMP = semanasMP.slice(-52);
+    if (!mapa[item.semana]) {
+        mapa[item.semana] = {
+            somaPeso: 0,
+            somaValor: 0
+        };
     }
 
-    const labelsMP = semanasMP;
-    const valoresMP = semanasMP.map(s => {
-        const d = mapa[s];
-        return d.somaPeso ? (d.somaValor / d.somaPeso) : 0;
-    });
+    mapa[item.semana].somaPeso += peso;
+    mapa[item.semana].somaValor += peso * preco;
+});
+
+const semanasMP = Object.keys(mapa).sort((a, b) => {
+    const [anoA, semanaA] = a.split("/").map(Number);
+    const [anoB, semanaB] = b.split("/").map(Number);
+    return anoA !== anoB ? anoA - anoB : semanaA - semanaB;
+});
+
+const labelsMP = semanasMP;
+const valoresMP = semanasMP.map(s => {
+    const d = mapa[s];
+    return d.somaPeso > 0 ? (d.somaValor / d.somaPeso) : 0;
+});
 
     destruir(chartMediaPonderada);
 
