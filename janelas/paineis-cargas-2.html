@@ -393,6 +393,11 @@ canvas{
     overflow-y: auto;
 }
 
+.perfil-item.ativo{
+    background:#2563eb;
+    color:white;
+    font-weight:700;
+}
 
 </style>
 </head>
@@ -1342,7 +1347,6 @@ async function abrirPerfil(id){
 
     perfilAtual = id;
 
-    document.getElementById("perfilGrafico").value = id;
 
     const f = perfil.filtros_json;
 
@@ -1395,6 +1399,13 @@ async function abrirPerfil(id){
             );
 
         });
+
+    document.querySelectorAll(".perfil-item").forEach(el => {
+    el.classList.toggle(
+        "ativo",
+        el.dataset.id == id
+    );
+});
 
     atualizarGraficos();
 
