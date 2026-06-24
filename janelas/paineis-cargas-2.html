@@ -1532,17 +1532,18 @@ dados.forEach(item => {
     const peso = parseFloat(item.peso_total);
     const valor = parseFloat(item.valor_total);
 
-    if (!peso) return;
+    // ❌ ignora inválidos
+    if (!peso || !valor) return;
 
     if (!mapa[item.semana]) {
         mapa[item.semana] = {
-            peso: 0,
-            valor: 0
+            somaPeso: 0,
+            somaValor: 0
         };
     }
 
-    mapa[item.semana].peso += peso;
-    mapa[item.semana].valor += valor;
+    mapa[item.semana].somaPeso += peso;
+    mapa[item.semana].somaValor += valor;
 });
 
 const semanas = Object.keys(mapa).sort((a, b) => {
@@ -1552,14 +1553,13 @@ const semanas = Object.keys(mapa).sort((a, b) => {
 });
 
 const labelsMP = semanas;
+
 const valoresMP = semanas.map(s => {
     const d = mapa[s];
-    return d.peso ? (d.valor / d.peso) : 0;
+    return d.somaPeso
+        ? (d.somaValor / d.somaPeso)
+        : 0;
 });
-
-if (limite52) {
-    semanasMP = semanasMP.slice(-52);
-}
 
     if (limite52) {
         semanas = semanas.slice(-52);
