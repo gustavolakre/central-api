@@ -131,18 +131,26 @@ router.post("/", async (req, res) => {
     // 5 - 🔥 DISPARA SOCKET PARA TODOS OS PAINÉIS
     //
     const dataHora =
-      new Date().toLocaleDateString("pt-BR") +
-      " " +
-      new Date().toLocaleTimeString("pt-BR");
+  new Date().toLocaleDateString("pt-BR") +
+  " " +
+  new Date().toLocaleTimeString("pt-BR");
 
-    req.app.get("io").emit("ultimaAtualizacaoPipefy", {
-         data: dataHora
+const io = req.app.get("io");
+
+console.log("IO =", io);
+
+if (!io) {
+    console.log("ERRO: io não encontrado!");
+} else {
+    io.emit("ultimaAtualizacaoPipefy", {
+        data: dataHora
     });
+}
 
-    //
-    // 6 - RESPOSTA FINAL
-    //
-    return res.json(resultado);
+//
+// 6 - RESPOSTA FINAL
+//
+return res.json(resultado);
 
   } catch (err) {
     console.error(err);
