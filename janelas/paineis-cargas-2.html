@@ -1129,10 +1129,9 @@ function atualizarGraficos(){
 const mapa = {};
 
 dados.forEach(item => {
-
     const semana = item.semana;
 
-    const peso = Number(item.peso || 0);
+    const peso = Number(item.peso_total || 0);
     const valor = Number(item.valor_total || 0);
 
     if (!mapa[semana]) {
