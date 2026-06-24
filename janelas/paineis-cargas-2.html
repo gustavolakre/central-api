@@ -482,6 +482,8 @@ canvas{
 <div class="box">
     <canvas id="graficoPrincipal"></canvas>
 
+    <canvas id="graficoMediaPonderada"></canvas>
+
 
     <div class="perfil-grafico">
 
@@ -531,6 +533,8 @@ let chartPrincipal;
 let periodoSelecionado = "52";
 
 let perfilAtual = null;
+
+let chartMediaPonderada;
 
 
 socket.on("ultimaAtualizacaoPipefy", async (data) => {
@@ -1047,7 +1051,9 @@ function atualizarGraficos(){
 
     let dados = [...dadosGlobais];
 
+    // =========================
     // FILTROS
+    // =========================
     dados = filtrar(dados, "fornecedor", valoresMarcados("filtroFornecedor"));
     dados = filtrar(dados, "comprador", valoresMarcados("filtroComprador"));
 
@@ -1060,7 +1066,9 @@ function atualizarGraficos(){
     dados = filtrar(dados, "tipo_suino", valoresMarcados("filtroTipo"));
     dados = filtrar(dados, "frete", valoresMarcados("filtroFrete"));
 
+    // =========================
     // PERÍODO
+    // =========================
     const is52 = periodoSelecionado === "52";
     const isAll = periodoSelecionado === "all";
 
@@ -1070,7 +1078,7 @@ function atualizarGraficos(){
             .sort((a, b) => {
                 const [anoA, semanaA] = a.split("/").map(Number);
                 const [anoB, semanaB] = b.split("/").map(Number);
-                return anoA !== anoB ? anoA - anoB : semanaA - semanaB;
+                return anoA !== anoB ? anoA - ano : semanaA - semanaB;
             });
 
         const ultimas52 = semanasOrdenadas.slice(-52);
@@ -1086,8 +1094,11 @@ function atualizarGraficos(){
         );
     }
 
-    // GRÁFICO PRINCIPAL
     const limite52 = periodoSelecionado === "52";
+
+    // =========================
+    // GRÁFICO 1 - QUANTIDADE
+    // =========================
     const g = agruparPorSemana(dados, limite52);
 
     destruir(chartPrincipal);
@@ -1098,9 +1109,56 @@ function atualizarGraficos(){
         g.valores,
         "#3b82f6",
         periodoSelecionado === "all" ? "line" : "bar"
-        
     );
 
+    // =========================
+    // GRÁFICO 2 - MÉDIA PONDERADA (peso x preco_kg)
+    // =========================
+    const mapa = {};
+
+    dados.forEach(item => {
+
+        const peso = Number(item.peso);
+        const preco = Number(item.preco_kg);
+
+        if (!peso || !preco) return;
+
+        if (!mapa[item.semana]) {
+            mapa[item.semana] = {
+                somaPeso: 0,
+                somaValor: 0
+            };
+        }
+
+        mapa[item.semana].somaPeso += peso;
+        mapa[item.semana].somaValor += peso * preco;
+    });
+
+    let semanasMP = Object.keys(mapa).sort((a, b) => {
+        const [anoA, semanaA] = a.split("/").map(Number);
+        const [anoB, semanaB] = b.split("/").map(Number);
+        return anoA !== anoB ? anoA - anoB : semanaA - semanaB;
+    });
+
+    if (limite52) {
+        semanasMP = semanasMP.slice(-52);
+    }
+
+    const labelsMP = semanasMP;
+    const valoresMP = semanasMP.map(s => {
+        const d = mapa[s];
+        return d.somaPeso ? (d.somaValor / d.somaPeso) : 0;
+    });
+
+    destruir(chartMediaPonderada);
+
+    chartMediaPonderada = criarGrafico(
+        "graficoMediaPonderada",
+        labelsMP,
+        valoresMP,
+        "#10b981",
+        periodoSelecionado === "all" ? "line" : "bar"
+    );
 }
 
 
@@ -1448,6 +1506,49 @@ function limparTodosFiltros() {
         .querySelectorAll(".lista-checkbox input[type=checkbox]")
         .forEach(cb => cb.checked = false);
 
+}
+
+
+function agruparMediaPonderada(lista, limite52 = true) {
+
+    const mapa = {};
+
+    lista.forEach(item => {
+
+        const peso = Number(item.peso);
+        const preco = Number(item.preco_kg);
+
+        if (!peso || !preco) return; // ignora inválidos
+
+        if (!mapa[item.semana]) {
+            mapa[item.semana] = {
+                somaPeso: 0,
+                somaValor: 0
+            };
+        }
+
+        mapa[item.semana].somaPeso += peso;
+        mapa[item.semana].somaValor += peso * preco;
+    });
+
+    let semanas = Object.keys(mapa).sort((a, b) => {
+        const [anoA, semanaA] = a.split("/").map(Number);
+        const [anoB, semanaB] = b.split("/").map(Number);
+
+        return anoA !== anoB ? anoA - anoB : semanaA - semanaB;
+    });
+
+    if (limite52) {
+        semanas = semanas.slice(-52);
+    }
+
+    return {
+        labels: semanas,
+        valores: semanas.map(s => {
+            const d = mapa[s];
+            return d.somaPeso ? (d.somaValor / d.somaPeso) : 0;
+        })
+    };
 }
  
  
