@@ -54,6 +54,22 @@ const criarCardsReceber =
 
 const perfisRouter = require("./routes/perfis-graficos");
 
+const http = require("http");
+const { Server } = require("socket.io");
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+    cors: { origin: "*" }
+});
+
+module.exports.io = io;
+
+
+io.on("connection", (socket) => {
+    console.log("cliente conectado");
+});
+
 app.use(cors())
 app.use(express.json())
 
@@ -275,10 +291,8 @@ app.post("/login", async (req, res) => {
 
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor rodando na porta ${PORT}`)
-
 })
 
 

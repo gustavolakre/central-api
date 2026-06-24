@@ -467,7 +467,23 @@ body{
 
 </div>
 
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
 <script>
+
+
+const socket = io("https://api-production-6670.up.railway.app");
+
+socket.on("ultimaAtualizacaoPipefy", (data) => {
+
+    localStorage.setItem(
+        "ultimaAtualizacaoPipefy",
+        data.data
+    );
+
+    mostrarUltimaAtualizacao();
+});
+
 
 const token = localStorage.getItem("token");
 
@@ -1063,14 +1079,9 @@ function montarPainelDireito(linhas){
     container.innerHTML = html;
 }
 
-carregarPipeline();
-mostrarUltimaAtualizacao();
-
-
-window.addEventListener("storage", (event) => {
-    if (event.key === "ultimaAtualizacaoPipefy") {
-        mostrarUltimaAtualizacao();
-    }
+window.addEventListener("load", () => {
+    carregarPipeline();
+    mostrarUltimaAtualizacao();
 });
 
 </script>

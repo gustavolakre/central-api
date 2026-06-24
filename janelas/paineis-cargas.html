@@ -11,6 +11,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
 <script src="/janelas/auth.js"></script>
 
 <style>
@@ -464,6 +466,18 @@ body{
 </div>   
 
 <script>
+
+
+const socket = io("https://api-production-6670.up.railway.app");
+
+socket.on("ultimaAtualizacaoPipefy", async (data) => {
+
+    localStorage.setItem("ultimaAtualizacaoPipefy", data.data);
+
+    mostrarUltimaAtualizacao();
+
+    await carregarGraficos(); // 🔥 ESSENCIAL
+});
 
 
 let compradores = [];
@@ -1380,11 +1394,23 @@ function atualizarListas(){
 }
 
 
+function atualizarUltimaAtualizacaoUI() {
+    const campo = document.getElementById("ultimaAtualizacao");
+
+    if (!campo) return;
+
+    const ultima = localStorage.getItem("ultimaAtualizacaoPipefy");
+
+    campo.innerHTML = ultima
+        ? `🕒 Última atualização: ${ultima}`
+        : "🕒 Ainda não atualizado";
+}
+
+
 mostrarUltimaAtualizacao();
 
 carregarGraficos();
 
-mostrarUltimaAtualizacao();
 
 </script>
 
