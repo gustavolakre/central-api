@@ -1372,6 +1372,18 @@ async function abrirPerfil(id){
     atualizarGraficos();
 
 }
+
+
+function marcarFiltro(id, valores){
+
+    if (!valores) return;
+
+    const lista = document.querySelectorAll(`#${id} input[type=checkbox]`);
+
+    lista.forEach(cb => {
+        cb.checked = valores.includes(cb.value);
+    });
+}
  
  
 
