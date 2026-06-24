@@ -24,7 +24,7 @@ router.get("/", async (req,res)=>{
                 cc.frete, 
 
                 cc.peso,
-                
+
                 cc.preco_kg,
 
                 pf.uf as estado_fornecedor,
@@ -60,7 +60,7 @@ router.get("/", async (req,res)=>{
                 cc.tipo_suino,
                 cc.frete,
                 cc.peso,
-                cc.preco_kg
+                cc.preco_kg,
                 pf.uf,
                 pc.uf
 
