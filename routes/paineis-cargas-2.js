@@ -6,9 +6,8 @@ router.get("/", async (req,res)=>{
 
     try{
 
-        const resultado = await pool.query(`
-
-            SELECT
+       const resultado = await pool.query(`
+   SELECT
     substring(cc.etiquetas from '[0-9]{4}/[0-9]{2}') as semana,
 
     cc.fornecedor,
@@ -19,9 +18,30 @@ router.get("/", async (req,res)=>{
     pf.uf as estado_fornecedor,
     pc.uf as estado_comprador,
 
-    SUM(COALESCE(cc.quantidade,0)) as quantidade,
+    SUM(
+        CASE 
+            WHEN cc.quantidade IS NOT NULL 
+            THEN cc.quantidade 
+            ELSE 0 
+        END
+    ) as quantidade,
 
-    SUM(COALESCE(cc.peso,0)) as peso_total
+    SUM(
+        CASE 
+            WHEN cc.peso IS NOT NULL 
+             AND cc.preco_kg IS NOT NULL
+            THEN cc.peso * cc.preco_kg
+            ELSE 0
+        END
+    ) as valor_total,
+
+    SUM(
+        CASE 
+            WHEN cc.peso IS NOT NULL 
+            THEN cc.peso
+            ELSE 0
+        END
+    ) as peso_total
 
 FROM controle_cargas cc
 
@@ -33,6 +53,8 @@ LEFT JOIN parceiros_negocio pc
 
 WHERE substring(cc.etiquetas from '[0-9]{4}/[0-9]{2}') IS NOT NULL
   AND COALESCE(cc.fase,'') <> '09-Cancelada'
+  AND cc.peso IS NOT NULL
+  AND cc.preco_kg IS NOT NULL
 
 GROUP BY
     semana,
@@ -44,8 +66,7 @@ GROUP BY
     pc.uf
 
 ORDER BY semana;
-
-        `);
+`);
 
         res.json(resultado.rows);
 

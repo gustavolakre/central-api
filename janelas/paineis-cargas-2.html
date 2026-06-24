@@ -1123,19 +1123,17 @@ function atualizarGraficos(){
         periodoSelecionado === "all" ? "line" : "bar"
     );
 
-    // =========================
-    // GRÁFICO 2 - MÉDIA PONDERADA (peso x preco_kg)
-    // =========================
-    const mapa = {};
+// =========================
+// MÉDIA PONDERADA CORRETA
+// =========================
+const mapa = {};
 
 dados.forEach(item => {
 
-    const peso = parseFloat(item.peso_total);
-    const preco = item.peso_total > 0
-    ? (parseFloat(item.valor_total) / parseFloat(item.peso_total))
-    : 0;
+    const peso = Number(item.peso_total);
+    const valor = Number(item.valor_total);
 
-    if (isNaN(peso) || isNaN(preco)) return;
+    if (!peso || !valor) return; // ignora vazios
 
     if (!mapa[item.semana]) {
         mapa[item.semana] = {
@@ -1145,7 +1143,7 @@ dados.forEach(item => {
     }
 
     mapa[item.semana].somaPeso += peso;
-    mapa[item.semana].somaValor += peso * preco;
+    mapa[item.semana].somaValor += valor;
 });
 
 const semanasMP = Object.keys(mapa).sort((a, b) => {
@@ -1158,7 +1156,7 @@ const labelsMP = semanasMP;
 
 const valoresMP = semanasMP.map(s => {
     const d = mapa[s];
-    return d.peso ? (d.valor / d.peso) : 0;
+    return d.somaPeso ? (d.somaValor / d.somaPeso) : 0;
 });
 
     console.log("mapa final MP:", mapa);
