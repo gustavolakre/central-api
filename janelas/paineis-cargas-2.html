@@ -1530,20 +1530,22 @@ const mapa = {};
 
 dados.forEach(item => {
 
+    const semana = item.semana;
+
     const peso = Number(item.peso_total);
     const valor = Number(item.valor_total);
 
-    if (!peso || !valor) return;
+    if (!peso || !valor) return; // ignora vazios
 
-    if (!mapa[item.semana]) {
-        mapa[item.semana] = {
+    if (!mapa[semana]) {
+        mapa[semana] = {
             peso: 0,
             valor: 0
         };
     }
 
-    mapa[item.semana].peso += peso;
-    mapa[item.semana].valor += valor;
+    mapa[semana].peso += peso;
+    mapa[semana].valor += valor;
 });
 
 const semanas = Object.keys(mapa).sort((a, b) => {
