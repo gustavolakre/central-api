@@ -23,7 +23,6 @@ const importarCargas =
   require("../services/importarCargasService");
 
 // 🔥 IMPORTANTE: pega o io do server
-const { io } = require("../server");
 
 const router = express.Router();
 
@@ -136,8 +135,8 @@ router.post("/", async (req, res) => {
       " " +
       new Date().toLocaleTimeString("pt-BR");
 
-    io.emit("ultimaAtualizacaoPipefy", {
-      data: dataHora
+    req.app.get("io").emit("ultimaAtualizacaoPipefy", {
+         data: dataHora
     });
 
     //
