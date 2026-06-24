@@ -1527,20 +1527,17 @@ function agruparMediaPonderada(lista, limite52 = true) {
 
 dados.forEach(item => {
 
-    const peso = parseFloat(item.peso);
-    const preco = parseFloat(item.preco_kg);
+    const peso = Number(item.peso_total);
+    const valor = Number(item.valor_total);
 
-    if (isNaN(peso) || isNaN(preco)) return;
+    if (!peso) return;
 
     if (!mapa[item.semana]) {
-        mapa[item.semana] = {
-            somaPeso: 0,
-            somaValor: 0
-        };
+        mapa[item.semana] = { peso: 0, valor: 0 };
     }
 
-    mapa[item.semana].somaPeso += peso;
-    mapa[item.semana].somaValor += peso * preco;
+    mapa[item.semana].peso += peso;
+    mapa[item.semana].valor += valor;
 });
 
 let semanasMP = Object.keys(mapa).sort((a, b) => {
