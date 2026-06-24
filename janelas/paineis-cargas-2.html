@@ -1129,33 +1129,32 @@ function atualizarGraficos(){
 const mapa = {};
 
 dados.forEach(item => {
+
     const semana = item.semana;
 
-    const peso = Number(item.peso_total || 0);
-    const valor = Number(item.valor_total || 0);
+    const peso = Number(item.peso_total);
+    const valor = Number(item.valor_total);
 
     if (!mapa[semana]) {
-        mapa[semana] = {
-            peso: 0,
-            valor: 0
-        };
+        mapa[semana] = { peso: 0, valor: 0 };
     }
 
-    mapa[semana].peso += peso;
-    mapa[semana].valor += valor;
+    if (!isNaN(peso)) mapa[semana].peso += peso;
+    if (!isNaN(valor)) mapa[semana].valor += valor;
 });
 
-const semanasMP = Object.keys(mapa).sort((a, b) => {
-    const [anoA, semanaA] = a.split("/").map(Number);
-    const [anoB, semanaB] = b.split("/").map(Number);
-    return anoA !== anoB ? anoA - anoB : semanaA - semanaB;
-});
+const semanasMP = Object.keys(mapa)
+    .sort((a, b) => {
+        const [anoA, semA] = a.split("/").map(Number);
+        const [anoB, semB] = b.split("/").map(Number);
+        return anoA !== anoB ? anoA - anoB : semA - semB;
+    });
 
 const labelsMP = semanasMP;
 
 const valoresMP = semanasMP.map(s => {
     const d = mapa[s];
-    return d.peso ? (d.valor / d.peso) : 0;
+    return d.peso > 0 ? (d.valor / d.peso) : 0;
 });
 
     console.log("mapa final MP:", mapa);
