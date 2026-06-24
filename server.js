@@ -52,7 +52,7 @@ const enviarPipefy = require("./routes/enviarPipefy");
 const criarCardsReceber =
   require("./routes/criarCardsReceber");
 
-const perfisRouter = require("./routes/perfis-graficos");
+const perfisRouter = require("./routes/perfis");
 
 app.use(cors())
 app.use(express.json())
@@ -171,7 +171,7 @@ app.use(
 );
 
 
-app.use("/paineis-cargas-2/perfis-paineis", perfisRouter);
+app.use("/paineis-cargas-2/perfis", perfisRouter);
 
 app.get("/", (req, res) => {
   res.redirect("/login");
