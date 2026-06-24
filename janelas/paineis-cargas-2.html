@@ -1152,6 +1152,10 @@ const valoresMP = semanasMP.map(s => {
     return d.somaPeso > 0 ? (d.somaValor / d.somaPeso) : 0;
 });
 
+    console.log("mapa final MP:", mapa);
+    console.log("labelsMP:", labelsMP);
+    console.log("valoresMP:", valoresMP);
+
     destruir(chartMediaPonderada);
 
     chartMediaPonderada = criarGrafico(
