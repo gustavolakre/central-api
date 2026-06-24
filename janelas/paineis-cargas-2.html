@@ -1517,32 +1517,41 @@ function limparTodosFiltros() {
 
 function agruparMediaPonderada(lista, limite52 = true) {
 
-    const mapa = {};
+   const mapa = {};
 
-    lista.forEach(item => {
+dados.forEach(item => {
 
-        const peso = Number(item.peso);
-        const preco = Number(item.preco_kg);
+    const peso = parseFloat(item.peso);
+    const preco = parseFloat(item.preco_kg);
 
-        if (!peso || !preco) return; // ignora inválidos
+    if (isNaN(peso) || isNaN(preco)) return;
 
-        if (!mapa[item.semana]) {
-            mapa[item.semana] = {
-                somaPeso: 0,
-                somaValor: 0
-            };
-        }
+    if (!mapa[item.semana]) {
+        mapa[item.semana] = {
+            somaPeso: 0,
+            somaValor: 0
+        };
+    }
 
-        mapa[item.semana].somaPeso += peso;
-        mapa[item.semana].somaValor += peso * preco;
-    });
+    mapa[item.semana].somaPeso += peso;
+    mapa[item.semana].somaValor += peso * preco;
+});
 
-    let semanas = Object.keys(mapa).sort((a, b) => {
-        const [anoA, semanaA] = a.split("/").map(Number);
-        const [anoB, semanaB] = b.split("/").map(Number);
+let semanasMP = Object.keys(mapa).sort((a, b) => {
+    const [anoA, semanaA] = a.split("/").map(Number);
+    const [anoB, semanaB] = b.split("/").map(Number);
+    return anoA !== anoB ? anoA - anoB : semanaA - semanaB;
+});
 
-        return anoA !== anoB ? anoA - anoB : semanaA - semanaB;
-    });
+if (limite52) {
+    semanasMP = semanasMP.slice(-52);
+}
+
+const labelsMP = semanasMP;
+const valoresMP = semanasMP.map(s => {
+    const d = mapa[s];
+    return d.somaPeso ? (d.somaValor / d.somaPeso) : 0;
+});
 
     if (limite52) {
         semanas = semanas.slice(-52);
