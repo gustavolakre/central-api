@@ -52,7 +52,7 @@ const enviarPipefy = require("./routes/enviarPipefy");
 const criarCardsReceber =
   require("./routes/criarCardsReceber");
 
-const perfisRouter = require("./routes/perfis");
+const perfisRouter = require("./routes/perfis-graficos");
 
 app.use(cors())
 app.use(express.json())
