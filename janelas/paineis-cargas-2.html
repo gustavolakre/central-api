@@ -1539,8 +1539,8 @@ dados.forEach(item => {
         };
     }
 
-    mapa[item.semana].peso += peso;
-    mapa[item.semana].valor += valor;
+    mapa[item.semana].somaPeso += peso;
+    mapa[item.semana].somaValor += valor;
 });
 
 let semanasMP = Object.keys(mapa).sort((a, b) => {
