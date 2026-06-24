@@ -1053,6 +1053,12 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
 
 function atualizarGraficos(){
 
+    console.log("EXEMPLO ITEM:", dadosGlobais[0]);
+    console.log("CAMPOS IMPORTANTES:", {
+         peso: dadosGlobais[0]?.peso,
+         preco_kg: dadosGlobais[0]?.preco_kg
+        });
+
     let dados = [...dadosGlobais];
 
     // =========================
