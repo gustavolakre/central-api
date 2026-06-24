@@ -1124,8 +1124,8 @@ function atualizarGraficos(){
 
 dados.forEach(item => {
 
-    const peso = Number(item.peso);
-    const preco = Number(item.preco_kg);
+    const peso = parseFloat(String(item.peso).replace(",", "."));
+    const preco = parseFloat(String(item.preco_kg).replace(",", "."));
 
     if (isNaN(peso) || isNaN(preco)) return;
 
