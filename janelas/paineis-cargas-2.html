@@ -12,10 +12,6 @@
 
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
-<script>
-    Chart.register(ChartDataLabels);
-</script>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700&display=swap" rel="stylesheet">
 
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
@@ -976,25 +972,28 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                 },
 
                plugins: {
-       legend: {
-           display: false
-           },
+                    legend: {
+                    display: false
+                     },
 
-          datalabels: {
-             display: (ctx) => {
-            // 🔥 some quando for linha (todo período)
-            return periodoSelecionado !== "all";
-        },
+                   datalabels: {
+                    display: (ctx) => {
+                    return periodoSelecionado !== "all";
+                },
 
-          color: "#fff",
-          anchor: "end",
-          align: "top",
-          offset: 6,
+                  color: "#fff",
+                  anchor: "end",
+                  align: "top",
+                  offset: 6,
+                  anchor: "end",
+                  align: "end",
+                  offset: 6,
+                  clamp: true,
 
-          font: {
-               family: "Source Sans 3",
-               size: 10,
-               weight: "600"
+               font: {
+                   family: "Source Sans 3",
+                   size: 10,
+                   weight: "600"
             },
 
            formatter: (value) =>
