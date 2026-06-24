@@ -978,30 +978,30 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                 },
 
                plugins: {
-  legend: {
-    display: false
-  },
+       legend: {
+           display: false
+           },
 
-  datalabels: {
-    display: (ctx) => {
-      // 🔥 some quando for linha (todo período)
-      return periodoSelecionado !== "all";
-    },
+          datalabels: {
+             display: (ctx) => {
+            // 🔥 some quando for linha (todo período)
+            return periodoSelecionado !== "all";
+        },
 
-    color: "#fff",
-    anchor: "end",
-    align: "top",
-    offset: 6,
+          color: "#fff",
+          anchor: "end",
+          align: "top",
+          offset: 6,
 
-    font: {
-      family: "Source Sans 3",
-      size: 16,
-      weight: "600"
-    },
+          font: {
+               family: "Source Sans 3",
+               size: 13,
+               weight: "600"
+            },
 
-    formatter: (value) =>
-      Number(value).toLocaleString("pt-BR")
-  },
+           formatter: (value) =>
+           Number(value).toLocaleString("pt-BR")
+        },
 
  tooltip: {
     backgroundColor: "rgba(17,24,39,0.95)",
