@@ -1078,8 +1078,10 @@ function atualizarGraficos(){
             .sort((a, b) => {
                 const [anoA, semanaA] = a.split("/").map(Number);
                 const [anoB, semanaB] = b.split("/").map(Number);
-                return anoA !== anoB ? anoA - ano : semanaA - semanaB;
-            });
+
+                if (anoA !== anoB) return anoA - anoB;
+                return semanaA - semanaB;
+         });
 
         const ultimas52 = semanasOrdenadas.slice(-52);
 
