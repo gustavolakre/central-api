@@ -1066,6 +1066,12 @@ function montarPainelDireito(linhas){
 carregarPipeline();
 mostrarUltimaAtualizacao();
 
+window.addEventListener("storage", (event) => {
+    if (event.key === "ultimaAtualizacaoPipefy") {
+        mostrarUltimaAtualizacao();
+    }
+});
+
 </script>
 
 </body>

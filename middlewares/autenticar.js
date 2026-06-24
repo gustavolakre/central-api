@@ -41,6 +41,8 @@ module.exports = function autenticar(
         process.env.JWT_SECRET
     );
 
+    console.log(req.usuario);
+
 
 req.usuario = payload;
 

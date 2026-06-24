@@ -1477,6 +1477,14 @@ document.getElementById("btnSalvarPerfil")
 document.getElementById("btnExcluirPerfil")
     .onclick = excluirPerfil;
 
+
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden === false) {
+        mostrarUltimaAtualizacao();
+    }
+});
+  
+
 document.addEventListener("click", (e) => {
 
     const item = e.target.closest(".perfil-item");

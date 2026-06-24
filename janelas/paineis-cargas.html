@@ -1384,7 +1384,11 @@ mostrarUltimaAtualizacao();
 
 carregarGraficos();
 
-
+window.addEventListener("storage", (event) => {
+    if (event.key === "ultimaAtualizacaoPipefy") {
+        mostrarUltimaAtualizacao();
+    }
+});
 
 
 </script>
