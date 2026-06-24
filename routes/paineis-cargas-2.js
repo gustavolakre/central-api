@@ -30,7 +30,7 @@ router.get("/", async (req,res)=>{
         CASE 
             WHEN cc.peso IS NOT NULL 
              AND cc.preco_kg IS NOT NULL
-            THEN cc.peso * cc.preco_kg
+            THEN cc.peso * (cc.preco_kg / 10)
             ELSE 0
         END
     ) as valor_total,
