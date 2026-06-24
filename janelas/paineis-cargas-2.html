@@ -10,6 +10,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700&display=swap" rel="stylesheet">
 
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
@@ -527,6 +529,23 @@ let chartPrincipal;
 let periodoSelecionado = "52";
 
 let perfilAtual = null;
+
+
+socket.on("ultimaAtualizacaoPipefy", async (data) => {
+
+    localStorage.setItem("ultimaAtualizacaoPipefy", data.data);
+
+    mostrarUltimaAtualizacao();
+
+    const res = await fetch(`${API}/paineis-cargas-2`);
+    dadosGlobais = await res.json();
+
+    dadosGlobais = dadosGlobais.filter(
+        item => item.fase !== "09-Cancelada"
+    );
+
+    atualizarGraficos();
+});
 
 
 async function carregar(){
@@ -1483,7 +1502,7 @@ document.addEventListener("visibilitychange", () => {
         mostrarUltimaAtualizacao();
     }
 });
-  
+
 
 document.addEventListener("click", (e) => {
 
@@ -1513,6 +1532,11 @@ document.addEventListener("click", (e) => {
 });
 
 
+window.addEventListener("storage", (event) => {
+    if (event.key === "ultimaAtualizacaoPipefy") {
+        mostrarUltimaAtualizacao();
+    }
+});
 
 </script>
 

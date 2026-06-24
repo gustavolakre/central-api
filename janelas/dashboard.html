@@ -644,18 +644,11 @@ async function atualizarCargasPipefy(){
            const agora = new Date();
 
            const dataHora =
-               agora.toLocaleDateString("pt-BR") +
-               " " +
-               agora.toLocaleTimeString("pt-BR");
+              new Date().toLocaleDateString("pt-BR") +
+                 " " +
+              new Date().toLocaleTimeString("pt-BR");
 
-
-            localStorage.setItem(
-              "ultimaAtualizacaoPipefy",
-              dataHora
-            );
-
-
-if (status) {
+        if (status) {
 
     status.innerHTML =
     `✅ ${dados.importados} cargas importadas`;
@@ -1082,6 +1075,10 @@ function montarPainelDireito(linhas){
 window.addEventListener("load", () => {
     carregarPipeline();
     mostrarUltimaAtualizacao();
+
+    socket.on("connect", () => {
+        console.log("socket conectado");
+    });
 });
 
 </script>
