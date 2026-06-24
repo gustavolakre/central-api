@@ -18,30 +18,13 @@ router.get("/", async (req,res)=>{
     pf.uf as estado_fornecedor,
     pc.uf as estado_comprador,
 
-    SUM(
-        CASE 
-            WHEN cc.quantidade IS NOT NULL 
-            THEN cc.quantidade 
-            ELSE 0 
-        END
-    ) as quantidade,
+    cc.quantidade as quantidade,
 
-    SUM(
-        CASE 
-            WHEN cc.peso IS NOT NULL 
-             AND cc.preco_kg IS NOT NULL
-            THEN cc.peso * (cc.preco_kg / 100.0)
-            ELSE 0
-        END
-    ) as valor_total,
+    cc.peso as peso,
 
-    SUM(
-        CASE 
-            WHEN cc.peso IS NOT NULL 
-            THEN cc.peso
-            ELSE 0
-        END
-    ) as peso_total
+    cc.preco_kg as preco_kg,
+
+    (cc.peso * cc.preco_kg / 100.0) as valor
 
 FROM controle_cargas cc
 
@@ -55,15 +38,6 @@ WHERE substring(cc.etiquetas from '[0-9]{4}/[0-9]{2}') IS NOT NULL
   AND COALESCE(cc.fase,'') <> '09-Cancelada'
   AND cc.peso IS NOT NULL
   AND cc.preco_kg IS NOT NULL
-
-GROUP BY
-    semana,
-    cc.fornecedor,
-    cc.comprador,
-    cc.tipo_suino,
-    cc.frete,
-    pf.uf,
-    pc.uf
 
 ORDER BY semana;
 `);
