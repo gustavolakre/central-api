@@ -1523,17 +1523,20 @@ function limparTodosFiltros() {
 
 function agruparMediaPonderada(lista, limite52 = true) {
 
-   const mapa = {};
+const mapa = {};
 
 dados.forEach(item => {
 
     const peso = Number(item.peso_total);
     const valor = Number(item.valor_total);
 
-    if (!peso) return;
+    if (!peso || !valor) return;
 
     if (!mapa[item.semana]) {
-        mapa[item.semana] = { peso: 0, valor: 0 };
+        mapa[item.semana] = {
+            peso: 0,
+            valor: 0
+        };
     }
 
     mapa[item.semana].peso += peso;
@@ -1551,9 +1554,10 @@ if (limite52) {
 }
 
 const labelsMP = semanasMP;
+
 const valoresMP = semanasMP.map(s => {
     const d = mapa[s];
-    return d.somaPeso ? (d.somaValor / d.somaPeso) : 0;
+    return d.peso ? (d.valor / d.peso) : 0;
 });
 
     if (limite52) {
