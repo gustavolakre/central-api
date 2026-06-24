@@ -986,7 +986,7 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
 
                    datalabels: {
                     display: (ctx) => {
-                    return periodoSelecionado !== "all";
+                    return ctx.dataset.data[ctx.dataIndex] !== null;
                 },
 
                   color: "#fff",
