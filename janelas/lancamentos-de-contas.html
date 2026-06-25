@@ -1786,6 +1786,24 @@ async function carregarLancamentos(){
 
         const filtrados = dados.filter(item=>{
 
+            /* OCULTAR CONTAS TOTALMENTE BAIXADAS */
+
+            const valorDoc =
+                Number(item.valor || 0)
+
+            const valorPagoDoc =
+                Number(item.valor_pago || 0)
+
+            if (
+                item.status === "PAGO" ||
+                (
+                    valorDoc > 0 &&
+                    valorPagoDoc >= valorDoc
+                )
+            ) {
+                return false
+            }
+
          
             /* TIPO */
 
