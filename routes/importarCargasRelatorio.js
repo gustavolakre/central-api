@@ -137,11 +137,11 @@ router.post("/", async (req, res) => {
 
 const io = req.app.get("io");
 
-console.log("IO =", io);
-
 if (!io) {
     console.log("ERRO: io não encontrado!");
 } else {
+    req.app.set("ultimaAtualizacaoPipefy", dataHora);
+
     io.emit("ultimaAtualizacaoPipefy", {
         data: dataHora
     });

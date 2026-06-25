@@ -65,9 +65,19 @@ const io = new Server(server, {
 
 module.exports.io = io;
 
+app.set("io", io);
+
 
 io.on("connection", (socket) => {
     console.log("cliente conectado");
+
+    const ultima = app.get("ultimaAtualizacaoPipefy");
+
+    if (ultima) {
+        socket.emit("ultimaAtualizacaoPipefy", {
+            data: ultima
+        });
+    }
 });
 
 app.use(cors())
