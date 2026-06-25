@@ -7,7 +7,7 @@ router.get("/", async (req,res)=>{
     try{
 
        const resultado = await pool.query(`
-   SELECT
+  SELECT
     substring(cc.etiquetas from '[0-9]{4}/[0-9]{2}') as semana,
 
     cc.fornecedor,
@@ -24,17 +24,23 @@ router.get("/", async (req,res)=>{
 
     cc.preco_kg as preco_kg,
 
-    (
-CASE 
-    WHEN cc.peso > 0 AND cc.preco_kg > 0 THEN
-        cc.peso *
-        CASE
-            WHEN cc.preco_kg < 100 THEN cc.preco_kg / 10.0
-            ELSE cc.preco_kg / 100.0
-        END
-    ELSE 0
-END
-) as valor
+    -- 🔥 preço normalizado (REGRA CORRETA)
+    CASE 
+        WHEN cc.preco_kg > 20 THEN cc.preco_kg / 10.0
+        ELSE cc.preco_kg
+    END AS preco_kg_normalizado,
+
+    -- 🔥 valor corrigido usando preço normalizado
+    CASE 
+        WHEN cc.peso > 0 AND cc.preco_kg > 0 THEN
+            cc.peso * (
+                CASE 
+                    WHEN cc.preco_kg > 20 THEN cc.preco_kg / 10.0
+                    ELSE cc.preco_kg
+                END
+            )
+        ELSE 0
+    END AS valor
 
 FROM controle_cargas cc
 
