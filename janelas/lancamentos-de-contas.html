@@ -359,6 +359,144 @@ tr:hover{
 
 
 
+.parceiro-combobox{
+
+    position:relative;
+
+}
+
+
+
+.parceiro-combobox-toggle{
+
+    width:100%;
+
+    text-align:left;
+
+    background:white;
+
+    color:#111827;
+
+    border:1px solid #cbd5e1;
+
+    border-radius:6px;
+
+    padding:8px 10px;
+
+    font-size:12px;
+
+    font-weight:normal;
+
+    cursor:pointer;
+
+}
+
+
+
+.parceiro-combobox-toggle:hover{
+
+    opacity:1;
+
+    border-color:#93c5fd;
+
+}
+
+
+
+.parceiro-combobox-panel{
+
+    position:absolute;
+
+    top:calc(100% + 4px);
+
+    left:0;
+
+    right:0;
+
+    z-index:200;
+
+    background:white;
+
+    border:1px solid #cbd5e1;
+
+    border-radius:6px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,0.12);
+
+    overflow:hidden;
+
+}
+
+
+
+.parceiro-combobox-busca{
+
+    width:100%;
+
+    border:none;
+
+    border-bottom:1px solid #e5e7eb;
+
+    border-radius:0;
+
+}
+
+
+
+.parceiro-combobox-lista{
+
+    list-style:none;
+
+    margin:0;
+
+    padding:0;
+
+    max-height:220px;
+
+    overflow-y:auto;
+
+}
+
+
+
+.parceiro-combobox-lista li{
+
+    padding:8px 10px;
+
+    font-size:12px;
+
+    cursor:pointer;
+
+}
+
+
+
+.parceiro-combobox-lista li:hover{
+
+    background:#eff6ff;
+
+}
+
+
+
+.parceiro-combobox-vazio{
+
+    color:#6b7280;
+
+    cursor:default;
+
+}
+
+
+
+.parceiro-combobox-vazio:hover{
+
+    background:white;
+
+}
+
+
+
 
     </style>
 
@@ -440,13 +578,47 @@ tr:hover{
 
          <label>Parceiro</label>
 
-         <select id="parceiro">
+         <div class="parceiro-combobox">
 
-            <option value="">
-                 Selecione
-            </option>
+            <input
+                type="hidden"
+                id="parceiro"
+                value=""
+            >
 
-         </select>
+            <button
+                type="button"
+                class="parceiro-combobox-toggle"
+                onclick="toggleComboboxParceiro('parceiro', event)"
+            >
+                <span id="parceiroLabel">
+                    Selecione
+                </span>
+            </button>
+
+            <div
+                class="parceiro-combobox-panel"
+                id="parceiroPanel"
+                style="display:none;"
+                onclick="event.stopPropagation()"
+            >
+
+                <input
+                    type="text"
+                    class="parceiro-combobox-busca"
+                    id="parceiroBusca"
+                    placeholder="Digite para buscar..."
+                    oninput="filtrarComboboxParceiro('parceiro')"
+                >
+
+                <ul
+                    class="parceiro-combobox-lista"
+                    id="parceiroLista"
+                ></ul>
+
+            </div>
+
+         </div>
 
         </div>
 
@@ -618,11 +790,47 @@ tr:hover{
 
         <label>Filtro Parceiro</label>
 
-        <input
-            type="text"
-            id="filtroParceiro"
-            onkeyup="carregarLancamentos()"
-        >
+        <div class="parceiro-combobox">
+
+            <input
+                type="hidden"
+                id="filtroParceiro"
+                value=""
+            >
+
+            <button
+                type="button"
+                class="parceiro-combobox-toggle"
+                onclick="toggleComboboxParceiro('filtroParceiro', event)"
+            >
+                <span id="filtroParceiroLabel">
+                    Todos
+                </span>
+            </button>
+
+            <div
+                class="parceiro-combobox-panel"
+                id="filtroParceiroPanel"
+                style="display:none;"
+                onclick="event.stopPropagation()"
+            >
+
+                <input
+                    type="text"
+                    class="parceiro-combobox-busca"
+                    id="filtroParceiroBusca"
+                    placeholder="Digite para buscar..."
+                    oninput="filtrarComboboxParceiro('filtroParceiro')"
+                >
+
+                <ul
+                    class="parceiro-combobox-lista"
+                    id="filtroParceiroLista"
+                ></ul>
+
+            </div>
+
+        </div>
 
         </div>
 
@@ -1075,7 +1283,7 @@ async function salvarLancamento(){
 
         document.getElementById("tipo").value = "RECEBER"
 
-        document.getElementById("parceiro").value = ""
+        definirComboboxParceiro("parceiro", "")
 
         document.getElementById(
              "discriminacao_periodo"
@@ -1137,12 +1345,185 @@ let valorDocumento = 0
 
 let valorJaPago = 0
 
+let parceirosBase = []
+
+
+function definirComboboxParceiro(id, nome){
+
+    document.getElementById(id).value =
+        nome || ""
+
+    const label =
+        document.getElementById(`${id}Label`)
+
+    if(id === "filtroParceiro"){
+
+        label.textContent =
+            nome || "Todos"
+
+        return
+
+    }
+
+    label.textContent =
+        nome || "Selecione"
+
+}
+
+
+function fecharComboboxParceiro(id){
+
+    const panel =
+        document.getElementById(`${id}Panel`)
+
+    if(panel){
+        panel.style.display = "none"
+    }
+
+    const busca =
+        document.getElementById(`${id}Busca`)
+
+    if(busca){
+        busca.value = ""
+    }
+
+}
+
+
+function fecharTodosComboboxParceiro(){
+
+    fecharComboboxParceiro("parceiro")
+
+    fecharComboboxParceiro("filtroParceiro")
+
+}
+
+
+function toggleComboboxParceiro(id, event){
+
+    event.stopPropagation()
+
+    const panel =
+        document.getElementById(`${id}Panel`)
+
+    const aberto =
+        panel.style.display === "block"
+
+    fecharTodosComboboxParceiro()
+
+    if(aberto){
+        return
+    }
+
+    panel.style.display = "block"
+
+    renderizarComboboxParceiro(id, "")
+
+    document.getElementById(`${id}Busca`).focus()
+
+}
+
+
+function filtrarComboboxParceiro(id){
+
+    const termo =
+        document.getElementById(`${id}Busca`).value
+
+    renderizarComboboxParceiro(id, termo)
+
+}
+
+
+function renderizarComboboxParceiro(id, termo){
+
+    const lista =
+        document.getElementById(`${id}Lista`)
+
+    const termoNorm =
+        (termo || "")
+        .toLowerCase()
+        .trim()
+
+    let html = ""
+
+    if(id === "filtroParceiro"){
+
+        html += `
+            <li onclick="selecionarComboboxParceiro('filtroParceiro','')">
+                Todos
+            </li>
+        `
+
+    }
+
+    const filtrados =
+        parceirosBase.filter(parceiro=>{
+
+            const nome =
+                (parceiro.nome_usual || "")
+                .toLowerCase()
+
+            return !termoNorm ||
+                nome.includes(termoNorm)
+
+        })
+
+    if(!filtrados.length){
+
+        html += `
+            <li class="parceiro-combobox-vazio">
+                Nenhum parceiro encontrado
+            </li>
+        `
+
+    }
+    else{
+
+        filtrados.forEach(parceiro=>{
+
+            const nome =
+                parceiro.nome_usual || ""
+
+            html += `
+                <li onclick="selecionarComboboxParceiro('${id}', ${JSON.stringify(nome)})">
+                    ${nome}
+                </li>
+            `
+
+        })
+
+    }
+
+    lista.innerHTML = html
+
+}
+
+
+function selecionarComboboxParceiro(id, nome){
+
+    definirComboboxParceiro(id, nome)
+
+    fecharComboboxParceiro(id)
+
+    if(id === "filtroParceiro"){
+        carregarLancamentos()
+    }
+
+}
+
+
+document.addEventListener("click", () => {
+
+    fecharTodosComboboxParceiro()
+
+})
+
 
 function limparFiltros(){
 
     document.getElementById("filtroTipo").value = ""
 
-    document.getElementById("filtroParceiro").value = ""
+    definirComboboxParceiro("filtroParceiro", "")
 
     document.getElementById("filtroNota").value = ""
 
@@ -1265,34 +1646,11 @@ async function carregarParceiros(){
 
         console.log(parceiros)
 
-        const select =
-            document.getElementById(
-                "parceiro"
-            )
+        parceirosBase = parceiros
 
-        select.innerHTML = `
+        renderizarComboboxParceiro("parceiro", "")
 
-            <option value="">
-                Selecione
-            </option>
-
-        `
-
-        parceiros.forEach(parceiro=>{
-
-            select.innerHTML += `
-
-                <option
-                    value="${parceiro.nome_usual}"
-                >
-
-                    ${parceiro.nome_usual}
-
-                </option>
-
-            `
-
-            })
+        renderizarComboboxParceiro("filtroParceiro", "")
 
     }
 
@@ -1491,8 +1849,10 @@ function editarLancamento(item){
     document.getElementById("tipo").value =
         item.tipo || ""
 
-    document.getElementById("parceiro").value =
+    definirComboboxParceiro(
+        "parceiro",
         item.parceiro || ""
+    )
 
     document.getElementById(
         "discriminacao_periodo"
@@ -1743,6 +2103,7 @@ async function carregarLancamentos(){
         )
             .value
             .toLowerCase()
+            .trim()
 
         const emissaoInicial =
             document.getElementById(
@@ -1823,7 +2184,7 @@ async function carregarLancamentos(){
 
                 (item.parceiro || "")
                 .toLowerCase()
-                .includes(filtroParceiro)
+                .trim() === filtroParceiro
 
 
             const okNota =
