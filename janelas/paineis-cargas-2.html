@@ -397,6 +397,42 @@ canvas{
     font-weight:700;
 }
 
+.box-grafico{
+
+    margin-top:20px;
+
+    background:#1f2937;
+
+    border:2px solid #374151;
+
+    border-radius:14px;
+
+    box-shadow:
+        0 6px 20px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.03);
+
+    padding:20px;
+
+}
+
+.titulo-grafico{
+
+    margin:0 0 15px 0;
+
+    color:#f9fafb;
+
+    font-family:"Inter Tight", sans-serif;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    text-align:center;
+
+    letter-spacing:.3px;
+
+}
+
 </style>
 </head>
 
@@ -498,14 +534,25 @@ canvas{
 <div id="filtroPeriodo" class="filtro-periodo"></div>
 
 <div class="box">
-    <div class="box">
-          <canvas id="graficoPrincipal"></canvas>
-     </div>
+   <div class="box box-grafico">
 
-    <div class="box">
-        <canvas id="graficoMediaPonderada"></canvas>
-    </div>
+    <h3 class="titulo-grafico">
+        Quantidade de Suínos por Semana
+    </h3>
 
+    <canvas id="graficoPrincipal"></canvas>
+
+</div>
+
+<div class="box box-grafico">
+
+    <h3 class="titulo-grafico">
+        Preço Médio por Semana
+    </h3>
+
+    <canvas id="graficoMediaPonderada"></canvas>
+
+</div>
 
 </div>
 
