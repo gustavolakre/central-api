@@ -12,342 +12,7 @@
 
 <title>Relatórios Financeiros</title>
 
-<style>
-
-
-.checksFiltro{
-
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-
-    background:#f8fafc;
-
-    border:1px solid #cbd5e1;
-
-    padding:10px;
-
-    border-radius:8px;
-
-    font-size:12px;
-}
-
-.checksFiltro label{
-
-    display:flex;
-    align-items:center;
-    gap:6px;
-
-    font-weight:normal;
-
-    cursor:pointer;
-}
-
-.checksScroll{
-
-    max-height:110px;
-
-    overflow:auto;
-}
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-
-    font-family:Arial;
-
-    background:#eef2f7;
-
-    padding:20px;
-}
-
-h1{
-
-    margin-bottom:18px;
-
-    font-size:24px;
-
-    color:#111827;
-}
-
-
-
-/* CARDS */
-
-.cards{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(auto-fit,minmax(220px,1fr));
-
-    gap:15px;
-
-    margin-bottom:18px;
-}
-
-.card{
-
-    background:white;
-
-    padding:18px;
-
-    border-radius:10px;
-
-    border:1px solid #ddd;
-}
-
-.card h3{
-
-    font-size:12px;
-
-    color:#6b7280;
-
-    margin-bottom:8px;
-}
-
-.card .valor{
-
-    font-size:26px;
-
-    font-weight:bold;
-}
-
-.receber{
-    color:#15803d;
-}
-
-.pagar{
-    color:#dc2626;
-}
-
-.saldo{
-    color:#1d4ed8;
-}
-
-
-
-/* FILTROS */
-
-.filtros{
-
-    background:white;
-
-    padding:14px;
-
-    border-radius:10px;
-
-    border:1px solid #ddd;
-
-    margin-bottom:15px;
-}
-
-
-
-/* GRID */
-
-.grid{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(auto-fit,minmax(180px,1fr));
-
-    gap:10px;
-}
-
-
-
-/* CAMPOS */
-
-.campo{
-
-    display:flex;
-
-    flex-direction:column;
-}
-
-
-
-/* LABEL */
-
-label{
-
-    margin-bottom:4px;
-
-    font-size:11px;
-
-    font-weight:bold;
-
-    color:#374151;
-}
-
-
-
-/* INPUTS */
-
-input,
-select{
-
-    padding:8px 10px;
-
-    border-radius:6px;
-
-    border:1px solid #cbd5e1;
-
-    font-size:12px;
-}
-
-
-
-/* TABELA */
-
-.tabela{
-
-    background:white;
-
-    border-radius:10px;
-
-    overflow:auto;
-
-    border:1px solid #ddd;
-
-    height:calc(100vh - 320px);
-}
-
-
-
-/* TABLE */
-
-table{
-
-    width:100%;
-
-    border-collapse:collapse;
-}
-
-
-
-/* HEADER */
-
-th{
-
-    background:#1e293b;
-
-    color:white;
-
-    padding:10px;
-
-    text-align:left;
-
-    font-size:11px;
-
-    position:sticky;
-
-    top:0;
-}
-
-
-
-/* LINHAS */
-
-td{
-
-    padding:8px;
-
-    border-bottom:1px solid #eee;
-
-    font-size:11px;
-}
-
-tr:hover{
-    background:#f8fafc;
-}
-
-
-.menuTop{
-
-    background:#111827;
-
-    padding:14px 20px;
-
-    border-radius:12px;
-
-    margin-bottom:20px;
-
-    display:flex;
-
-    gap:12px;
-
-    align-items:center;
-
-    flex-wrap:wrap;
-
-    box-shadow:0 2px 10px rgba(0,0,0,0.10);
-}
-
-
-
-.menuTop a{
-
-    color:white;
-
-    text-decoration:none;
-
-    padding:10px 16px;
-
-    border-radius:8px;
-
-    font-size:14px;
-
-    font-weight:bold;
-
-    transition:0.2s;
-}
-
-
-
-.menuTop a:hover{
-
-    background:#1f2937;
-}
-
-.btnLimpar{
-
-    background:#64748b;
-
-    color:white;
-
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:6px;
-
-    cursor:pointer;
-
-    font-size:12px;
-
-    font-weight:bold;
-
-    transition:0.2s;
-
-}
-
-.btnLimpar:hover{
-
-    opacity:0.92;
-
-}
-
-
-
-
-</style>
+<link rel="stylesheet" href="/janelas/financeiro-theme.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -357,68 +22,50 @@ tr:hover{
 
 <body>
 
+<div class="topbar-dashboard">
 
-<div class="menuTop">
+    <div class="topbar-left">
 
- 
-    <a href="/janelas/lancamentos-de-contas.html">
-        Lançamento de Contas
-    </a>
+        <button class="btnVoltar" onclick="voltarInicio()">
+            ⬅ Voltar ao início
+        </button>
 
-    <a href="/janelas/fluxo-de-caixa.html">
-        Fluxo de Caixa
-    </a>
+        <span class="topbar-modulo">Financeiro</span>
 
-    <a href="/janelas/relatorios-financeiros.html">
-        Relatórios
-    </a>
+    </div>
+
+    <div class="topbar-right">
+
+        <a href="/janelas/lancamentos-de-contas.html">
+            Lançamento de Contas
+        </a>
+
+        <a href="/janelas/fluxo-de-caixa.html">
+            Fluxo de Caixa
+        </a>
+
+        <a href="/janelas/relatorios-financeiros.html" class="ativo">
+            Relatórios
+        </a>
+
+    </div>
 
 </div>
 
+<div class="page-content">
 
-<div
-    style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        margin-bottom:14px;
-    "
->
+<div class="pagina-topo">
 
-    <h1 style="margin:0;">
+    <h2 class="pagina-titulo">
         Relatórios Financeiros
-    </h1>
+    </h2>
 
     <button
-    onclick="exportarBackupFinanceiro()"
-    style="
-        background:linear-gradient(135deg,#16a34a,#15803d);
-        color:white;
-        border:none;
-        padding:12px 22px;
-        border-radius:10px;
-        cursor:pointer;
-        font-size:13px;
-        font-weight:bold;
-        display:flex;
-        align-items:center;
-        gap:8px;
-        box-shadow:0 4px 12px rgba(22,163,74,0.25);
-        transition:0.2s;
-    "
-    onmouseover="
-        this.style.transform='translateY(-1px)';
-        this.style.boxShadow='0 6px 16px rgba(22,163,74,0.35)';
-    "
-    onmouseout="
-        this.style.transform='translateY(0)';
-        this.style.boxShadow='0 4px 12px rgba(22,163,74,0.25)';
-    "
->
-
-    📥 Gerar Backup Excel
-
-</button>
+        class="btnExportar"
+        onclick="exportarBackupFinanceiro()"
+    >
+        📥 Gerar Backup Excel
+    </button>
 
 </div>
 
@@ -649,21 +296,11 @@ tr:hover{
 
         </div>
 
-       <div
-            style="
-               display:flex;
-               align-items:flex-start;
-               margin-top:10px;
-           "
-         >
+       <div class="filtros-acoes">
 
       <button
            class="btnLimpar"
            onclick="limparFiltros()"
-           style="
-              height:38px;
-              padding:0 16px;
-           "
     >
 
         Limpar Filtros
@@ -797,7 +434,12 @@ function authHeaders(extra = {}){
 }
 
 
-    
+function voltarInicio() {
+
+    window.location.href =
+        "/janelas/inicial.html";
+
+}
 
 
 function limparFiltros(){
@@ -1440,16 +1082,7 @@ async function carregarParceiros(){
 
             div.innerHTML += `
 
-                <label
-                    style="
-                        display:flex;
-                        align-items:center;
-                        gap:6px;
-                        margin-bottom:6px;
-                        font-size:12px;
-                        cursor:pointer;
-                    "
-                >
+                <label>
 
                     <input
                         type="checkbox"
@@ -1486,6 +1119,8 @@ async function carregarParceiros(){
 })();
 
 </script>
+
+</div>
 
 </body>
 

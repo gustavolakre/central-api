@@ -9,496 +9,7 @@
 
     <title>Lançamentos Financeiros</title>
 
-    <style>
-
-        *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-
-    font-family:Arial;
-
-    background:#eef2f7;
-
-    padding:18px;
-}
-
-h1{
-
-    margin-bottom:14px;
-
-    font-size:22px;
-
-    color:#111827;
-}
-
-
-
-/* FORMULÁRIO */
-
-.formulario{
-
-    background:#dbeafe;
-
-    padding:16px;
-
-    border-radius:10px;
-
-    margin-bottom:14px;
-
-    border:1px solid #93c5fd;
-}
-
-
-
-/* FILTROS */
-
-.filtros{
-
-    background:white;
-
-    padding:14px;
-
-    border-radius:10px;
-
-    margin-bottom:14px;
-
-    border:1px solid #ddd;
-}
-
-
-
-/* GRID */
-
-.grid{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(auto-fit,minmax(170px,1fr));
-
-    gap:10px;
-}
-
-
-
-/* CAMPOS */
-
-.campo{
-
-    display:flex;
-
-    flex-direction:column;
-}
-
-
-
-/* LABEL */
-
-label{
-
-    margin-bottom:4px;
-
-    font-size:11px;
-
-    font-weight:bold;
-
-    color:#374151;
-}
-
-
-
-/* INPUTS */
-
-input,
-select,
-textarea{
-
-    padding:8px 10px;
-
-    border-radius:6px;
-
-    border:1px solid #cbd5e1;
-
-    font-size:12px;
-
-    background:white;
-}
-
-textarea{
-
-    min-height:55px;
-
-    resize:vertical;
-}
-
-
-
-/* BOTÕES */
-
-.acoes{
-
-    margin-top:12px;
-}
-
-button{
-
-    background:#1d4ed8;
-
-    color:white;
-
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:6px;
-
-    cursor:pointer;
-
-    font-size:12px;
-
-    font-weight:bold;
-}
-
-button:hover{
-    opacity:0.92;
-}
-
-
-
-/* TABELA */
-
-.tabela{
-
-    background:white;
-
-    border-radius:10px;
-
-    overflow:auto;
-
-    border:1px solid #ddd;
-
-    height:calc(100vh - 360px);
-}
-
-
-
-/* TABLE */
-
-table{
-
-    width:100%;
-
-    border-collapse:collapse;
-}
-
-
-
-/* HEADER */
-
-th{
-
-    background:#1e293b;
-
-    color:white;
-
-    padding:9px;
-
-    text-align:left;
-
-    font-size:11px;
-
-    position:sticky;
-
-    top:0;
-}
-
-
-
-/* LINHAS */
-
-td{
-
-    padding:8px;
-
-    border-bottom:1px solid #eee;
-
-    font-size:11px;
-}
-
-tr:hover{
-    background:#f8fafc;
-}
-
-
-
-/* CORES */
-
-.receber{
-    color:#15803d;
-    font-weight:bold;
-}
-
-.pagar{
-    color:#dc2626;
-    font-weight:bold;
-}
-
-.pendente{
-    color:#ca8a04;
-    font-weight:bold;
-}
-
-.pago{
-    color:#15803d;
-    font-weight:bold;
-}
-
-
-.menuTop{
-
-    background:#111827;
-
-    padding:14px 20px;
-
-    border-radius:12px;
-
-    margin-bottom:20px;
-
-    display:flex;
-
-    gap:12px;
-
-    align-items:center;
-
-    flex-wrap:wrap;
-
-    box-shadow:0 2px 10px rgba(0,0,0,0.10);
-}
-
-
-
-.menuTop a{
-
-    color:white;
-
-    text-decoration:none;
-
-    padding:10px 16px;
-
-    border-radius:8px;
-
-    font-size:14px;
-
-    font-weight:bold;
-
-    transition:0.2s;
-}
-
-
-
-.menuTop a:hover{
-
-    background:#1f2937;
-}
-
-.btnLimpar{
-
-    background:#64748b;
-
-    color:white;
-
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:6px;
-
-    cursor:pointer;
-
-    font-size:12px;
-
-    font-weight:bold;
-
-    transition:0.2s;
-
-}
-
-.btnLimpar:hover{
-
-    opacity:0.92;
-
-}
-
-.barra-superior {
-
-    display: flex;
-
-    justify-content: flex-start;
-
-    margin-bottom: 20px;
-
-}
-
-.barra-superior button {
-
-    padding: 10px 18px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    cursor: pointer;
-
-    font-weight: bold;
-
-}
-
-
-
-.parceiro-combobox{
-
-    position:relative;
-
-}
-
-
-
-.parceiro-combobox-toggle{
-
-    width:100%;
-
-    text-align:left;
-
-    background:white;
-
-    color:#111827;
-
-    border:1px solid #cbd5e1;
-
-    border-radius:6px;
-
-    padding:8px 10px;
-
-    font-size:12px;
-
-    font-weight:normal;
-
-    cursor:pointer;
-
-}
-
-
-
-.parceiro-combobox-toggle:hover{
-
-    opacity:1;
-
-    border-color:#93c5fd;
-
-}
-
-
-
-.parceiro-combobox-panel{
-
-    position:absolute;
-
-    top:calc(100% + 4px);
-
-    left:0;
-
-    right:0;
-
-    z-index:200;
-
-    background:white;
-
-    border:1px solid #cbd5e1;
-
-    border-radius:6px;
-
-    box-shadow:0 8px 20px rgba(0,0,0,0.12);
-
-    overflow:hidden;
-
-}
-
-
-
-.parceiro-combobox-busca{
-
-    width:100%;
-
-    border:none;
-
-    border-bottom:1px solid #e5e7eb;
-
-    border-radius:0;
-
-}
-
-
-
-.parceiro-combobox-lista{
-
-    list-style:none;
-
-    margin:0;
-
-    padding:0;
-
-    max-height:220px;
-
-    overflow-y:auto;
-
-}
-
-
-
-.parceiro-combobox-lista li{
-
-    padding:8px 10px;
-
-    font-size:12px;
-
-    cursor:pointer;
-
-}
-
-
-
-.parceiro-combobox-lista li:hover{
-
-    background:#eff6ff;
-
-}
-
-
-
-.parceiro-combobox-vazio{
-
-    color:#6b7280;
-
-    cursor:default;
-
-}
-
-
-
-.parceiro-combobox-vazio:hover{
-
-    background:white;
-
-}
-
-
-
-
-    </style>
+    <link rel="stylesheet" href="/janelas/financeiro-theme.css">
 
 
 <script src="/janelas/auth.js"></script>
@@ -510,36 +21,39 @@ tr:hover{
 
 <body>
 
-    <div class="barra-superior">
+<div class="topbar-dashboard">
 
-    <button onclick="voltarInicio()">
+    <div class="topbar-left">
 
-        ⬅ Voltar ao início
+        <button class="btnVoltar" onclick="voltarInicio()">
+            ⬅ Voltar ao início
+        </button>
 
-    </button>
+        <span class="topbar-modulo">Financeiro</span>
+
+    </div>
+
+    <div class="topbar-right">
+
+        <a href="/janelas/lancamentos-de-contas.html" class="ativo">
+            Lançamento de Contas
+        </a>
+
+        <a href="/janelas/fluxo-de-caixa.html">
+            Fluxo de Caixa
+        </a>
+
+        <a href="/janelas/relatorios-financeiros.html">
+            Relatórios
+        </a>
+
+    </div>
 
 </div>
 
+<div class="page-content">
 
-<div class="menuTop">
-
-      <a href="/janelas/lancamentos-de-contas.html">
-        Lançamento de Contas
-    </a>
-
-    <a href="/janelas/fluxo-de-caixa.html">
-        Fluxo de Caixa
-    </a>
-
-    <a href="/janelas/relatorios-financeiros.html">
-        Relatórios
-    </a>
-
-</div>
-
-
-
-<h1>Lançamentos Financeiros</h1>
+<h2 class="pagina-titulo">Lançamentos Financeiros</h2>
 
 
 
@@ -968,40 +482,14 @@ tr:hover{
 </div>
 
 
-    <div id="modalBaixa"
-    style="
-        display:none;
-        position:fixed;
-        top:0;
-        left:0;
-        width:100%;
-        height:100%;
-        background:rgba(0,0,0,0.5);
-        z-index:999;
-    "
->
+    <div id="modalBaixa" class="modal-overlay">
 
-    <div
-        style="
-            background:white;
-            width:420px;
-            padding:25px;
-            border-radius:12px;
-            position:absolute;
-            top:50%;
-            left:50%;
-            transform:translate(-50%,-50%);
-        "
-    >
+    <div class="modal-box">
 
-        <h2 style="margin-bottom:20px;">
-            Baixa Financeira
-        </h2>
+        <h2>Baixa Financeira</h2>
 
 
-        <div class="campo"
-            style="margin-bottom:15px;"
-        >
+        <div class="campo">
 
             <label>Banco</label>
 
@@ -1017,9 +505,7 @@ tr:hover{
 
 
 
-        <div class="campo"
-            style="margin-bottom:15px;"
-        >
+        <div class="campo">
 
             <label>Tipo Baixa</label>
 
@@ -1042,9 +528,7 @@ tr:hover{
 
 
 
-        <div class="campo"
-            style="margin-bottom:15px;"
-        >
+        <div class="campo">
 
             <label>Valor Pago</label>
 
@@ -1057,9 +541,7 @@ tr:hover{
 
 
 
-        <div class="campo"
-            style="margin-bottom:20px;"
-        >
+        <div class="campo">
 
             <label>Data Pagamento</label>
 
@@ -1072,41 +554,26 @@ tr:hover{
 
 
 
-        <div
-            style="
-                display:flex;
-                gap:10px;
-                justify-content:flex-end;
-            "
-        >
+        <div class="modal-acoes">
 
             <button
+                class="btnSecundario"
                 onclick="fecharModalBaixa()"
-                style="background:#64748b;"
             >
-
                 Cancelar
-
             </button>
 
-
             <button onclick="confirmarBaixa()">
-
                 Confirmar
-
             </button>
 
             <button
                  id="btnExcluirBaixa"
+                 class="btnDanger"
                  onclick="excluirBaixaParcial()"
-                 style="
-                    background:#dc2626;
-                    display:none;
-                "
+                 style="display:none;"
             >
-
               Excluir Baixa Parcial
-
             </button>
 
         </div>
@@ -2302,7 +1769,7 @@ async function carregarLancamentos(){
             )
                 : null
 
-            let corVencimento = "#111827"
+            let corVencimento = "#e5e7eb"
 
 
             /* VENCIDO */
@@ -2442,13 +1909,7 @@ else if(
                     </td>
 
 
-                  <td
-                       style="
-                            display:flex;
-                            gap:6px;
-                            flex-wrap:wrap;
-                        "
-                    >
+                  <td class="acoes-celula">
 
                      <button
                         onclick="abrirBaixa(
@@ -2462,7 +1923,7 @@ else if(
 
 
                     <button
-                         style="background:#ca8a04;"
+                         class="btnEditar"
                          onclick='editarLancamento(${JSON.stringify(item)})'
                      >
                          Editar
@@ -2470,7 +1931,7 @@ else if(
 
 
                     <button
-                          style="background:#dc2626;"
+                          class="btnExcluir"
                           onclick="excluirLancamento(${item.id})"
                      >
                           Excluir
@@ -2525,6 +1986,8 @@ window.onload = async () => {
 console.log("VERSAO NOVA 09/06");
 
 </script>
+
+</div>
 
 </body>
 
