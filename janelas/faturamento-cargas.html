@@ -1566,6 +1566,78 @@ function toggleTodosFaturados(valor) {
 
 
 
+async function criarContasReceber(registros) {
+
+  const hoje =
+    new Date().toISOString().split("T")[0];
+
+  let criadas = 0;
+
+  for (const r of registros) {
+
+    try {
+
+      const venc =
+        String(r["Data de Vencimento"] || "").trim();
+
+      const body = {
+
+        tipo: "RECEBER",
+
+        parceiro: r["Nome"] || "",
+
+        discriminacao_periodo: r["Periodo"] || "",
+
+        produto_servico: r["Produto Servico"] || "",
+
+        conta_gerencial: r["Mes Gerencial"] || "",
+
+        valor: Number(r["Valor Líquido"]) || 0,
+
+        data_emissao: hoje,
+
+        vencimento: venc || null,
+
+        nota_fiscal: r["Nota Fiscal"] || "",
+
+        observacao: ""
+
+      };
+
+      const resp = await fetch(
+        `${API_URL}/financeiro`,
+        {
+          method: "POST",
+          headers: getAuthHeaders(),
+          body: JSON.stringify(body)
+        }
+      );
+
+      if (resp.ok) {
+        criadas++;
+      } else {
+        console.error(
+          "Falha ao criar conta a receber:",
+          await resp.text()
+        );
+      }
+
+    } catch (err) {
+
+      console.error(
+        "Erro ao criar conta a receber:",
+        err
+      );
+
+    }
+
+  }
+
+  return criadas;
+
+}
+
+
 async function criarCardsPipefy() {
 
   if (!registrosFaturados.length) {
@@ -1593,7 +1665,7 @@ async function criarCardsPipefy() {
   }
 
 
-  const cards = registrosFaturados
+  const registrosSelecionados = registrosFaturados
 
     .filter((r, index) => selecionados.includes(index))
 
@@ -1609,8 +1681,10 @@ async function criarCardsPipefy() {
       // ignora "sem acordo"
       return nf !== "sem acordo";
 
-    })
+    });
 
+
+  const cards = registrosSelecionados
 
     .map(r => {
 
@@ -1739,6 +1813,8 @@ async function criarCardsPipefy() {
 
 
 
+    let contasCriadas = 0;
+
     if (data.sucesso > 0) {
 
 
@@ -1750,6 +1826,10 @@ async function criarCardsPipefy() {
 
       });
 
+
+      // 🔥 CRIA TAMBÉM AS CONTAS A RECEBER NO FINANCEIRO
+      contasCriadas =
+        await criarContasReceber(registrosSelecionados);
 
 
       fecharFaturados();
@@ -1807,7 +1887,8 @@ async function criarCardsPipefy() {
 
     alert(
 
-      `Criados: ${data.sucesso} | Erros: ${data.erros}`
+      `Cards criados: ${data.sucesso} | Erros: ${data.erros}\n` +
+      `Contas a receber criadas: ${contasCriadas}`
 
     );
 
