@@ -874,8 +874,8 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                     data,
 
                     backgroundColor: tipo === "line"
-                       ? "rgba(37,99,235,0.15)"
-                       :  cor,
+                        ? "rgba(37,99,235,0.15)"
+                        : cor,
 
                     borderColor: cor,
                     borderWidth: 2,
@@ -889,13 +889,9 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                     pointHitRadius: tipo === "line" ? 20 : 8,
                     pointBackgroundColor: cor,
                     pointBorderColor: cor,
-              
-                    barPercentage: 0.9,
-                    categoryPercentage: 0.9,
 
-                    fill: tipo === "line",
-                    tension: 0.3
-                    
+                    barPercentage: 0.9,
+                    categoryPercentage: 0.9
                 }]
             },
 
@@ -917,13 +913,12 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                         right: 35,
                         left: 35,
                         bottom: 35
-                    },
+                    }
+                },
 
-                  },
-
-                    interaction: {
-                     mode: "index",
-                     intersect: false
+                interaction: {
+                    mode: "index",
+                    intersect: false
                 },
 
                 scales: {
@@ -965,7 +960,6 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                         },
 
                         ticks: {
-
                             color: "#e5e7eb",
 
                             font: {
@@ -978,78 +972,90 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
                             callback: value =>
                                 Number(value).toLocaleString("pt-BR")
                         }
-
                     }
-
                 },
 
-               plugins: {
+                plugins: {
+
                     legend: {
-                    display: false
-                     },
+                        display: false
+                    },
 
-                   datalabels: {
-                    display: (ctx) => {
-                    return ctx.dataset.data[ctx.dataIndex] !== null;
-                },
+                    datalabels: {
 
-                  color: "#fff",
-                  anchor: "end",
-                  align: "top",
-                  offset: 6,
-                  align: "top",
+                        display: (ctx) =>
+                            ctx.dataset.data[ctx.dataIndex] !== null,
 
-               font: {
-                   family: "Source Sans 3",
-                   size: 10,
-                   weight: "600"
-            },
+                        color: "#fff",
+                        anchor: "end",
+                        align: "top",
+                        offset: 6,
 
-           formatter: (value) =>
-              Number(value).toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })
-        },
+                        font: {
+                            family: "Source Sans 3",
+                            size: 10,
+                            weight: "600"
+                        },
 
-        tooltip: {
-           backgroundColor: "rgba(17,24,39,0.95)",
-           borderColor: "#3b82f6",
-           borderWidth: 1,
-           cornerRadius: 10,
-           padding: 16,
-           displayColors: false,
+                        formatter: (value, context) => {
 
-        titleFont: {
-           family: "Source Sans 3",
-           size: 16,
-           weight: "700"
-        },
+                            const id = context.chart.canvas.id;
+                            const n = Number(value);
 
-        bodyFont: {
-           family: "Source Sans 3",
-           size: 15,
-           weight: "600"
-        },
+                            if (isNaN(n)) return "0";
 
-           titleSpacing: 8,
-           bodySpacing: 8,
-           caretPadding: 8,
+                            // 🔴 segundo gráfico (média ponderada)
+                            if (id === "graficoMediaPonderada") {
+                                return n.toLocaleString("pt-BR", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
 
-    callbacks: {
-        title: (ctx) => `Semana: ${ctx[0].label}`,
-        label: (ctx) =>
-            `Quantidade: ${Number(ctx.raw).toLocaleString("pt-BR")}`
-    }
-}
-}
+                            // 🔵 primeiro gráfico (quantidade)
+                            return n.toLocaleString("pt-BR", {
+                                maximumFractionDigits: 0
+                            });
+                        }
+                    },
 
+                    tooltip: {
+
+                        backgroundColor: "rgba(17,24,39,0.95)",
+                        borderColor: "#3b82f6",
+                        borderWidth: 1,
+                        cornerRadius: 10,
+                        padding: 16,
+                        displayColors: false,
+
+                        titleFont: {
+                            family: "Source Sans 3",
+                            size: 16,
+                            weight: "700"
+                        },
+
+                        bodyFont: {
+                            family: "Source Sans 3",
+                            size: 15,
+                            weight: "600"
+                        },
+
+                        titleSpacing: 8,
+                        bodySpacing: 8,
+                        caretPadding: 8,
+
+                        callbacks: {
+                            title: (ctx) =>
+                                `Semana: ${ctx[0].label}`,
+
+                            label: (ctx) =>
+                                `Quantidade: ${Number(ctx.raw).toLocaleString("pt-BR")}`
+                        }
+                    }
+                }
             }
-
         }
-
     );
-
 }
 
 
