@@ -946,16 +946,24 @@ function renderizarComboboxParceiro(id, termo){
     }
     else{
 
-        filtrados.forEach(parceiro=>{
+       filtrados.forEach(parceiro=>{
 
-            const nome =
-                parceiro.nome_usual || ""
+         const nome = parceiro.nome_usual || ""
 
             html += `
-                <li onclick="selecionarComboboxParceiro('${id}', ${JSON.stringify(nome)})">
-                    ${nome}
-                </li>
-            `
+            <li
+                onclick="selecionarComboboxParceiro(
+                    '${id}',
+                 this.dataset.nome
+                 )"
+               data-nome="${nome
+                .replace(/"/g,'&quot;')
+                .replace(/'/g,'&#39;')
+                 }"
+               >
+                ${nome}
+            </li>
+           `
 
         })
 
@@ -1769,7 +1777,7 @@ async function carregarLancamentos(){
             )
                 : null
 
-            let corVencimento = "#e5e7eb"
+            let corVencimento = "#111827"
 
 
             /* VENCIDO */
