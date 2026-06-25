@@ -130,11 +130,15 @@ canvas{
         120px   /* UF Comprador */
         120px   /* Tipo */
         120px   /* Frete */
-        350px;  /* Perfis */
+        1fr;    /* Perfis ocupa todo o restante */
 
     gap:15px;
     margin-bottom:20px;
     align-items:start;
+}
+
+.perfil-box{
+    width:100%;
 }
 
 @media (max-width: 1400px){
@@ -299,19 +303,47 @@ canvas{
 
 
 .lista-perfis{
+
     height:200px;
+
     overflow-y:auto;
+
+    display:flex;
+    flex-wrap:wrap;
+    align-content:flex-start;
+
+    gap:8px;
+
     background:#1f2937;
     border:1px solid #374151;
     border-radius:8px;
-    padding:8px;
+
+    padding:10px;
 }
 
 .perfil-item{
-    padding:8px;
-    border-radius:6px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:8px 12px;
+
+    min-width:140px;
+
+    height:36px;
+
+    border-radius:8px;
+
     cursor:pointer;
+
     color:#e5e7eb;
+
+    background:#374151;
+
+    white-space:nowrap;
+
+    transition:.2s;
 }
 
 .perfil-item:hover{
