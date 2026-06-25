@@ -19,25 +19,26 @@ router.get("/", async (req,res)=>{
     pc.uf as estado_comprador,
 
     cc.quantidade as quantidade,
-
     cc.peso as peso,
-
     cc.preco_kg as preco_kg,
 
-    -- 🔥 preço normalizado (REGRA CORRETA)
-     CASE 
+    -- 🔥 preço normalizado (REGRA ÚNICA E CORRETA)
+    CASE 
         WHEN cc.preco_kg = FLOOR(cc.preco_kg)
-            AND cc.preco_kg >= 50
-       THEN cc.preco_kg / 10.0
-       ELSE cc.preco_kg
-    END AS preco_kg_normalizado
+             AND cc.preco_kg >= 50
+        THEN cc.preco_kg / 10.0
+        ELSE cc.preco_kg
+    END AS preco_kg_normalizado,
 
-    -- 🔥 valor corrigido usando preço normalizado
+    -- 🔥 valor usando SOMENTE preço normalizado
     CASE 
         WHEN cc.peso > 0 AND cc.preco_kg > 0 THEN
-            cc.peso * (
+            cc.peso *
+            (
                 CASE 
-                    WHEN cc.preco_kg > 20 THEN cc.preco_kg / 10.0
+                    WHEN cc.preco_kg = FLOOR(cc.preco_kg)
+                         AND cc.preco_kg >= 50
+                    THEN cc.preco_kg / 10.0
                     ELSE cc.preco_kg
                 END
             )
