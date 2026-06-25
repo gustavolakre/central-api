@@ -24,7 +24,7 @@ router.get("/", async (req,res)=>{
 
     cc.preco_kg as preco_kg,
 
-    (cc.peso * cc.preco_kg / 100.0) as valor
+    (cc.peso * cc.preco_kg / 10.0) as valor
 
 FROM controle_cargas cc
 
