@@ -1132,15 +1132,21 @@ dados.forEach(item => {
 
     const semana = item.semana;
 
-    const peso = Number(item.peso_total);
-    const valor = Number(item.valor_total);
+    const peso = Number(item.peso || 0);
+    const valor = Number(item.valor || 0);
 
     if (!mapa[semana]) {
-        mapa[semana] = { peso: 0, valor: 0 };
+
+        mapa[semana] = {
+            peso: 0,
+            valor: 0
+        };
+
     }
 
-    if (!isNaN(peso)) mapa[semana].peso += peso;
-    if (!isNaN(valor)) mapa[semana].valor += valor;
+    mapa[semana].peso += peso;
+    mapa[semana].valor += valor;
+
 });
 
 const semanasMP = Object.keys(mapa)
