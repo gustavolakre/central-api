@@ -19,21 +19,22 @@ const pool = require("../src/db/database");
 const BATCH_SIZE = 200;
 
 function numero(valor) {
-  if (
-    valor === null ||
-    valor === undefined ||
-    valor === ""
-  ) return null;
+  if (valor === null || valor === undefined || valor === "") return null;
 
-  const n = Number(
-    String(valor)
-      .replace(/\./g, "")
-      .replace(",", ".")
-  );
+  const str = String(valor).trim();
 
-  return Number.isNaN(n)
-    ? null
-    : n;
+  // caso brasileiro: 1.234,56
+  if (str.includes(",") && str.includes(".")) {
+    return Number(str.replace(/\./g, "").replace(",", "."));
+  }
+
+  // caso só vírgula: 18,5
+  if (str.includes(",")) {
+    return Number(str.replace(",", "."));
+  }
+
+  // caso já vem como 18.5 ou 21.3
+  return Number(str);
 }
 
 function texto(valor) {
