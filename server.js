@@ -47,6 +47,9 @@ const paineisCargas2 =
 const importarFretesRelatorio =
     require("./routes/importarFretesRelatorio");
 
+const importarFretesExcel =
+    require("./routes/importarFretesExcel");
+
 const enviarPipefy = require("./routes/enviarPipefy");
 
 const criarCardsReceber =
@@ -174,6 +177,12 @@ app.use(
 app.use(
     "/importar-fretes-relatorio",
     importarFretesRelatorio
+);
+
+app.use(
+    "/importar-fretes",
+    autenticar,
+    importarFretesExcel
 );
 
 app.use(

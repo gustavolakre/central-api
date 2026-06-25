@@ -325,6 +325,20 @@ input[type=file]{
 
     <h3>Importação de Contratação de Fretes</h3>
 
+    <input
+        type="file"
+        id="arquivoFretes"
+        accept=".xlsx,.xls"
+    >
+
+    <button
+        id="btnImportarFretesPlanilha"
+        class="btnAtualizar"
+        onclick="importarFretes()"
+    >
+        Importar Fretes
+    </button>
+
     <button
          id="btnImportarFretes"
          class="btnPipefy"
@@ -582,9 +596,8 @@ function abrirCargas(){
 
 function abrirFretes(){
 
-    alert(
-        "Tela ainda será criada."
-    )
+    window.location.href =
+        "/janelas/fatura-fretes.html"
 
 }
 
@@ -703,6 +716,117 @@ async function importarCargas(){
        "Importar Cargas";
 
 
+
+    }
+}
+
+
+
+
+async function importarFretes(){
+
+    const status =
+        document.getElementById("status");
+
+    const botao =
+        document.getElementById(
+            "btnImportarFretesPlanilha"
+        );
+
+    const arquivo =
+        document.getElementById(
+            "arquivoFretes"
+        ).files[0];
+
+    if(!arquivo){
+
+        alert(
+            "Selecione uma planilha."
+        );
+
+        return;
+    }
+
+    try{
+
+        botao.disabled = true;
+
+        status.innerHTML =
+            "Enviando arquivo...";
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "arquivo",
+            arquivo
+        );
+
+        const resposta =
+            await fetch(
+                "/importar-fretes",
+                {
+
+                    method:"POST",
+
+                    headers:{
+
+                        Authorization:
+                            `Bearer ${
+                                localStorage.getItem(
+                                    "token"
+                                )
+                            }`
+
+                    },
+
+                    body:formData
+
+                }
+            );
+
+        if(!resposta.ok){
+
+            throw new Error(
+                "Erro na resposta do servidor"
+            );
+
+        }
+
+        const dados =
+            await resposta.json();
+
+        if(dados.sucesso){
+
+            status.innerHTML =
+        `
+       ✅ Importação concluída com sucesso.
+
+         <br><br>
+
+        <b>${dados.importados}</b>
+        registros importados.
+        `;
+
+        }else{
+
+            status.innerHTML =
+                "Erro na importação.";
+
+        }
+
+    }catch(err){
+
+        console.error(err);
+
+        status.innerHTML =
+            "Erro ao importar planilha.";
+
+    }finally{
+
+        botao.disabled = false;
+        botao.innerHTML =
+            "Importar Fretes";
 
     }
 }
