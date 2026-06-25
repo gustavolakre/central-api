@@ -130,10 +130,16 @@ router.post("/", async (req, res) => {
     //
     // 5 - 🔥 DISPARA SOCKET PARA TODOS OS PAINÉIS
     //
+    const agora = new Date();
+
     const dataHora =
-  new Date().toLocaleDateString("pt-BR") +
+  agora.toLocaleDateString("pt-BR", {
+    timeZone: "America/Sao_Paulo"
+  }) +
   " " +
-  new Date().toLocaleTimeString("pt-BR");
+  agora.toLocaleTimeString("pt-BR", {
+    timeZone: "America/Sao_Paulo"
+  });
 
 const io = req.app.get("io");
 
