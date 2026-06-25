@@ -122,7 +122,16 @@ canvas{
 
 .filtros-topo{
     display:grid;
-    grid-template-columns: repeat(6, 1fr);
+
+    grid-template-columns:
+        320px   /* Fornecedor */
+        320px   /* Comprador */
+        120px   /* UF Fornecedor */
+        120px   /* UF Comprador */
+        120px   /* Tipo */
+        120px   /* Frete */
+        350px;  /* Perfis */
+
     gap:15px;
     margin-bottom:20px;
     align-items:start;
@@ -288,59 +297,10 @@ canvas{
 }
 
 
-.perfil-grafico{
-
-    margin-top:25px;
-
-    padding:18px;
-
-    background:#111827;
-
-    border:1px solid #374151;
-
-    border-radius:10px;
-
-}
-
-.perfil-titulo{
-
-    color:white;
-
-    font-weight:bold;
-
-    margin-bottom:12px;
-
-}
-
-.perfil-linha{
-
-    display:flex;
-
-    gap:12px;
-
-    align-items:center;
-
-}
-
-#perfilGrafico{
-
-    flex:1;
-
-    padding:10px;
-
-    background:#1f2937;
-
-    color:white;
-
-    border:1px solid #374151;
-
-    border-radius:8px;
-
-}
 
 .lista-perfis{
-    max-height: 500px;
-    overflow-y: auto;
+    height:200px;
+    overflow-y:auto;
     background:#1f2937;
     border:1px solid #374151;
     border-radius:8px;
@@ -362,7 +322,9 @@ canvas{
 #btnSalvarPerfil,
 #btnExcluirPerfil{
 
-    padding:10px 18px;
+    flex:1;
+
+    padding:8px;
 
     border:none;
 
@@ -371,6 +333,8 @@ canvas{
     cursor:pointer;
 
     font-weight:bold;
+
+    font-size:12px;
 
 }
 
@@ -471,8 +435,30 @@ canvas{
     </div>
 
     <div class="filtro-box frete">
-       <div class="filtro-titulo">Frete</div>
-    <div id="filtroFrete"></div>
+   <div class="filtro-titulo">Frete</div>
+   <div id="filtroFrete"></div>
+</div>
+
+<div class="filtro-box perfil-box">
+
+    <div class="filtro-titulo">
+        Perfis
+    </div>
+
+    <div id="listaPerfis" class="lista-perfis"></div>
+
+    <div style="display:flex; gap:8px; margin-top:8px;">
+
+        <button id="btnSalvarPerfil">
+            💾 Salvar
+        </button>
+
+        <button id="btnExcluirPerfil">
+            🗑 Excluir
+        </button>
+
+    </div>
+
 </div>
 
 </div>
@@ -488,30 +474,6 @@ canvas{
         <canvas id="graficoMediaPonderada"></canvas>
     </div>
 
-
-    <div class="perfil-grafico">
-
-    <div class="perfil-titulo">
-        Perfil do gráfico
-    </div>
-
-    <div class="perfil-linha">
-
-        <div id="listaPerfis" class="lista-perfis"></div>
-             <option value=""></option>
-        </select>
-
-        <button id="btnSalvarPerfil">
-            💾 Salvar
-        </button>
-
-        <button id="btnExcluirPerfil">
-            🗑 Excluir
-        </button>
-
-    </div>
-
-</div>
 
 </div>
 
