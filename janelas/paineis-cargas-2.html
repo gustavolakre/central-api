@@ -1006,7 +1006,10 @@ function criarGrafico(canvasId, labels, data, cor = "#f97316", tipo = "bar") {
             },
 
            formatter: (value) =>
-           Number(value).toLocaleString("pt-BR")
+              Number(value).toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })
         },
 
         tooltip: {
@@ -1173,7 +1176,7 @@ const valoresMP = semanasMP.map(s => {
         "graficoMediaPonderada",
         labelsMP,
         valoresMP,
-        "#10b981",
+         "#ef4444",
         periodoSelecionado === "all" ? "line" : "bar"
     );
 }
