@@ -191,13 +191,9 @@
                 <input type="text" id="produtoServico">
             </div>
             <div class="campoTopo">
-                <b>Mês Gerencial</b><br>
+                <b>Conta Gerencial</b><br>
                 <select id="mesGerencial">
-                    <option>2026/01</option>
-                    <option>2026/02</option>
-                    <option>2026/03</option>
-                    <option>2026/04</option>
-                    <option>2026/05</option>
+                    <option value="">Selecione</option>
                 </select>
             </div>
         </div>
@@ -1204,7 +1200,7 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
                             <th>Nota Fiscal</th>
                             <th>Produto / Serviço</th>
                             <th>Discriminação</th>
-                            <th>Mês Gerencial</th>
+                            <th>Conta Gerencial</th>
                             <th>Card Criado</th>
                             <th>Ações</th>
                         </tr>`
@@ -2487,7 +2483,7 @@ await verificar401(response)
       // 🔹 Campos da tela
       document.getElementById("discriminacao").value = dados.discriminacao || ""
       document.getElementById("produtoServico").value = dados.produtoServico || ""
-      document.getElementById("mesGerencial").value = dados.mesGerencial || "2026/01"
+      document.getElementById("mesGerencial").value = dados.mesGerencial || ""
       document.getElementById("tipoOperacao").value = dados.tipoOperacao || "comprador"
 
       tipoOperacao = dados.tipoOperacao || "comprador"
@@ -2515,9 +2511,49 @@ await verificar401(response)
   reader.readAsText(file)
 })
 
+async function carregarContasGerenciais() {
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/contas-gerenciais`,
+            {
+                headers: getAuthHeaders()
+            }
+        )
+
+        const contas = await response.json()
+
+        const select =
+            document.getElementById("mesGerencial")
+
+        select.innerHTML =
+            `<option value="">Selecione</option>`
+
+        contas.forEach(conta => {
+
+            select.innerHTML += `
+                <option value="${conta.nome}">
+                    ${conta.nome}
+                </option>
+            `
+
+        })
+
+    } catch(err) {
+
+        console.error(err)
+
+    }
+
+}
+
+
 window.addEventListener("DOMContentLoaded", async () => {
 
     try {
+
+        await carregarContasGerenciais()
 
         await carregarParceirosBanco()
 
