@@ -25,14 +25,16 @@ router.get("/", async (req,res)=>{
     cc.preco_kg as preco_kg,
 
     (
-    cc.peso *
-    CASE
-        WHEN cc.preco_kg < 100
-            THEN cc.preco_kg / 10.0
-        ELSE
-            cc.preco_kg / 100.0
-    END
-    ) as valor
+CASE 
+    WHEN cc.peso > 0 AND cc.preco_kg > 0 THEN
+        cc.peso *
+        CASE
+            WHEN cc.preco_kg < 100 THEN cc.preco_kg / 10.0
+            ELSE cc.preco_kg / 100.0
+        END
+    ELSE 0
+END
+) as valor
 
 FROM controle_cargas cc
 
