@@ -1232,33 +1232,58 @@ async function importarParceiros(){
 
 async function importarParceirosPipefy(){
 
-    document.getElementById(
-        "status"
-    ).innerHTML =
+    const status =
+        document.getElementById("status");
+
+    status.innerHTML =
         "Atualizando parceiros via Pipefy...";
 
-    const resposta =
-    await fetch(
-        "/importar-parceiros",
-        {
-            headers:{
-                Authorization:
-                    `Bearer ${
-                        localStorage.getItem(
-                            "token"
-                        )
-                    }`
-            }
+    try{
+
+        const resposta =
+            await fetch(
+                "/importar-parceiros",
+                {
+                    headers:{
+                        Authorization:
+                            `Bearer ${
+                                localStorage.getItem(
+                                    "token"
+                                )
+                            }`
+                    }
+                }
+            );
+
+        if(!resposta.ok){
+
+            status.innerHTML =
+                `❌ Erro ${resposta.status} ao importar parceiros.`;
+
+            return;
         }
-    );
 
-    const dados =
-        await resposta.json();
+        const dados =
+            await resposta.json();
 
-    document.getElementById(
-        "status"
-    ).innerHTML =
-        "✅ Parceiros atualizados via Pipefy";
+        if(dados.success){
+
+            status.innerHTML =
+                `✅ ${dados.total} parceiros importados`;
+
+        }else{
+
+            status.innerHTML =
+                `❌ ${dados.error || "Erro ao importar parceiros."}`;
+        }
+
+    }catch(err){
+
+        console.error(err);
+
+        status.innerHTML =
+            "❌ Erro ao importar parceiros.";
+    }
 }
 
 

@@ -18,6 +18,9 @@ require("./routes/importarCargasExcel");
 const importarParceirosExcel =
   require("./routes/importarParceirosExcel");
 
+const importarParceiros =
+  require("./routes/importarParceiros");
+
 const pool = require("./src/db/database")
 
 const app = express()
@@ -106,6 +109,11 @@ app.use(
   "/importar-parceiros-excel",
   autenticar,
   importarParceirosExcel
+);
+
+app.use(
+  "/importar-parceiros",
+  importarParceiros
 );
 
 app.use(
