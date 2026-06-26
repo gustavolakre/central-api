@@ -146,6 +146,77 @@
             box-sizing:border-box;
         }
 
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: #1e293b;
+            padding: 12px 20px;
+            margin: -40px -40px 25px -40px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .topbar-grupo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .topbar .topbar-titulo {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-left: 6px;
+        }
+
+        .topbar button {
+            margin: 0;
+            padding: 8px 14px;
+            font-size: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #2563eb;
+            color: #fff;
+            font-weight: 600;
+            transition: background 0.15s ease;
+        }
+
+        .topbar button:hover {
+            background: #1d4ed8;
+        }
+
+        .topbar .btn-voltar {
+            background: #475569;
+        }
+
+        .topbar .btn-voltar:hover {
+            background: #334155;
+        }
+
+        .btn-lista {
+            margin: 0 6px 6px 0;
+            padding: 5px 12px;
+            font-size: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #1e293b;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.15s ease;
+        }
+
+        .btn-lista:hover {
+            background: #e2e8f0;
+        }
+
 
     </style>
 
@@ -156,19 +227,18 @@
     </head>
 
     <body>
-        <h2 style="text-align:center; margin-bottom:20px;">Faturamento</h2>
-
-       <div class="barra-superior">
-
-    <button onclick="voltarInicio()">
-
-        ⬅ Voltar ao início
-
-    </button>
-
-</head>
-
-<body>
+        <div class="topbar">
+            <div class="topbar-grupo">
+                <button class="btn-voltar" onclick="voltarInicio()">⬅ Voltar ao início</button>
+                <span class="topbar-titulo">Faturamento de Fretes</span>
+            </div>
+            <div class="topbar-grupo">
+                <button onclick="salvarSessao()">Salvar Sessão</button>
+                <button onclick="salvarESair()">Salvar e sair</button>
+                <button onclick="abrirSessao()">Abrir Sessão (arquivo)</button>
+                <button onclick="novaSessao()">Nova Sessão</button>
+            </div>
+        </div>
 
  <div id="paginaPrincipal">
 
@@ -184,8 +254,6 @@ margin-bottom:20px;
 </div>
 
    
-
-    <h2>Faturamento de Fretes</h2>
 
     <div class="topo">
 
@@ -233,17 +301,22 @@ margin-bottom:20px;
 
             <b>Semanas</b><br><br>
 
-            <button onclick="selecionarTodasSemanas()">
+            <button class="btn-lista" onclick="selecionarTodasSemanas()">
                 Selecionar todas
             </button>
 
-            <button onclick="limparSemanas()">
+            <button class="btn-lista" onclick="limparSemanas()">
                 Limpar
             </button>
 
             <div id="listaSemanas"></div>
 
-           
+            <button onclick="abrirListas()"
+                onmouseover="this.style.background='#c62828'"
+                onmouseout="this.style.background='#e53935'"
+                style="display:block; width:242px; box-sizing:border-box; margin-top:10px; background:#e53935; color:#fff; border:none; padding:10px 0; border-radius:6px; cursor:pointer; font-weight:600; transition:background 0.15s ease;">
+                Listas
+            </button>
         </div>
 
         <div class="painel">
@@ -263,11 +336,11 @@ margin-bottom:20px;
 
     <br><br>
 
-    <button onclick="selecionarTodasTransportadoras()">
+    <button class="btn-lista" onclick="selecionarTodasTransportadoras()">
         Selecionar todas
     </button>
 
-    <button onclick="limparTransportadoras()">
+    <button class="btn-lista" onclick="limparTransportadoras()">
         Limpar
     </button>
 
@@ -288,34 +361,6 @@ margin-bottom:20px;
 
     </div>
 
-    <div class="botoes-topo">
-
-        <button onclick="salvarSessao()">
-            Salvar Sessão
-        </button>
-
-        <button onclick="salvarESair()">
-            Salvar e sair
-        </button>
-
-        <button onclick="abrirSessao()">
-            Abrir Sessão (arquivo)
-        </button>
-
-        <button onclick="concluirFaturamento()">
-            Concluir faturamento
-        </button>
-
-        <button onclick="novaSessao()">
-            Nova Sessão
-        </button>
-
-        <button onclick="abrirListas()">
-           Listas
-        </button>
-
-    </div>
-
    <input type="file" id="arquivoSessao" style="display:none">
 
    <div id="resultado"></div>
@@ -328,18 +373,25 @@ margin-bottom:20px;
     >
     
 
-    <div style="margin-bottom:10px;">
+    <div class="topbar" style="margin:-40px -40px 20px -40px; border-radius:0;">
+    <div class="topbar-grupo">
 
-<button onclick="fecharListas()">
+<button class="btn-voltar" onclick="fecharListas()">
 Fechar
 </button>
 
 <button
 onclick="exportarExcel()"
+onmouseover="this.style.background='#1b5e20'"
+onmouseout="this.style.background='#2e7d32'"
 style="
 background:#2e7d32;
 color:white;
-margin-left:10px;
+padding:8px 14px;
+border-radius:6px;
+border:none;
+cursor:pointer;
+transition:background 0.15s ease;
 "
 >
 GERAR PLANILHA EXCEL
@@ -347,11 +399,16 @@ GERAR PLANILHA EXCEL
 
 <button
 onclick="criarCardsPipefyFretes()"
-
+onmouseover="this.style.background='#c62828'"
+onmouseout="this.style.background='#e53935'"
 style="
 background:#e53935;
 color:white;
-margin-left:10px;
+padding:8px 14px;
+border-radius:6px;
+border:none;
+cursor:pointer;
+transition:background 0.15s ease;
 "
 >
 
@@ -359,6 +416,24 @@ CRIAR CARDS NO CONTAS A RECEBER
 
 </button>
 
+<button
+onclick="concluirFaturamento()"
+onmouseover="this.style.background='#1565c0'"
+onmouseout="this.style.background='#1976d2'"
+style="
+background:#1976d2;
+color:white;
+padding:8px 14px;
+border-radius:6px;
+border:none;
+cursor:pointer;
+transition:background 0.15s ease;
+"
+>
+CONCLUIR FATURAMENTO
+</button>
+
+</div>
 </div>
 
 <div style="
