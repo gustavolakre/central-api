@@ -155,7 +155,7 @@
     z-index: 1000;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-wrap: wrap;
     gap: 10px;
     background: #1e293b;
@@ -201,6 +201,23 @@
 
 .topbar .btn-voltar:hover {
     background: #334155;
+}
+
+.btn-lista {
+    margin: 0 6px 6px 0;
+    padding: 5px 12px;
+    font-size: 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #1e293b;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.15s ease;
+}
+
+.btn-lista:hover {
+    background: #e2e8f0;
 }
 
 
@@ -263,8 +280,8 @@
                 <b>Base de Parceiros</b><br>
                     <div style="margin-top:30px; border-top:1px solid #ddd; padding-top:15px;">
                     <b>Semana</b><br>
-                    <button onclick="selecionarTodasSemanas()">Selecionar todas</button>
-                    <button onclick="limparSemanas()">Limpar</button>
+                    <button class="btn-lista" onclick="selecionarTodasSemanas()">Selecionar todas</button>
+                    <button class="btn-lista" onclick="limparSemanas()">Limpar</button>
                     <div id="listaSemanas" style="width:200px; max-height:150px; overflow:auto; border:1px solid #ccc; padding:10px; background:white; margin-top:5px; white-space:nowrap;">
                     </div>
                 </div>
@@ -277,8 +294,8 @@
                 <input type="checkbox" onchange="toggleAgrupamentoSelecionados(this.checked)"> Agrupar selecionados em um único grupo
             </label>
             <b>Compradores</b><br>
-            <button onclick="selecionarTodosCompradores()">Selecionar todos</button>
-            <button onclick="limparCompradores()">Limpar</button>
+            <button class="btn-lista" onclick="selecionarTodosCompradores()">Selecionar todos</button>
+            <button class="btn-lista" onclick="limparCompradores()">Limpar</button>
             <div id="listaCompradores" style="width:320px; max-height:250px; overflow:auto; border:1px solid #ccc; padding:10px; background:white; margin-top:5px; white-space:nowrap;">
             </div>
         </div>
@@ -286,8 +303,8 @@
         <!-- FORNECEDORES -->
         <div style="margin-top:20px;">
             <b>Fornecedores</b><br>
-            <button onclick="selecionarTodosFornecedores()">Selecionar todos</button>
-            <button onclick="limparFornecedores()">Limpar</button>
+            <button class="btn-lista" onclick="selecionarTodosFornecedores()">Selecionar todos</button>
+            <button class="btn-lista" onclick="limparFornecedores()">Limpar</button>
             <div id="listaFornecedores" style="width:320px; max-height:250px; overflow:auto; border:1px solid #ccc; padding:10px; background:white; margin-top:5px; white-space:nowrap;">
             </div>
         </div>
@@ -1458,20 +1475,19 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
 
                         z-index:9999;
                         ">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <div style="display:flex; gap:10px; align-items:center;">
-                        <button onclick="fecharFaturados()">Fechar</button>
-                        <button onclick="gerarExcel()" onmouseover="this.style.background='#1b5e20'" onmouseout="this.style.background='#2e7d32'" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'" style="background:#2e7d32; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; transition:all 0.15s ease;">
+                        <div class="topbar" style="margin:-20px -20px 20px -20px; border-radius:0;">
+                        <div class="topbar-grupo">
+                        <button class="btn-voltar" onclick="fecharFaturados()">Fechar</button>
+                        <button onclick="gerarExcel()" onmouseover="this.style.background='#1b5e20'" onmouseout="this.style.background='#2e7d32'" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'" style="background:#2e7d32; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; transition:all 0.15s ease;">
                             GERAR PLANILHA EXCEL
                         </button>
-                      
 
 <button onclick="criarCardsPipefy()" 
   onmouseover="this.style.background='#c62828'" 
   onmouseout="this.style.background='#e53935'" 
   onmousedown="this.style.transform='scale(0.95)'" 
   onmouseup="this.style.transform='scale(1)'" 
-  style="background:#e53935; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; transition:all 0.15s ease;">
+  style="background:#e53935; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; transition:all 0.15s ease;">
     CRIAR CARDS NO CONTAS A RECEBER
 </button>
 
@@ -1480,7 +1496,7 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
   onmouseout="this.style.background='#1976d2'"
   onmousedown="this.style.transform='scale(0.95)'"
   onmouseup="this.style.transform='scale(1)'"
-  style="background:#1976d2; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; transition:all 0.15s ease;">
+  style="background:#1976d2; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; transition:all 0.15s ease;">
     CONCLUIR FATURAMENTO
 </button>
 
