@@ -2678,6 +2678,65 @@ err
 }
 
 
+async function criarContasReceberFretes(registros) {
+
+    const hoje = new Date().toISOString().split("T")[0]
+
+    let criadas = 0
+
+    for (const c of registros) {
+
+        try {
+
+            const venc = String(c.vencimento || "").trim()
+
+            const body = {
+                tipo: "RECEBER",
+                parceiro: c.parceiro || "",
+                discriminacao_periodo: c.discriminacao || "",
+                produto_servico: c.produtoServico || "",
+                conta_gerencial: c.mesGerencial || "",
+                valor: Number(c.valorLiquido) || 0,
+                data_emissao: hoje,
+                vencimento: venc || null,
+                nota_fiscal: c.notaFiscal || "",
+                observacao: ""
+            }
+
+            const resp = await fetch(
+                "/financeiro",
+                {
+                    method: "POST",
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(body)
+                }
+            )
+
+            if (resp.ok) {
+                criadas++
+            } else {
+                console.error(
+                    "Falha ao criar conta a receber (fretes):",
+                    await resp.text()
+                )
+            }
+
+        } catch (err) {
+
+            console.error(
+                "Erro ao criar conta a receber (fretes):",
+                err
+            )
+
+        }
+
+    }
+
+    return criadas
+
+}
+
+
 async function criarCardsPipefyFretes(){
 
     if(!cardsFretes.length){
@@ -2688,6 +2747,8 @@ async function criarCardsPipefyFretes(){
     }
 
     const pipeId = 306630252
+
+    const registrosSelecionados = cardsFretes.filter(c => !c.cardCriado)
 
     let lista = cardsFretes
 
@@ -2794,28 +2855,31 @@ async function criarCardsPipefyFretes(){
             data
         )
 
+        let contasCriadas = 0
+
         if(
             data.sucesso > 0
         ){
 
-            if(data.sucesso > 0){
+            // 🔥 CRIA TAMBÉM AS CONTAS A RECEBER NO FINANCEIRO
+            contasCriadas =
+                await criarContasReceberFretes(registrosSelecionados)
 
-               cardsFretes
-               .filter(c=>!c.cardCriado)
-               .forEach(c=>{
+            cardsFretes
+            .filter(c=>!c.cardCriado)
+            .forEach(c=>{
 
                c.cardCriado = true
 
             })
-
-}
 
         }
 
         renderizarListas()
 
         alert(
-            `Criados: ${data.sucesso} | Erros: ${data.erros}`
+            `Criados: ${data.sucesso} | Erros: ${data.erros}\n` +
+            `Contas a receber criadas: ${contasCriadas}`
         )
 
     }
