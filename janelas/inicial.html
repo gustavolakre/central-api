@@ -212,25 +212,24 @@ button:hover{
     font-size:15px;
 }
 
-input[type=file]{
 
-    padding:12px;
+/* SEÇÃO DE IMPORTAÇÕES */
 
-    background:white;
+.secaoImportacoes{
 
-    border:1px solid #d1d5db;
+    display:flex;
 
-    border-radius:10px;
+    flex-direction:column;
 
-    margin-right:10px;
+    gap:16px;
+
+    margin-bottom:30px;
 }
 
 
 .blocoImportacao{
 
-    margin-bottom:25px;
-
-    padding:20px;
+    padding:20px 22px;
 
     border:1px solid #e5e7eb;
 
@@ -241,9 +240,64 @@ input[type=file]{
 
 .blocoImportacao h3{
 
-    margin-bottom:15px;
+    margin-bottom:14px;
 
     color:#111827;
+
+    font-size:17px;
+}
+
+
+/* LINHA DE CONTROLES (alinhada) */
+
+.blocoControles{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+}
+
+
+/* CONTROLES COM ALTURA PADRÃO */
+
+.blocoControles input[type=file],
+.blocoControles button{
+
+    height:46px;
+
+    border-radius:10px;
+}
+
+.blocoControles input[type=file]{
+
+    flex:1 1 280px;
+
+    min-width:240px;
+
+    padding:11px 12px;
+
+    background:white;
+
+    border:1px solid #d1d5db;
+
+    font-size:14px;
+}
+
+.blocoControles button{
+
+    flex:0 0 auto;
+
+    padding:0 20px;
+
+    font-size:14px;
+
+    display:inline-flex;
+
+    align-items:center;
 }
 
 .btnPipefy{
@@ -251,21 +305,26 @@ input[type=file]{
     background:#2563eb;
 
     color:white;
-
-    margin-left:10px;
 }
+
+
+/* INFO DE ÚLTIMA ATUALIZAÇÃO (alinhada à direita) */
 
 .ultimaInfo{
 
-    display:inline-block;
+    margin-left:auto;
 
-    margin-left:14px;
+    text-align:right;
 
     font-size:13px;
 
     font-weight:bold;
 
     color:#6b7280;
+
+    white-space:nowrap;
+
+    min-width:200px;
 }
 
 </style>
@@ -280,93 +339,108 @@ input[type=file]{
 
 
 
-    <!-- TOPO -->
+    <!-- IMPORTAÇÕES -->
 
- 
-<div class="blocoImportacao">
+<div class="secaoImportacoes">
 
-    <h3>Importação de Cargas</h3>
+    <div class="blocoImportacao">
 
-    <input
-        type="file"
-        id="arquivoCargas"
-        accept=".xlsx,.xls"
-    >
+        <h3>Importação de Cargas</h3>
 
-    <button
-        id="btnImportarCargas"
-        class="btnAtualizar"
-        onclick="importarCargas()"
-    >
-        Importar Cargas
-    </button>
+        <div class="blocoControles">
 
-    <button
-        class="btnPipefy"
-        onclick="atualizarCargasPipefy()"
-    >
-        Atualizar via Pipefy
-    </button>
+            <input
+                type="file"
+                id="arquivoCargas"
+                accept=".xlsx,.xls"
+            >
 
-    <span id="ultimaCargas" class="ultimaInfo"></span>
+            <button
+                id="btnImportarCargas"
+                class="btnAtualizar"
+                onclick="importarCargas()"
+            >
+                Importar Cargas
+            </button>
 
-</div>
+            <button
+                class="btnPipefy"
+                onclick="atualizarCargasPipefy()"
+            >
+                Atualizar via Pipefy
+            </button>
 
-<div class="blocoImportacao">
+            <span id="ultimaCargas" class="ultimaInfo"></span>
 
-    <h3>Importação de Parceiros</h3>
+        </div>
 
-    <input
-        type="file"
-        id="arquivoParceiros"
-        accept=".xlsx,.xls"
-    >
+    </div>
 
-    <button
-        class="btnAtualizar"
-        onclick="importarParceiros()"
-    >
-        Importar Parceiros
-    </button>
+    <div class="blocoImportacao">
 
-    <button
-        class="btnPipefy"
-        onclick="importarParceirosPipefy()"
-    >
-        Atualizar via Pipefy
-    </button>
+        <h3>Importação de Parceiros</h3>
 
-    <span id="ultimaParceiros" class="ultimaInfo"></span>
+        <div class="blocoControles">
 
-</div>
+            <input
+                type="file"
+                id="arquivoParceiros"
+                accept=".xlsx,.xls"
+            >
 
-<div class="blocoImportacao">
+            <button
+                class="btnAtualizar"
+                onclick="importarParceiros()"
+            >
+                Importar Parceiros
+            </button>
 
-    <h3>Importação de Contratação de Fretes</h3>
+            <button
+                class="btnPipefy"
+                onclick="importarParceirosPipefy()"
+            >
+                Atualizar via Pipefy
+            </button>
 
-    <input
-        type="file"
-        id="arquivoFretes"
-        accept=".xlsx,.xls"
-    >
+            <span id="ultimaParceiros" class="ultimaInfo"></span>
 
-    <button
-        id="btnImportarFretesPlanilha"
-        class="btnAtualizar"
-        onclick="importarFretes()"
-    >
-        Importar Fretes
-    </button>
+        </div>
 
-    <button
-         id="btnImportarFretes"
-         class="btnPipefy"
-         onclick="importarFretesPipefy()"
-     >
-    Atualizar via Pipefy
-</button>
+    </div>
 
-    <span id="ultimaFretes" class="ultimaInfo"></span>
+    <div class="blocoImportacao">
+
+        <h3>Importação de Contratação de Fretes</h3>
+
+        <div class="blocoControles">
+
+            <input
+                type="file"
+                id="arquivoFretes"
+                accept=".xlsx,.xls"
+            >
+
+            <button
+                id="btnImportarFretesPlanilha"
+                class="btnAtualizar"
+                onclick="importarFretes()"
+            >
+                Importar Fretes
+            </button>
+
+            <button
+                 id="btnImportarFretes"
+                 class="btnPipefy"
+                 onclick="importarFretesPipefy()"
+             >
+                Atualizar via Pipefy
+            </button>
+
+            <span id="ultimaFretes" class="ultimaInfo"></span>
+
+        </div>
+
+    </div>
 
 </div>
 
