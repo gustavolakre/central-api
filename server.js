@@ -81,6 +81,22 @@ io.on("connection", (socket) => {
             data: ultima
         });
     }
+
+    const ultimaParceiros = app.get("ultimaAtualizacaoParceiros");
+
+    if (ultimaParceiros) {
+        socket.emit("ultimaAtualizacaoParceiros", {
+            data: ultimaParceiros
+        });
+    }
+
+    const ultimaFretes = app.get("ultimaAtualizacaoFretes");
+
+    if (ultimaFretes) {
+        socket.emit("ultimaAtualizacaoFretes", {
+            data: ultimaFretes
+        });
+    }
 });
 
 app.use(cors())

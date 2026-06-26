@@ -429,6 +429,27 @@ router.post(
         "IMPORTACAO_PARCEIROS"
       );
 
+      const agora = new Date();
+
+      const dataHora =
+        agora.toLocaleDateString("pt-BR", {
+          timeZone: "America/Sao_Paulo"
+        }) +
+        " " +
+        agora.toLocaleTimeString("pt-BR", {
+          timeZone: "America/Sao_Paulo"
+        });
+
+      const io = req.app.get("io");
+
+      if (io) {
+        req.app.set("ultimaAtualizacaoParceiros", dataHora);
+
+        io.emit("ultimaAtualizacaoParceiros", {
+          data: dataHora
+        });
+      }
+
       return res.json({
         sucesso: true,
         importados

@@ -1,4 +1,4 @@
-await atualizar<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -6,6 +6,8 @@ await atualizar<!DOCTYPE html>
 <meta charset="UTF-8">
 
 <title>Tela Inicial</title>
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
 <style>
 
@@ -253,6 +255,19 @@ input[type=file]{
     margin-left:10px;
 }
 
+.ultimaInfo{
+
+    display:inline-block;
+
+    margin-left:14px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    color:#6b7280;
+}
+
 </style>
 
 </head>
@@ -293,6 +308,8 @@ input[type=file]{
         Atualizar via Pipefy
     </button>
 
+    <span id="ultimaCargas" class="ultimaInfo"></span>
+
 </div>
 
 <div class="blocoImportacao">
@@ -318,6 +335,8 @@ input[type=file]{
     >
         Atualizar via Pipefy
     </button>
+
+    <span id="ultimaParceiros" class="ultimaInfo"></span>
 
 </div>
 
@@ -346,6 +365,8 @@ input[type=file]{
      >
     Atualizar via Pipefy
 </button>
+
+    <span id="ultimaFretes" class="ultimaInfo"></span>
 
 </div>
 
@@ -526,6 +547,86 @@ async function validarLogin(){
 }
 
 validarLogin();
+
+
+/* =========================================
+   ÚLTIMA ATUALIZAÇÃO (TEMPO REAL)
+========================================= */
+
+const socket = io(
+    "https://api-production-6670.up.railway.app"
+);
+
+function mostrarUltima(elementoId, valor){
+
+    const campo =
+        document.getElementById(elementoId);
+
+    if(!campo){
+        return;
+    }
+
+    campo.innerHTML = valor
+        ? `🕒 Última atualização: ${valor}`
+        : "🕒 Ainda não atualizado";
+
+}
+
+function aplicarUltima(chave, elementoId, valor){
+
+    if(valor){
+        localStorage.setItem(chave, valor);
+    }
+
+    mostrarUltima(
+        elementoId,
+        valor || localStorage.getItem(chave)
+    );
+
+}
+
+// CARGAS (mesmo evento dos painéis)
+socket.on("ultimaAtualizacaoPipefy", (data) => {
+    aplicarUltima(
+        "ultimaAtualizacaoPipefy",
+        "ultimaCargas",
+        data.data
+    );
+});
+
+// PARCEIROS
+socket.on("ultimaAtualizacaoParceiros", (data) => {
+    aplicarUltima(
+        "ultimaAtualizacaoParceiros",
+        "ultimaParceiros",
+        data.data
+    );
+});
+
+// FRETES
+socket.on("ultimaAtualizacaoFretes", (data) => {
+    aplicarUltima(
+        "ultimaAtualizacaoFretes",
+        "ultimaFretes",
+        data.data
+    );
+});
+
+// EXIBE O QUE JÁ ESTIVER SALVO LOCALMENTE
+mostrarUltima(
+    "ultimaCargas",
+    localStorage.getItem("ultimaAtualizacaoPipefy")
+);
+
+mostrarUltima(
+    "ultimaParceiros",
+    localStorage.getItem("ultimaAtualizacaoParceiros")
+);
+
+mostrarUltima(
+    "ultimaFretes",
+    localStorage.getItem("ultimaAtualizacaoFretes")
+);
 
 
 async function atualizarCargasPipefy(){

@@ -83,6 +83,27 @@ router.post(
         req.file.buffer
       );
 
+      const agora = new Date();
+
+      const dataHora =
+        agora.toLocaleDateString("pt-BR", {
+          timeZone: "America/Sao_Paulo"
+        }) +
+        " " +
+        agora.toLocaleTimeString("pt-BR", {
+          timeZone: "America/Sao_Paulo"
+        });
+
+      const io = req.app.get("io");
+
+      if (io) {
+        req.app.set("ultimaAtualizacaoFretes", dataHora);
+
+        io.emit("ultimaAtualizacaoFretes", {
+          data: dataHora
+        });
+      }
+
       return res.json(resultado);
 
     }
