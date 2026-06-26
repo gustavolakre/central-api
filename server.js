@@ -50,6 +50,9 @@ const importarFretesRelatorio =
 const importarFretesExcel =
     require("./routes/importarFretesExcel");
 
+const faturamentoSessao =
+    require("./routes/faturamentoSessao");
+
 const enviarPipefy = require("./routes/enviarPipefy");
 
 const criarCardsReceber =
@@ -156,6 +159,11 @@ app.use(
 app.use(
     "/controle-faturamento",
     controleFaturamento
+);
+
+app.use(
+    "/faturamento-sessao",
+    faturamentoSessao
 );
 
 app.use(

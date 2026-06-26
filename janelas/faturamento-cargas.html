@@ -239,7 +239,9 @@
 
     <div class="botoes-topo" style="margin-top:10px;">
         <button onclick="salvarSessao()">Salvar Sessão</button>
-        <button onclick="abrirSessao()">Abrir Sessão</button>
+        <button onclick="salvarESair()">Salvar e sair</button>
+        <button onclick="abrirSessao()">Abrir Sessão (arquivo)</button>
+        <button onclick="concluirFaturamento()">Concluir faturamento</button>
         <button onclick="novaSessao()">Nova Sessão</button>
         <button onclick="abrirFaturados()">Ver Listas</button>
     </div>
@@ -329,6 +331,13 @@ validarLogin();
 
         const API_URL = "https://api-production-6670.up.railway.app"
 
+        const PROCESSO_SESSAO = "FATURAMENTO_CARGAS"
+
+        let usuarioEmail = ""
+
+        let autoSaveTimer = null
+
+
         function getAuthHeaders() {
 
            const token = localStorage.getItem("token")
@@ -343,6 +352,294 @@ validarLogin();
              "Authorization": `Bearer ${token}`
             }
          }
+
+
+        async function obterUsuarioEmail() {
+
+            const resp = await fetch(
+                "/validar-token",
+                { headers: getAuthHeaders() }
+            )
+
+            if (!resp.ok) {
+                throw new Error("Sessão inválida")
+            }
+
+            const data = await resp.json()
+
+            usuarioEmail =
+                data.usuario?.email ||
+                data.usuario?.usuario ||
+                ""
+
+            return usuarioEmail
+        }
+
+
+        function montarPayloadSessao() {
+
+            capturarCampos()
+
+            let nfStorage = {}
+
+            Object.keys(localStorage).forEach(key => {
+
+                if (
+                    key.startsWith("nf_compr_") ||
+                    key.startsWith("nf_fornec_")
+                ) {
+                    nfStorage[key] = localStorage.getItem(key)
+                }
+
+            })
+
+            return {
+
+                planilha: dadosPlanilha.map(d => ({
+                    ...d,
+                    enviadoControle: d.enviadoControle || false
+                })),
+                base: baseParceiros || [],
+                estadoCampos: estadoCampos || {},
+                compradoresSelecionados: Array.from(compradoresSelecionados || []),
+                fornecedoresSelecionados: Array.from(fornecedoresSelecionados || []),
+                semanasSelecionadas: Array.from(semanasSelecionadas || []),
+                agruparSelecionados: agruparSelecionados || false,
+                registrosFaturados: registrosFaturados.map(r => ({
+                    ...r,
+                    enviadoPipefy: r.enviadoPipefy || false,
+                    enviadoControle: r.enviadoControle || false
+                })),
+                discriminacao: document.getElementById("discriminacao").value || "",
+                produtoServico: document.getElementById("produtoServico").value || "",
+                mesGerencial: document.getElementById("mesGerencial").value || "",
+                tipoOperacao: document.getElementById("tipoOperacao").value || "comprador",
+                nfStorage
+            }
+        }
+
+
+        function aplicarSessao(dados) {
+
+            dadosPlanilha = dados.planilha || []
+            dadosPlanilha = dadosPlanilha.map(l => ({
+                ...l,
+                enviadoControle: l.enviadoControle || false
+            }))
+
+            baseParceiros = dados.base || []
+            estadoCampos = dados.estadoCampos || {}
+
+            compradoresSelecionados = new Set(dados.compradoresSelecionados || [])
+            fornecedoresSelecionados = new Set(dados.fornecedoresSelecionados || [])
+            semanasSelecionadas = new Set(dados.semanasSelecionadas || [])
+
+            agruparSelecionados = dados.agruparSelecionados || false
+
+            let checkboxAgrupar = document.querySelector(
+                'input[onchange="toggleAgrupamentoSelecionados(this.checked)"]'
+            )
+
+            if (checkboxAgrupar) {
+                checkboxAgrupar.checked = agruparSelecionados
+            }
+
+            registrosFaturados = (dados.registrosFaturados || []).map(r => ({
+                ...r,
+                enviadoPipefy: r.enviadoPipefy || false,
+                enviadoControle: r.enviadoControle || false
+            }))
+
+            Object.keys(localStorage)
+                .filter(k =>
+                    k.startsWith("nf_compr_") ||
+                    k.startsWith("nf_fornec_")
+                )
+                .forEach(k => localStorage.removeItem(k))
+
+            if (dados.nfStorage) {
+                for (let key in dados.nfStorage) {
+                    localStorage.setItem(key, dados.nfStorage[key])
+                }
+            }
+
+            document.getElementById("discriminacao").value = dados.discriminacao || ""
+            document.getElementById("produtoServico").value = dados.produtoServico || ""
+            document.getElementById("mesGerencial").value = dados.mesGerencial || ""
+            document.getElementById("tipoOperacao").value = dados.tipoOperacao || "comprador"
+
+            tipoOperacao = dados.tipoOperacao || "comprador"
+
+            tiposSuino = [...new Set(dadosPlanilha.map(d => d["Tipo Suíno"]))]
+
+            montarListaSemanas()
+            montarListasSeparadas()
+            montarAgrupamento()
+            gerarRelatorio()
+        }
+
+
+        async function salvarSessaoServidor(silencioso) {
+
+            const payload = montarPayloadSessao()
+
+            const resp = await fetch(
+                `/faturamento-sessao/${PROCESSO_SESSAO}`,
+                {
+                    method: "PUT",
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({ dados: payload })
+                }
+            )
+
+            if (!resp.ok) {
+                const err = await resp.json()
+                throw new Error(err.erro || "Erro ao salvar sessão")
+            }
+
+            if (!silencioso) {
+                console.log("💾 Sessão salva no servidor")
+            }
+
+            return payload
+        }
+
+
+        async function iniciarOuRetomarSessao() {
+
+            await obterUsuarioEmail()
+
+            const resp = await fetch(
+                `/faturamento-sessao/${PROCESSO_SESSAO}`,
+                { headers: getAuthHeaders() }
+            )
+
+            const data = await resp.json()
+            const sessao = data.sessao
+
+            if (
+                sessao &&
+                sessao.status === "EM_ANDAMENTO"
+            ) {
+
+                if (sessao.iniciado_por !== usuarioEmail) {
+
+                    alert(
+                        `Faturamento em andamento por ${sessao.iniciado_por}.`
+                    )
+
+                    window.location.href =
+                        "/janelas/inicial.html"
+
+                    return
+                }
+
+                aplicarSessao(sessao.dados_json)
+
+                console.log("♻️ Sessão retomada do servidor")
+
+                iniciarAutoSave()
+
+                return
+            }
+
+            await carregarDadosBanco()
+
+            const payload = montarPayloadSessao()
+
+            const criar = await fetch(
+                "/faturamento-sessao",
+                {
+                    method: "POST",
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify({
+                        processo: PROCESSO_SESSAO,
+                        dados: payload
+                    })
+                }
+            )
+
+            if (!criar.ok) {
+                const err = await criar.json()
+                throw new Error(err.erro || "Erro ao iniciar sessão")
+            }
+
+            console.log("🆕 Nova sessão iniciada no servidor")
+
+            iniciarAutoSave()
+        }
+
+
+        function iniciarAutoSave() {
+
+            if (autoSaveTimer) {
+                clearInterval(autoSaveTimer)
+            }
+
+            autoSaveTimer = setInterval(() => {
+                salvarSessaoServidor(true).catch(console.error)
+            }, 180000)
+        }
+
+
+        async function salvarESair() {
+
+            try {
+
+                await salvarSessaoServidor()
+
+                alert("Sessão salva. Você pode retomar depois.")
+
+                window.location.href =
+                    "/janelas/inicial.html"
+
+            } catch (err) {
+
+                console.error(err)
+                alert(err.message || "Erro ao salvar sessão")
+
+            }
+
+        }
+
+
+        async function concluirFaturamento() {
+
+            const ok = confirm(
+                "Concluir o faturamento? A sessão será encerrada."
+            )
+
+            if (!ok) return
+
+            try {
+
+                await salvarSessaoServidor(true)
+
+                await fetch(
+                    `/faturamento-sessao/${PROCESSO_SESSAO}/concluir`,
+                    {
+                        method: "POST",
+                        headers: getAuthHeaders()
+                    }
+                )
+
+                if (autoSaveTimer) {
+                    clearInterval(autoSaveTimer)
+                }
+
+                alert("Faturamento concluído.")
+
+                window.location.href =
+                    "/janelas/inicial.html"
+
+            } catch (err) {
+
+                console.error(err)
+                alert(err.message || "Erro ao concluir")
+
+            }
+
+        }
 
 
         function abrirSessao() {
@@ -873,65 +1170,11 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
         /* SESSAO */
 
 
-        function salvarSessao() {
+        async function salvarSessao() {
 
   try {
 
-    capturarCampos()
-
-    // 🔥 limpa NFs antigas antes de montar
-    let nfStorage = {}
-
-    Object.keys(localStorage).forEach(key => {
-
-      if (
-        key.startsWith("nf_compr_") ||
-        key.startsWith("nf_fornec_")
-      ) {
-        nfStorage[key] = localStorage.getItem(key)
-      }
-
-    })
-
-    let dados = {
-
-      // 🔹 base principal
-      planilha: dadosPlanilha.map(d => ({
-        ...d,
-        enviadoControle: d.enviadoControle || false
-      })),
-      base: baseParceiros || [],
-
-      // 🔹 estado visual
-      estadoCampos: estadoCampos || {},
-
-      // 🔹 seleções
-      compradoresSelecionados: Array.from(compradoresSelecionados || []),
-      fornecedoresSelecionados: Array.from(fornecedoresSelecionados || []),
-      semanasSelecionadas: Array.from(semanasSelecionadas || []),
-
-      // 🔹 agrupamento
-      agruparSelecionados: agruparSelecionados || false,
-
-      // 🔹 faturamentos
-      registrosFaturados: registrosFaturados.map(r => ({
-        ...r,
-        enviadoPipefy: r.enviadoPipefy || false,
-        enviadoControle: r.enviadoControle || false
-      })),
-
-      // 🔹 campos da tela
-      discriminacao: document.getElementById("discriminacao").value || "",
-      produtoServico: document.getElementById("produtoServico").value || "",
-      mesGerencial: document.getElementById("mesGerencial").value || "",
-      tipoOperacao: document.getElementById("tipoOperacao").value || "comprador",
-
-      // 🔥 notas fiscais salvas
-      nfStorage
-
-    }
-
-    console.log("💾 SESSÃO SALVA:", dados)
+    const dados = await salvarSessaoServidor()
 
     const blob = new Blob(
       [JSON.stringify(dados, null, 2)],
@@ -956,7 +1199,7 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
 
     URL.revokeObjectURL(url)
 
-    alert("Sessão salva com sucesso!")
+    alert("Sessão salva no servidor e arquivo exportado!")
 
   } catch (e) {
 
@@ -969,7 +1212,28 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
 }
 
 
-        function novaSessao() {
+        async function novaSessao() {
+
+            const ok = confirm(
+                "Iniciar nova sessão? A sessão atual será encerrada."
+            )
+
+            if (!ok) return
+
+            try {
+
+                await fetch(
+                    `/faturamento-sessao/${PROCESSO_SESSAO}/concluir`,
+                    {
+                        method: "POST",
+                        headers: getAuthHeaders()
+                    }
+                )
+
+            } catch (err) {
+                console.error(err)
+            }
+
             location.reload()
         }
 
@@ -1841,50 +2105,6 @@ async function criarCardsPipefy() {
 
 
 
-    if (
-
-      data.sucesso > 0 &&
-
-      Number(data.erros || 0) === 0
-
-    ) {
-
-
-      await fetch(
-
-        `${API}/controle-faturamento/finalizar`,
-
-        {
-
-          method: "POST",
-
-          headers: getAuthHeaders(), 
-
-
-          body: JSON.stringify({
-
-            processo:
-              "FATURAMENTO_CARGAS"
-
-          })
-
-        }
-
-      );
-
-
-
-      console.log(
-
-        "✅ Processo FATURAMENTO_CARGAS liberado"
-
-      );
-
-
-    }
-
-
-
     alert(
 
       `Cards criados: ${data.sucesso} | Erros: ${data.erros}\n` +
@@ -2518,65 +2738,9 @@ await verificar401(response)
 
       console.log("SESSÃO CARREGADA:", dados)
 
-      // 🔹 Dados principais
-      dadosPlanilha = dados.planilha || []
-      dadosPlanilha = dadosPlanilha.map(l => ({
-      ...l,
-        enviadoControle: l.enviadoControle || false
-      }))
-      baseParceiros = dados.base || []
-      estadoCampos = dados.estadoCampos || {}
+      aplicarSessao(dados)
 
-      compradoresSelecionados = new Set(dados.compradoresSelecionados || [])
-      fornecedoresSelecionados = new Set(dados.fornecedoresSelecionados || [])
-      semanasSelecionadas = new Set(dados.semanasSelecionadas || [])
-
-      agruparSelecionados = dados.agruparSelecionados || false
-      // 🔥 restaura checkbox visual
-      let checkboxAgrupar = document.querySelector(
-       'input[onchange="toggleAgrupamentoSelecionados(this.checked)"]'
-      )
-
-      if (checkboxAgrupar) {
-        checkboxAgrupar.checked = agruparSelecionados
-      }
-      registrosFaturados = (dados.registrosFaturados || []).map(r => ({
-      ...r,
-         enviadoPipefy: r.enviadoPipefy || false,
-         enviadoControle: r.enviadoControle || false
-      }))
-
-      // 🔥 LIMPA NF ANTIGA
-      Object.keys(localStorage)
-        .filter(k =>
-           k.startsWith("nf_compr_") ||
-           k.startsWith("nf_fornec_")
-        )
-        .forEach(k => localStorage.removeItem(k))
-
-      // 🔥 RESTAURA NF DA SESSÃO
-      if (dados.nfStorage) {
-        for (let key in dados.nfStorage) {
-          localStorage.setItem(key, dados.nfStorage[key])
-        }
-      }
-
-      // 🔹 Campos da tela
-      document.getElementById("discriminacao").value = dados.discriminacao || ""
-      document.getElementById("produtoServico").value = dados.produtoServico || ""
-      document.getElementById("mesGerencial").value = dados.mesGerencial || ""
-      document.getElementById("tipoOperacao").value = dados.tipoOperacao || "comprador"
-
-      tipoOperacao = dados.tipoOperacao || "comprador"
-
-      // 🔹 Tipos de suíno
-      tiposSuino = [...new Set(dadosPlanilha.map(d => d["Tipo Suíno"]))]
-
-      // 🔹 Reconstrução da tela
-      montarListaSemanas()
-      montarListasSeparadas()
-      montarAgrupamento()
-      gerarRelatorio()
+      salvarSessaoServidor(true).catch(console.error)
 
       alert("Sessão carregada com sucesso!")
 
@@ -2638,82 +2802,17 @@ window.addEventListener("DOMContentLoaded", async () => {
 
         await carregarParceirosBanco()
 
-        await carregarDadosBanco()
+        await iniciarOuRetomarSessao()
 
     } catch(err) {
 
         console.error(err)
 
+        alert(err.message || "Erro ao iniciar faturamento")
+
     }
 
 })
-
-window.onload = async ()=>{
-
-    const resposta =
-        await fetch(
-
-            `${API}/controle-faturamento/FATURAMENTO_CARGAS`,
-
-            {
-
-                headers:
-                    authHeaders()
-
-            }
-
-        );
-
-    const dados =
-        await resposta.json();
-
-    if(
-        dados.status ===
-        "EM_ANDAMENTO"
-    ){
-
-        alert(
-
-            `Faturamento iniciado por ${
-                dados.iniciado_por
-            }`
-
-        );
-
-        window.location.href =
-            "/janelas/inicial.html";
-
-        return;
-
-    }
-
-    await fetch(
-
-        `${API}/controle-faturamento/iniciar`,
-
-        {
-
-            method:"POST",
-
-            headers: authHeaders({
-
-                "Content-Type":
-                    "application/json"
-
-            }),
-
-            body:JSON.stringify({
-
-                processo:
-                    "FATURAMENTO_CARGAS"
-
-            })
-
-        }
-
-    );
-
-};
 
 </script>
 </body>

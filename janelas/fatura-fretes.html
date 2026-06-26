@@ -294,8 +294,16 @@ margin-bottom:20px;
             Salvar Sessão
         </button>
 
+        <button onclick="salvarESair()">
+            Salvar e sair
+        </button>
+
         <button onclick="abrirSessao()">
-            Abrir Sessão
+            Abrir Sessão (arquivo)
+        </button>
+
+        <button onclick="concluirFaturamento()">
+            Concluir faturamento
         </button>
 
         <button onclick="novaSessao()">
@@ -514,12 +522,288 @@ text-align:center;
 
     return {
 
+        "Content-Type": "application/json",
+
         Authorization:
             `Bearer ${token}`
 
     }
 
 }
+
+
+     const PROCESSO_SESSAO = "FATURAMENTO_FRETES"
+
+     let usuarioEmail = ""
+
+     let autoSaveTimer = null
+
+
+     async function obterUsuarioEmail() {
+
+         const resp = await fetch(
+             "/validar-token",
+             { headers: getAuthHeaders() }
+         )
+
+         if (!resp.ok) {
+             throw new Error("Sessão inválida")
+         }
+
+         const data = await resp.json()
+
+         usuarioEmail =
+             data.usuario?.email ||
+             data.usuario?.usuario ||
+             ""
+
+         return usuarioEmail
+     }
+
+
+     function montarPayloadSessao() {
+
+         return {
+
+             planilha: dadosPlanilha,
+
+             baseParceiros: baseParceiros,
+
+             semanasSelecionadas: Array.from(
+                 semanasSelecionadas
+             ),
+
+             estadoCampos: estadoCampos,
+
+             cardsFretes: cardsFretes,
+
+             gruposFaturados: gruposFaturados,
+
+             discriminacao:
+                 document.getElementById(
+                     "discriminacao"
+                 ).value,
+
+             produtoServico:
+                 document.getElementById(
+                     "produtoServico"
+                 ).value,
+
+             mesGerencial:
+                 document.getElementById(
+                     "mesGerencial"
+                 ).value
+
+         }
+     }
+
+
+     function aplicarSessao(dados) {
+
+         dadosPlanilha = dados.planilha || []
+
+         baseParceiros = dados.baseParceiros || []
+
+         semanasSelecionadas = new Set(
+             dados.semanasSelecionadas || []
+         )
+
+         semanasSelecionadas = new Set(
+             [...semanasSelecionadas]
+             .filter(s => s >= "2026/01")
+         )
+
+         estadoCampos = dados.estadoCampos || {}
+
+         cardsFretes = (
+             dados.cardsFretes || []
+         ).map(c => ({
+             ...c,
+             cardCriado: c.cardCriado || false
+         }))
+
+         gruposFaturados = dados.gruposFaturados || []
+
+         document.getElementById("discriminacao").value =
+             dados.discriminacao || ""
+
+         document.getElementById("produtoServico").value =
+             dados.produtoServico || "FRETES"
+
+         document.getElementById("mesGerencial").value =
+             dados.mesGerencial || ""
+
+         primeiraCargaSemanas = false
+
+         montarListaSemanas()
+         montarListaTransportadoras()
+         montarAgrupamento()
+         gerarRelatorio()
+         renderizarListas()
+     }
+
+
+     async function salvarSessaoServidor(silencioso) {
+
+         const payload = montarPayloadSessao()
+
+         const resp = await fetch(
+             `/faturamento-sessao/${PROCESSO_SESSAO}`,
+             {
+                 method: "PUT",
+                 headers: getAuthHeaders(),
+                 body: JSON.stringify({ dados: payload })
+             }
+         )
+
+         if (!resp.ok) {
+             const err = await resp.json()
+             throw new Error(err.erro || "Erro ao salvar sessão")
+         }
+
+         if (!silencioso) {
+             console.log("💾 Sessão salva no servidor")
+         }
+
+         return payload
+     }
+
+
+     async function iniciarOuRetomarSessao() {
+
+         await obterUsuarioEmail()
+
+         const resp = await fetch(
+             `/faturamento-sessao/${PROCESSO_SESSAO}`,
+             { headers: getAuthHeaders() }
+         )
+
+         const data = await resp.json()
+         const sessao = data.sessao
+
+         if (
+             sessao &&
+             sessao.status === "EM_ANDAMENTO"
+         ) {
+
+             if (sessao.iniciado_por !== usuarioEmail) {
+
+                 alert(
+                     `Faturamento em andamento por ${sessao.iniciado_por}.`
+                 )
+
+                 window.location.href =
+                     "/janelas/inicial.html"
+
+                 return
+             }
+
+             aplicarSessao(sessao.dados_json)
+
+             console.log("♻️ Sessão retomada do servidor")
+
+             iniciarAutoSave()
+
+             return
+         }
+
+         await carregarFretesBanco()
+
+         const payload = montarPayloadSessao()
+
+         const criar = await fetch(
+             "/faturamento-sessao",
+             {
+                 method: "POST",
+                 headers: getAuthHeaders(),
+                 body: JSON.stringify({
+                     processo: PROCESSO_SESSAO,
+                     dados: payload
+                 })
+             }
+         )
+
+         if (!criar.ok) {
+             const err = await criar.json()
+             throw new Error(err.erro || "Erro ao iniciar sessão")
+         }
+
+         console.log("🆕 Nova sessão iniciada no servidor")
+
+         iniciarAutoSave()
+     }
+
+
+     function iniciarAutoSave() {
+
+         if (autoSaveTimer) {
+             clearInterval(autoSaveTimer)
+         }
+
+         autoSaveTimer = setInterval(() => {
+             salvarSessaoServidor(true).catch(console.error)
+         }, 180000)
+     }
+
+
+     async function salvarESair() {
+
+         try {
+
+             await salvarSessaoServidor()
+
+             alert("Sessão salva. Você pode retomar depois.")
+
+             window.location.href =
+                 "/janelas/inicial.html"
+
+         } catch (err) {
+
+             console.error(err)
+             alert(err.message || "Erro ao salvar sessão")
+
+         }
+
+     }
+
+
+     async function concluirFaturamento() {
+
+         const ok = confirm(
+             "Concluir o faturamento? A sessão será encerrada."
+         )
+
+         if (!ok) return
+
+         try {
+
+             await salvarSessaoServidor(true)
+
+             await fetch(
+                 `/faturamento-sessao/${PROCESSO_SESSAO}/concluir`,
+                 {
+                     method: "POST",
+                     headers: getAuthHeaders()
+                 }
+             )
+
+             if (autoSaveTimer) {
+                 clearInterval(autoSaveTimer)
+             }
+
+             alert("Faturamento concluído.")
+
+             window.location.href =
+                 "/janelas/inicial.html"
+
+         } catch (err) {
+
+             console.error(err)
+             alert(err.message || "Erro ao concluir")
+
+         }
+
+     }
 
      window.onload = () => {
 
@@ -2472,88 +2756,64 @@ async function criarCardsPipefyFretes(){
 }
 
 
-function salvarSessao() {
+async function salvarSessao() {
 
-    let dados = {
+    try {
 
-        // dados principais
-        planilha:
-            dadosPlanilha,
+        const dados = await salvarSessaoServidor()
 
-        baseParceiros:
-            baseParceiros,
+        const blob = new Blob(
 
-        semanasSelecionadas:
-            Array.from(
-                semanasSelecionadas
-            ),
+            [
+                JSON.stringify(
+                    dados,
+                    null,
+                    2
+                )
+            ],
 
-        estadoCampos:
-            estadoCampos,
+            {
+                type:
+                    "application/json"
+            }
 
-        // listas
-        cardsFretes:
-            cardsFretes,
+        )
 
-        gruposFaturados:
-            gruposFaturados,
+        const url =
+            URL.createObjectURL(
+                blob
+            )
 
-        // campos tela
-        discriminacao:
-            document.getElementById(
-                "discriminacao"
-            ).value,
+        const a =
+            document.createElement(
+                "a"
+            )
 
-        produtoServico:
-            document.getElementById(
-                "produtoServico"
-            ).value,
+        a.href =
+            url
 
-        mesGerencial:
-            document.getElementById(
-                "mesGerencial"
-            ).value
+        a.download =
+            "sessao_fretes.json"
+
+        a.click()
+
+        URL.revokeObjectURL(
+            url
+        )
+
+        alert(
+            "Sessão salva no servidor e arquivo exportado!"
+        )
+
+    } catch (err) {
+
+        console.error(err)
+
+        alert(
+            "Erro ao salvar sessão"
+        )
 
     }
-
-    const blob = new Blob(
-
-        [
-            JSON.stringify(
-                dados,
-                null,
-                2
-            )
-        ],
-
-        {
-            type:
-                "application/json"
-        }
-
-    )
-
-    const url =
-        URL.createObjectURL(
-            blob
-        )
-
-    const a =
-        document.createElement(
-            "a"
-        )
-
-    a.href =
-        url
-
-    a.download =
-        "sessao_fretes.json"
-
-    a.click()
-
-    URL.revokeObjectURL(
-        url
-    )
 
 }
      
@@ -2603,90 +2863,9 @@ function(e){
                 dados
             )
 
-            dadosPlanilha =
-                dados.planilha || []
+            aplicarSessao(dados)
 
-            baseParceiros =
-                dados.baseParceiros || []
-
-            semanasSelecionadas =
-                new Set(
-                    dados
-                    .semanasSelecionadas
-                    || []
-                )
-
-            semanasSelecionadas =
-                new Set(
-                   [...semanasSelecionadas]
-                   .filter(s => s >= "2026/01")
-                )
-
-            estadoCampos =
-                dados
-                .estadoCampos
-                || {}
-
-            cardsFretes =
-                (
-                    dados
-                    .cardsFretes
-                    || []
-                ).map(c=>({
-
-                    ...c,
-
-                    cardCriado:
-                        c.cardCriado
-                        || false
-
-                }))
-
-            gruposFaturados =
-                dados
-                .gruposFaturados
-                || []
-
-            document
-            .getElementById(
-                "discriminacao"
-            )
-            .value =
-
-                dados
-                .discriminacao
-                || ""
-
-            document
-            .getElementById(
-                "produtoServico"
-            )
-            .value =
-
-                dados
-                .produtoServico
-                || "FRETES"
-
-            document
-            .getElementById(
-                "mesGerencial"
-            )
-            .value =
-
-                dados
-                .mesGerencial
-                || "2026/05"
-
-            primeiraCargaSemanas =
-                false
-
-            montarListaSemanas()
-
-            montarAgrupamento()
-
-            gerarRelatorio()
-
-            renderizarListas()
+            salvarSessaoServidor(true).catch(console.error)
 
             alert(
                 "Sessão carregada com sucesso!"
@@ -2715,7 +2894,27 @@ function(e){
 })
 
       
-        function novaSessao() {
+        async function novaSessao() {
+
+            const ok = confirm(
+                "Iniciar nova sessão? A sessão atual será encerrada."
+            )
+
+            if (!ok) return
+
+            try {
+
+                await fetch(
+                    `/faturamento-sessao/${PROCESSO_SESSAO}/concluir`,
+                    {
+                        method: "POST",
+                        headers: getAuthHeaders()
+                    }
+                )
+
+            } catch (err) {
+                console.error(err)
+            }
 
             location.reload()
 
@@ -2726,9 +2925,22 @@ function(e){
        "DOMContentLoaded",
        async ()=>{
 
-          await carregarParceirosBanco()
+          try {
 
-          await carregarFretesBanco()
+              await carregarParceirosBanco()
+
+              await iniciarOuRetomarSessao()
+
+          } catch (err) {
+
+              console.error(err)
+
+              alert(
+                  err.message ||
+                  "Erro ao iniciar faturamento"
+              )
+
+          }
 
         }
      )
