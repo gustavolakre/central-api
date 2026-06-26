@@ -3,6 +3,9 @@ const axios = require("axios");
 const pool = require("../src/db/database");
 const autenticar = require("../middlewares/autenticar");
 
+const ultimaAtualizacao =
+  require("../services/ultimaAtualizacao");
+
 const router = express.Router();
 
 router.use(autenticar);
@@ -273,26 +276,7 @@ query {
 
     
 
-    const agora = new Date();
-
-    const dataHora =
-      agora.toLocaleDateString("pt-BR", {
-        timeZone: "America/Sao_Paulo"
-      }) +
-      " " +
-      agora.toLocaleTimeString("pt-BR", {
-        timeZone: "America/Sao_Paulo"
-      });
-
-    const io = req.app.get("io");
-
-    if (io) {
-      req.app.set("ultimaAtualizacaoParceiros", dataHora);
-
-      io.emit("ultimaAtualizacaoParceiros", {
-        data: dataHora
-      });
-    }
+    await ultimaAtualizacao.registrar(req, "parceiros");
 
     res.json({
       success: true,

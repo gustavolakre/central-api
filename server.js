@@ -71,32 +71,16 @@ module.exports.io = io;
 app.set("io", io);
 
 
+const ultimaAtualizacao = require("./services/ultimaAtualizacao");
+
+ultimaAtualizacao.garantirTabela().catch(err => {
+    console.error("Erro ao preparar tabela de atualizações:", err);
+});
+
 io.on("connection", (socket) => {
     console.log("cliente conectado");
 
-    const ultima = app.get("ultimaAtualizacaoPipefy");
-
-    if (ultima) {
-        socket.emit("ultimaAtualizacaoPipefy", {
-            data: ultima
-        });
-    }
-
-    const ultimaParceiros = app.get("ultimaAtualizacaoParceiros");
-
-    if (ultimaParceiros) {
-        socket.emit("ultimaAtualizacaoParceiros", {
-            data: ultimaParceiros
-        });
-    }
-
-    const ultimaFretes = app.get("ultimaAtualizacaoFretes");
-
-    if (ultimaFretes) {
-        socket.emit("ultimaAtualizacaoFretes", {
-            data: ultimaFretes
-        });
-    }
+    ultimaAtualizacao.enviarTodas(socket);
 });
 
 app.use(cors())

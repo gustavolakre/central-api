@@ -4,6 +4,9 @@ const XLSX = require("xlsx");
 const pool = require("../src/db/database");
 const autenticar = require("../middlewares/autenticar");
 
+const ultimaAtualizacao =
+  require("../services/ultimaAtualizacao");
+
 const router = express.Router();
 
 const upload = multer({
@@ -429,26 +432,7 @@ router.post(
         "IMPORTACAO_PARCEIROS"
       );
 
-      const agora = new Date();
-
-      const dataHora =
-        agora.toLocaleDateString("pt-BR", {
-          timeZone: "America/Sao_Paulo"
-        }) +
-        " " +
-        agora.toLocaleTimeString("pt-BR", {
-          timeZone: "America/Sao_Paulo"
-        });
-
-      const io = req.app.get("io");
-
-      if (io) {
-        req.app.set("ultimaAtualizacaoParceiros", dataHora);
-
-        io.emit("ultimaAtualizacaoParceiros", {
-          data: dataHora
-        });
-      }
+      await ultimaAtualizacao.registrar(req, "parceiros");
 
       return res.json({
         sucesso: true,

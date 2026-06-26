@@ -12,6 +12,9 @@ const multer = require("multer");
 const importarFretes =
   require("../services/importarFretesService");
 
+const ultimaAtualizacao =
+  require("../services/ultimaAtualizacao");
+
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -83,26 +86,7 @@ router.post(
         req.file.buffer
       );
 
-      const agora = new Date();
-
-      const dataHora =
-        agora.toLocaleDateString("pt-BR", {
-          timeZone: "America/Sao_Paulo"
-        }) +
-        " " +
-        agora.toLocaleTimeString("pt-BR", {
-          timeZone: "America/Sao_Paulo"
-        });
-
-      const io = req.app.get("io");
-
-      if (io) {
-        req.app.set("ultimaAtualizacaoFretes", dataHora);
-
-        io.emit("ultimaAtualizacaoFretes", {
-          data: dataHora
-        });
-      }
+      await ultimaAtualizacao.registrar(req, "fretes");
 
       return res.json(resultado);
 

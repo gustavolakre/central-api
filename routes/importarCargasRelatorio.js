@@ -22,7 +22,8 @@ const path = require("path");
 const importarCargas =
   require("../services/importarCargasService");
 
-// 🔥 IMPORTANTE: pega o io do server
+const ultimaAtualizacao =
+  require("../services/ultimaAtualizacao");
 
 const router = express.Router();
 
@@ -128,30 +129,9 @@ router.post("/", async (req, res) => {
     );
 
     //
-    // 5 - 🔥 DISPARA SOCKET PARA TODOS OS PAINÉIS
+    // 5 - 🔥 SALVA E DISPARA SOCKET PARA TODOS OS PAINÉIS
     //
-    const agora = new Date();
-
-    const dataHora =
-  agora.toLocaleDateString("pt-BR", {
-    timeZone: "America/Sao_Paulo"
-  }) +
-  " " +
-  agora.toLocaleTimeString("pt-BR", {
-    timeZone: "America/Sao_Paulo"
-  });
-
-const io = req.app.get("io");
-
-if (!io) {
-    console.log("ERRO: io não encontrado!");
-} else {
-    req.app.set("ultimaAtualizacaoPipefy", dataHora);
-
-    io.emit("ultimaAtualizacaoPipefy", {
-        data: dataHora
-    });
-}
+    await ultimaAtualizacao.registrar(req, "cargas");
 
 //
 // 6 - RESPOSTA FINAL
