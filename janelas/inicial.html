@@ -497,58 +497,6 @@ input[type=file]{
 validarLogin();
 
 
-if(
-    !localStorage.getItem(
-        "token"
-    )
-){
-    window.location.href =
-        "janelas/login.html";
-}
-
-validarToken();
-
-/* =========================================
-   ABRIR TELAS
-========================================= */
-
-
-async function validarLogin(){
-
-    const token =
-        localStorage.getItem("token");
-
-    if(!token){
-
-        window.location.href =
-            "/login";
-
-        return;
-    }
-
-    const resposta =
-        await fetch(
-            "/validar-token",
-            {
-                headers:{
-                    Authorization:
-                        `Bearer ${token}`
-                }
-            }
-        );
-
-    if(!resposta.ok){
-
-        localStorage.removeItem("token");
-
-        window.location.href =
-            "/login";
-    }
-}
-
-validarLogin();
-
-
 /* =========================================
    ÚLTIMA ATUALIZAÇÃO (TEMPO REAL)
 ========================================= */
