@@ -31,7 +31,7 @@
 
         Object.assign(btn.style, {
             position: "fixed",
-            bottom: "18px",
+            top: "72px",
             right: "18px",
             zIndex: "100000",
             background: "#dc2626",
