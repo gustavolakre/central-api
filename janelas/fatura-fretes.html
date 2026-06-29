@@ -681,10 +681,7 @@ text-align:center;
 
          cardsFretes = (
              dados.cardsFretes || []
-         ).map(c => ({
-             ...c,
-             cardCriado: c.cardCriado || false
-         }))
+         ).map(normalizarCardFretes)
 
          gruposFaturados = dados.gruposFaturados || []
 
@@ -1027,6 +1024,35 @@ async function carregarFretesBanco(){
             if (!valor) return null
 
             return String(valor).trim()
+
+        }
+
+        function normalizarCardFretes(c){
+
+            if(c["Nome"]){
+                return {
+                    ...c,
+                    enviadoPipefy: !!(
+                        c.enviadoPipefy || c.cardCriado
+                    )
+                }
+            }
+
+            return {
+                id: c.id || crypto.randomUUID(),
+                "Parceiro": c.parceiro || "",
+                "Nome": c.parceiro || "",
+                "Valor Líquido": Number(c.valorLiquido || 0),
+                "Nota Fiscal": c.notaFiscal || "",
+                "Data de Vencimento": c.vencimento || "",
+                "Periodo": c.discriminacao || "",
+                "Produto Servico": c.produtoServico || "",
+                "Mes Gerencial": c.mesGerencial || "",
+                enviadoPipefy: !!(
+                    c.cardCriado || c.enviadoPipefy
+                ),
+                codigos: c.codigos || []
+            }
 
         }
 
@@ -1466,7 +1492,7 @@ function carregarFaturadosExistentes(){
     // grupos faturados somente dos cards salvos
     gruposFaturados =
         cardsFretes
-            .map(c => c.titulo)
+            .map(c => c["Nome"])
 
 }
 
@@ -1511,7 +1537,7 @@ function renderizarListas(){
     cardsFretes.forEach((c,index)=>{
 
         total += Number(
-            c.valorLiquido || 0
+            c["Valor Líquido"] || 0
         )
 
 htmlFaturado += `
@@ -1530,37 +1556,37 @@ data-id="${c.id}"
 </td>
 
 <td>
-${c.parceiro || ""}
+${c["Nome"] || ""}
 </td>
 
 <td>
-${formatar(c.valorLiquido)}
+${formatar(c["Valor Líquido"])}
 </td>
 
 <td>
 ${
-c.vencimento
+c["Data de Vencimento"]
 ? new Date(
-c.vencimento+"T00:00:00"
+c["Data de Vencimento"]+"T00:00:00"
 ).toLocaleDateString("pt-BR")
 : ""
 }
 </td>
 
 <td>
-${c.notaFiscal || ""}
+${c["Nota Fiscal"] || ""}
 </td>
 
 <td>
-${c.produtoServico || ""}
+${c["Produto Servico"] || ""}
 </td>
 
 <td>
-${c.discriminacao || ""}
+${c["Periodo"] || ""}
 </td>
 
 <td>
-${c.mesGerencial || ""}
+${c["Mes Gerencial"] || ""}
 </td>
 
 <td
@@ -1568,7 +1594,7 @@ style="
 font-weight:bold;
 color:
 ${
-c.cardCriado
+c.enviadoPipefy
 ? "#2e7d32"
 : "#e65100"
 };
@@ -1576,7 +1602,7 @@ c.cardCriado
 >
 
 ${
-c.cardCriado
+c.enviadoPipefy
 ? "✅ Card enviado"
 : "⏳ Pendente"
 }
@@ -1769,7 +1795,7 @@ function excluirCard(id){
 
                 !==
 
-                card.titulo
+                card["Nome"]
                 .toUpperCase()
                 .trim()
 
@@ -2416,17 +2442,28 @@ async function salvarCard(id) {
     let cardExistente =
         cardsFretes.find(c =>
 
-            c.titulo
-            ?.toUpperCase()
+            String(c["Nome"] || "")
+            .toUpperCase()
             .trim()
 
             ===
 
-            parceiroNome
-            ?.toUpperCase()
+            String(parceiroNome || "")
+            .toUpperCase()
             .trim()
 
         )
+
+    let nomeParceiro = parceiroNome
+
+    let total =
+        estadoCampos[id]?.valorManual
+
+        ? Number(
+            estadoCampos[id]?.valorFixo || 0
+        )
+
+        : grupo?.total || 0
 
     let novoCard = {
 
@@ -2434,26 +2471,32 @@ async function salvarCard(id) {
             cardExistente?.id
             || crypto.randomUUID(),
 
-        titulo:
-            parceiroNome,
+        "Parceiro": nomeParceiro,
 
-        parceiro:
-            parceiroNome,
+        "Nome": nomeParceiro,
 
-        valorLiquido:
+        "Valor Líquido": total,
 
-           estadoCampos[id]?.valorManual
+        "Nota Fiscal": nfServico,
 
-           ? Number(
-              estadoCampos[id]?.valorFixo || 0
-        )
+        "Data de Vencimento": vencimento,
 
-        : grupo?.total || 0,
+        "Periodo":
+            document.getElementById(
+                "discriminacao"
+            ).value,
 
-        vencimento,
+        "Produto Servico":
+            document.getElementById(
+                "produtoServico"
+            ).value,
 
-        notaFiscal:
-            nfServico,
+        "Mes Gerencial":
+            document.getElementById(
+                "mesGerencial"
+            ).value,
+
+        enviadoPipefy: false,
 
         codigos:
 
@@ -2461,22 +2504,7 @@ async function salvarCard(id) {
                 x => String(
                     x["Código"]
                 )
-            ),
-
-        produtoServico:
-            document.getElementById(
-                "produtoServico"
-            ).value,
-
-        discriminacao:
-            document.getElementById(
-                "discriminacao"
-            ).value,
-
-        mesGerencial:
-            document.getElementById(
-                "mesGerencial"
-            ).value
+            )
 
     }
 
@@ -2624,27 +2652,40 @@ err
 
 async function criarContasReceberFretes(registros) {
 
-    const hoje = new Date().toISOString().split("T")[0]
+    const hoje =
+        new Date().toISOString().split("T")[0]
 
     let criadas = 0
 
-    for (const c of registros) {
+    for (const r of registros) {
 
         try {
 
-            const venc = String(c.vencimento || "").trim()
+            const venc =
+                String(r["Data de Vencimento"] || "").trim()
 
             const body = {
+
                 tipo: "RECEBER",
-                parceiro: c.parceiro || "",
-                discriminacao_periodo: c.discriminacao || "",
-                produto_servico: c.produtoServico || "",
-                conta_gerencial: c.mesGerencial || "",
-                valor: Number(c.valorLiquido) || 0,
+
+                parceiro: r["Nome"] || "",
+
+                discriminacao_periodo: r["Periodo"] || "",
+
+                produto_servico: r["Produto Servico"] || "",
+
+                conta_gerencial: r["Mes Gerencial"] || "",
+
+                valor: Number(r["Valor Líquido"]) || 0,
+
                 data_emissao: hoje,
+
                 vencimento: venc || null,
-                nota_fiscal: c.notaFiscal || "",
+
+                nota_fiscal: r["Nota Fiscal"] || "",
+
                 observacao: ""
+
             }
 
             const resp = await fetch(
@@ -2692,30 +2733,26 @@ async function criarCardsPipefyFretes(){
 
     const pipeId = 306630252
 
-    const registrosSelecionados = cardsFretes.filter(c => !c.cardCriado)
+    const registrosSelecionados =
+        cardsFretes.filter(r => !r.enviadoPipefy)
 
-    let lista = cardsFretes
+    if(!registrosSelecionados.length){
 
-    .filter(c => !c.cardCriado)
+        alert("Todos os cards já foram criados")
 
-    .map(c => {
+        return
+    }
 
-        let parceiro =
-            buscarParceiro(
-                c.parceiro
-            )
+    const cards = registrosSelecionados.map(r => {
 
-        let parceiroId =
-            parceiro?.pipefy_record_id
-            ||
-            parceiro?.id
-            ||
-            ""
+        const parceiroObj =
+            buscarParceiro(r["Nome"])
 
+        console.log("NOME FATURAMENTO:", r["Nome"])
+        console.log("PARCEIRO ENCONTRADO:", parceiroObj)
         console.log(
-            "FRETE -> NOME:", c.parceiro,
-            "| PARCEIRO:", parceiro,
-            "| ID PIPEFY:", parceiroId
+            "PARCEIRO ID:",
+            parceiroObj?.pipefy_record_id
         )
 
         return {
@@ -2723,52 +2760,57 @@ async function criarCardsPipefyFretes(){
             pipeId,
 
             title:
-                `${c.parceiro} - NF ${c.notaFiscal}`,
+                `${r["Nome"]} - NF ${r["Nota Fiscal"]}`,
 
-            parceiroNome: c.parceiro,
+            fields: [
 
-            parceiroId: String(parceiroId),
+                {
+                    field_id: "parceiro",
+                    value: String(
+                        parceiroObj?.pipefy_record_id || ""
+                    )
+                },
 
-         fields:[
+                {
+                    field_id: "nota",
+                    value: r["Nota Fiscal"] || ""
+                },
 
-         {
-           field_id:"parceiro",
-           value: String(parceiroId)
-         },
+                {
+                    field_id: "valor_l_quido",
+                    value: String(
+                        r["Valor Líquido"] || ""
+                    )
+                },
 
-         {
-           field_id:"nota",
-           value:c.notaFiscal || ""
-         },
+                {
+                    field_id: "data_do_vencimento",
+                    value:
+                        r["Data de Vencimento"] || ""
+                },
 
-         {
-           field_id:"valor_l_quido",
-           value:String(c.valorLiquido || 0)
-         },
+                {
+                    field_id: "per_odo",
+                    value: r["Periodo"] || ""
+                },
 
-         {
-           field_id:"data_do_vencimento",
-           value:c.vencimento || ""
-         },
+                {
+                    field_id: "respons_vel",
+                    value: "304569850"
+                }
 
-         {
-           field_id:"per_odo",
-           value:c.discriminacao || ""
-         },
-
-         {
-           field_id:"respons_vel",
-           value:"304569850"
-         }
-
-     ] 
+            ]
 
         }
 
     })
 
-    const semParceiro = lista.filter(
-        c => !c.parceiroId
+    const semParceiro = cards.filter(c =>
+
+        !c.fields.find(
+            f => f.field_id === "parceiro"
+        )?.value
+
     )
 
     if(semParceiro.length){
@@ -2776,24 +2818,31 @@ async function criarCardsPipefyFretes(){
         alert(
             "Parceiro não encontrado na base (ou sem ID Pipefy):\n\n" +
             semParceiro
-                .map(c => c.parceiroNome)
+                .map(c =>
+                    c.title.replace(/ - NF .*/, "")
+                )
                 .join("\n")
         )
 
-        lista = lista.filter(
-            c => c.parceiroId
-        )
-
     }
+
+    const lista = cards.filter(c =>
+
+        c.fields.find(
+            f => f.field_id === "parceiro"
+        )?.value
+
+    )
 
     if(!lista.length){
 
-        alert(
-            "Todos os cards já foram criados"
-        )
-
         return
     }
+
+    console.log(
+        "📤 CARDS MONTADOS:",
+        JSON.stringify(lista, null, 2)
+    )
 
     try{
 
@@ -2807,8 +2856,7 @@ async function criarCardsPipefyFretes(){
 
                     body:JSON.stringify({
 
-                        cards:
-                            lista
+                        cards: lista
 
                     })
                 }
@@ -2855,19 +2903,18 @@ async function criarCardsPipefyFretes(){
 
         let contasCriadas = 0
 
-        if(
-            data.sucesso > 0
-        ){
+        if(data.sucesso > 0){
 
-            // 🔥 CRIA TAMBÉM AS CONTAS A RECEBER NO FINANCEIRO
             contasCriadas =
-                await criarContasReceberFretes(registrosSelecionados)
+                await criarContasReceberFretes(
+                    registrosSelecionados
+                )
 
             cardsFretes
-            .filter(c=>!c.cardCriado)
-            .forEach(c=>{
+            .filter(c => !c.enviadoPipefy)
+            .forEach(c => {
 
-               c.cardCriado = true
+                c.enviadoPipefy = true
 
             })
 
@@ -2887,7 +2934,8 @@ async function criarCardsPipefyFretes(){
         console.error(err)
 
         alert(
-            "Erro ao criar cards"
+            "Erro ao criar cards:\n\n" +
+            (err.message || err)
         )
 
     }
