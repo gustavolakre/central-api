@@ -306,6 +306,14 @@ button:hover {
     color: var(--text);
 }
 
+.card .valor.receber {
+    color: #16a34a;
+}
+
+.card .valor.pagar {
+    color: #dc2626;
+}
+
 .tabela {
     overflow: auto;
     height: calc(100vh - 360px);
@@ -457,10 +465,10 @@ tr:hover {
 .checksFiltro {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 2px;
     background: var(--surface-alt);
     border: 1px solid var(--border-strong);
-    padding: 10px;
+    padding: 8px;
     border-radius: 8px;
     font-size: 12px;
 }
@@ -469,6 +477,7 @@ tr:hover {
     display: flex;
     align-items: center;
     gap: 6px;
+    padding: 1px 0;
     font-weight: normal;
     cursor: pointer;
     color: var(--text);

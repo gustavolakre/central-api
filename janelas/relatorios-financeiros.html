@@ -14,6 +14,47 @@
 
 <link rel="stylesheet" href="/janelas/financeiro-theme.css">
 
+<style>
+    .filtros .grid {
+        grid-template-columns:
+            minmax(0, 0.6fr)
+            minmax(0, 0.7fr)
+            minmax(0, 2.2fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 0.9fr);
+        align-items: start;
+    }
+
+    .filtro-busca-parceiro {
+        margin-bottom: 6px;
+    }
+
+    .filtros-acoes {
+        flex-direction: column;
+        margin-top: 0;
+    }
+
+    .filtros-acoes .btnLimpar {
+        width: 100%;
+    }
+
+    .filtros-acoes-label {
+        margin-bottom: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: transparent;
+    }
+
+    @media (max-width: 900px) {
+        .filtros .grid {
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        }
+    }
+</style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script src="/janelas/auth.js"></script>
@@ -235,6 +276,14 @@
 
     <label>Parceiros</label>
 
+    <input
+        type="text"
+        id="buscaParceiro"
+        class="filtro-busca-parceiro"
+        placeholder="Buscar parceiro..."
+        oninput="filtrarListaParceiros()"
+    >
+
     <div
         id="listaParceiros"
         class="checksFiltro checksScroll"
@@ -298,6 +347,8 @@
         </div>
 
        <div class="filtros-acoes">
+
+      <label class="filtros-acoes-label">Limpar</label>
 
       <button
            class="btnLimpar"
@@ -466,6 +517,14 @@ function limparFiltros(){
     document.getElementById(
         "filtroVencFinal"
     ).value = ""
+
+    const busca =
+        document.getElementById("buscaParceiro")
+
+    if(busca){
+        busca.value = ""
+        filtrarListaParceiros()
+    }
 
     carregarRelatorio()
 
@@ -1107,6 +1166,32 @@ async function carregarParceiros(){
         console.error(err)
 
     }
+
+}
+
+
+function filtrarListaParceiros(){
+
+    const termo =
+        document.getElementById("buscaParceiro")
+            .value
+            .toLowerCase()
+            .trim()
+
+    document
+        .querySelectorAll("#listaParceiros label")
+        .forEach(label=>{
+
+            const nome =
+                label.textContent
+                    .toLowerCase()
+
+            label.style.display =
+                nome.includes(termo)
+                    ? "flex"
+                    : "none"
+
+        })
 
 }
 
