@@ -144,16 +144,29 @@ body {
     flex-direction: column;
 }
 
-.grupo-filtro-titulo {
-    grid-column: 1 / -1;
+.grupo-datas {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.grupo-datas > span {
+    margin-bottom: 6px;
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     color: var(--text-muted);
-    margin-top: 4px;
-    padding-top: 10px;
-    border-top: 1px solid var(--border);
+}
+
+.grupo-datas-campos {
+    display: flex;
+    gap: 6px;
+}
+
+.grupo-datas-campos input {
+    flex: 1;
+    min-width: 0;
 }
 
 label {
@@ -307,7 +320,7 @@ table {
 th {
     background: var(--header);
     color: #f8fafc;
-    padding: 11px 10px;
+    padding: 7px 10px;
     text-align: left;
     font-size: 11px;
     text-transform: uppercase;
@@ -318,7 +331,7 @@ th {
 }
 
 td {
-    padding: 9px 10px;
+    padding: 4px 10px;
     border-bottom: 1px solid var(--border);
     font-size: 12px;
     color: var(--text);
