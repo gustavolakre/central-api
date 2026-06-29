@@ -1030,27 +1030,57 @@ async function carregarFretesBanco(){
 
         }
 
+        function normalizarNome(v){
+
+            return String(v || "")
+                .trim()
+                .toUpperCase()
+                .replace(/\s+/g, " ")
+
+        }
+
         function buscarParceiro(nome){
 
             if(!baseParceiros.length){
                return null
             }
 
-            return baseParceiros.find(p =>
+            const alvo = normalizarNome(nome)
 
-                String(
-                   p.nome_usual || ""
+            if(!alvo){
+                return null
+            }
+
+            // 1) casa por nome_usual
+            let achado = baseParceiros.find(p =>
+                normalizarNome(p.nome_usual) === alvo
+            )
+
+            if(achado){
+                return achado
+            }
+
+            // 2) casa por razao_social
+            achado = baseParceiros.find(p =>
+                normalizarNome(p.razao_social) === alvo
+            )
+
+            if(achado){
+                return achado
+            }
+
+            // 3) casa parcial (um contém o outro)
+            return baseParceiros.find(p => {
+
+                const nu = normalizarNome(p.nome_usual)
+                const rs = normalizarNome(p.razao_social)
+
+                return (
+                    (nu && (nu.includes(alvo) || alvo.includes(nu))) ||
+                    (rs && (rs.includes(alvo) || alvo.includes(rs)))
                 )
-                .trim()
-                .toUpperCase()
 
-                ===
-
-                String(nome || "")
-               .trim()
-               .toUpperCase()
-
-           )
+            }) || null
 
         }
 
@@ -2711,6 +2741,12 @@ async function criarCardsPipefyFretes(){
             parceiro?.id
             ||
             ""
+
+        console.log(
+            "FRETE -> NOME:", c.parceiro,
+            "| PARCEIRO:", parceiro,
+            "| ID PIPEFY:", parceiroId
+        )
 
         return {
 
