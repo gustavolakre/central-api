@@ -144,6 +144,18 @@ body {
     flex-direction: column;
 }
 
+.grupo-filtro-titulo {
+    grid-column: 1 / -1;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+
 label {
     margin-bottom: 6px;
     font-size: 12px;

@@ -188,6 +188,7 @@
             <input
                 type="date"
                 id="data_emissao"
+                onchange="document.getElementById('vencimento').min = this.value"
             >
 
         </div>
@@ -363,6 +364,8 @@
 
 
 
+        <div class="grupo-filtro-titulo">Data de Emissão</div>
+
         <div class="campo">
 
             <label>Emissão Inicial</label>
@@ -390,6 +393,8 @@
         </div>
 
 
+
+        <div class="grupo-filtro-titulo">Data de Vencimento</div>
 
         <div class="campo">
 
@@ -656,6 +661,58 @@ function authHeaders(extra = {}){
 async function salvarLancamento(){
 
     try{
+
+        const vTipo = document.getElementById("tipo").value;
+        const vParceiro = document.getElementById("parceiro").value;
+        const vDiscriminacao = document.getElementById("discriminacao_periodo").value.trim();
+        const vProduto = document.getElementById("produto_servico").value.trim();
+        const vContaGerencial = document.getElementById("conta_gerencial").value;
+        const vValor = document.getElementById("valor").value.trim();
+        const vEmissao = document.getElementById("data_emissao").value;
+        const vVencimento = document.getElementById("vencimento").value;
+        const vNota = document.getElementById("nota_fiscal").value.trim();
+        const vObservacao = document.getElementById("observacao").value.trim();
+
+        const obrigatorios = [
+            [vTipo, "Tipo"],
+            [vParceiro, "Parceiro"],
+            [vDiscriminacao, "Discriminação / Período"],
+            [vProduto, "Produto/Serviço"],
+            [vContaGerencial, "Conta Gerencial"],
+            [vValor, "Valor"],
+            [vEmissao, "Data Emissão"],
+            [vVencimento, "Vencimento"],
+            [vNota, "Nota Fiscal"],
+            [vObservacao, "Observações"]
+        ];
+
+        const faltando = obrigatorios
+            .filter(item => !item[0] || String(item[0]).trim() === "")
+            .map(item => item[1]);
+
+        if(faltando.length){
+            alert(
+                "Preencha todos os campos:\n- " +
+                faltando.join("\n- ")
+            );
+            return;
+        }
+
+        const valorNumerico = Number(
+            vValor.replace(/\./g, "").replace(",", ".")
+        );
+
+        if(!valorNumerico || valorNumerico <= 0){
+            alert("Informe um valor válido (maior que zero).");
+            return;
+        }
+
+        if(vVencimento < vEmissao){
+            alert(
+                "A data de vencimento não pode ser anterior à data de emissão."
+            );
+            return;
+        }
 
         const body = {
 
