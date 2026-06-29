@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
                             input:{
                               card_id:${card.cardId}
                               field_id:"nf_taxa_compr"
-                              new_value:"${card.nfCompr}"
+                              new_value:"${String(card.nfCompr).replace(/"/g, '\\"')}"
                             }
                           ){
                             success
@@ -55,7 +55,35 @@ router.post("/", async (req, res) => {
                             input:{
                               card_id:${card.cardId}
                               field_id:"nfs_de_servi_o"
-                              new_value:"${card.nfFornec}"
+                              new_value:"${String(card.nfFornec).replace(/"/g, '\\"')}"
+                            }
+                          ){
+                            success
+                          }
+                        }
+                        `
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${process.env.PIPEFY_TOKEN}`
+                        }
+                    }
+                );
+
+            }
+
+            if (card.nfServicoFrete) {
+
+                await axios.post(
+                    "https://api.pipefy.com/graphql",
+                    {
+                        query: `
+                        mutation {
+                          updateCardField(
+                            input:{
+                              card_id:${card.cardId}
+                              field_id:"nf_servi_o"
+                              new_value:"${String(card.nfServicoFrete).replace(/"/g, '\\"')}"
                             }
                           ){
                             success

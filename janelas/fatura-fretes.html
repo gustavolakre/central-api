@@ -2266,20 +2266,29 @@ async function enviarNFServicoPipefy(grupo, nfServico){
         }
 
         let res = await fetch(
-            "/.netlify/functions/pipefy",
+            "/pipefy",
             {
                 method:"POST",
 
-                headers:{
-                    "Content-Type":
-                    "application/json"
-                },
+                headers: getAuthHeaders(),
 
                 body:JSON.stringify({
                     cards
                 })
             }
         )
+
+        if(!res.ok){
+
+            const texto = await res.text()
+
+            throw new Error(
+                texto.startsWith("{")
+                    ? (JSON.parse(texto).erro || "Erro Pipefy")
+                    : `Erro HTTP ${res.status}`
+            )
+
+        }
 
         let json =
             await res.json()
@@ -2288,15 +2297,6 @@ async function enviarNFServicoPipefy(grupo, nfServico){
             "PIPEFY:",
             json
         )
-
-        if(!res.ok){
-
-            throw new Error(
-                json.erro ||
-                "Erro Pipefy"
-            )
-
-        }
 
         return true
 
@@ -2316,8 +2316,7 @@ async function enviarNFServicoPipefy(grupo, nfServico){
 }
 
 
-        
-      async function salvarCard(id) {
+async function salvarCard(id) {
 
     salvarEstado(id)
 
@@ -2561,14 +2560,11 @@ try{
 
 const response =
 await fetch(
-"/.netlify/functions/pipefy",
+"/pipefy",
 {
 method:"POST",
 
-headers:{
-"Content-Type":
-"application/json"
-},
+headers: getAuthHeaders(),
 
 body:
 JSON.stringify({
@@ -2577,6 +2573,18 @@ cards
 
 }
 )
+
+if(!response.ok){
+
+    const texto = await response.text()
+
+    throw new Error(
+        texto.startsWith("{")
+            ? (JSON.parse(texto).erro || "Erro Pipefy")
+            : `Erro HTTP ${response.status}`
+    )
+
+}
 
 const data =
 await response.json()
@@ -2765,23 +2773,32 @@ async function criarCardsPipefyFretes(){
 
         let res =
             await fetch(
-                "/.netlify/functions/pipefy",
+                "/criar-cards-receber",
                 {
                     method:"POST",
 
-                    headers:{
-                        "Content-Type":
-                        "application/json"
-                    },
+                    headers: getAuthHeaders(),
 
                     body:JSON.stringify({
 
-                        createCards:
+                        cards:
                             lista
 
                     })
                 }
             )
+
+        if(!res.ok){
+
+            const texto = await res.text()
+
+            throw new Error(
+                texto.startsWith("{")
+                    ? (JSON.parse(texto).erro || "Erro ao criar cards")
+                    : `Erro HTTP ${res.status}`
+            )
+
+        }
 
         let data =
             await res.json()
