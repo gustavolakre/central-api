@@ -2706,12 +2706,9 @@ async function criarCardsPipefyFretes(){
             )
 
         let parceiroId =
-
-            parceiro?.["ID"]
+            parceiro?.pipefy_record_id
             ||
-            parceiro?.["Codigo"]
-            ||
-            parceiro?.["Código"]
+            parceiro?.id
             ||
             ""
 
@@ -2722,11 +2719,15 @@ async function criarCardsPipefyFretes(){
             title:
                 `${c.parceiro} - NF ${c.notaFiscal}`,
 
+            parceiroNome: c.parceiro,
+
+            parceiroId: String(parceiroId),
+
          fields:[
 
          {
            field_id:"parceiro",
-           value:String(parceiroId)
+           value: String(parceiroId)
          },
 
          {
@@ -2759,6 +2760,25 @@ async function criarCardsPipefyFretes(){
         }
 
     })
+
+    const semParceiro = lista.filter(
+        c => !c.parceiroId
+    )
+
+    if(semParceiro.length){
+
+        alert(
+            "Parceiro não encontrado na base (ou sem ID Pipefy):\n\n" +
+            semParceiro
+                .map(c => c.parceiroNome)
+                .join("\n")
+        )
+
+        lista = lista.filter(
+            c => c.parceiroId
+        )
+
+    }
 
     if(!lista.length){
 
