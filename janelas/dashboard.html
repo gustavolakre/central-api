@@ -492,6 +492,17 @@ socket.on("ultimaAtualizacaoPipefy", (data) => {
 
 const token = localStorage.getItem("token");
 
+function salvarDestinoEIrLogin(){
+
+    localStorage.setItem(
+        "paginaDestino",
+        window.location.pathname + window.location.search
+    );
+
+    window.location.href = "login.html";
+
+}
+
 function logout(){
 
     localStorage.clear();
@@ -514,7 +525,7 @@ function logout(){
 }
 
 if(!token){
-    window.location.href = "login.html";
+    salvarDestinoEIrLogin();
 }
 
 const CORES = {
@@ -575,7 +586,7 @@ async function carregarPipeline(){
 
     });
 
-    window.location.href = "login.html";
+    salvarDestinoEIrLogin();
 
     return;
 }

@@ -185,6 +185,11 @@ if(!token){
     localStorage.clear();
     sessionStorage.clear();
 
+    localStorage.setItem(
+        "paginaDestino",
+        window.location.pathname + window.location.search
+    );
+
     window.location.href = "login.html";
 
 }
