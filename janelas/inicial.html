@@ -20,7 +20,7 @@
 
 body{
 
-    background:#eef2f7;
+    background:linear-gradient(160deg,#eef2f7 0%,#e3e9f5 100%);
 
     color:#1e293b;
 
@@ -45,7 +45,9 @@ body{
 
     border-radius:18px;
 
-    box-shadow:0 8px 30px rgba(15,23,42,0.08);
+    border:1px solid rgba(255,255,255,0.8);
+
+    box-shadow:0 10px 40px rgba(15,23,42,0.10);
 }
 
 
@@ -54,11 +56,40 @@ body{
 
 .cabecalho{
 
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
     margin-bottom:28px;
 
     padding-bottom:20px;
 
-    border-bottom:1px solid #eef2f7;
+    border-bottom:1px solid #e2e8f0;
+}
+
+.cabecalho-icone{
+
+    width:56px;
+
+    height:56px;
+
+    flex-shrink:0;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:28px;
+
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+
+    box-shadow:0 6px 16px rgba(37,99,235,0.35);
 }
 
 h1{
@@ -82,6 +113,12 @@ h1{
 
 .secaoTitulo{
 
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
     font-size:13px;
 
     font-weight:700;
@@ -93,6 +130,19 @@ h1{
     color:#94a3b8;
 
     margin-bottom:14px;
+}
+
+.secaoTitulo::before{
+
+    content:"";
+
+    width:4px;
+
+    height:15px;
+
+    border-radius:3px;
+
+    background:linear-gradient(#3b82f6,#2563eb);
 }
 
 
@@ -135,6 +185,8 @@ button:active{
     background:#ea580c;
 
     color:white;
+
+    box-shadow:0 4px 12px rgba(234,88,12,0.30);
 }
 
 .btnPipefy{
@@ -142,6 +194,8 @@ button:active{
     background:#2563eb;
 
     color:white;
+
+    box-shadow:0 4px 12px rgba(37,99,235,0.30);
 }
 
 
@@ -166,6 +220,8 @@ button:active{
 
     border:1px solid #e5e7eb;
 
+    border-left:4px solid #3b82f6;
+
     border-radius:14px;
 
     background:#f8fafc;
@@ -176,6 +232,8 @@ button:active{
 .blocoImportacao:hover{
 
     border-color:#cbd5e1;
+
+    border-left-color:#2563eb;
 
     box-shadow:0 4px 14px rgba(15,23,42,0.05);
 }
@@ -312,7 +370,11 @@ button:active{
 
 .cardMenu{
 
-    padding:30px;
+    position:relative;
+
+    overflow:hidden;
+
+    padding:28px 30px;
 
     border-radius:16px;
 
@@ -322,7 +384,7 @@ button:active{
 
     transition:0.2s;
 
-    min-height:150px;
+    min-height:160px;
 
     display:flex;
 
@@ -337,7 +399,28 @@ button:active{
 
     transform:translateY(-4px);
 
-    box-shadow:0 12px 26px rgba(15,23,42,0.18);
+    box-shadow:0 16px 32px rgba(15,23,42,0.22);
+}
+
+.cardIcone{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:12px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:24px;
+
+    margin-bottom:16px;
+
+    background:rgba(255,255,255,0.20);
 }
 
 .cardMenu h2{
@@ -356,6 +439,28 @@ button:active{
     line-height:1.5;
 
     opacity:0.92;
+}
+
+.cardSeta{
+
+    position:absolute;
+
+    right:24px;
+
+    bottom:22px;
+
+    font-size:22px;
+
+    opacity:0;
+
+    transition:0.2s;
+}
+
+.cardMenu:hover .cardSeta{
+
+    opacity:0.95;
+
+    transform:translateX(4px);
 }
 
 
@@ -462,10 +567,16 @@ button:active{
 
     <div class="cabecalho">
 
-        <h1>Faturamento</h1>
+        <div class="cabecalho-icone">📊</div>
 
-        <div class="subtitulo">
-            Importações e módulos do sistema
+        <div>
+
+            <h1>Faturamento</h1>
+
+            <div class="subtitulo">
+                Importações e módulos do sistema
+            </div>
+
         </div>
 
     </div>
@@ -598,6 +709,8 @@ button:active{
             onclick="abrirCargas()"
         >
 
+            <div class="cardIcone">🚚</div>
+
             <h2>
                 Faturamento de Cargas
             </h2>
@@ -606,6 +719,8 @@ button:active{
                 Gestão e faturamento operacional
                 de cargas.
             </p>
+
+            <span class="cardSeta">→</span>
 
         </div>
 
@@ -617,6 +732,8 @@ button:active{
             onclick="abrirFretes()"
         >
 
+            <div class="cardIcone">🛻</div>
+
             <h2>
                 Faturamento de Fretes
             </h2>
@@ -625,6 +742,8 @@ button:active{
                 Controle financeiro e faturamento
                 de fretes.
             </p>
+
+            <span class="cardSeta">→</span>
 
         </div>
 
@@ -636,6 +755,8 @@ button:active{
             onclick="abrirFinanceiro()"
         >
 
+            <div class="cardIcone">💰</div>
+
             <h2>
                 Financeiro
             </h2>
@@ -644,6 +765,8 @@ button:active{
                 Lançamentos, fluxo de caixa
                 e relatórios financeiros.
             </p>
+
+            <span class="cardSeta">→</span>
 
         </div>
 
