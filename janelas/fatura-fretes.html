@@ -263,16 +263,6 @@ margin-bottom:20px;
         <div class="painel">
 
             <div class="campoTopo">
-                <b>Planilha de Dados</b><br>
-                <input type="file" id="upload">
-            </div>
-
-            <div class="campoTopo">
-               <b>Base de Parceiros</b><br>
-               <input type="file" id="uploadBase">
-            </div>
-
-            <div class="campoTopo">
                 <b>Discriminação / Período</b><br>
                 <input
                     type="text"
@@ -287,14 +277,10 @@ margin-bottom:20px;
             </div>
 
             <div class="campoTopo">
-                <b>Mês Gerencial</b><br>
+                <b>Conta Gerencial</b><br>
 
                 <select id="mesGerencial">
-                    <option>2026/01</option>
-                    <option>2026/02</option>
-                    <option>2026/03</option>
-                    <option>2026/04</option>
-                    <option selected>2026/05</option>
+                    <option value="">Selecione</option>
                 </select>
             </div>
 
@@ -498,7 +484,7 @@ text-align:center;
 
 <th>Discriminação</th>
 
-<th>Mês Gerencial</th>
+<th>Conta Gerencial</th>
 
 <th>Status</th>
 
@@ -916,90 +902,39 @@ text-align:center;
 
         }
 
-        document.getElementById("upload")
-.addEventListener("change", function (e) {
+        async function carregarContasGerenciais(){
 
-    let reader = new FileReader()
+            try{
 
-    reader.onload = function (e) {
+                const response = await fetch(
+                    "/contas-gerenciais",
+                    {
+                        headers: getAuthHeaders()
+                    }
+                )
 
-        let data = new Uint8Array(e.target.result)
+                const contas = await response.json()
 
-        let workbook = XLSX.read(data, {
-            type: 'array'
-        })
+                const select =
+                    document.getElementById("mesGerencial")
 
-        let sheet = workbook.Sheets[
-            workbook.SheetNames[0]
-        ]
+                select.innerHTML =
+                    `<option value="">Selecione</option>`
 
-        dadosPlanilha = XLSX.utils
-            .sheet_to_json(sheet)
+                contas.forEach(conta => {
 
-        console.log(
-            "DADOS PLANILHA:",
-            dadosPlanilha.length,
-            dadosPlanilha
-        )
+                    select.innerHTML +=
+                        `<option value="${conta.nome}">${conta.nome}</option>`
 
-        montarListaSemanas()
-
-        montarListaTransportadoras()
-
-        carregarFaturadosExistentes()
-
-        montarAgrupamento()
-
-        gerarRelatorio()
-
-        console.log(
-            "ENVIANDO PARA LISTAS:",
-            dadosPlanilha.length
-        )
-
-        
-    }
-
-    reader.readAsArrayBuffer(
-        e.target.files[0]
-    )
-
-})
-
-        document.getElementById("uploadBase")
-            .addEventListener("change", function(e) {
-
-                let reader = new FileReader()
-
-                reader.onload = function(e) {
-
-                let data = new Uint8Array(e.target.result)
-
-                let workbook = XLSX.read(data, {
-                     type: 'array'
                 })
 
-                let sheet = workbook.Sheets[
-                    workbook.SheetNames[0]
-            ] 
+            }catch(err){
 
-            baseParceiros =
-                XLSX.utils.sheet_to_json(sheet)
+                console.error(err)
 
-            console.log(
-                "Base carregada",
-                baseParceiros
-            )
-
-            gerarRelatorio()
+            }
 
         }
-
-            reader.readAsArrayBuffer(
-            e.target.files[0]
-        )
-
-        })
 
 
         async function carregarParceirosBanco(){
@@ -3068,6 +3003,8 @@ function(e){
        async ()=>{
 
           try {
+
+              await carregarContasGerenciais()
 
               await carregarParceirosBanco()
 
