@@ -1183,6 +1183,7 @@ dados.forEach(item => {
     const semana = item.semana;
 
     const peso = Number(item.peso || 0);
+    const precoKg = Number(item.preco_kg || 0);
     const valor = Number(item.valor || 0);
 
     if (!mapa[semana]) {
@@ -1194,8 +1195,14 @@ dados.forEach(item => {
 
     }
 
-    mapa[semana].peso += peso;
-    mapa[semana].valor += valor;
+    // 2º gráfico (média ponderada): só cargas com peso e preço,
+    // para não distorcer o preço com cargas ainda sem preço lançado
+    if (peso > 0 && precoKg > 0) {
+
+        mapa[semana].peso += peso;
+        mapa[semana].valor += valor;
+
+    }
 
 });
 

@@ -55,8 +55,6 @@ LEFT JOIN parceiros_negocio pc
 
 WHERE substring(cc.etiquetas from '[0-9]{4}/[0-9]{2}') IS NOT NULL
   AND COALESCE(cc.fase,'') <> '09-Cancelada'
-  AND COALESCE(cc.peso, 0) > 0
-  AND COALESCE(cc.preco_kg, 0) > 0
 
 ORDER BY semana;
 `);

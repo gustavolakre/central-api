@@ -751,6 +751,7 @@ function montarPipeline(linhas){
             let barra = "";
 
             Object.entries(dados.fases)
+                .sort((a,b)=> a[0].localeCompare(b[0]))
                 .forEach(([fase,qtd])=>{
 
                 const largura =
@@ -940,7 +941,9 @@ function montarPainelDireito(linhas){
 
             let barra = "";
 
-            Object.entries(fases).forEach(([fase,qtd]) => {
+            Object.entries(fases)
+                .sort((a,b)=> a[0].localeCompare(b[0]))
+                .forEach(([fase,qtd]) => {
 
                 const largura = (qtd / total) * 100;
 
@@ -1003,7 +1006,9 @@ function montarPainelDireito(linhas){
 
             let barra = "";
 
-            Object.entries(fases).forEach(([fase,qtd]) => {
+            Object.entries(fases)
+                .sort((a,b)=> a[0].localeCompare(b[0]))
+                .forEach(([fase,qtd]) => {
 
                 const largura = (qtd / total) * 100;
 
