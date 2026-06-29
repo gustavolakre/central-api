@@ -11,6 +11,7 @@ router.post("/", async (req, res) => {
 
     let sucesso = 0;
     let erros = 0;
+    let detalhesErros = [];
 
     for (const card of cards) {
 
@@ -64,6 +65,13 @@ router.post("/", async (req, res) => {
 
        erros++;
 
+       detalhesErros.push({
+         title: card.title,
+         erro: response.data.errors
+           .map(e => e.message)
+           .join(" | ")
+       });
+
        } else {
 
        sucesso++;
@@ -74,7 +82,8 @@ router.post("/", async (req, res) => {
 
     res.json({
       sucesso,
-      erros
+      erros,
+      detalhesErros
     });
 
   } catch (err) {
