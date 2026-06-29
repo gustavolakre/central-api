@@ -28,10 +28,6 @@
         align-items: start;
     }
 
-    .filtro-busca-parceiro {
-        margin-bottom: 6px;
-    }
-
     .filtros-acoes {
         flex-direction: column;
         margin-top: 0;
@@ -276,18 +272,47 @@
 
     <label>Parceiros</label>
 
-    <input
-        type="text"
-        id="buscaParceiro"
-        class="filtro-busca-parceiro"
-        placeholder="Buscar parceiro..."
-        oninput="filtrarListaParceiros()"
-    >
+    <div class="parceiro-combobox">
 
-    <div
-        id="listaParceiros"
-        class="checksFiltro checksScroll"
-    ></div>
+        <input
+            type="hidden"
+            id="filtroParceiro"
+            value=""
+        >
+
+        <button
+            type="button"
+            class="parceiro-combobox-toggle"
+            onclick="toggleComboboxParceiro('filtroParceiro', event)"
+        >
+            <span id="filtroParceiroLabel">
+                Todos
+            </span>
+        </button>
+
+        <div
+            class="parceiro-combobox-panel"
+            id="filtroParceiroPanel"
+            style="display:none;"
+            onclick="event.stopPropagation()"
+        >
+
+            <input
+                type="text"
+                class="parceiro-combobox-busca"
+                id="filtroParceiroBusca"
+                placeholder="Digite para buscar..."
+                oninput="filtrarComboboxParceiro('filtroParceiro')"
+            >
+
+            <ul
+                class="parceiro-combobox-lista"
+                id="filtroParceiroLista"
+            ></ul>
+
+        </div>
+
+    </div>
 
 </div>
 
@@ -498,9 +523,11 @@ function limparFiltros(){
 
     document
         .querySelectorAll(
-            ".checkTipo,.checkStatus,.checkParceiro"
+            ".checkTipo,.checkStatus"
         )
         .forEach(el=>el.checked = false)
+
+    definirComboboxParceiro("filtroParceiro", "")
 
     document.getElementById(
         "filtroEmissaoInicial"
@@ -517,14 +544,6 @@ function limparFiltros(){
     document.getElementById(
         "filtroVencFinal"
     ).value = ""
-
-    const busca =
-        document.getElementById("buscaParceiro")
-
-    if(busca){
-        busca.value = ""
-        filtrarListaParceiros()
-    }
 
     carregarRelatorio()
 
@@ -576,13 +595,12 @@ async function carregarRelatorio(){
         ).map(el=>el.value)
 
 
-        const filtroParceiro = Array.from(
-
-            document.querySelectorAll(
-                ".checkParceiro:checked"
-            )
-
-        ).map(el=>el.value.toLowerCase())
+        const filtroParceiro =
+            document.getElementById(
+                "filtroParceiro"
+            ).value
+            .toLowerCase()
+            .trim()
 
 
         const emissaoInicial =
@@ -637,12 +655,11 @@ async function carregarRelatorio(){
 
             const okParceiro =
 
-                filtroParceiro.length === 0 ||
+                !filtroParceiro ||
 
-                filtroParceiro.includes(
-                    (item.parceiro || "")
+                (item.parceiro || "")
                     .toLowerCase()
-                )
+                    .trim() === filtroParceiro
 
 
 
@@ -1114,10 +1131,12 @@ async function exportarBackupFinanceiro(){
 }
 
 
+let parceirosBase = []
+
+
 async function carregarParceiros(){
 
     try{
-        
 
         const response =
             await fetch(
@@ -1127,37 +1146,13 @@ async function carregarParceiros(){
          }
         )
 
-        const parceiros =
+        parceirosBase =
             await response.json()
 
-        const div =
-            document.getElementById(
-                "listaParceiros"
-            )
-
-        div.innerHTML = ""
-
-
-        parceiros.forEach(parceiro=>{
-
-            div.innerHTML += `
-
-                <label>
-
-                    <input
-                        type="checkbox"
-                        value="${parceiro.nome_usual}"
-                        class="checkParceiro"
-                        onchange="carregarRelatorio()"
-                    >
-
-                    ${parceiro.nome_usual}
-
-                </label>
-
-            `
-
-        })
+        renderizarComboboxParceiro(
+            "filtroParceiro",
+            ""
+        )
 
     }
 
@@ -1170,30 +1165,164 @@ async function carregarParceiros(){
 }
 
 
-function filtrarListaParceiros(){
+function definirComboboxParceiro(id, nome){
+
+    document.getElementById(id).value =
+        nome || ""
+
+    const label =
+        document.getElementById(`${id}Label`)
+
+    label.textContent =
+        nome || "Todos"
+
+}
+
+
+function fecharComboboxParceiro(id){
+
+    const panel =
+        document.getElementById(`${id}Panel`)
+
+    if(panel){
+        panel.style.display = "none"
+    }
+
+    const busca =
+        document.getElementById(`${id}Busca`)
+
+    if(busca){
+        busca.value = ""
+    }
+
+}
+
+
+function fecharTodosComboboxParceiro(){
+
+    fecharComboboxParceiro("filtroParceiro")
+
+}
+
+
+function toggleComboboxParceiro(id, event){
+
+    event.stopPropagation()
+
+    const panel =
+        document.getElementById(`${id}Panel`)
+
+    const aberto =
+        panel.style.display === "block"
+
+    fecharTodosComboboxParceiro()
+
+    if(aberto){
+        return
+    }
+
+    panel.style.display = "block"
+
+    renderizarComboboxParceiro(id, "")
+
+    document.getElementById(`${id}Busca`).focus()
+
+}
+
+
+function filtrarComboboxParceiro(id){
 
     const termo =
-        document.getElementById("buscaParceiro")
-            .value
-            .toLowerCase()
-            .trim()
+        document.getElementById(`${id}Busca`).value
 
-    document
-        .querySelectorAll("#listaParceiros label")
-        .forEach(label=>{
+    renderizarComboboxParceiro(id, termo)
+
+}
+
+
+function renderizarComboboxParceiro(id, termo){
+
+    const lista =
+        document.getElementById(`${id}Lista`)
+
+    const termoNorm =
+        (termo || "")
+        .toLowerCase()
+        .trim()
+
+    let html = `
+        <li onclick="selecionarComboboxParceiro('${id}','')">
+            Todos
+        </li>
+    `
+
+    const filtrados =
+        parceirosBase.filter(parceiro=>{
 
             const nome =
-                label.textContent
-                    .toLowerCase()
+                (parceiro.nome_usual || "")
+                .toLowerCase()
 
-            label.style.display =
-                nome.includes(termo)
-                    ? "flex"
-                    : "none"
+            return !termoNorm ||
+                nome.includes(termoNorm)
 
         })
 
+    if(!filtrados.length){
+
+        html += `
+            <li class="parceiro-combobox-vazio">
+                Nenhum parceiro encontrado
+            </li>
+        `
+
+    }
+    else{
+
+        filtrados.forEach(parceiro=>{
+
+            const nome = parceiro.nome_usual || ""
+
+            html += `
+            <li
+                onclick="selecionarComboboxParceiro(
+                    '${id}',
+                    this.dataset.nome
+                )"
+                data-nome="${nome
+                    .replace(/"/g,'&quot;')
+                    .replace(/'/g,'&#39;')
+                }"
+            >
+                ${nome}
+            </li>
+            `
+
+        })
+
+    }
+
+    lista.innerHTML = html
+
 }
+
+
+function selecionarComboboxParceiro(id, nome){
+
+    definirComboboxParceiro(id, nome)
+
+    fecharComboboxParceiro(id)
+
+    carregarRelatorio()
+
+}
+
+
+document.addEventListener("click", () => {
+
+    fecharTodosComboboxParceiro()
+
+});
 
 
 (async()=>{
