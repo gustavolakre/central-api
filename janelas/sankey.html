@@ -564,10 +564,49 @@ function renderizar(){
     google.visualization.events.addListener(
         chart,
         "ready",
-        () => adicionarQuantidadeNosNos(totalPorNo)
+        () => {
+            adicionarQuantidadeNosNos(totalPorNo);
+            observarSankey(totalPorNo);
+        }
     );
 
     chart.draw(data, options);
+
+}
+
+
+let observerSankey = null;
+
+function observarSankey(totalPorNo){
+
+    const alvo = document.getElementById("sankey");
+
+    if(!alvo){
+        return;
+    }
+
+    if(observerSankey){
+        observerSankey.disconnect();
+    }
+
+    observerSankey = new MutationObserver(() => {
+
+        // evita laço: pausa, reinjeta e religa
+        observerSankey.disconnect();
+
+        adicionarQuantidadeNosNos(totalPorNo);
+
+        observerSankey.observe(alvo, {
+            childList: true,
+            subtree: true
+        });
+
+    });
+
+    observerSankey.observe(alvo, {
+        childList: true,
+        subtree: true
+    });
 
 }
 
