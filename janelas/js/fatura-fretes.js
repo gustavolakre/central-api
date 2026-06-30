@@ -1401,10 +1401,12 @@ function exportarExcel(){
          </div>
 
     <div style="
-    display:flex;
+    display:grid;
+    grid-template-columns:180px 260px auto;
+    align-items:center;
     gap:20px;
     margin-bottom:20px;
-    flex-wrap:wrap;
+    font-size:14px;
 ">
 
     <div>
@@ -1415,7 +1417,7 @@ function exportarExcel(){
            type="date"
            id="venc_${id}"
            value="${venc}"
-
+           style="width:100%; height:32px;"
        oninput="
            salvarEstado('${id}');
            gerarRelatorio();
@@ -1428,28 +1430,40 @@ function exportarExcel(){
 
         <b>Nota Fiscal</b><br>
 
+        <div style="display:flex; gap:5px; align-items:center;">
         <input
             id="nf_${id}"
             value="${nf}"
-             onchange="salvarEstado('${id}')"
+            onchange="salvarEstado('${id}')"
+            style="flex:1; height:32px; text-align:center;"
         >
-
-    </div>
-
-    <!-- NOVO BLOCO -->
-
-    
-    <div style="
-        display:flex;
-        align-items:end;
-    ">
 
         <button
             class="salvar"
             onclick="salvarCard('${id}')"
+            onmouseover="this.style.background='#1b5e20'"
+            onmouseout="this.style.background='#2e7d32'"
+            onmousedown="this.style.transform='scale(0.96)'"
+            onmouseup="this.style.transform='scale(1)'"
+            style="
+                height:32px;
+                padding:0 10px;
+                background:#2e7d32;
+                color:white;
+                border:none;
+                border-radius:4px;
+                cursor:pointer;
+                transition:all 0.15s ease;
+                font-size:12px;
+                font-weight:bold;
+                margin-top:0;
+                white-space:nowrap;
+                flex-shrink:0;
+            "
         >
             Salvar Card
         </button>
+        </div>
 
     </div>
 
