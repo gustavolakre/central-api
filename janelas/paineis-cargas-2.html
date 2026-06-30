@@ -105,6 +105,21 @@ canvas{
     gap:10px;
 }
 
+.btn-voltar{
+    background:#1f2937;
+    color:#e5e7eb;
+    border:1px solid #374151;
+    padding:9px 16px;
+    border-radius:8px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+}
+
+.btn-voltar:hover{
+    background:#374151;
+}
+
 .topbar-right a{
     color:#e5e7eb;
     text-decoration:none;
@@ -445,6 +460,10 @@ canvas{
 
    <div class="topbar-left">
 
+    <button class="btn-voltar" onclick="voltarInicio()">
+        ⬅ Voltar ao início
+    </button>
+
     <button class="btnAtualizarPipefy" onclick="atualizarCargasPipefy()">
         Atualizar Pipefy
     </button>
@@ -578,6 +597,10 @@ canvas{
 
 
 <script>
+
+function voltarInicio(){
+    window.location.href = "/janelas/inicial.html";
+}
 
 const API = "https://api-production-6670.up.railway.app";
 const socket = io(API); 

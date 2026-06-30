@@ -63,6 +63,23 @@
         background:#374151;
     }
 
+    .btnAtualizarPipefy{
+        background:#ea580c;
+        color:white;
+        border:none;
+        padding:9px 16px;
+        border-radius:8px;
+        font-weight:700;
+        font-size:14px;
+        cursor:pointer;
+        transition:0.2s;
+    }
+
+    .btnAtualizarPipefy:hover{
+        transform:translateY(-2px);
+        background:#fb923c;
+    }
+
     .topbar-right{
         display:flex;
         align-items:center;
@@ -190,6 +207,12 @@
             ⬅ Voltar ao início
         </button>
 
+        <button class="btnAtualizarPipefy" onclick="atualizarCargasPipefy()">
+            Atualizar Pipefy
+        </button>
+
+        <div id="status" style="color:#e5e7eb;"></div>
+
         <span>Fluxo de Cargas</span>
 
     </div>
@@ -278,6 +301,61 @@ let googlePronto = false;
 
 function voltarInicio(){
     window.location.href = "/janelas/inicial.html";
+}
+
+
+async function atualizarCargasPipefy(){
+
+    const status = document.getElementById("status");
+
+    if(status){
+        status.innerHTML = "Gerando relatório no Pipefy...";
+    }
+
+    try{
+
+        const resposta = await fetch(
+            "/importar-cargas-relatorio",
+            {
+                method:"POST",
+                headers:{
+                    Authorization:
+                        `Bearer ${localStorage.getItem("token")}`
+                }
+            }
+        );
+
+        const dados = await resposta.json();
+
+        if(dados.sucesso){
+
+            if(status){
+                status.innerHTML =
+                    `✅ ${dados.importados} cargas importadas`;
+            }
+
+            setTimeout(()=>{
+                location.reload();
+            },1500);
+
+        }else{
+
+            if(status){
+                status.innerHTML = `❌ ${dados.erro}`;
+            }
+
+        }
+
+    }catch(err){
+
+        console.error(err);
+
+        if(status){
+            status.innerHTML = "❌ Erro ao atualizar cargas.";
+        }
+
+    }
+
 }
 
 
