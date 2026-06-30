@@ -212,13 +212,9 @@ button:active{
 
     flex-direction:column;
 
-    gap:8px;
+    gap:10px;
 
-    margin-bottom:10px;
-
-    flex:1;
-
-    min-height:0;
+    margin-bottom:18px;
 }
 
 
@@ -264,7 +260,7 @@ button:active{
 
     display:grid;
 
-    grid-template-columns:1fr 150px 150px 260px;
+    grid-template-columns:1fr 175px 185px 260px;
 
     align-items:center;
 
@@ -277,11 +273,11 @@ button:active{
 .blocoControles input[type=file],
 .blocoControles button{
 
-    height:36px;
+    height:44px;
 
     border-radius:8px;
 
-    font-size:12px;
+    font-size:13px;
 }
 
 .blocoControles input[type=file]{
@@ -500,7 +496,7 @@ button:active{
 
 #status{
 
-    margin-top:auto;
+    margin-top:0;
 
     padding:8px 12px;
 
@@ -627,14 +623,14 @@ button:active{
                 class="btnAtualizar"
                 onclick="importarCargas()"
             >
-                Importar Cargas
+                Importar por Planilha
             </button>
 
             <button
                 class="btnPipefy"
                 onclick="atualizarCargasPipefy()"
             >
-                Atualizar via Pipefy
+                Atualização automática
             </button>
 
             <span id="ultimaCargas" class="ultimaInfo"></span>
@@ -659,14 +655,14 @@ button:active{
                 class="btnAtualizar"
                 onclick="importarParceiros()"
             >
-                Importar Parceiros
+                Importar por Planilha
             </button>
 
             <button
                 class="btnPipefy"
                 onclick="importarParceirosPipefy()"
             >
-                Atualizar via Pipefy
+                Atualização automática
             </button>
 
             <span id="ultimaParceiros" class="ultimaInfo"></span>
@@ -692,7 +688,7 @@ button:active{
                 class="btnAtualizar"
                 onclick="importarFretes()"
             >
-                Importar Fretes
+                Importar por Planilha
             </button>
 
             <button
@@ -700,7 +696,7 @@ button:active{
                  class="btnPipefy"
                  onclick="importarFretesPipefy()"
              >
-                Atualizar via Pipefy
+                Atualização automática
             </button>
 
             <span id="ultimaFretes" class="ultimaInfo"></span>
@@ -1158,7 +1154,7 @@ async function importarCargas(){
 
    botao.disabled = false;
    botao.innerHTML =
-       "Importar Cargas";
+       "Importar por Planilha";
 
 
 
@@ -1271,7 +1267,7 @@ async function importarFretes(){
 
         botao.disabled = false;
         botao.innerHTML =
-            "Importar Fretes";
+            "Importar por Planilha";
 
     }
 }
