@@ -12,47 +12,11 @@
 
 <title>Relatórios Financeiros</title>
 
-<link rel="stylesheet" href="/janelas/financeiro-theme.css">
-
-<style>
-    .filtros .grid {
-        grid-template-columns:
-            minmax(0, 0.6fr)
-            minmax(0, 0.7fr)
-            minmax(0, 2.2fr)
-            minmax(0, 1fr)
-            minmax(0, 1fr)
-            minmax(0, 1fr)
-            minmax(0, 1fr)
-            minmax(0, 0.9fr);
-        align-items: start;
-    }
-
-    .filtros-acoes {
-        flex-direction: column;
-        margin-top: 0;
-    }
-
-    .filtros-acoes .btnLimpar {
-        width: 100%;
-    }
-
-    .filtros-acoes-label {
-        margin-bottom: 6px;
-        font-size: 12px;
-        font-weight: 600;
-        color: transparent;
-    }
-
-    @media (max-width: 900px) {
-        .filtros .grid {
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-        }
-    }
-</style>
+<link rel="stylesheet" href="/janelas/css/tema-financeiro.css">
+<link rel="stylesheet" href="/janelas/css/relatorios-financeiros.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
+<script src="/janelas/js/ui-comum.js"></script>
 <script src="/janelas/auth.js"></script>
 <script src="/janelas/logout.js"></script>
 
@@ -514,13 +478,6 @@ function authHeaders(extra = {}){
 
 }
 
-
-function voltarInicio() {
-
-    window.location.href =
-        "/janelas/inicial.html";
-
-}
 
 
 function limparFiltros(){

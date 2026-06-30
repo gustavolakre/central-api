@@ -178,6 +178,9 @@
     };
 
     window.voltarInicio = voltarInicio;
+    window.voltarInicioFaturamento = function () {
+        voltarInicio("/janelas/inicial-faturamento.html");
+    };
     window.atualizarCargasPipefy =
         atualizarCargasPipefy;
 

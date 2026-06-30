@@ -1,0 +1,343 @@
+body.tema-inicial-faturamento {
+    background: linear-gradient(160deg, #eef2f7 0%, #e3e9f5 100%);
+    color: #1e293b;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.tema-inicial-faturamento .topbar-dashboard {
+    flex-shrink: 0;
+}
+
+/* CONTAINER */
+
+.tema-inicial-faturamento .container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px 20px;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* CABEÇALHO */
+
+.tema-inicial-faturamento .cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #cbd5e1;
+    flex-shrink: 0;
+}
+
+.tema-inicial-faturamento .cabecalho-icone {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.30);
+}
+
+.tema-inicial-faturamento h1 {
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.tema-inicial-faturamento .subtitulo {
+    margin-top: 2px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.tema-inicial-faturamento .secaoTitulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.tema-inicial-faturamento .secaoTitulo::before {
+    content: "";
+    width: 4px;
+    height: 15px;
+    border-radius: 3px;
+    background: linear-gradient(#3b82f6, #2563eb);
+}
+
+/* BOTAO BASE */
+
+.tema-inicial-faturamento button {
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.15s;
+}
+
+.tema-inicial-faturamento button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+.tema-inicial-faturamento button:active {
+    transform: translateY(0);
+}
+
+/* CORES BOTÕES */
+
+.tema-inicial-faturamento .btnAtualizar {
+    background: #ea580c;
+    color: white;
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.30);
+}
+
+.tema-inicial-faturamento .btnPipefy {
+    background: #2563eb;
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.30);
+}
+
+/* SEÇÃO DE IMPORTAÇÕES */
+
+.tema-inicial-faturamento .secaoImportacoes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.tema-inicial-faturamento .blocoImportacao {
+    padding: 10px 14px;
+    border: 1px solid #e5e7eb;
+    border-left: 3px solid #3b82f6;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.75);
+    transition: 0.15s;
+}
+
+.tema-inicial-faturamento .blocoImportacao:hover {
+    border-color: #cbd5e1;
+    border-left-color: #2563eb;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.tema-inicial-faturamento .blocoImportacao h3 {
+    margin-bottom: 8px;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* LINHA DE CONTROLES (alinhada em grade) */
+
+.tema-inicial-faturamento .blocoControles {
+    display: grid;
+    grid-template-columns: 1fr 175px 185px 260px;
+    align-items: center;
+    gap: 8px;
+}
+
+/* CONTROLES COM ALTURA PADRÃO */
+
+.tema-inicial-faturamento .blocoControles input[type=file],
+.tema-inicial-faturamento .blocoControles button {
+    height: 44px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.tema-inicial-faturamento .blocoControles input[type=file] {
+    padding: 6px 10px;
+    background: white;
+    border: 1px solid #d1d5db;
+    cursor: pointer;
+}
+
+.tema-inicial-faturamento .blocoControles button {
+    width: 100%;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* INFO DE ÚLTIMA ATUALIZAÇÃO */
+
+.tema-inicial-faturamento .ultimaInfo {
+    justify-self: stretch;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    background: #eef2f7;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+@media (max-width: 860px) {
+    .tema-inicial-faturamento .blocoControles {
+        grid-template-columns: 1fr;
+    }
+
+    .tema-inicial-faturamento .ultimaInfo {
+        justify-self: stretch;
+        text-align: left;
+    }
+}
+
+/* GRID MENU */
+
+.tema-inicial-faturamento .gridMenu {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 720px) {
+    .tema-inicial-faturamento .gridMenu {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* CARDS */
+
+.tema-inicial-faturamento .cardMenu {
+    position: relative;
+    overflow: hidden;
+    padding: 14px 18px;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    min-height: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.10);
+}
+
+.tema-inicial-faturamento .cardMenu:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
+}
+
+.tema-inicial-faturamento .cardIcone {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 0;
+    background: rgba(255, 255, 255, 0.20);
+}
+
+.tema-inicial-faturamento .cardMenu h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    flex: 1;
+}
+
+.tema-inicial-faturamento .cardSeta {
+    position: static;
+    font-size: 18px;
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+.tema-inicial-faturamento .cardMenu:hover .cardSeta {
+    opacity: 1;
+    transform: translateX(3px);
+}
+
+/* CORES CARDS */
+
+.tema-inicial-faturamento .cargas {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.tema-inicial-faturamento .fretes {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.tema-inicial-faturamento .financeiro {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+/* STATUS */
+
+.tema-inicial-faturamento #status {
+    margin-top: 0;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #475569;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.tema-inicial-faturamento .avisoSessoes {
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.tema-inicial-faturamento .avisoSessao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #1e40af;
+}
+
+.tema-inicial-faturamento .avisoSessao button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}

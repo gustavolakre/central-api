@@ -1,0 +1,85 @@
+.dre-filtro {
+    max-width: 320px;
+}
+
+.dre-resultado {
+    border-left: 6px solid var(--primary);
+}
+
+.dre-resultado .valor {
+    font-size: 34px;
+}
+
+.dre-bloco {
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 18px;
+    overflow: hidden;
+}
+
+.dre-bloco-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.dre-bloco-cabecalho.receitas {
+    background: #16a34a;
+}
+
+.dre-bloco-cabecalho.despesas {
+    background: #dc2626;
+}
+
+.dre-bloco-total {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.dre-linha {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 20px 11px 36px;
+    border-top: 1px solid var(--border);
+    font-size: 15px;
+    color: var(--text);
+}
+
+.dre-linha:nth-child(even) {
+    background: var(--surface-alt);
+}
+
+.dre-linha-conta {
+    font-weight: 600;
+}
+
+.dre-linha-valor {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.dre-bloco-cabecalho.receitas + .dre-linha {
+    border-top: none;
+}
+
+.dre-vazio {
+    padding: 16px 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-style: italic;
+}
+
+.resultado-positivo {
+    color: #16a34a;
+}
+
+.resultado-negativo {
+    color: #dc2626;
+}

@@ -1,0 +1,34 @@
+.filtros .grid {
+    grid-template-columns:
+        minmax(0, 0.6fr)
+        minmax(0, 0.7fr)
+        minmax(0, 2.2fr)
+        minmax(0, 1fr)
+        minmax(0, 1fr)
+        minmax(0, 1fr)
+        minmax(0, 1fr)
+        minmax(0, 0.9fr);
+    align-items: start;
+}
+
+.filtros-acoes {
+    flex-direction: column;
+    margin-top: 0;
+}
+
+.filtros-acoes .btnLimpar {
+    width: 100%;
+}
+
+.filtros-acoes-label {
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: transparent;
+}
+
+@media (max-width: 900px) {
+    .filtros .grid {
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    }
+}

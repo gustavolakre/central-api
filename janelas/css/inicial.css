@@ -1,0 +1,142 @@
+body.tema-inicial {
+    background: linear-gradient(160deg, #eef2f7 0%, #e3e9f5 100%);
+    color: #1e293b;
+    padding: 40px 24px;
+    min-height: 100vh;
+}
+
+/* CONTAINER */
+
+.tema-inicial .container {
+    max-width: 1100px;
+    margin: auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.10);
+}
+
+/* CABEÇALHO */
+
+.tema-inicial .cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 32px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.tema-inicial .cabecalho-icone {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.tema-inicial h1 {
+    color: #0f172a;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.tema-inicial .subtitulo {
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 15px;
+}
+
+/* GRID MENU */
+
+.tema-inicial .gridMenu {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 22px;
+}
+
+@media (max-width: 900px) {
+    .tema-inicial .gridMenu {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* CARDS */
+
+.tema-inicial .cardMenu {
+    position: relative;
+    overflow: hidden;
+    padding: 30px;
+    border-radius: 16px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    min-height: 230px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.10);
+}
+
+.tema-inicial .cardMenu:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.22);
+}
+
+.tema-inicial .cardIcone {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 16px;
+    background: rgba(255, 255, 255, 0.20);
+}
+
+.tema-inicial .cardMenu h2 {
+    margin-bottom: 10px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.tema-inicial .cardMenu p {
+    font-size: 14px;
+    line-height: 1.5;
+    opacity: 0.92;
+}
+
+.tema-inicial .cardSeta {
+    position: absolute;
+    right: 24px;
+    bottom: 22px;
+    font-size: 22px;
+    opacity: 0;
+    transition: 0.2s;
+}
+
+.tema-inicial .cardMenu:hover .cardSeta {
+    opacity: 0.95;
+    transform: translateX(4px);
+}
+
+/* CORES CARDS */
+
+.tema-inicial .faturamento {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.tema-inicial .financeiro {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.tema-inicial .paineis {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}

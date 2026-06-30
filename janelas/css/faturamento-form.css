@@ -1,0 +1,93 @@
+.campoTopo {
+    margin-bottom: 15px;
+}
+
+.campoTopo input,
+.campoTopo select {
+    width: 400px;
+    padding: 5px;
+}
+
+.grupo {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background: white;
+    border-radius: 6px;
+}
+
+.grupo .titulo {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.precos {
+    background: #f5f5f5;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.precos input {
+    width: 90px;
+    margin-bottom: 4px;
+}
+
+.grupo .linha {
+    margin-left: 20px;
+    margin-bottom: 3px;
+}
+
+.grupo .total {
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+.valores {
+    color: green;
+    margin-top: 10px;
+    font-weight: bold;
+    line-height: 1.5;
+}
+
+.botoes-topo {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.botoes-topo button {
+    margin: 5px;
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.disc {
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+#resultado {
+    padding-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.barra-superior {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.barra-superior button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
