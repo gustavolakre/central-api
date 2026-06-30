@@ -1,0 +1,92 @@
+.topbar-dashboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: var(--surface-top, #0f172a);
+    border-bottom: 1px solid var(--border-escuro, #374151);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-escuro, #f9fafb);
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.topbar-right a {
+    color: var(--text-muted-escuro, #e5e7eb);
+    text-decoration: none;
+    font-weight: 700;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.topbar-right a:hover {
+    background: var(--btn-voltar-bg, #1f2937);
+}
+
+.topbar-right a.ativo {
+    color: var(--accent-link, #60a5fa);
+}
+
+.btn-voltar {
+    background: var(--btn-voltar-bg, #1f2937);
+    color: var(--text-muted-escuro, #e5e7eb);
+    border: 1px solid var(--border-escuro, #374151);
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.btn-voltar:hover {
+    background: var(--btn-voltar-hover, #374151);
+}
+
+.btnAtualizarPipefy {
+    background: var(--btn-pipefy, #ea580c);
+    color: white;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btnAtualizarPipefy:hover {
+    transform: translateY(-2px);
+    background: var(--btn-pipefy-hover, #fb923c);
+}
+
+.topbar-status {
+    margin-left: 12px;
+    color: var(--text-muted-escuro, #e5e7eb);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.topbar-ultima-atualizacao {
+    margin-left: 20px;
+    color: var(--text-subtle-escuro, #9ca3af);
+    font-size: 14px;
+}

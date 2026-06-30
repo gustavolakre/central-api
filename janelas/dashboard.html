@@ -7,371 +7,16 @@
 
 <title>Dashboard Operacional</title>
 
+<link rel="stylesheet" href="/janelas/css/base.css">
+<link rel="stylesheet" href="/janelas/css/tema-escuro.css">
+<link rel="stylesheet" href="/janelas/css/topbar-paineis.css">
+<link rel="stylesheet" href="/janelas/css/pipeline-barras.css">
+<link rel="stylesheet" href="/janelas/css/dashboard.css">
+
 <script src="/janelas/logout.js"></script>
-
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-    background:#111827;
-    margin:0;
-    overflow-x:hidden;
-    color:#f9fafb;
-}
-
-.container{
-    margin-top:20px;
-}
-
-.painel{
-    min-width:0;
-}
-
-.painel .pipeline-barra{
-    background:#374151;
-    border-radius:8px;
-    overflow:hidden;
-}
-
-.topo-dashboard{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:18px 24px;
-    background:#111827;
-    border-bottom:1px solid #374151;
-}
-
-.btnAtualizarPipefy{
-    background:#ea580c;
-    color:white;
-    border:none;
-    padding:10px 16px;
-    border-radius:10px;
-    font-weight:700;
-    cursor:pointer;
-    transition:0.2s;
-}
-
-.btnAtualizarPipefy:hover{
-    transform:translateY(-2px);
-    background:#fb923c;
-}
-
-.container{
-    display:grid;
-    grid-template-columns:repeat(2, minmax(0, 1fr));
-    gap:20px;
-    padding:12px 20px 20px 20px;
-    height:calc(100vh - 60px);
-    overflow:hidden;
-}
-
-.painel{
-    background:#1f2937; /* cinza grafite */
-    border-radius:16px;
-    box-shadow:0 8px 24px rgba(0,0,0,.4);
-    overflow:hidden;
-    display:flex;
-    flex-direction:column;
-    border:1px solid #374151;
-}
-
-.titulo{
-    padding:18px 24px;
-    font-size:22px;
-    font-weight:700;
-    color:#f9fafb;
-    background:#111827;
-    border-bottom:1px solid #374151;
-}
-
-.conteudo{
-    flex:1;
-    overflow-y:auto;
-    padding:15px;
-    color:#e5e7eb;
-}
-
-.pipeline-item{
-    display:grid;
-    grid-template-columns:220px 100px 1fr;
-    gap:15px;
-    align-items:center;
-    padding:12px 0;
-    border-bottom:1px solid #374151;
-}
-
-.pipeline-header{
-    display:contents;
-}
-
-
-.semana{
-    color:#d1d5db;
-    font-weight:700;
-    font-size:18px;
-}
-
-.pipeline-linha{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.pipeline-barra{
-    height:42px;
-    display:flex;
-    overflow:hidden;
-    border-radius:10px;
-    background:
-        repeating-linear-gradient(
-            -45deg,
-            #313c4d 0px,
-            #313c4d 8px,
-            #374151 8px,
-            #374151 16px
-        );
-    box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.05),
-        0 4px 12px rgba(0,0,0,.35);
-}
-
-.fase{
-    height:100%;
-    cursor:pointer;
-    position:relative;
-    background-image:linear-gradient(
-        180deg,
-        rgba(255,255,255,.24) 0%,
-        rgba(255,255,255,.06) 42%,
-        rgba(0,0,0,.10) 70%,
-        rgba(0,0,0,.22) 100%
-    );
-    box-shadow:inset -1px 0 0 rgba(0,0,0,.22);
-    text-shadow:0 1px 2px rgba(0,0,0,.45);
-    transition:filter .15s ease, transform .15s ease;
-}
-
-.fase:hover{
-    filter:brightness(1.12) saturate(1.08);
-    transform:scaleY(1.06);
-    z-index:2;
-}
-
-.pipeline-barra .fase:last-child{
-    box-shadow:none;
-}
-
-.total{
-    text-align:right;
-    font-weight:700;
-    color:#f9fafb;
-    font-size:18px;
-}
-
-.legenda{
-    display:flex;
-    flex-wrap:wrap;
-    gap:12px;
-    margin-top:20px;
-    padding-top:15px;
-    border-top:1px solid #374151;
-}
-
-.legenda-item{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:16px;
-    font-weight:700;
-    color:#e5e7eb;
-}
-
-.legenda-cor{
-    width:20px;
-    height:20px;
-    border-radius:5px;
-}
-
-.vazio{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100%;
-    color:#9ca3af;
-    font-size:18px;
-}
-
-.avatar{
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    background:#2563eb;
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-    margin-right:10px;
-    border:2px solid #374151;
-}
-
-.responsavel{
-    display:flex;
-    align-items:center;
-    font-weight:600;
-}
-
-.legenda-topo{
-    display:flex;
-    flex-wrap:wrap;
-    gap:22px;
-    padding:18px 24px;
-    background:#111827;
-    border-bottom:1px solid #374151;
-}
-
-.foto-usuario{
-    width:60px;
-    height:60px;
-    border-radius:50%;
-    object-fit:cover;
-    border:3px solid #374151;
-}
-
-.card-responsavel{
-    background:#111827;
-    border:1px solid #374151;
-    border-radius:14px;
-    padding:18px;
-    margin-bottom:16px;
-    transition:.2s;
-}
-
-.card-responsavel:hover{
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
-}
-
-.cabecalho-responsavel{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin-bottom:18px;
-    padding-bottom:12px;
-    border-bottom:1px solid #374151;
-}
-
-.nome-responsavel{
-    font-size:16px;
-    font-weight:700;
-    color:#f9fafb;
-}
-
-.linha-semana{
-    display:grid;
-    grid-template-columns:90px 1fr 40px;
-    gap:6px;
-    align-items:center;
-    margin-bottom:4px;
-}
-
-.grupo-responsavel{
-    display:grid;
-    grid-template-columns:220px 1fr;
-    gap:15px;
-    margin-bottom:26px;
-    padding-bottom:16px;
-    border-bottom:1px solid #374151;
-}
-
-.info-responsavel{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:8px;
-    text-align:center;
-}
-
-.lista-semanas{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-}
-
-.linha-semana{
-    display:grid;
-    grid-template-columns:80px 1fr 40px;
-    gap:10px;
-    align-items:center;
-}
-
-.foto-usuario{
-    width:64px;
-    height:64px;
-    border-radius:50%;
-    object-fit:cover;
-    border:2px solid #374151;
-}
-
-.topbar-dashboard{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px 20px;
-    background:#0f172a;
-    border-bottom:1px solid #374151;
-    position:sticky;
-    top:0;
-    z-index:1000;
-}
-
-.topbar-left{
-    font-size:18px;
-    font-weight:700;
-    color:#f9fafb;
-}
-
-.topbar-right a{
-    padding:8px 12px;
-    border-radius:8px;
-    transition:0.2s;
-}
-
-.topbar-right a:hover{
-    background:#1f2937;
-}
-
-.topbar-left{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.btn-voltar{
-    background:#1f2937;
-    color:#e5e7eb;
-    border:1px solid #374151;
-    padding:9px 16px;
-    border-radius:8px;
-    font-weight:600;
-    font-size:14px;
-    cursor:pointer;
-}
-
-.btn-voltar:hover{
-    background:#374151;
-}
-</style>
 </head>
 
-<body>
+<body class="tema-escuro">
 
 <div class="topbar-dashboard">
 
@@ -385,33 +30,27 @@ body{
             Atualizar Pipefy
         </button>
 
-        <div id="status" style="margin-left:12px; color:#e5e7eb;"></div>
+        <div id="status" class="topbar-status"></div>
 
-        <div id="ultimaAtualizacao" style="margin-left:20px; color:#9ca3af;">
-    </div>
+        <div id="ultimaAtualizacao" class="topbar-ultima-atualizacao"></div>
 
     </div>
-    
 
     <div class="topbar-right">
 
-        <a href="/janelas/dashboard.html"
-           style="color:#60a5fa; text-decoration:none; font-weight:700;">
+        <a href="/janelas/dashboard.html" class="ativo">
             Por Responsáveis
         </a>
 
-        <a href="/janelas/paineis-cargas.html"
-           style="color:#e5e7eb; text-decoration:none; font-weight:700;">
+        <a href="/janelas/paineis-cargas.html">
             Por Cargas
         </a>
 
-        <a href="/janelas/paineis-cargas-2.html"
-           style="color:#e5e7eb; text-decoration:none; font-weight:700;">
+        <a href="/janelas/paineis-cargas-2.html">
             Por Parceiros
         </a>
 
-        <a href="/janelas/sankey.html"
-           style="color:#e5e7eb; text-decoration:none; font-weight:700;">
+        <a href="/janelas/sankey.html">
             Fluxo (Sankey)
         </a>
 
@@ -419,113 +58,101 @@ body{
 
 </div>
 
-<div class="container">
+<div class="dashboard-container">
 
-    <!-- PAINEL ESQUERDO -->
+    <div class="dashboard-painel">
 
-    <div class="painel">
-
-        <div class="titulo">
+        <div class="dashboard-titulo">
             Evolução de Cargas por Semana e Programador
         </div>
 
+        <div class="legenda-topo">
 
-<div class="legenda-topo">
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#f97316"></div>
+                Negociado
+            </div>
 
-    <div class="legenda-item">
-        <div class="legenda-cor" style="background:#f97316"></div>
-        Negociado
-    </div>
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#dc2626"></div>
+                Planejamento
+            </div>
 
-    <div class="legenda-item">
-        <div class="legenda-cor" style="background:#dc2626"></div>
-        Planejamento
-    </div>
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#2563eb"></div>
+                Programado
+            </div>
 
-    <div class="legenda-item">
-        <div class="legenda-cor" style="background:#2563eb"></div>
-        Programado
-    </div>
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#e7ad30"></div>
+                Fechamento Fiscal
+            </div>
 
-    <div class="legenda-item">
-        <div class="legenda-cor" style="background:#e7ad30"></div>
-        Fechamento Fiscal
-    </div>
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#16a34a"></div>
+                Verificação
+            </div>
 
-    <div class="legenda-item">
-       <div class="legenda-cor" style="background:#16a34a"></div>
-       Verificação
-    </div>
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#9333ea"></div>
+                Doc. Pendentes
+            </div>
 
-    <div class="legenda-item">
-        <div class="legenda-cor" style="background:#9333ea"></div>
-        Doc. Pendentes
-    </div>
+        </div>
 
-</div>
-
-        <div class="conteudo">
-
+        <div class="dashboard-conteudo">
             <div id="listaPipeline"></div>
-
-           
         </div>
 
     </div>
 
-    <!-- PAINEL DIREITO -->
+    <div class="dashboard-painel">
 
-    <div class="painel">
-
-        <div class="titulo">
+        <div class="dashboard-titulo">
             Evolução das cargas por dia da Semana
         </div>
 
         <div class="legenda-topo">
 
-    <div class="legenda-item">
-        <div class="legenda-cor" style="background:#f97316"></div>
-        Negociado
-    </div>
-
-    <div class="legenda-item">
-        <div class="legenda-cor" style="background:#dc2626"></div>
-        Planejamento
-    </div>
-
-    <div class="legenda-item">
-        <div class="legenda-cor" style="background:#2563eb"></div>
-        Programado
-    </div>
-
-    <div class="legenda-item">
-        <div class="legenda-cor" style="background:#e7ad30"></div>
-        Fechamento Fiscal
-    </div>
-
-    <div class="legenda-item">
-        <div class="legenda-cor" style="background:#16a34a"></div>
-        Verificação
-    </div>
-
-    <div class="legenda-item">
-        <div class="legenda-cor" style="background:#9333ea"></div>
-        Doc. Pendentes
-    </div>
-
-    <div class="legenda-item">
-        <div class="legenda-cor" style="background:#e87bf7"></div>
-        Pagamento
-    </div>
-
-</div>
-
-        <div class="conteudo">
-
-            <div class="vazio">
-                Em construção
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#f97316"></div>
+                Negociado
             </div>
 
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#dc2626"></div>
+                Planejamento
+            </div>
+
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#2563eb"></div>
+                Programado
+            </div>
+
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#e7ad30"></div>
+                Fechamento Fiscal
+            </div>
+
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#16a34a"></div>
+                Verificação
+            </div>
+
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#9333ea"></div>
+                Doc. Pendentes
+            </div>
+
+            <div class="legenda-item">
+                <div class="legenda-cor" style="background:#e87bf7"></div>
+                Pagamento
+            </div>
+
+        </div>
+
+        <div class="dashboard-conteudo">
+            <div class="vazio">Em construção</div>
         </div>
 
     </div>
@@ -533,640 +160,8 @@ body{
 </div>
 
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-
-<script>
-
-
-const socket = io("https://api-production-6670.up.railway.app");
-
-socket.on("ultimaAtualizacaoPipefy", (data) => {
-
-    localStorage.setItem(
-        "ultimaAtualizacaoPipefy",
-        data.data
-    );
-
-    mostrarUltimaAtualizacao();
-});
-
-
-const token = localStorage.getItem("token");
-
-function voltarInicio(){
-    window.location.href = "/janelas/inicial.html";
-}
-
-function salvarDestinoEIrLogin(){
-
-    localStorage.setItem(
-        "paginaDestino",
-        window.location.pathname + window.location.search
-    );
-
-    window.location.href = "login.html";
-
-}
-
-function logout(){
-
-    localStorage.clear();
-
-    sessionStorage.clear();
-
-    document.cookie.split(";").forEach(c => {
-
-        document.cookie =
-            c.replace(/^ +/, "")
-             .replace(
-                /=.*/,
-                "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/"
-             );
-
-    });
-
-    window.location.href = "login.html";
-
-}
-
-if(!token){
-    salvarDestinoEIrLogin();
-}
-
-const CORES = {
-    "01-Negociado":"#f97316",
-    "02-Planejamento":"#dc2626",
-    "03-Programado":"#2563eb",
-    "04-Fechamento Fiscal":"#e7ad30",
-    "05-Verificação":"#16a34a",
-    "06-Doc. Pendentes":"#9333ea",
-    "07-Pagamento":"#e87bf7"
-};
-
-const FOTOS = {
-    "Adelar Schuh":
-        "imagens/usuarios/adelar.jpeg",
-
-    "Enário dos Santos":
-        "imagens/usuarios/enario.jpeg",
-
-    "Rafael de Lima":
-        "imagens/usuarios/rafael.jpeg",
-
-    "Vânia Riva":
-        "imagens/usuarios/vania.jpg"
-};
-
-async function carregarPipeline(){
-
-    const token = localStorage.getItem("token");
-
-    if(!token){
-        alert("Sessão expirada. Faça login novamente.");
-        return;
-    }
-
-    try{
-
-        const resposta = await fetch("/dashboard/pipeline", {
-            headers:{
-                Authorization:`Bearer ${token}`
-            }
-        });
-
-        // 🔴 importante: checar 401 antes de tudo
-        if(resposta.status === 401){
-
-    localStorage.clear();
-
-    document.cookie.split(";").forEach(cookie => {
-
-        const nome = cookie
-            .split("=")[0]
-            .trim();
-
-        document.cookie =
-            nome +
-            "=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
-
-    });
-
-    salvarDestinoEIrLogin();
-
-    return;
-}
-
-if(!resposta.ok){
-    throw new Error(
-        `Erro HTTP ${resposta.status}`
-    );
-}
-
-        const dados = await resposta.json();
-        
-        console.log("Total registros:", dados.length);
-console.table(dados.slice(0,50));
-
-montarPipeline(dados);
-montarPainelDireito(dados);
-
-    }catch(erro){
-        console.error(erro);
-    }
-}
-
-
-function mostrarUltimaAtualizacao(){
-
-    const campo = document.getElementById("ultimaAtualizacao");
-
-    if(!campo){
-        return;
-    }
-
-
-    const ultima = localStorage.getItem("ultimaAtualizacaoPipefy");
-
-
-    if(ultima){
-
-        campo.innerHTML =
-        `🕒 Última atualização: ${ultima}`;
-
-    }else{
-
-        campo.innerHTML =
-        "🕒 Ainda não atualizado";
-
-    }
-
-}
-
-
-async function atualizarCargasPipefy(){
-    const status = document.getElementById("status");
-
-    if (status) {
-        status.innerHTML = "Gerando relatório no Pipefy...";
-    }
-
-    try{
-        const resposta = await fetch("/importar-cargas-relatorio", {
-            method:"POST",
-            headers:{
-                Authorization:`Bearer ${localStorage.getItem("token")}`
-            }
-        });
-
-        const dados = await resposta.json();
-
-        if(dados.sucesso){
-
-           const agora = new Date();
-
-           const dataHora =
-              new Date().toLocaleDateString("pt-BR") +
-                 " " +
-              new Date().toLocaleTimeString("pt-BR");
-
-        if (status) {
-
-    status.innerHTML =
-    `✅ ${dados.importados} cargas importadas`;
-
-}
-
-mostrarUltimaAtualizacao();
-
-                setTimeout(() => {
-                location.reload();
-            }, 1500);
-
-         
-
-        } else {
-
-            if (status) {
-                status.innerHTML = `❌ ${dados.erro}`;
-            }
-        }
-
-    }catch(err){
-        console.error(err);
-
-        if (status) {
-            status.innerHTML = "❌ Erro ao atualizar cargas.";
-        }
-    }
-}
-
-
-
-function montarPipeline(linhas){
-
-    const responsaveis = {};
-
-    linhas.forEach(item => {
-
-    if(item.semana && item.semana.includes("2025")){
-        return;
-    }
-
-    const fasesPainelEsquerdo = [
-        "01-Negociado",
-        "02-Planejamento",
-        "03-Programado",
-        "04-Fechamento Fiscal",
-        "05-Verificação",
-        "06-Doc. Pendentes"
-    ];
-
-    if(!fasesPainelEsquerdo.includes(item.fase)){
-        return;
-    }
-
-    const nome = item.responsavel_dashboard;
-
-    if(!responsaveis[nome]){
-        responsaveis[nome] = {};
-    }
-
-    if(!responsaveis[nome][item.semana]){
-        responsaveis[nome][item.semana] = {
-            fases:{}
-        };
-    }
-
-    if(
-    !responsaveis[nome][item.semana]
-        .fases[item.fase]
-    ){
-    responsaveis[nome][item.semana]
-        .fases[item.fase] = 0;
-    }
-
-    responsaveis[nome][item.semana]
-     .fases[item.fase] +=
-     Number(item.quantidade);
-
-    });
-
-    const container =
-        document.getElementById("listaPipeline");
-
-    container.innerHTML = "";
-
-    Object.entries(responsaveis)
-        .forEach(([nome,semanas])=>{
-
-        let htmlSemanas = "";
-
-        Object.entries(semanas)
-            .sort((a,b)=> b[0].localeCompare(a[0]))
-            .forEach(([semana,dados])=>{
-
-            const total =
-               Object.values(dados.fases || {})
-               .reduce((a,b)=>a+b,0);
-
-            let barra = "";
-
-            Object.entries(dados.fases)
-                .sort((a,b)=> a[0].localeCompare(b[0]))
-                .forEach(([fase,qtd])=>{
-
-                const largura =
-                    (qtd / total) * 100;
-
-                barra += `
-                    <div
-                        class="fase"
-                        style="
-                            width:${largura}%;
-                            background-color:${CORES[fase]};
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            color:white;
-                            font-size:16px;
-                            font-weight:bold;
-                            min-width:28px;
-                        "
-                        title="${fase}: ${qtd}"
-                    >
-                        ${qtd}
-                    </div>
-                `;
-            });
-
-            htmlSemanas += `
-                <div class="linha-semana">
-
-                    <div class="semana">
-                        ${semana}
-                    </div>
-
-                    <div class="pipeline-barra">
-                        ${barra}
-                    </div>
-
-                    <div class="total">
-                        ${total}
-                    </div>
-
-                </div>
-            `;
-
-        });
-
-        container.innerHTML += `
-
-           <div class="grupo-responsavel">
-
-               <div class="info-responsavel">
-
-                <img
-                  class="foto-usuario"
-                  src="${FOTOS[nome]}"
-                  alt="${nome}"
-                >
-
-                <div class="nome-responsavel">
-                 ${nome}
-              </div>
-
-            </div>
-
-            <div class="lista-semanas">
-
-           ${htmlSemanas}
-
-        </div>
-
-      </div>
-
-`;
-
-    });
-
-}
-
-
-function montarPainelDireito(linhas){
-
-    const semanas = {};
-
-    linhas.forEach(item => {
-
-    const semana = item.semana;
-    const diaRaw = item.etiquetas || item.dia || "";
-    const fase = item.fase;
-    const qtd = Number(item.quantidade || 0);
-
-    const diaLower = diaRaw.toString().trim().toLowerCase();
-
-    // ignora lixo
-    if (
-        !semana ||
-        semana.includes("2025") ||
-        diaLower.includes("semana sem data definida")
-    ) {
-        return;
-    }
-
-    // extrai dia antes da vírgula
-    let dia = diaLower.split(",")[0].trim();
-
-    // normalização básica
-    dia = dia
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace("-feira", "")
-        .replace("feira", "")
-        .trim();
-
-    if (dia.includes("sem data definida")) {
-    dia = "sem definição";
-}
-
-    if (!semanas[semana]) {
-        semanas[semana] = {
-            _semDia: {} // 👈 fallback para quem não tem dia
-        };
-    }
-
-    // 🚨 CASO 1: tem dia
-    if (dia && dia !== semana) {
-
-        if (!semanas[semana][dia]) {
-            semanas[semana][dia] = { fases: {} };
-        }
-
-        if (!semanas[semana][dia].fases[fase]) {
-            semanas[semana][dia].fases[fase] = 0;
-        }
-
-        semanas[semana][dia].fases[fase] += qtd;
-
-    }
-    // 🚨 CASO 2: só semana (sem dia)
-    else {
-
-        if (!semanas[semana]._semDia.fases) {
-            semanas[semana]._semDia.fases = {};
-        }
-
-        if (!semanas[semana]._semDia.fases[fase]) {
-            semanas[semana]._semDia.fases[fase] = 0;
-        }
-
-        semanas[semana]._semDia.fases[fase] += qtd;
-    }
-});
-
-    const diasOrdem = [
-           "domingo",
-           "segunda",
-           "terca",
-           "quarta",
-           "quinta",
-           "sexta",
-           "sabado",
-           "sem definição"
-        ];
-
-    const container = document
-        .querySelectorAll(".painel")[1]
-        .querySelector(".conteudo");
-
-    let html = "";
-
-    Object.entries(semanas)
-    .sort((a,b) => b[0].localeCompare(a[0]))
-    .forEach(([semana,dias]) => {
-
-    let linhasDias = "";
-
-    diasOrdem.forEach(dia => {
-
-        const dadosDia = dias[dia];
-
-        if(!dadosDia){
-            return;
-        }
-
-           const fases = dadosDia.fases;
-
-            const total = Object.values(fases)
-                .reduce((a,b) => a + b, 0);
-
-            let barra = "";
-
-            Object.entries(fases)
-                .sort((a,b)=> a[0].localeCompare(b[0]))
-                .forEach(([fase,qtd]) => {
-
-                const largura = (qtd / total) * 100;
-
-                barra += `
-                    <div class="fase" style="
-                        width:${largura}%;
-                        background-color:${
-                           fase === "01-Negociado" ? "#f97316" :
-                           fase === "02-Planejamento" ? "#dc2626" :
-                           fase === "03-Programado" ? "#2563eb" :
-                           fase === "04-Fechamento Fiscal" ? "#e7ad30" :
-                           fase === "05-Verificação" ? "#16a34a" :
-                           fase === "06-Doc. Pendentes" ? "#9333ea" :
-                           fase === "07-Pagamento" ? "#c026d3" :
-                           "#6b7280"
-                        };
-                        height:100%;
-                        display:flex;
-                        align-items:center;
-                        justify-content:center;
-                        color:white;
-                        font-size:16px;
-                        font-weight:bold;
-                    ">
-                        ${qtd}
-                    </div>
-                `;
-            });
-
-            linhasDias += `
-                <div class="linha-semana">
-
-                    <div class="semana">
-                        ${dia}
-                    </div>
-
-                    <div class="pipeline-barra">
-                        ${barra}
-                    </div>
-
-                    <div class="total">
-                        ${total}
-                    </div>
-
-                </div>
-            `;
-        });
-
-        // NOVO BLOCO
-        if(
-            dias._semDia &&
-            dias._semDia.fases &&
-            Object.keys(dias._semDia.fases).length
-        ){
-
-            const fases = dias._semDia.fases;
-
-            const total = Object.values(fases)
-                .reduce((a,b) => a + b, 0);
-
-            let barra = "";
-
-            Object.entries(fases)
-                .sort((a,b)=> a[0].localeCompare(b[0]))
-                .forEach(([fase,qtd]) => {
-
-                const largura = (qtd / total) * 100;
-
-                barra += `
-                    <div class="fase" style="
-                        width:${largura}%;
-                        background-color:${
-                           fase === "01-Negociado" ? "#f97316" :
-                           fase === "02-Planejamento" ? "#dc2626" :
-                           fase === "03-Programado" ? "#2563eb" :
-                           fase === "04-Fechamento Fiscal" ? "#e7ad30" :
-                           fase === "05-Verificação" ? "#16a34a" :
-                           fase === "06-Doc. Pendentes" ? "#9333ea" :
-                           fase === "07-Pagamento" ? "#c026d3" :
-                           "#6b7280"
-                        };
-                        height:100%;
-                        display:flex;
-                        align-items:center;
-                        justify-content:center;
-                        color:white;
-                        font-size:11px;
-                        font-weight:bold;
-                    ">
-                        ${qtd}
-                    </div>
-                `;
-            });
-
-            linhasDias += `
-                <div class="linha-semana">
-
-                    <div class="semana">
-                        Sem dia
-                    </div>
-
-                    <div class="pipeline-barra">
-                        ${barra}
-                    </div>
-
-                    <div class="total">
-                        ${total}
-                    </div>
-
-                </div>
-            `;
-        }
-
-        html += `
-            <div class="grupo-responsavel">
-
-                <div class="info-responsavel">
-                    <div class="nome-responsavel">
-                        Semana ${semana}
-                    </div>
-                </div>
-
-                <div class="lista-semanas">
-                    ${linhasDias}
-                </div>
-
-            </div>
-        `;
-    });
-
-    container.innerHTML = html;
-}
-
-window.addEventListener("load", () => {
-    carregarPipeline();
-    mostrarUltimaAtualizacao();
-
-    socket.on("connect", () => {
-        console.log("socket conectado");
-    });
-});
-
-</script>
+<script src="/janelas/js/ui-comum.js"></script>
+<script src="/janelas/js/dashboard.js"></script>
 
 </body>
 </html>

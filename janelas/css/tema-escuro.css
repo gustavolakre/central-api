@@ -1,0 +1,21 @@
+:root {
+    --bg-escuro: #111827;
+    --surface-escuro: #1f2937;
+    --surface-top: #0f172a;
+    --border-escuro: #374151;
+    --text-escuro: #f9fafb;
+    --text-muted-escuro: #e5e7eb;
+    --text-subtle-escuro: #9ca3af;
+    --text-label-escuro: #d1d5db;
+    --accent-link: #60a5fa;
+    --btn-voltar-bg: #1f2937;
+    --btn-voltar-hover: #374151;
+    --btn-pipefy: #ea580c;
+    --btn-pipefy-hover: #fb923c;
+}
+
+body.tema-escuro {
+    background: var(--bg-escuro);
+    color: var(--text-escuro);
+    overflow-x: hidden;
+}
