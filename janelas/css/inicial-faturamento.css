@@ -105,15 +105,15 @@ body.tema-inicial-faturamento {
 /* CORES BOTÕES */
 
 .tema-inicial-faturamento .btnAtualizar {
-    background: #ea580c;
-    color: white;
-    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.30);
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+    color: #1e293b;
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.30);
 }
 
 .tema-inicial-faturamento .btnPipefy {
-    background: #2563eb;
+    background: linear-gradient(135deg, #fb923c, #ea580c);
     color: white;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.30);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.30);
 }
 
 /* SEÇÃO DE IMPORTAÇÕES */
@@ -289,7 +289,7 @@ body.tema-inicial-faturamento {
 }
 
 .tema-inicial-faturamento .fretes {
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(135deg, #e53935, #c62828);
 }
 
 .tema-inicial-faturamento .financeiro {
