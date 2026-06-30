@@ -1,0 +1,257 @@
+.linha {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.box {
+    background: var(--surface-escuro, #1f2937);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .30);
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
+}
+
+h2 {
+    color: var(--text-escuro, #f9fafb);
+    margin: 20px;
+    font-size: 28px;
+}
+
+h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: var(--text-escuro, #f9fafb);
+}
+
+canvas {
+    width: 100% !important;
+    height: 90vh !important;
+}
+
+/* ==========================
+   FILTROS PADRÃO
+========================== */
+
+.filtros-topo {
+    display: grid;
+    grid-template-columns:
+        320px   /* Fornecedor */
+        320px   /* Comprador */
+        120px   /* UF Fornecedor */
+        120px   /* UF Comprador */
+        120px   /* Tipo */
+        120px   /* Frete */
+        1fr;    /* Perfis ocupa todo o restante */
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: start;
+}
+
+.perfil-box {
+    width: 100%;
+}
+
+@media (max-width: 1400px) {
+    .filtros-topo {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 800px) {
+    .filtros-topo {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.filtro-box {
+    width: auto;
+}
+
+.filtro-titulo {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text-escuro, #f9fafb);
+}
+
+.filtro-lista {
+    display: flex;
+    flex-direction: column;
+}
+
+.filtro-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    margin-bottom: 3px;
+}
+
+.filtro-item label {
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text-muted-escuro, #e5e7eb);
+}
+
+.filtro-pesquisa {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    margin-bottom: 6px;
+    border: 1px solid var(--border-escuro, #374151);
+    border-radius: 6px;
+    background: var(--surface-escuro, #1f2937);
+    color: var(--text-escuro, #f9fafb);
+}
+
+.filtro-pesquisa::placeholder {
+    color: var(--text-subtle-escuro, #9ca3af);
+}
+
+.lista-checkbox {
+    height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* ==========================
+   FILTROS / GRÁFICOS
+========================== */
+
+.btn-limpar-filtro {
+    width: 100%;
+    margin-bottom: 6px;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 6px;
+    background: var(--border-escuro, #374151);
+    color: var(--text-escuro, #f9fafb);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-limpar-filtro:hover {
+    background: #4b5563;
+}
+
+.filtro-periodo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0 25px;
+    flex-wrap: wrap;
+}
+
+.titulo-periodo {
+    color: var(--text-escuro, #f9fafb);
+    font-weight: bold;
+}
+
+.btnPeriodo {
+    background: var(--border-escuro, #374151);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btnPeriodo:hover {
+    background: #4b5563;
+}
+
+.btnPeriodo.ativo {
+    background: #2563eb;
+}
+
+.lista-perfis {
+    height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 8px;
+    background: var(--surface-escuro, #1f2937);
+    border: 1px solid var(--border-escuro, #374151);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.perfil-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    min-width: 140px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text-muted-escuro, #e5e7eb);
+    background: var(--border-escuro, #374151);
+    white-space: nowrap;
+    transition: .2s;
+}
+
+.perfil-item:hover {
+    background: var(--border-escuro, #374151);
+}
+
+#btnSalvarPerfil,
+#btnExcluirPerfil {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+#btnSalvarPerfil {
+    background: #2563eb;
+    color: white;
+}
+
+#btnExcluirPerfil {
+    background: #dc2626;
+    color: white;
+}
+
+#perfilGrafico {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.perfil-item.ativo {
+    background: #2563eb;
+    color: white;
+    font-weight: 700;
+}
+
+.box-grafico {
+    margin-top: 20px;
+    background: var(--surface-escuro, #1f2937);
+    border: 2px solid var(--border-escuro, #374151);
+    border-radius: 14px;
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, .35),
+        inset 0 1px 0 rgba(255, 255, 255, .03);
+    padding: 20px;
+}
+
+.titulo-grafico {
+    margin: 0 0 15px 0;
+    color: var(--text-escuro, #f9fafb);
+    font-family: "Inter Tight", sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: .3px;
+}

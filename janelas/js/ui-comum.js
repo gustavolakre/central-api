@@ -143,12 +143,13 @@
     }
 
     function initSocketUltimaAtualizacao(
-        socket
+        socket,
+        aoAtualizar
     ) {
 
         socket.on(
             "ultimaAtualizacaoPipefy",
-            (data) => {
+            async (data) => {
 
                 localStorage.setItem(
                     "ultimaAtualizacaoPipefy",
@@ -156,6 +157,10 @@
                 );
 
                 mostrarUltimaAtualizacao();
+
+                if (typeof aoAtualizar === "function") {
+                    await aoAtualizar(data);
+                }
             }
         );
     }
