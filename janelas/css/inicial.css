@@ -28,17 +28,24 @@ body.tema-inicial {
     border-bottom: 1px solid #e2e8f0;
 }
 
-.tema-inicial .cabecalho-icone {
-    width: 56px;
-    height: 56px;
+.tema-inicial .cabecalho-logo {
+    width: 72px;
+    height: 72px;
     flex-shrink: 0;
     border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    padding: 8px;
+}
+
+.tema-inicial .cabecalho-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .tema-inicial h1 {
@@ -130,7 +137,7 @@ body.tema-inicial {
 /* CORES CARDS */
 
 .tema-inicial .faturamento {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, #e53935, #c62828);
 }
 
 .tema-inicial .financeiro {
@@ -138,5 +145,5 @@ body.tema-inicial {
 }
 
 .tema-inicial .paineis {
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(135deg, #52525b, #27272a);
 }
