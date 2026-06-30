@@ -95,25 +95,40 @@ body.tema-inicial-faturamento {
 
 .tema-inicial-faturamento button:hover {
     transform: translateY(-1px);
-    filter: brightness(1.05);
 }
 
 .tema-inicial-faturamento button:active {
     transform: translateY(0);
 }
 
-/* CORES BOTÕES */
+/* BOTÕES DE IMPORTAÇÃO */
 
-.tema-inicial-faturamento .btnAtualizar {
-    background: linear-gradient(135deg, #fbbf24, #d97706);
-    color: #1e293b;
-    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.30);
+.tema-inicial-faturamento .blocoControles .btnAtualizar {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+    box-shadow: 0 1px 2px rgba(146, 64, 14, 0.06);
 }
 
-.tema-inicial-faturamento .btnPipefy {
-    background: linear-gradient(135deg, #fb923c, #ea580c);
-    color: white;
-    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.30);
+.tema-inicial-faturamento .blocoControles .btnAtualizar:hover {
+    background: #fef3c7;
+    border-color: #fbbf24;
+    color: #78350f;
+    box-shadow: 0 3px 8px rgba(251, 191, 36, 0.18);
+}
+
+.tema-inicial-faturamento .blocoControles .btnPipefy {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fdba74;
+    box-shadow: 0 1px 2px rgba(194, 65, 12, 0.06);
+}
+
+.tema-inicial-faturamento .blocoControles .btnPipefy:hover {
+    background: #ffedd5;
+    border-color: #fb923c;
+    color: #9a3412;
+    box-shadow: 0 3px 8px rgba(249, 115, 22, 0.18);
 }
 
 /* SEÇÃO DE IMPORTAÇÕES */
@@ -179,6 +194,8 @@ body.tema-inicial-faturamento {
     align-items: center;
     justify-content: center;
     text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 }
 
 /* INFO DE ÚLTIMA ATUALIZAÇÃO */
