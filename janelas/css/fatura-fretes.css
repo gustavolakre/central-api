@@ -44,6 +44,29 @@ h2 {
     border: 1px solid #ddd;
 }
 
+.painel-transportadoras {
+    min-width: 340px;
+}
+
+.painel-transportadoras .agrupar-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+#listaTransportadoras {
+    width: 320px;
+    max-height: 220px;
+    overflow: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 10px;
+    background: white;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
 #listaSemanas {
     width: 220px;
     max-height: 220px;

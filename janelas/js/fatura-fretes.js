@@ -631,7 +631,7 @@ async function carregarFretesBanco(){
 
         html += `
 
-        <label style="display:block;">
+        <label style="display:block; white-space:nowrap;">
 
             <input
                 type="checkbox"
