@@ -496,6 +496,9 @@ function renderizar(){
 
     const nosUnicos = new Set();
 
+    // total por nó (para exibir abaixo do nome)
+    const totalPorNo = {};
+
     chaves.forEach(chave => {
 
         const [o, dst] = chave.split(" ||| ");
@@ -504,6 +507,12 @@ function renderizar(){
 
         nosUnicos.add(o);
         nosUnicos.add(destinoLabel);
+
+        totalPorNo[o] =
+            (totalPorNo[o] || 0) + fluxos[chave];
+
+        totalPorNo[destinoLabel] =
+            (totalPorNo[destinoLabel] || 0) + fluxos[chave];
 
         data.addRow([
             o,
@@ -550,7 +559,63 @@ function renderizar(){
         elSankey
     );
 
+    // após desenhar, injeta a quantidade
+    // numa segunda linha abaixo do nome do nó
+    google.visualization.events.addListener(
+        chart,
+        "ready",
+        () => adicionarQuantidadeNosNos(totalPorNo)
+    );
+
     chart.draw(data, options);
+
+}
+
+
+function adicionarQuantidadeNosNos(totalPorNo){
+
+    const svg =
+        document.querySelector("#sankey svg");
+
+    if(!svg){
+        return;
+    }
+
+    svg.querySelectorAll("text").forEach(texto => {
+
+        const label = texto.textContent;
+
+        if(
+            totalPorNo[label] == null ||
+            texto.dataset.qtdAdicionada
+        ){
+            return;
+        }
+
+        const x = texto.getAttribute("x");
+
+        const tspan = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "tspan"
+        );
+
+        if(x !== null){
+            tspan.setAttribute("x", x);
+        }
+
+        tspan.setAttribute("dy", "1.35em");
+        tspan.setAttribute("fill", "#9ca3af");
+        tspan.setAttribute("font-size", "12");
+        tspan.setAttribute("font-weight", "600");
+
+        tspan.textContent =
+            totalPorNo[label].toLocaleString("pt-BR");
+
+        texto.appendChild(tspan);
+
+        texto.dataset.qtdAdicionada = "1";
+
+    });
 
 }
 
