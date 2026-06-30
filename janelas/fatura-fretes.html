@@ -22,14 +22,14 @@
 
     <div class="topbar topbar--full-bleed">
         <div class="topbar-grupo">
-            <button class="btn-voltar" onclick="voltarInicioFaturamento()">⬅ Voltar ao início</button>
+            <button class="btn-voltar" onclick="voltarInicioFaturamento()">&#11013; Voltar ao in&iacute;cio</button>
             <span class="topbar-titulo">Faturamento de Fretes</span>
         </div>
         <div class="topbar-grupo">
-            <button onclick="salvarSessao()">Salvar Sessão</button>
+            <button onclick="salvarSessao()">Salvar Sess&atilde;o</button>
             <button onclick="salvarESair()">Salvar e sair</button>
-            <button onclick="abrirSessao()">Abrir Sessão (arquivo)</button>
-            <button onclick="novaSessao()">Nova Sessão</button>
+            <button onclick="abrirSessao()">Abrir Sess&atilde;o (arquivo)</button>
+            <button onclick="novaSessao()">Nova Sess&atilde;o</button>
         </div>
     </div>
 
@@ -40,7 +40,7 @@
         <div class="painel">
 
             <div class="campoTopo">
-                <b>Discriminação / Período</b><br>
+                <b>Discrimina&ccedil;&atilde;o / Per&iacute;odo</b><br>
                 <input
                     type="text"
                     id="discriminacao"
@@ -49,7 +49,7 @@
             </div>
 
             <div class="campoTopo">
-                <b>Produto / Serviço</b><br>
+                <b>Produto / Servi&ccedil;o</b><br>
                 <input type="text" id="produtoServico" value="FRETES">
             </div>
 
@@ -174,14 +174,14 @@
                     <th>#</th>
                     <th><input type="checkbox"></th>
                     <th>Parceiro</th>
-                    <th>Valor Líquido</th>
+                    <th>Valor L&iacute;quido</th>
                     <th>Data de Vencimento</th>
                     <th>Nota Fiscal</th>
-                    <th>Produto / Serviço</th>
-                    <th>Discriminação</th>
+                    <th>Produto / Servi&ccedil;o</th>
+                    <th>Discrimina&ccedil;&atilde;o</th>
                     <th>Conta Gerencial</th>
                     <th>Status</th>
-                    <th>Ações</th>
+                    <th>A&ccedil;&otilde;es</th>
                 </tr>
             </thead>
             <tbody id="tbodyFaturado"></tbody>
@@ -191,17 +191,17 @@
 
     <div style="background:white; border:1px solid #ccc; border-radius:8px; padding:20px;">
 
-        <h3>LISTA COM PENDÊNCIA</h3>
+        <h3>LISTA COM PEND&Ecirc;NCIA</h3>
 
         <table border="1" width="100%" style="border-collapse:collapse; text-align:center;">
             <thead>
                 <tr>
-                    <th>Código</th>
+                    <th>C&oacute;digo</th>
                     <th>Parceiro</th>
                     <th>CTe</th>
                     <th>NF</th>
                     <th>Valor</th>
-                    <th>NF Serviço</th>
+                    <th>NF Servi&ccedil;o</th>
                 </tr>
             </thead>
             <tbody id="tbodyPendencia"></tbody>

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Relatório para Faturamento</title>
+    <title>Relat&oacute;rio para Faturamento</title>
     <link rel="stylesheet" href="/janelas/css/base.css">
     <link rel="stylesheet" href="/janelas/css/tema-claro-faturamento.css">
     <link rel="stylesheet" href="/janelas/css/topbar-faturamento.css">
@@ -18,32 +18,32 @@
 <body class="tema-claro-faturamento tema-claro-faturamento--pad-25">
     <div class="topbar topbar--full-bleed">
         <div class="topbar-grupo">
-            <button class="btn-voltar" onclick="voltarInicioFaturamento()">? Voltar ao início</button>
+            <button class="btn-voltar" onclick="voltarInicioFaturamento()">&#11013; Voltar ao in&iacute;cio</button>
             <span class="topbar-titulo">Faturamento de Cargas</span>
         </div>
         <div class="topbar-grupo">
-            <button onclick="salvarSessao()">Salvar Sessão</button>
+            <button onclick="salvarSessao()">Salvar Sess&atilde;o</button>
             <button onclick="salvarESair()">Salvar e sair</button>
-            <button onclick="abrirSessao()">Abrir Sessão (arquivo)</button>
-            <button onclick="novaSessao()">Nova Sessão</button>
+            <button onclick="abrirSessao()">Abrir Sess&atilde;o (arquivo)</button>
+            <button onclick="novaSessao()">Nova Sess&atilde;o</button>
         </div>
     </div>
 
     <div style="display:flex; justify-content:center; align-items:flex-start; gap:60px; flex-wrap:wrap; margin-bottom:10px;">
         <div>
             <div class="campoTopo">
-                <b>Tipo de Operação</b><br>
+                <b>Tipo de Opera&ccedil;&atilde;o</b><br>
                 <select id="tipoOperacao">
                     <option value="comprador">Comprador</option>
                     <option value="fornecedor">Fornecedor</option>
                 </select>
             </div>
             <div class="campoTopo">
-                <b>Discriminação / Período</b><br>
+                <b>Discrimina&ccedil;&atilde;o / Per&iacute;odo</b><br>
                 <input type="text" id="discriminacao">
             </div>
             <div class="campoTopo">
-                <b>Produto / Serviço</b><br>
+                <b>Produto / Servi&ccedil;o</b><br>
                 <input type="text" id="produtoServico">
             </div>
             <div class="campoTopo">
@@ -69,7 +69,7 @@
 
         <div>
             <label style="display:block; margin-bottom:10px;">
-                <input type="checkbox" onchange="toggleAgrupamentoSelecionados(this.checked)"> Agrupar selecionados em um único grupo
+                <input type="checkbox" onchange="toggleAgrupamentoSelecionados(this.checked)"> Agrupar selecionados em um &uacute;nico grupo
             </label>
             <b>Compradores</b><br>
             <button class="btn-lista" onclick="selecionarTodosCompradores()">Selecionar todos</button>
