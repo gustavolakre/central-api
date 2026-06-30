@@ -30,7 +30,7 @@
         btn.onclick = logout;
 
         // Procura uma topbar para colocar o botão no final dela.
-        const grupos = document.querySelectorAll(".topbar .topbar-grupo");
+        const grupos = document.querySelectorAll(".topbar:not(.topbar--listas) .topbar-grupo");
 
         const containerTopbar =
             document.querySelector(".topbar-right") ||

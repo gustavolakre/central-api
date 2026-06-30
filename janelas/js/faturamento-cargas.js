@@ -1160,9 +1160,9 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
 
                         z-index:9999;
                         ">
-                        <div class="topbar" style="margin:-20px -20px 20px -20px; border-radius:0;">
+                        <div class="topbar topbar--listas" style="margin:-20px -20px 20px -20px; border-radius:0;">
                         <div class="topbar-grupo">
-                        <button class="btn-voltar" onclick="fecharFaturados()">Fechar</button>
+                        <button class="btn-voltar" onclick="fecharFaturados()">Voltar</button>
                         <button onclick="gerarExcel()" onmouseover="this.style.background='#1b5e20'" onmouseout="this.style.background='#2e7d32'" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'" style="background:#2e7d32; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; transition:all 0.15s ease;">
                             GERAR PLANILHA EXCEL
                         </button>
