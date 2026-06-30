@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>DRE - Demonstração do Resultado</title>
+
+<link rel="stylesheet" href="/janelas/financeiro-theme.css">
+
+<style>
+
+    .dre-filtro {
+        max-width: 320px;
+    }
+
+    .dre-resultado {
+        border-left: 6px solid var(--primary);
+    }
+
+    .dre-resultado .valor {
+        font-size: 34px;
+    }
+
+    .dre-bloco {
+        background: var(--surface);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        margin-bottom: 18px;
+        overflow: hidden;
+    }
+
+    .dre-bloco-cabecalho {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .dre-bloco-cabecalho.receitas {
+        background: #16a34a;
+    }
+
+    .dre-bloco-cabecalho.despesas {
+        background: #dc2626;
+    }
+
+    .dre-bloco-total {
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .dre-linha {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 11px 20px 11px 36px;
+        border-top: 1px solid var(--border);
+        font-size: 15px;
+        color: var(--text);
+    }
+
+    .dre-linha:nth-child(even) {
+        background: var(--surface-alt);
+    }
+
+    .dre-linha-conta {
+        font-weight: 600;
+    }
+
+    .dre-linha-valor {
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .dre-bloco-cabecalho.receitas + .dre-linha {
+        border-top: none;
+    }
+
+    .dre-vazio {
+        padding: 16px 20px;
+        color: var(--text-muted);
+        font-size: 14px;
+        font-style: italic;
+    }
+
+    .resultado-positivo {
+        color: #16a34a;
+    }
+
+    .resultado-negativo {
+        color: #dc2626;
+    }
+
+</style>
+
+<script src="/janelas/auth.js"></script>
+<script src="/janelas/logout.js"></script>
+
+</head>
+
+<body>
+
+<div class="topbar-dashboard">
+
+    <div class="topbar-left">
+
+        <button class="btnVoltar" onclick="voltarInicio()">
+            ⬅ Voltar ao início
+        </button>
+
+        <span class="topbar-modulo">Financeiro</span>
+
+    </div>
+
+    <div class="topbar-right">
+
+        <a href="/janelas/lancamentos-de-contas.html">
+            Lançamento de Contas
+        </a>
+
+        <a href="/janelas/fluxo-de-caixa.html">
+            Fluxo de Caixa
+        </a>
+
+        <a href="/janelas/relatorios-financeiros.html">
+            Relatórios
+        </a>
+
+        <a href="/janelas/dre.html" class="ativo">
+            DRE
+        </a>
+
+    </div>
+
+</div>
+
+<div class="page-content">
+
+<h2 class="pagina-titulo">
+    DRE - Demonstração do Resultado
+</h2>
+
+
+<!-- =========================================
+     FILTRO
+========================================= -->
+
+<div class="filtros">
+
+    <div class="campo dre-filtro">
+
+        <label>Mês Gerencial</label>
+
+        <select id="filtroMes" onchange="renderizarDRE()">
+            <option value="">Todos os meses</option>
+        </select>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     RESULTADO
+========================================= -->
+
+<div class="cards">
+
+    <div class="card dre-resultado">
+
+        <h3>Resultado do Exercício</h3>
+
+        <div class="valor" id="resultadoExercicio">
+            R$ 0,00
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     RECEITAS
+========================================= -->
+
+<div class="dre-bloco">
+
+    <div class="dre-bloco-cabecalho receitas">
+        <span>Receitas</span>
+        <span class="dre-bloco-total" id="totalReceitas">
+            R$ 0,00
+        </span>
+    </div>
+
+    <div id="listaReceitas"></div>
+
+</div>
+
+
+<!-- =========================================
+     DESPESAS
+========================================= -->
+
+<div class="dre-bloco">
+
+    <div class="dre-bloco-cabecalho despesas">
+        <span>Despesas</span>
+        <span class="dre-bloco-total" id="totalDespesas">
+            R$ 0,00
+        </span>
+    </div>
+
+    <div id="listaDespesas"></div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+const API =
+    "https://api-production-6670.up.railway.app"
+
+
+let lancamentos = []
+
+
+function authHeaders(extra = {}){
+
+    return {
+        ...extra,
+        Authorization:
+            `Bearer ${localStorage.getItem("token")}`
+    }
+
+}
+
+
+function voltarInicio(){
+
+    window.location.href =
+        "/janelas/inicial.html"
+
+}
+
+
+function formatarMoeda(valor){
+
+    return Number(valor || 0).toLocaleString(
+        "pt-BR",
+        {
+            style: "currency",
+            currency: "BRL"
+        }
+    )
+}
+
+
+function rotuloMes(chave){
+
+    // chave: "2026-06"
+    const [ano, mes] = chave.split("-")
+
+    const nomes = [
+        "Janeiro","Fevereiro","Março","Abril",
+        "Maio","Junho","Julho","Agosto",
+        "Setembro","Outubro","Novembro","Dezembro"
+    ]
+
+    const indice = Number(mes) - 1
+
+    const nome = nomes[indice] || mes
+
+    return `${nome} / ${ano}`
+
+}
+
+
+function mesDoLancamento(item){
+
+    if(!item.data_emissao){
+        return ""
+    }
+
+    // data_emissao -> "2026-06-30T..." => "2026-06"
+    return item.data_emissao
+        .split("T")[0]
+        .slice(0, 7)
+
+}
+
+
+async function carregarLancamentos(){
+
+    try{
+
+        const response = await fetch(
+            `${API}/financeiro`,
+            {
+                headers: authHeaders()
+            }
+        )
+
+        lancamentos = await response.json()
+
+        montarFiltroMeses()
+
+        renderizarDRE()
+
+    }
+
+    catch(err){
+
+        console.error(err)
+
+    }
+
+}
+
+
+function montarFiltroMeses(){
+
+    const meses = [
+        ...new Set(
+            lancamentos
+                .map(mesDoLancamento)
+                .filter(Boolean)
+        )
+    ]
+
+    // mais recentes primeiro
+    meses.sort().reverse()
+
+    const select =
+        document.getElementById("filtroMes")
+
+    let html = `<option value="">Todos os meses</option>`
+
+    meses.forEach(mes => {
+
+        html += `
+            <option value="${mes}">
+                ${rotuloMes(mes)}
+            </option>
+        `
+
+    })
+
+    select.innerHTML = html
+
+    // pré-seleciona o mês mais recente, se houver
+    if(meses.length){
+        select.value = meses[0]
+    }
+
+}
+
+
+function renderizarDRE(){
+
+    const mesSelecionado =
+        document.getElementById("filtroMes").value
+
+
+    const filtrados = lancamentos.filter(item => {
+
+        if(!mesSelecionado){
+            return true
+        }
+
+        return mesDoLancamento(item) === mesSelecionado
+
+    })
+
+
+    /* ============================
+       AGRUPAMENTO POR CONTA
+    ============================ */
+
+    const receitas = {}
+    const despesas = {}
+
+    let totalReceitas = 0
+    let totalDespesas = 0
+
+
+    filtrados.forEach(item => {
+
+        const valor = Number(item.valor || 0)
+
+        const conta =
+            (item.conta_gerencial || "").trim()
+            || "Sem conta gerencial"
+
+
+        if(item.tipo === "RECEBER"){
+
+            receitas[conta] =
+                (receitas[conta] || 0) + valor
+
+            totalReceitas += valor
+
+        }
+        else if(item.tipo === "PAGAR"){
+
+            despesas[conta] =
+                (despesas[conta] || 0) + valor
+
+            totalDespesas += valor
+
+        }
+
+    })
+
+
+    const resultado =
+        totalReceitas - totalDespesas
+
+
+    /* ============================
+       RESULTADO
+    ============================ */
+
+    const elResultado =
+        document.getElementById("resultadoExercicio")
+
+    elResultado.textContent =
+        formatarMoeda(resultado)
+
+    elResultado.className =
+        "valor " +
+        (resultado >= 0
+            ? "resultado-positivo"
+            : "resultado-negativo")
+
+
+    /* ============================
+       RECEITAS
+    ============================ */
+
+    document.getElementById("totalReceitas")
+        .textContent = formatarMoeda(totalReceitas)
+
+    document.getElementById("listaReceitas")
+        .innerHTML = montarLinhas(receitas)
+
+
+    /* ============================
+       DESPESAS
+    ============================ */
+
+    document.getElementById("totalDespesas")
+        .textContent = formatarMoeda(totalDespesas)
+
+    document.getElementById("listaDespesas")
+        .innerHTML = montarLinhas(despesas)
+
+}
+
+
+function montarLinhas(grupo){
+
+    const contas = Object.keys(grupo)
+
+    if(!contas.length){
+
+        return `
+            <div class="dre-vazio">
+                Nenhum lançamento no período.
+            </div>
+        `
+
+    }
+
+    // maior valor primeiro
+    contas.sort((a, b) => grupo[b] - grupo[a])
+
+    return contas.map(conta => `
+
+        <div class="dre-linha">
+            <span class="dre-linha-conta">
+                ${conta}
+            </span>
+            <span class="dre-linha-valor">
+                ${formatarMoeda(grupo[conta])}
+            </span>
+        </div>
+
+    `).join("")
+
+}
+
+
+carregarLancamentos()
+
+</script>
+
+</body>
+
+</html>
