@@ -236,6 +236,13 @@
     </div>
 
     <div class="filtro-campo">
+        <label>Destino</label>
+        <select id="filtroDestino" onchange="renderizar()">
+            <option value="">Todos</option>
+        </select>
+    </div>
+
+    <div class="filtro-campo">
         <label>Semana</label>
         <select id="filtroSemana" onchange="aoMudarSemana()">
             <option value="">Todas as semanas</option>
@@ -316,6 +323,7 @@ async function carregarDados(){
 
         montarFiltroSemana();
         montarFiltroOrigem();
+        montarFiltroDestino();
         renderizar();
 
     }catch(err){
@@ -373,6 +381,9 @@ function montarFiltroOrigem(){
 
     const linhas = linhasFiltradasPorSemana();
 
+    const valorAtual =
+        document.getElementById("filtroOrigem").value;
+
     const origens = [
         ...new Set(
             linhas
@@ -394,17 +405,62 @@ function montarFiltroOrigem(){
 
     select.innerHTML = html;
 
+    // mantém a seleção se ainda existir
+    if(origens.includes(valorAtual)){
+        select.value = valorAtual;
+    }
+
+}
+
+
+function montarFiltroDestino(){
+
+    const { destino } = camposDoTipo();
+
+    const linhas = linhasFiltradasPorSemana();
+
+    const valorAtual =
+        document.getElementById("filtroDestino").value;
+
+    const destinos = [
+        ...new Set(
+            linhas
+                .map(d => (d[destino] || "").trim())
+                .filter(Boolean)
+        )
+    ];
+
+    destinos.sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+    const select =
+        document.getElementById("filtroDestino");
+
+    let html = `<option value="">Todos</option>`;
+
+    destinos.forEach(d => {
+        html += `<option value="${d}">${d}</option>`;
+    });
+
+    select.innerHTML = html;
+
+    // mantém a seleção se ainda existir
+    if(destinos.includes(valorAtual)){
+        select.value = valorAtual;
+    }
+
 }
 
 
 function aoMudarTipo(){
     montarFiltroOrigem();
+    montarFiltroDestino();
     renderizar();
 }
 
 
 function aoMudarSemana(){
     montarFiltroOrigem();
+    montarFiltroDestino();
     renderizar();
 }
 
@@ -423,6 +479,9 @@ function renderizar(){
 
     const origemSelecionada =
         document.getElementById("filtroOrigem").value;
+
+    const destinoSelecionado =
+        document.getElementById("filtroDestino").value;
 
     const linhas = linhasFiltradasPorSemana();
 
@@ -443,6 +502,13 @@ function renderizar(){
         if(
             origemSelecionada &&
             o !== origemSelecionada
+        ){
+            return;
+        }
+
+        if(
+            destinoSelecionado &&
+            dst !== destinoSelecionado
         ){
             return;
         }
