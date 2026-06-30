@@ -26,11 +26,80 @@ body{
 
     color:#1e293b;
 
-    padding:14px 18px;
-
     height:100vh;
 
     overflow:hidden;
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+
+
+/* TOPBAR */
+
+.topbar-dashboard{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:10px 20px;
+
+    background:#0f172a;
+
+    flex-shrink:0;
+}
+
+.topbar-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#f9fafb;
+}
+
+.topbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.btn-voltar{
+
+    background:#1f2937;
+
+    color:#e5e7eb;
+
+    border:1px solid #374151;
+
+    padding:9px 16px;
+
+    border-radius:8px;
+
+    font-weight:600;
+
+    font-size:14px;
+
+    cursor:pointer;
+}
+
+.btn-voltar:hover{
+
+    background:#374151;
 }
 
 
@@ -39,11 +108,17 @@ body{
 
 .container{
 
+    width:100%;
+
     max-width:1400px;
 
     margin:0 auto;
 
-    height:100%;
+    padding:16px 20px;
+
+    flex:1;
+
+    min-height:0;
 
     display:flex;
 
@@ -576,25 +651,23 @@ button:active{
 
 <body>
 
-<div class="container">
+<div class="topbar-dashboard">
 
-    <div class="cabecalho">
+    <div class="topbar-left">
 
-        <div class="cabecalho-icone">📊</div>
+        <button class="btn-voltar" onclick="voltarInicio()">
+            ⬅ Voltar ao início
+        </button>
 
-        <div>
-
-            <h1>Faturamento</h1>
-
-            <div class="subtitulo">
-                Importações e módulos do sistema
-            </div>
-
-        </div>
+        <span>Faturamento</span>
 
     </div>
 
+    <div class="topbar-right"></div>
 
+</div>
+
+<div class="container">
 
     <div id="avisoSessoes" class="avisoSessoes"></div>
 
@@ -1032,6 +1105,14 @@ async function atualizarCargasPipefy(){
         status.innerHTML =
             "❌ Erro ao atualizar cargas.";
     }
+}
+
+
+function voltarInicio(){
+
+    window.location.href =
+        "/janelas/inicial.html";
+
 }
 
 
