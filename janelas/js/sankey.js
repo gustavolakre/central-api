@@ -353,30 +353,52 @@ function configAgregacaoGrafico() {
     if (modo === "estado") {
         return {
             selOrigem: valoresMarcados("filtroUFFornecedor"),
-            selDestino: valoresMarcados("filtroUFComprador"),
-            prefixoOrigem: "UFs fornecedor selecionadas",
-            prefixoDestino: "UFs comprador selecionadas"
+            selDestino: valoresMarcados("filtroUFComprador")
         };
     }
 
     return {
         selOrigem: valoresMarcados("filtroFornecedor"),
-        selDestino: valoresMarcados("filtroComprador"),
-        prefixoOrigem: "Fornecedores selecionados",
-        prefixoDestino: "Compradores selecionados"
+        selDestino: valoresMarcados("filtroComprador")
     };
 }
 
-function rotuloAgregado(valor, selecionados, prefixo) {
+function formatarNomesSelecionados(selecionados) {
+
+    const ordenados = [...selecionados]
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+    const maxVisiveis = 4;
+
+    if (ordenados.length <= maxVisiveis) {
+        return ordenados.join(" · ");
+    }
+
+    return (
+        ordenados.slice(0, maxVisiveis).join(" · ") +
+        ` · +${ordenados.length - maxVisiveis}`
+    );
+}
+
+function rotuloAgregado(valor, selecionados) {
 
     if (
         selecionados.length > 1 &&
         selecionados.includes(valor)
     ) {
-        return `${prefixo} (${selecionados.length})`;
+        return formatarNomesSelecionados(selecionados);
     }
 
     return valor;
+}
+
+function contarLinhasLabel(label) {
+
+    return String(label)
+        .replace(/\u200B/g, "")
+        .split("\n")
+        .length;
 }
 
 
@@ -401,14 +423,12 @@ function renderizar() {
 
         let o = rotuloAgregado(
             (d[origem] || "").trim(),
-            ag.selOrigem,
-            ag.prefixoOrigem
+            ag.selOrigem
         );
 
         let dst = rotuloAgregado(
             (d[destino] || "").trim(),
-            ag.selDestino,
-            ag.prefixoDestino
+            ag.selDestino
         );
 
         if (!o || !dst) {
@@ -478,24 +498,43 @@ function renderizar() {
 
     });
 
+    let maxLinhasNo = 1;
+
+    Object.keys(totalPorNo).forEach(chave => {
+        maxLinhasNo = Math.max(
+            maxLinhasNo,
+            contarLinhasLabel(chave)
+        );
+    });
+
+    const alturaPorNo = 24 + maxLinhasNo * 14;
+    const paddingExtra = 56;
+
     const altura = Math.max(
-        420,
-        nosUnicos.size * 26
+        480,
+        nosUnicos.size * alturaPorNo + paddingExtra
     );
 
     elSankey.style.height = altura + "px";
+    elSankey.style.minHeight = altura + "px";
 
     const options = {
+        chartArea: {
+            left: 12,
+            top: 16,
+            width: "92%",
+            height: "88%"
+        },
         sankey: {
             node: {
                 label: {
                     color: "#f9fafb",
                     fontName: "Segoe UI",
-                    fontSize: 14,
+                    fontSize: 13,
                     bold: true
                 },
-                labelPadding: 8,
-                nodePadding: 18,
+                labelPadding: 10,
+                nodePadding: 20,
                 width: 14
             },
             link: {
@@ -558,6 +597,25 @@ function observarSankey(totalPorNo) {
 
 }
 
+function buscarTotalNo(label, totalPorNo) {
+
+    if (totalPorNo[label] != null) {
+        return totalPorNo[label];
+    }
+
+    const semZwsp = label.replace(/\u200B/g, "");
+
+    if (totalPorNo[semZwsp] != null) {
+        return totalPorNo[semZwsp];
+    }
+
+    if (totalPorNo[semZwsp + "\u200B"] != null) {
+        return totalPorNo[semZwsp + "\u200B"];
+    }
+
+    return null;
+}
+
 function adicionarQuantidadeNosNos(totalPorNo) {
 
     const svg =
@@ -567,18 +625,24 @@ function adicionarQuantidadeNosNos(totalPorNo) {
         return;
     }
 
+    svg.style.overflow = "visible";
+
     svg.querySelectorAll("text").forEach(texto => {
 
-        const label = texto.textContent;
+        if (texto.dataset.qtdAdicionada) {
+            return;
+        }
 
-        if (
-            totalPorNo[label] == null ||
-            texto.dataset.qtdAdicionada
-        ) {
+        const label = texto.textContent;
+        const total = buscarTotalNo(label, totalPorNo);
+
+        if (total == null) {
             return;
         }
 
         const x = texto.getAttribute("x");
+        const linhas = contarLinhasLabel(label);
+        const dyExtra = 1.1 + (linhas - 1) * 0.55;
 
         const tspan = document.createElementNS(
             "http://www.w3.org/2000/svg",
@@ -589,13 +653,13 @@ function adicionarQuantidadeNosNos(totalPorNo) {
             tspan.setAttribute("x", x);
         }
 
-        tspan.setAttribute("dy", "1.35em");
+        tspan.setAttribute("dy", `${dyExtra}em`);
         tspan.setAttribute("fill", "#9ca3af");
         tspan.setAttribute("font-size", "12");
         tspan.setAttribute("font-weight", "600");
 
         tspan.textContent =
-            totalPorNo[label].toLocaleString("pt-BR");
+            total.toLocaleString("pt-BR");
 
         texto.appendChild(tspan);
 

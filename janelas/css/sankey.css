@@ -160,13 +160,19 @@ h2 {
 .box-grafico {
     background: var(--surface-escuro, #1f2937);
     margin: 0 20px 30px 20px;
-    padding: 20px;
+    padding: 20px 20px 48px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, .30);
+    overflow: visible;
 }
 
 #sankey {
     width: 100%;
+    overflow: visible;
+}
+
+#sankey svg {
+    overflow: visible !important;
 }
 
 .vazio {
