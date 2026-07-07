@@ -23,7 +23,7 @@
     <div class="topbar-left">
 
         <button class="btn-voltar" onclick="voltarInicio()">
-            ⬅ Voltar ao início
+            &#11013; Voltar ao in&iacute;cio
         </button>
 
         <button class="btnAtualizarPipefy" onclick="atualizarCargasPipefy()">
@@ -39,7 +39,7 @@
     <div class="topbar-right">
 
         <a href="/janelas/dashboard.html">
-            Por Responsáveis
+            Por Respons&aacute;veis
         </a>
 
         <a href="/janelas/paineis-cargas.html">
@@ -60,40 +60,55 @@
 
 <h2>Fluxo de Cargas (Sankey)</h2>
 
-<div class="filtros">
+<div class="filtros-box">
 
-    <div class="filtro-campo">
-        <label>Tipo de Interação</label>
-        <select id="filtroTipo" onchange="aoMudarTipo()">
-            <option value="estado">Por Estado (UF)</option>
-            <option value="parceiro">Por Parceiro</option>
-        </select>
+    <div class="filtros-topo">
+
+        <div class="filtro-box modo-fluxo">
+            <div class="filtro-titulo">Tipo de Intera&ccedil;&atilde;o</div>
+            <select id="filtroModoFluxo" onchange="aoMudarModoFluxo()">
+                <option value="estado">Por Estado (UF)</option>
+                <option value="parceiro">Por Parceiro</option>
+            </select>
+        </div>
+
+        <div class="filtro-box fornecedor">
+            <div class="filtro-titulo">Fornecedor</div>
+            <div id="filtroFornecedor"></div>
+        </div>
+
+        <div class="filtro-box comprador">
+            <div class="filtro-titulo">Comprador</div>
+            <div id="filtroComprador"></div>
+        </div>
+
+        <div class="filtro-box uf-fornecedor">
+            <div class="filtro-titulo">UF Fornecedor</div>
+            <div id="filtroUFFornecedor"></div>
+        </div>
+
+        <div class="filtro-box uf-comprador">
+            <div class="filtro-titulo">UF Comprador</div>
+            <div id="filtroUFComprador"></div>
+        </div>
+
+        <div class="filtro-box tipo">
+            <div class="filtro-titulo">Tipo Su&iacute;no</div>
+            <div id="filtroTipoSuino"></div>
+        </div>
+
+        <div class="filtro-box frete">
+            <div class="filtro-titulo">Frete</div>
+            <div id="filtroFrete"></div>
+        </div>
+
     </div>
 
-    <div class="filtro-campo">
-        <label>Origem</label>
-        <select id="filtroOrigem" onchange="renderizar()">
-            <option value="">Todas</option>
-        </select>
-    </div>
-
-    <div class="filtro-campo">
-        <label>Destino</label>
-        <select id="filtroDestino" onchange="renderizar()">
-            <option value="">Todos</option>
-        </select>
-    </div>
-
-    <div class="filtro-campo">
-        <label>Semana</label>
-        <select id="filtroSemana" onchange="aoMudarSemana()">
-            <option value="">Todas as semanas</option>
-        </select>
-    </div>
+    <div id="filtroPeriodo" class="filtro-periodo"></div>
 
     <div class="resumo">
         <div>Total exibido</div>
-        <b id="totalExibido">0</b> suínos
+        <b id="totalExibido">0</b> su&iacute;nos
     </div>
 
 </div>

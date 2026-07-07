@@ -4,11 +4,7 @@ h2 {
     font-size: 26px;
 }
 
-.filtros {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    align-items: flex-end;
+.filtros-box {
     background: var(--surface-escuro, #1f2937);
     margin: 0 20px 20px 20px;
     padding: 18px 20px;
@@ -16,38 +12,141 @@ h2 {
     box-shadow: 0 4px 12px rgba(0, 0, 0, .30);
 }
 
-.filtro-campo {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+.filtros-topo {
+    display: grid;
+    grid-template-columns:
+        180px
+        280px
+        280px
+        120px
+        120px
+        120px
+        120px;
+    gap: 15px;
+    margin-bottom: 12px;
+    align-items: start;
 }
 
-.filtro-campo label {
-    font-size: 12px;
+@media (max-width: 1400px) {
+    .filtros-topo {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 800px) {
+    .filtros-topo {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.filtro-titulo {
+    font-size: 13px;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .4px;
-    color: var(--text-subtle-escuro, #9ca3af);
+    margin-bottom: 6px;
+    color: var(--text-escuro, #f9fafb);
 }
 
-.filtro-campo select {
+.filtro-box.modo-fluxo select {
+    width: 100%;
+    box-sizing: border-box;
     background: var(--bg-escuro, #111827);
     color: var(--text-escuro, #f9fafb);
     border: 1px solid var(--border-escuro, #374151);
     border-radius: 8px;
     padding: 9px 12px;
-    font-size: 14px;
-    min-width: 220px;
+    font-size: 13px;
     cursor: pointer;
 }
 
-.filtro-campo select:focus {
+.filtro-box.modo-fluxo select:focus {
     outline: none;
     border-color: var(--accent-link, #60a5fa);
 }
 
+.filtro-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    margin-bottom: 3px;
+}
+
+.filtro-item label {
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text-muted-escuro, #e5e7eb);
+}
+
+.filtro-pesquisa {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    margin-bottom: 6px;
+    border: 1px solid var(--border-escuro, #374151);
+    border-radius: 6px;
+    background: var(--bg-escuro, #111827);
+    color: var(--text-escuro, #f9fafb);
+}
+
+.filtro-pesquisa::placeholder {
+    color: var(--text-subtle-escuro, #9ca3af);
+}
+
+.lista-checkbox {
+    height: 180px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.btn-limpar-filtro {
+    width: 100%;
+    margin-bottom: 6px;
+    padding: 6px 8px;
+    border: none;
+    border-radius: 6px;
+    background: var(--border-escuro, #374151);
+    color: var(--text-escuro, #f9fafb);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-limpar-filtro:hover {
+    background: #4b5563;
+}
+
+.filtro-periodo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0 16px;
+    flex-wrap: wrap;
+}
+
+.titulo-periodo {
+    color: var(--text-escuro, #f9fafb);
+    font-weight: bold;
+}
+
+.btnPeriodo {
+    background: var(--border-escuro, #374151);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btnPeriodo:hover {
+    background: #4b5563;
+}
+
+.btnPeriodo.ativo {
+    background: #2563eb;
+}
+
 .resumo {
-    margin-left: auto;
     text-align: right;
     color: var(--text-muted-escuro, #e5e7eb);
     font-size: 14px;
