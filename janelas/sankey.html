@@ -62,14 +62,19 @@
 
 <div class="filtros-box">
 
+    <div class="filtros-modo">
+        <div class="filtro-titulo">Tipo de Intera&ccedil;&atilde;o</div>
+        <select id="filtroModoFluxo" onchange="aoMudarModoFluxo()">
+            <option value="estado">Por Estado (UF)</option>
+            <option value="parceiro">Por Parceiro</option>
+        </select>
+    </div>
+
     <div class="filtros-topo">
 
-        <div class="filtro-box modo-fluxo">
-            <div class="filtro-titulo">Tipo de Intera&ccedil;&atilde;o</div>
-            <select id="filtroModoFluxo" onchange="aoMudarModoFluxo()">
-                <option value="estado">Por Estado (UF)</option>
-                <option value="parceiro">Por Parceiro</option>
-            </select>
+        <div class="filtro-box semana">
+            <div class="filtro-titulo">Semana</div>
+            <div id="filtroSemanas"></div>
         </div>
 
         <div class="filtro-box fornecedor">
@@ -103,8 +108,6 @@
         </div>
 
     </div>
-
-    <div id="filtroPeriodo" class="filtro-periodo"></div>
 
     <div class="resumo">
         <div>Total exibido</div>

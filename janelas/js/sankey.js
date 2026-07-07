@@ -2,7 +2,6 @@ const API = UIComum.API;
 
 let dadosGlobais = [];
 let googlePronto = false;
-let periodoSelecionado = "52";
 
 
 google.charts.load("current", { packages: ["sankey"] });
@@ -124,43 +123,29 @@ function escaparHtml(texto) {
         .replace(/"/g, "&quot;");
 }
 
-function criarFiltroPeriodo(anos) {
+function ordenarSemanas(semanas) {
 
-    const div = document.getElementById("filtroPeriodo");
+    return semanas.sort((a, b) => {
+        const [anoA, semanaA] = a.split("/").map(Number);
+        const [anoB, semanaB] = b.split("/").map(Number);
 
-    div.innerHTML = `
-        <span class="titulo-periodo">Per&iacute;odo:</span>
-        <button type="button" class="btnPeriodo ativo" data-periodo="52">
-            &Uacute;ltimas 52 semanas
-        </button>
-        <button type="button" class="btnPeriodo" data-periodo="all">
-            Todo per&iacute;odo
-        </button>
-        ${anos.map(ano => `
-            <button type="button" class="btnPeriodo" data-periodo="${ano}">
-                ${ano}
-            </button>
-        `).join("")}
-    `;
+        if (anoA !== anoB) {
+            return anoB - anoA;
+        }
 
-    document.querySelectorAll(".btnPeriodo").forEach(btn => {
-
-        btn.onclick = () => {
-
-            document
-                .querySelectorAll(".btnPeriodo")
-                .forEach(b => b.classList.remove("ativo"));
-
-            btn.classList.add("ativo");
-
-            periodoSelecionado = btn.dataset.periodo;
-
-            renderizar();
-        };
+        return semanaB - semanaA;
     });
 }
 
 function criarFiltrosCheckbox() {
+
+    criarFiltro(
+        "filtroSemanas",
+        ordenarSemanas(
+            [...new Set(dadosGlobais.map(x => x.semana))]
+                .filter(Boolean)
+        )
+    );
 
     criarFiltro(
         "filtroFornecedor",
@@ -194,14 +179,6 @@ function criarFiltrosCheckbox() {
         "filtroTipoSuino",
         [...new Set(dadosGlobais.map(x => x.tipo_suino))]
     );
-
-    const anos = [
-        ...new Set(
-            dadosGlobais.map(x => x.semana.substring(0, 4))
-        )
-    ].sort().reverse();
-
-    criarFiltroPeriodo(anos);
 
     document
         .querySelectorAll(".filtros-box input[type=checkbox]")
@@ -277,32 +254,11 @@ function aplicarFiltros(lista) {
         valoresMarcados("filtroFrete")
     );
 
-    const is52 = periodoSelecionado === "52";
-    const isAll = periodoSelecionado === "all";
-
-    if (is52) {
-
-        const semanasOrdenadas = [...new Set(dados.map(x => x.semana))]
-            .sort((a, b) => {
-                const [anoA, semanaA] = a.split("/").map(Number);
-                const [anoB, semanaB] = b.split("/").map(Number);
-
-                if (anoA !== anoB) return anoA - anoB;
-                return semanaA - semanaB;
-            });
-
-        const ultimas52 = semanasOrdenadas.slice(-52);
-
-        dados = dados.filter(item =>
-            ultimas52.includes(item.semana)
-        );
-
-    } else if (!isAll) {
-
-        dados = dados.filter(item =>
-            item.semana.startsWith(periodoSelecionado)
-        );
-    }
+    dados = filtrar(
+        dados,
+        "semana",
+        valoresMarcados("filtroSemanas")
+    );
 
     return dados;
 }

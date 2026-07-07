@@ -12,10 +12,32 @@ h2 {
     box-shadow: 0 4px 12px rgba(0, 0, 0, .30);
 }
 
+.filtros-modo {
+    margin-bottom: 14px;
+    max-width: 300px;
+}
+
+.filtros-modo select {
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--bg-escuro, #111827);
+    color: var(--text-escuro, #f9fafb);
+    border: 1px solid var(--border-escuro, #374151);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.filtros-modo select:focus {
+    outline: none;
+    border-color: var(--accent-link, #60a5fa);
+}
+
 .filtros-topo {
     display: grid;
     grid-template-columns:
-        180px
+        200px
         280px
         280px
         120px
@@ -46,21 +68,8 @@ h2 {
     color: var(--text-escuro, #f9fafb);
 }
 
-.filtro-box.modo-fluxo select {
-    width: 100%;
-    box-sizing: border-box;
-    background: var(--bg-escuro, #111827);
-    color: var(--text-escuro, #f9fafb);
-    border: 1px solid var(--border-escuro, #374151);
-    border-radius: 8px;
-    padding: 9px 12px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.filtro-box.modo-fluxo select:focus {
-    outline: none;
-    border-color: var(--accent-link, #60a5fa);
+.filtro-box.semana .lista-checkbox {
+    height: 180px;
 }
 
 .filtro-item {
@@ -113,37 +122,6 @@ h2 {
 
 .btn-limpar-filtro:hover {
     background: #4b5563;
-}
-
-.filtro-periodo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 12px 0 16px;
-    flex-wrap: wrap;
-}
-
-.titulo-periodo {
-    color: var(--text-escuro, #f9fafb);
-    font-weight: bold;
-}
-
-.btnPeriodo {
-    background: var(--border-escuro, #374151);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.btnPeriodo:hover {
-    background: #4b5563;
-}
-
-.btnPeriodo.ativo {
-    background: #2563eb;
 }
 
 .resumo {
