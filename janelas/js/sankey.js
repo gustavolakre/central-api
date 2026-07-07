@@ -341,6 +341,46 @@ function aoMudarModoFluxo() {
 
 
 /* ============================
+   AGREGAÇÃO NO GRÁFICO
+   (2+ selecionados no mesmo filtro → um nó)
+============================ */
+
+function configAgregacaoGrafico() {
+
+    const modo =
+        document.getElementById("filtroModoFluxo").value;
+
+    if (modo === "estado") {
+        return {
+            selOrigem: valoresMarcados("filtroUFFornecedor"),
+            selDestino: valoresMarcados("filtroUFComprador"),
+            prefixoOrigem: "UFs fornecedor selecionadas",
+            prefixoDestino: "UFs comprador selecionadas"
+        };
+    }
+
+    return {
+        selOrigem: valoresMarcados("filtroFornecedor"),
+        selDestino: valoresMarcados("filtroComprador"),
+        prefixoOrigem: "Fornecedores selecionados",
+        prefixoDestino: "Compradores selecionados"
+    };
+}
+
+function rotuloAgregado(valor, selecionados, prefixo) {
+
+    if (
+        selecionados.length > 1 &&
+        selecionados.includes(valor)
+    ) {
+        return `${prefixo} (${selecionados.length})`;
+    }
+
+    return valor;
+}
+
+
+/* ============================
    RENDERIZAR SANKEY
 ============================ */
 
@@ -352,14 +392,24 @@ function renderizar() {
 
     const { origem, destino } = camposDoTipo();
     const linhas = aplicarFiltros(dadosGlobais);
+    const ag = configAgregacaoGrafico();
 
     const fluxos = {};
     let totalExibido = 0;
 
     linhas.forEach(d => {
 
-        const o = (d[origem] || "").trim();
-        const dst = (d[destino] || "").trim();
+        let o = rotuloAgregado(
+            (d[origem] || "").trim(),
+            ag.selOrigem,
+            ag.prefixoOrigem
+        );
+
+        let dst = rotuloAgregado(
+            (d[destino] || "").trim(),
+            ag.selDestino,
+            ag.prefixoDestino
+        );
 
         if (!o || !dst) {
             return;
