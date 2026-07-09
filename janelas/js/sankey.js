@@ -146,11 +146,16 @@ function criarFiltrosCheckbox() {
 
     criarFiltro("filtroSemanas", semanasOrdenadas);
 
-    const ultimaSemana =
-        document.querySelector("#filtroSemanas input[type=checkbox]");
+    const ultimaSemanaCriada = semanasOrdenadas[0];
 
-    if (ultimaSemana) {
-        ultimaSemana.checked = true;
+    if (ultimaSemanaCriada) {
+        document
+            .querySelectorAll("#filtroSemanas input[type=checkbox]")
+            .forEach(cb => {
+                if (cb.value === ultimaSemanaCriada) {
+                    cb.checked = true;
+                }
+            });
     }
 
     criarFiltro(
