@@ -27,15 +27,23 @@ function numero(valor) {
     valor === ""
   ) return null;
 
-  const n = Number(
-    String(valor)
-      .replace(/\./g, "")
-      .replace(",", ".")
-  );
+  const str = String(valor).trim();
 
-  return Number.isNaN(n)
-    ? null
-    : n;
+  // caso brasileiro: 1.234,56
+  if (str.includes(",") && str.includes(".")) {
+    const n = Number(str.replace(/\./g, "").replace(",", "."));
+    return Number.isNaN(n) ? null : n;
+  }
+
+  // caso só vírgula: 18,5
+  if (str.includes(",")) {
+    const n = Number(str.replace(",", "."));
+    return Number.isNaN(n) ? null : n;
+  }
+
+  // caso já vem como 18.5 ou 2849.2 (export Pipefy com ponto decimal)
+  const n = Number(str);
+  return Number.isNaN(n) ? null : n;
 }
 
 function texto(valor) {
