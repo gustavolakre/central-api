@@ -139,13 +139,19 @@ function ordenarSemanas(semanas) {
 
 function criarFiltrosCheckbox() {
 
-    criarFiltro(
-        "filtroSemanas",
-        ordenarSemanas(
-            [...new Set(dadosGlobais.map(x => x.semana))]
-                .filter(Boolean)
-        )
+    const semanasOrdenadas = ordenarSemanas(
+        [...new Set(dadosGlobais.map(x => x.semana))]
+            .filter(Boolean)
     );
+
+    criarFiltro("filtroSemanas", semanasOrdenadas);
+
+    const ultimaSemana =
+        document.querySelector("#filtroSemanas input[type=checkbox]");
+
+    if (ultimaSemana) {
+        ultimaSemana.checked = true;
+    }
 
     criarFiltro(
         "filtroFornecedor",
