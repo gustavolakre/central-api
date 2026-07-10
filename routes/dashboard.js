@@ -34,6 +34,7 @@ FROM controle_cargas
 WHERE responsavel IN (
     'Adelar Schuh',
     'Enário dos Santos',
+    'Maicon Roberto',
     'Rafael de Lima',
     'Vânia Riva'
 )

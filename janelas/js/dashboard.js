@@ -15,6 +15,8 @@ const FOTOS = {
         "imagens/usuarios/adelar.jpeg",
     "Enário dos Santos":
         "imagens/usuarios/enario.jpeg",
+    "Maicon Roberto":
+        "imagens/usuarios/maicon.jpg",
     "Rafael de Lima":
         "imagens/usuarios/rafael.jpeg",
     "Vânia Riva":
