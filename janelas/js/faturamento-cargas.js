@@ -732,7 +732,7 @@ validarLogin();
                         for (let nf in r.nfs) {
                             partes.push(`${nf} - ${r.nfs[nf]}`)
                         }
-                        html += `<div class="linha" style="margin-top:10px; font-weight:bold;"> ${tipo}: ${r.total} (${partes.join(" / ")}) </div>`
+                        html += `<div class="linha" style="margin:0; line-height:1.25;"> ${tipo}: <b>${r.total}</b> (${partes.join(" / ")}) </div>`
                     }
                 } else if (visaoPorTipo) {
                     let resumo = {}
