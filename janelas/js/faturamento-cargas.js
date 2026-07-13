@@ -620,6 +620,7 @@ validarLogin();
                 let visaoResumida = estadoCampos[id]?.visaoResumida || false
                 let naoDescontarMortos = estadoCampos[id]?.naoDescontarMortos || false
                 let visaoPorTipo = estadoCampos[id]?.visaoPorTipo || false
+                let visaoSintetizada = estadoCampos[id]?.visaoSintetizada || false
                 html += `<div class="grupo" id="grupo_${id}">
                     <div style="display:grid; grid-template-columns: 180px 260px auto; align-items:center; gap:20px; margin-bottom:15px; font-size:14px;">
                         <div>
@@ -655,12 +656,15 @@ validarLogin();
                           </button>
                         </div>
                         </div>
-                        <div style="display:flex; align-items:center; gap:10px; height:32px;">
+                        <div style="display:flex; align-items:center; gap:10px; height:32px; flex-wrap:wrap;">
                             <label style="display:flex; align-items:center; gap:5px;">
                                 <input type="checkbox" ${visaoResumida ? "checked" : ""} onchange="toggleVisao('${id}', this.checked)"> Visão por Fornecedor
                             </label>
                             <label style="display:flex; align-items:center; gap:5px;">
                                 <input type="checkbox" ${visaoPorTipo ? "checked" : ""} onchange="toggleVisaoTipo('${id}', this.checked)"> Visão por Tipo de Suinos
+                            </label>
+                            <label style="display:flex; align-items:center; gap:5px;">
+                                <input type="checkbox" ${visaoSintetizada ? "checked" : ""} onchange="toggleVisaoSintetizada('${id}', this.checked)"> Visão sintetizada
                             </label>
                             <label style="display:flex; align-items:center; gap:5px;">
                                 <input type="checkbox" ${naoDescontarMortos ? "checked" : ""} onchange="toggleNaoMortos('${id}', this.checked)"> Não descontar mortos
@@ -701,7 +705,36 @@ validarLogin();
                 html += `</div>
                     <div class="disc">${textoDisc}</div>`
 
-                if (visaoPorTipo) {
+                if (visaoSintetizada) {
+                    let resumo = {}
+                    g.dados.forEach(d => {
+                        let tipo = d["Tipo Suíno"]
+                        let nf = d["N Nota de Venda"] || d["Nº Nota de Venda"] || d["Nota de Venda"] || "SEM NF"
+                        let qtd = Number(d["Quantidade"] || 0)
+                        let mortos = Number(d["Mortos em transporte"] || 0)
+                        let liquido = naoDescontarMortos ? qtd : (qtd - mortos)
+                        if (!resumo[tipo]) {
+                            resumo[tipo] = {
+                                nfs: {},
+                                total: 0
+                            }
+                        }
+                        if (!resumo[tipo].nfs[nf]) {
+                            resumo[tipo].nfs[nf] = 0
+                        }
+                        resumo[tipo].nfs[nf] += liquido
+                        resumo[tipo].total += liquido
+                    })
+
+                    for (let tipo in resumo) {
+                        let r = resumo[tipo]
+                        let partes = []
+                        for (let nf in r.nfs) {
+                            partes.push(`${nf} - ${r.nfs[nf]}`)
+                        }
+                        html += `<div class="linha" style="margin-top:10px; font-weight:bold;"> ${tipo}: ${r.total} (${partes.join(" / ")}) </div>`
+                    }
+                } else if (visaoPorTipo) {
                     let resumo = {}
                     g.dados.forEach(d => {
                         let tipo = d["Tipo Suíno"]
@@ -840,6 +873,7 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
                 novoEstado[id].venc = document.getElementById(`venc_${id}`)?.value || ""
                 novoEstado[id].visaoResumida = estadoCampos[id]?.visaoResumida || false
                 novoEstado[id].visaoPorTipo = estadoCampos[id]?.visaoPorTipo || false
+                novoEstado[id].visaoSintetizada = estadoCampos[id]?.visaoSintetizada || false
                 novoEstado[id].naoDescontarMortos = estadoCampos[id]?.naoDescontarMortos || false
                 novoEstado[id].precos = {}
                 for (let tipo of tiposSuino) {
@@ -1004,6 +1038,13 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
             capturarCampos()
             if (!estadoCampos[id]) estadoCampos[id] = {}
             estadoCampos[id].visaoPorTipo = valor
+            gerarRelatorio()
+        }
+
+        function toggleVisaoSintetizada(id, valor) {
+            capturarCampos()
+            if (!estadoCampos[id]) estadoCampos[id] = {}
+            estadoCampos[id].visaoSintetizada = valor
             gerarRelatorio()
         }
 
