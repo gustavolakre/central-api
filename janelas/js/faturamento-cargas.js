@@ -759,33 +759,40 @@ validarLogin();
                     }
                 } else if (visaoSintetizadaParceiro) {
                   let resumo = {}
-                      let totalQuantidade = 0
-                      g.dados.forEach(d => {
+                  let totalQuantidade = 0
+
+                     g.dados.forEach(d => {
+
                   let parceiro =
-                      tipoOperacao === "comprador"
-                         ? (d["Razão Social"] || d["Nome Usual"] || "SEM PARCEIRO")
-                         : (d["Razão Social"] || d["Nome Usual"] || "SEM PARCEIRO")
+                     tipoOperacao === "comprador"
+                     ? d["Fornecedor"]
+                     : d["Comprador"]
+
                   let nf =
-                      d["N Nota de Venda"] ||
-                      d["Nº Nota de Venda"] ||
-                      d["Nota de Venda"] ||
-                      "SEM NF"
+                     d["N Nota de Venda"] ||
+                     d["Nº Nota de Venda"] ||
+                     d["Nota de Venda"] ||
+                     "SEM NF"
+
                   let qtd =
-                      Number(d["Quantidade"] || 0)
+                     Number(d["Quantidade"] || 0)
+
                   let mortos =
-                      Number(d["Mortos em transporte"] || 0)
+                     Number(d["Mortos em transporte"] || 0)
+
                   let liquido =
-                      naoDescontarMortos
-                      ? qtd
-                      : (qtd - mortos)
+                     naoDescontarMortos
+                     ? qtd
+                     : (qtd - mortos)
+
                   if (!resumo[parceiro]) {
 
-                      resumo[parceiro] = {
-                      total: 0,
-                      nfs: {}
-                     }
+                     resumo[parceiro] = {
+                     total: 0,
+                     nfs: {}
+                    }
 
-                  }
+               }
                if (!resumo[parceiro].nfs[nf]) {
                    resumo[parceiro].nfs[nf] = 0
                   }
@@ -812,7 +819,7 @@ validarLogin();
 
             html += `
                 <div class="linha" style="margin:0; line-height:1.25;">
-                    ${parceiro}: <b>${resumo[parceiro].total}</b> (${partes.join(" / ")})
+                    ${parceiroExibicao} <b>${resumo[parceiro].total}</b> (${partes.join(" / ")})
                 </div>
             `
 
