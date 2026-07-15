@@ -1,0 +1,115 @@
+body{
+    margin:0;
+    background:#eceff3;
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+}
+
+.container{
+    width:98%;
+    margin:20px auto;
+}
+
+h1{
+    margin:0 0 20px;
+    color:#333;
+}
+
+.topo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.topo input{
+    width:80px;
+}
+
+button{
+    background:#1976d2;
+    color:#fff;
+    border:none;
+    border-radius:4px;
+    padding:8px 16px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#1565c0;
+}
+
+.tabela-wrapper{
+    background:white;
+    border-radius:6px;
+    overflow:auto;
+    max-height:70vh;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+
+table{
+    border-collapse:collapse;
+    width:100%;
+    min-width:1800px;
+}
+
+thead th{
+    position:sticky;
+    top:0;
+    background:#1976d2;
+    color:white;
+    z-index:10;
+}
+
+th,
+td{
+    border:1px solid #ddd;
+    padding:5px;
+    white-space:nowrap;
+}
+
+select,
+input{
+    width:100%;
+    height:32px;
+    box-sizing:border-box;
+    border:1px solid #bbb;
+    border-radius:3px;
+}
+
+td:nth-child(1){
+    width:45px;
+    text-align:center;
+}
+
+td:nth-child(6){
+    width:90px;
+}
+
+td:nth-child(7){
+    width:100px;
+}
+
+.rodape{
+    margin-top:20px;
+    display:flex;
+    justify-content:flex-end;
+}
+
+.copiar{
+
+    margin-left:5px;
+
+    padding:1px 6px;
+
+    font-size:11px;
+
+    background:#0d47a1;
+
+}
+
+.copiar:hover{
+
+    background:#08306b;
+
+}

@@ -63,6 +63,9 @@ const criarCardsReceber =
 
 const perfisRouter = require("./routes/perfis-graficos");
 
+const criarCardsCargas =
+ require("./routes/criarCardsCargas");
+
 const http = require("http");
 const { Server } = require("socket.io");
 
@@ -224,6 +227,12 @@ app.use(
 
 
 app.use("/paineis-cargas-2/perfis", perfisRouter);
+
+app.use(
+ "/criar-cards-cargas",
+ autenticar,
+ criarCardsCargas
+);
 
 app.get("/", (req, res) => {
   res.redirect("/login");
