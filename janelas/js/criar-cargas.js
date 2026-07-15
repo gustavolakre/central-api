@@ -1,19 +1,85 @@
 document
 .getElementById("btnGerar")
-.addEventListener("click", gerarLinhas);
+.addEventListener(
+    "click",
+    gerarLinhas
+);
 
 
-let parceiros = [];
+let parceirosBase = [];
+
+
+
+function authHeaders(extra = {}){
+
+    return {
+
+        ...extra,
+
+        Authorization:
+        `Bearer ${localStorage.getItem("token")}`
+
+    };
+
+}
+
+
+
+
+async function carregarParceiros(){
+
+    try{
+
+
+        const resposta =
+        await fetch(
+            "/buscarParceiros",
+            {
+                headers:
+                authHeaders()
+            }
+        );
+
+
+        parceirosBase =
+        await resposta.json();
+
+
+
+        console.log(
+            "PARCEIROS:",
+            parceirosBase.length
+        );
+
+
+    }
+    catch(err){
+
+        console.error(
+            "Erro ao carregar parceiros",
+            err
+        );
+
+    }
+
+}
+
+
+
 
 
 
 const FRETES = [
+
     "Granja",
     "Posto"
+
 ];
 
 
+
 const TIPOS_SUINO = [
+
     "Padrão",
     "Plus",
     "Prime",
@@ -22,98 +88,110 @@ const TIPOS_SUINO = [
     "Marrã",
     "Leitoa",
     "Leitão"
+
 ];
 
 
+
 const PRAZOS = [
+
     ...Array.from(
-        {length:30},
+        {
+            length:30
+        },
         (_,i)=>String(i+1)
     ),
+
     "32",
     "35",
     "40",
     "45",
     "Antecipado"
+
 ];
+
 
 
 const DIAS = [
-    "00-Sem data definida",
-    "01-Domingo",
-    "02-Segunda",
-    "03-Terça",
-    "04-Quarta",
-    "05-Quinta",
-    "06-Sexta",
-    "07-Sábado"
+
+"00-Sem data definida",
+"01-Domingo",
+"02-Segunda",
+"03-Terça",
+"04-Quarta",
+"05-Quinta",
+"06-Sexta",
+"07-Sábado"
+
 ];
+
 
 
 const SEMANAS=[];
 
 
 const ano =
-new Date().getFullYear();
+new Date()
+.getFullYear();
+
 
 
 for(let i=1;i<=53;i++){
 
     SEMANAS.push(
+
         `${ano}/${String(i).padStart(2,"0")}`
+
     );
 
 }
 
 
 
-function authHeaders(){
-
-return {
-
-Authorization:
-`Bearer ${localStorage.getItem("token")}`
-
-};
-
-}
 
 
 
 
-
-async function carregarParceiros(){
-
-
-try{
+function montarOpcoesParceiros(){
 
 
-const resposta =
-await fetch(
-"/buscarParceiros",
-{
-headers:authHeaders()
-}
-);
+    let html="";
 
 
-parceiros =
-await resposta.json();
+    parceirosBase
+    .sort(
+        (a,b)=>
+        a.nome_usual.localeCompare(
+            b.nome_usual
+        )
+    )
+    .forEach(p=>{
 
 
-console.log(
-"PARCEIROS:",
-parceiros
-);
+        html += `
 
 
-}
+        <option
 
-catch(err){
+            value="${p.pipefy_record_id}"
 
-console.error(err);
+            data-nome="${p.nome_usual}"
 
-}
+        >
+
+            ${p.nome_usual}
+
+        </option>
+
+
+        `;
+
+
+    });
+
+
+
+    return html;
 
 
 }
@@ -122,92 +200,57 @@ console.error(err);
 
 
 
-function montarParceiro(tipo){
+
+function montarSelect(
+    lista,
+    nome
+){
 
 
-let lista =
-parceiros
-.filter(p=>p.tipo===tipo)
-.sort(
-(a,b)=>
-a.nome_usual.localeCompare(
-b.nome_usual
-)
-);
+    let html = `
 
 
-
-let html =
-`
-<select name="${tipo}">
-<option value=""></option>
-`;
+    <select name="${nome}">
 
 
-
-lista.forEach(p=>{
-
-
-html += `
-
-<option
-value="${p.pipefy_record_id}"
-data-nome="${p.nome_usual}"
->
-
-${p.nome_usual}
-
-</option>
-
-`;
+    <option value="">
+        Selecione
+    </option>
 
 
-});
-
-
-html+="</select>";
-
-return html;
-
-
-}
+    `;
 
 
 
+    lista.forEach(item=>{
 
 
-function montarSelect(lista,nome){
+        html += `
+
+        <option value="${item}">
+            ${item}
+        </option>
+
+        `;
 
 
-let html =
-`
-<select name="${nome}">
-<option></option>
-`;
+    });
 
 
-lista.forEach(x=>{
+
+    html += `
+
+    </select>
+
+    `;
 
 
-html+=`
-
-<option value="${x}">
-${x}
-</option>
-
-`;
-
-
-});
-
-
-html+="</select>";
-
-
-return html;
+    return html;
 
 
 }
+
+
 
 
 
@@ -220,16 +263,22 @@ function gerarLinhas(){
 
 const total =
 Number(
-document.getElementById(
+document
+.getElementById(
 "totalCards"
-).value
+)
+.value
 );
 
 
 
-let html=`
+let html = `
+
+
+<div class="tabela-wrapper">
 
 <table>
+
 
 <thead>
 
@@ -243,7 +292,7 @@ let html=`
 
 <th>Frete</th>
 
-<th>Tipo</th>
+<th>Tipo Suíno</th>
 
 <th>Quantidade</th>
 
@@ -261,121 +310,282 @@ let html=`
 
 <th>Qtd Cards</th>
 
-
 </tr>
+
 
 </thead>
 
 
 <tbody>
 
+
 `;
 
 
 
 
-for(let i=1;i<=total;i++){
 
 
-html+=`
+for(
+let i=1;
+i<=total;
+i++
+){
+
+
+
+html += `
+
 
 <tr>
 
 
-<td>${i}</td>
-
-
 <td>
-${montarParceiro("Comprador")}
+
+${i}
+
 </td>
 
 
+
 <td>
-${montarParceiro("Fornecedor")}
+
+
+<select
+
+name="Comprador"
+
+>
+
+
+<option value="">
+
+Selecione
+
+</option>
+
+
+${montarOpcoesParceiros()}
+
+
+</select>
+
+
+
 </td>
 
 
+
+
+
+
 <td>
-${montarSelect(FRETES,"frete")}
+
+
+<select
+
+name="Fornecedor"
+
+>
+
+
+<option value="">
+
+Selecione
+
+</option>
+
+
+${montarOpcoesParceiros()}
+
+
+</select>
+
+
+
 </td>
 
 
+
+
+
+
 <td>
-${montarSelect(TIPOS_SUINO,"tipo")}
+
+${montarSelect(
+FRETES,
+"frete"
+)}
+
 </td>
 
 
+
+
+
 <td>
+
+${montarSelect(
+TIPOS_SUINO,
+"tipo"
+)}
+
+</td>
+
+
+
+
+
+
+<td>
+
 
 <input
+
+type="number"
+
 name="quantidade"
-type="number"
+
+value="0"
+
 >
+
 
 </td>
 
 
+
+
+
+
+
 <td>
 
+
 <input
+
+type="number"
+
 name="preco"
-type="number"
+
 step="0.01"
+
+value="0"
+
 >
 
-</td>
 
-
-<td>
-${montarSelect(PRAZOS,"prazo")}
 </td>
 
 
 
+
+
+
 <td>
+
+${montarSelect(
+PRAZOS,
+"prazo"
+)}
+
+</td>
+
+
+
+
+
+
+<td>
+
 
 <input
+
+type="date"
+
 name="embarque"
-type="datetime-local"
+
 >
+
 
 </td>
 
 
 
+
+
+
 <td>
 
+
 <input
+
+type="date"
+
 name="descarga"
-type="datetime-local"
+
 >
 
+
 </td>
 
 
 
+
+
+
+
 <td>
-${montarSelect(DIAS,"dia")}
+
+${montarSelect(
+DIAS,
+"dia"
+)}
+
 </td>
 
 
 
+
+
+
 <td>
-${montarSelect(SEMANAS,"semana")}
+
+${montarSelect(
+SEMANAS,
+"semana"
+)}
+
 </td>
 
 
 
+
+
+
+
 <td>
+
 
 <input
-name="cards"
+
 type="number"
+
+name="cards"
+
+class="quantidadeCards"
+
 value="1"
+
 min="1"
+
+
 >
 
+
 </td>
+
+
 
 
 
@@ -384,17 +594,28 @@ min="1"
 
 `;
 
+
+
 }
 
 
 
-html+=`
+
+
+html += `
+
 
 </tbody>
 
+
 </table>
 
+
+</div>
+
+
 `;
+
 
 
 
@@ -402,11 +623,12 @@ document
 .getElementById(
 "tabelaContainer"
 )
-.innerHTML=html;
+.innerHTML = html;
 
 
 
 }
+
 
 
 
@@ -418,12 +640,20 @@ document
 function obterLinhas(){
 
 
+
 let linhas=[];
 
 
+
+
 document
-.querySelectorAll("tbody tr")
+.querySelectorAll(
+"#tabelaContainer tbody tr"
+)
 .forEach(tr=>{
+
+
+
 
 
 const comprador =
@@ -440,14 +670,19 @@ tr.querySelector(
 
 
 
-let dados={
+
+
+const dados = {
 
 
 compradorId:
+
 comprador.value,
 
 
+
 compradorNome:
+
 comprador
 .options[
 comprador.selectedIndex
@@ -456,11 +691,16 @@ comprador.selectedIndex
 
 
 
+
+
 fornecedorId:
+
 fornecedor.value,
 
 
+
 fornecedorNome:
+
 fornecedor
 .options[
 fornecedor.selectedIndex
@@ -469,21 +709,28 @@ fornecedor.selectedIndex
 
 
 
+
+
 frete:
+
 tr.querySelector(
 '[name="frete"]'
 ).value,
 
 
 
+
 tipoSuino:
+
 tr.querySelector(
 '[name="tipo"]'
 ).value,
 
 
 
+
 quantidade:
+
 Number(
 tr.querySelector(
 '[name="quantidade"]'
@@ -492,7 +739,9 @@ tr.querySelector(
 
 
 
+
 preco:
+
 Number(
 tr.querySelector(
 '[name="preco"]'
@@ -501,61 +750,91 @@ tr.querySelector(
 
 
 
+
 prazo:
+
 tr.querySelector(
 '[name="prazo"]'
 ).value,
 
 
 
+
+
 embarque:
+
 tr.querySelector(
 '[name="embarque"]'
 ).value,
 
 
 
+
+
 descarga:
+
 tr.querySelector(
 '[name="descarga"]'
 ).value,
 
 
 
+
+
 etiquetaDia:
+
 tr.querySelector(
 '[name="dia"]'
 ).value,
 
 
 
+
+
 etiquetaSemana:
+
 tr.querySelector(
 '[name="semana"]'
 ).value,
 
 
 
-cards:
-Number(
-tr.querySelector(
-'[name="cards"]'
-).value
-||1
-)
 
 
 };
 
 
 
+const qtdCards =
+
+Number(
+
+tr.querySelector(
+'[name="cards"]'
+).value
+
+||1
+
+);
+
+
+
+
+
 for(
 let i=0;
-i<dados.cards;
+i<qtdCards;
 i++
 ){
 
-linhas.push(dados);
+
+linhas.push({
+
+...dados
+
+
+});
+
 
 }
 
@@ -564,10 +843,15 @@ linhas.push(dados);
 });
 
 
+
+
 return linhas;
 
 
+
 }
+
+
 
 
 
@@ -576,10 +860,13 @@ return linhas;
 
 
 document
-.getElementById("btnCriar")
+.getElementById(
+"btnCriar"
+)
 .addEventListener(
 "click",
 async()=>{
+
 
 
 const cards =
@@ -587,26 +874,48 @@ obterLinhas();
 
 
 
+console.log(
+"CARDS:",
+cards
+);
+
+
+
+
 const resposta =
 await fetch(
+
 "/criar-cards-cargas",
+
 {
+
 
 method:"POST",
 
-headers:{
+
+headers:
+
+{
 
 ...authHeaders(),
 
+
 "Content-Type":
+
 "application/json"
 
 },
 
+
+
 body:
+
 JSON.stringify({
+
 cards
+
 })
+
 
 }
 
@@ -615,14 +924,21 @@ cards
 
 
 
+const retorno =
+await resposta.json();
+
+
+
 console.log(
-await resposta.json()
+retorno
 );
+
 
 
 alert(
 "Cards enviados!"
 );
+
 
 
 });
@@ -632,8 +948,11 @@ alert(
 
 
 
-(async()=>{
+
+window.onload = async()=>{
+
 
 await carregarParceiros();
 
-})();
+
+};
