@@ -71,16 +71,40 @@ router.post("/", async (req, res) => {
                     CONNECTORS
                 */
 
-                adicionarCampo(
-                    "comprador_restored",
-                    card.compradorId
-                );
+                function adicionarConnector(field_id, value){
+
+                   if(
+                      value !== undefined &&
+                      value !== null &&
+                       value !== ""
+                   ){
+
+                      fields.push({
+
+                      field_id,
+
+                      value: JSON.stringify([
+                      String(value)
+                      ])
+
+                   });
+
+                 }
+
+                }
 
 
-                adicionarCampo(
-                    "fornecedor",
-                    card.fornecedorId
-                );
+
+adicionarConnector(
+    "comprador_restored",
+    card.compradorId
+);
+
+
+adicionarConnector(
+    "fornecedor",
+    card.fornecedorId
+);
 
 
 
