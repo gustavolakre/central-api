@@ -1,10 +1,10 @@
 document
-    .getElementById("btnGerar")
-    .addEventListener("click", gerarLinhas);
+.getElementById("btnGerar")
+.addEventListener("click", gerarLinhas);
 
 
-let compradores = [];
-let fornecedores = [];
+let parceiros = [];
+
 
 
 const FRETES = [
@@ -26,7 +26,10 @@ const TIPOS_SUINO = [
 
 
 const PRAZOS = [
-    ...Array.from({ length: 30 }, (_, i) => String(i + 1)),
+    ...Array.from(
+        {length:30},
+        (_,i)=>String(i+1)
+    ),
     "32",
     "35",
     "40",
@@ -47,9 +50,12 @@ const DIAS = [
 ];
 
 
-const SEMANAS = [];
+const SEMANAS=[];
 
-const ano = new Date().getFullYear();
+
+const ano =
+new Date().getFullYear();
+
 
 for(let i=1;i<=53;i++){
 
@@ -61,423 +67,167 @@ for(let i=1;i<=53;i++){
 
 
 
-/*
-CARREGA PARCEIROS DO BANCO
-*/
+function authHeaders(){
 
-async function carregarParceiros() {
+return {
 
+Authorization:
+`Bearer ${localStorage.getItem("token")}`
 
-    try {
-
-
-        const token =
-            localStorage.getItem("token");
-
-
-        const response = await fetch(
-            "/buscarParceiros",
-            {
-                headers:{
-                    Authorization:
-                    `Bearer ${token}`
-                }
-            }
-        );
-
-
-        const dados = await response.json();
-
-
-
-        compradores = dados
-
-            .filter(p => p.tipo === "Comprador")
-
-            .sort((a,b)=>
-                a.nome_usual.localeCompare(
-                    b.nome_usual
-                )
-            );
-
-
-
-        fornecedores = dados
-
-            .filter(p => p.tipo === "Fornecedor")
-
-            .sort((a,b)=>
-                a.nome_usual.localeCompare(
-                    b.nome_usual
-                )
-            );
-
-
-
-    }catch(err){
-
-        console.error(
-            "Erro carregar parceiros:",
-            err
-        );
-
-    }
+};
 
 }
 
 
 
-/*
-SELECTS NORMAIS
-*/
+
+
+async function carregarParceiros(){
+
+
+try{
+
+
+const resposta =
+await fetch(
+"/buscarParceiros",
+{
+headers:authHeaders()
+}
+);
+
+
+parceiros =
+await resposta.json();
+
+
+console.log(
+"PARCEIROS:",
+parceiros
+);
+
+
+}
+
+catch(err){
+
+console.error(err);
+
+}
+
+
+}
+
+
+
+
+
+function montarParceiro(tipo){
+
+
+let lista =
+parceiros
+.filter(p=>p.tipo===tipo)
+.sort(
+(a,b)=>
+a.nome_usual.localeCompare(
+b.nome_usual
+)
+);
+
+
+
+let html =
+`
+<select name="${tipo}">
+<option value=""></option>
+`;
+
+
+
+lista.forEach(p=>{
+
+
+html += `
+
+<option
+value="${p.pipefy_record_id}"
+data-nome="${p.nome_usual}"
+>
+
+${p.nome_usual}
+
+</option>
+
+`;
+
+
+});
+
+
+html+="</select>";
+
+return html;
+
+
+}
+
+
+
+
 
 function montarSelect(lista,nome){
 
 
-    let html =
-    `<select name="${nome}">`;
+let html =
+`
+<select name="${nome}">
+<option></option>
+`;
 
 
-    html += `<option value=""></option>`;
+lista.forEach(x=>{
 
 
-    lista.forEach(item=>{
+html+=`
 
+<option value="${x}">
+${x}
+</option>
 
-        html += `
+`;
 
-        <option value="${item}">
-            ${item}
-        </option>
 
-        `;
+});
 
 
-    });
+html+="</select>";
 
 
-    html += `</select>`;
-
-
-    return html;
-
-}
-
-
-
-/*
-SELECT COMPRADOR
-*/
-
-function montarSelectComprador(){
-
-
-    let html =
-    `<select name="comprador">`;
-
-
-    html +=
-    `<option value=""></option>`;
-
-
-    compradores.forEach(c=>{
-
-
-        html += `
-
-        <option
-
-            value="${c.pipefy_record_id}"
-
-            data-nome="${c.nome_usual}"
-
-        >
-
-            ${c.nome_usual}
-
-        </option>
-
-        `;
-
-
-    });
-
-
-    html += "</select>";
-
-
-    return html;
-
-}
-
-
-
-/*
-SELECT FORNECEDOR
-*/
-
-function montarSelectFornecedor(){
-
-
-    let html =
-    `<select name="fornecedor">`;
-
-
-    html +=
-    `<option value=""></option>`;
-
-
-    fornecedores.forEach(f=>{
-
-
-        html += `
-
-        <option
-
-            value="${f.pipefy_record_id}"
-
-            data-nome="${f.nome_usual}"
-
-        >
-
-            ${f.nome_usual}
-
-        </option>
-
-        `;
-
-
-    });
-
-
-    html += "</select>";
-
-
-    return html;
-
-}
-
-
-
-/*
-CAPTURA LINHAS
-*/
-
-function obterLinhas(){
-
-
-    const linhas=[];
-
-
-
-    document
-    .querySelectorAll("tbody tr")
-    .forEach(tr=>{
-
-
-        const comprador =
-        tr.querySelector('[name="comprador"]');
-
-
-        const fornecedor =
-        tr.querySelector('[name="fornecedor"]');
-
-
-
-        linhas.push({
-
-
-            compradorId:
-            comprador.value,
-
-
-            compradorNome:
-            comprador
-            .options[
-                comprador.selectedIndex
-            ]
-            ?.dataset.nome || "",
-
-
-
-            fornecedorId:
-            fornecedor.value,
-
-
-            fornecedorNome:
-            fornecedor
-            .options[
-                fornecedor.selectedIndex
-            ]
-            ?.dataset.nome || "",
-
-
-
-            frete:
-            tr.querySelector(
-                '[name="frete"]'
-            ).value,
-
-
-
-            tipoSuino:
-            tr.querySelector(
-                '[name="tipo"]'
-            ).value,
-
-
-
-            quantidade:
-            Number(
-                tr.querySelector(
-                    '[name="quantidade"]'
-                ).value || 0
-            ),
-
-
-
-            preco:
-            Number(
-                tr.querySelector(
-                    '[name="preco"]'
-                ).value || 0
-            ),
-
-
-
-            prazo:
-            tr.querySelector(
-                '[name="prazo"]'
-            ).value,
-
-
-
-            embarque:
-            tr.querySelector(
-                '[name="embarque"]'
-            ).value,
-
-
-
-            descarga:
-            tr.querySelector(
-                '[name="descarga"]'
-            ).value,
-
-
-
-            etiquetaDia:
-            tr.querySelector(
-                '[name="dia"]'
-            ).value,
-
-
-
-            etiquetaSemana:
-            tr.querySelector(
-                '[name="semana"]'
-            ).value
-
-
-        });
-
-
-    });
-
-
-    return linhas;
-
-}
-
-
-
-/*
-COPIAR PARA BAIXO
-*/
-
-function copiarParaBaixo(e){
-
-
-    const coluna =
-    Number(e.target.dataset.col);
-
-
-
-    const linhas =
-    document.querySelectorAll(
-        "tbody tr"
-    );
-
-
-
-    if(linhas.length < 2)
-        return;
-
-
-
-    const origem =
-    linhas[0]
-    .children[coluna]
-    .querySelector(
-        "select,input"
-    );
-
-
-
-    if(!origem)
-        return;
-
-
-
-    linhas.forEach((linha,index)=>{
-
-
-        if(index===0)
-            return;
-
-
-
-        const campo =
-        linha
-        .children[coluna]
-        .querySelector(
-            "select,input"
-        );
-
-
-
-        if(campo){
-
-            campo.value =
-            origem.value;
-
-        }
-
-
-    });
+return html;
 
 
 }
 
 
 
-/*
-GERA TABELA
-*/
+
+
+
 
 function gerarLinhas(){
 
 
-    const total =
-    Number(
-        document
-        .getElementById("totalCards")
-        .value
-    );
+const total =
+Number(
+document.getElementById(
+"totalCards"
+).value
+);
 
 
 
-    let html = `
+let html=`
 
 <table>
 
@@ -487,27 +237,30 @@ function gerarLinhas(){
 
 <th>#</th>
 
-<th>Comprador <button class="copiar" data-col="1">↓</button></th>
+<th>Comprador</th>
 
-<th>Fornecedor <button class="copiar" data-col="2">↓</button></th>
+<th>Fornecedor</th>
 
-<th>Frete <button class="copiar" data-col="3">↓</button></th>
+<th>Frete</th>
 
-<th>Tipo <button class="copiar" data-col="4">↓</button></th>
+<th>Tipo</th>
 
-<th>Qtd.</th>
+<th>Quantidade</th>
 
 <th>Preço</th>
 
-<th>Prazo <button class="copiar" data-col="7">↓</button></th>
+<th>Prazo</th>
 
-<th>Embarque <button class="copiar" data-col="8">↓</button></th>
+<th>Embarque</th>
 
-<th>Descarga <button class="copiar" data-col="9">↓</button></th>
+<th>Descarga</th>
 
-<th>Dia <button class="copiar" data-col="10">↓</button></th>
+<th>Dia</th>
 
-<th>Semana <button class="copiar" data-col="11">↓</button></th>
+<th>Semana</th>
+
+<th>Qtd Cards</th>
+
 
 </tr>
 
@@ -520,67 +273,122 @@ function gerarLinhas(){
 
 
 
+
 for(let i=1;i<=total;i++){
 
 
-html += `
+html+=`
 
 <tr>
+
 
 <td>${i}</td>
 
 
-<td>${montarSelectComprador()}</td>
-
-
-<td>${montarSelectFornecedor()}</td>
-
-
-<td>${montarSelect(FRETES,"frete")}</td>
-
-
-<td>${montarSelect(TIPOS_SUINO,"tipo")}</td>
-
-
 <td>
-<input name="quantidade" type="number">
+${montarParceiro("Comprador")}
 </td>
 
 
 <td>
-<input name="preco" type="number" step="0.01">
-</td>
-
-
-<td>${montarSelect(PRAZOS,"prazo")}</td>
-
-
-<td>
-<input name="embarque" type="datetime-local">
+${montarParceiro("Fornecedor")}
 </td>
 
 
 <td>
-<input name="descarga" type="datetime-local">
+${montarSelect(FRETES,"frete")}
 </td>
 
 
-<td>${montarSelect(DIAS,"dia")}</td>
+<td>
+${montarSelect(TIPOS_SUINO,"tipo")}
+</td>
 
 
-<td>${montarSelect(SEMANAS,"semana")}</td>
+<td>
+
+<input
+name="quantidade"
+type="number"
+>
+
+</td>
+
+
+<td>
+
+<input
+name="preco"
+type="number"
+step="0.01"
+>
+
+</td>
+
+
+<td>
+${montarSelect(PRAZOS,"prazo")}
+</td>
+
+
+
+<td>
+
+<input
+name="embarque"
+type="datetime-local"
+>
+
+</td>
+
+
+
+<td>
+
+<input
+name="descarga"
+type="datetime-local"
+>
+
+</td>
+
+
+
+<td>
+${montarSelect(DIAS,"dia")}
+</td>
+
+
+
+<td>
+${montarSelect(SEMANAS,"semana")}
+</td>
+
+
+
+<td>
+
+<input
+name="cards"
+type="number"
+value="1"
+min="1"
+>
+
+</td>
+
 
 
 </tr>
 
-`;
 
+`;
 
 }
 
 
 
-html += `
+html+=`
 
 </tbody>
 
@@ -591,28 +399,181 @@ html += `
 
 
 document
-.getElementById("tabelaContainer")
-.innerHTML = html;
+.getElementById(
+"tabelaContainer"
+)
+.innerHTML=html;
 
-
-
-document
-.querySelectorAll(".copiar")
-.forEach(btn=>{
-
-    btn.onclick =
-    copiarParaBaixo;
-
-});
 
 
 }
 
 
 
-/*
-CRIAR CARDS
-*/
+
+
+
+
+
+function obterLinhas(){
+
+
+let linhas=[];
+
+
+document
+.querySelectorAll("tbody tr")
+.forEach(tr=>{
+
+
+const comprador =
+tr.querySelector(
+'[name="Comprador"]'
+);
+
+
+
+const fornecedor =
+tr.querySelector(
+'[name="Fornecedor"]'
+);
+
+
+
+let dados={
+
+
+compradorId:
+comprador.value,
+
+
+compradorNome:
+comprador
+.options[
+comprador.selectedIndex
+]
+.dataset.nome,
+
+
+
+fornecedorId:
+fornecedor.value,
+
+
+fornecedorNome:
+fornecedor
+.options[
+fornecedor.selectedIndex
+]
+.dataset.nome,
+
+
+
+frete:
+tr.querySelector(
+'[name="frete"]'
+).value,
+
+
+
+tipoSuino:
+tr.querySelector(
+'[name="tipo"]'
+).value,
+
+
+
+quantidade:
+Number(
+tr.querySelector(
+'[name="quantidade"]'
+).value
+),
+
+
+
+preco:
+Number(
+tr.querySelector(
+'[name="preco"]'
+).value
+),
+
+
+
+prazo:
+tr.querySelector(
+'[name="prazo"]'
+).value,
+
+
+
+embarque:
+tr.querySelector(
+'[name="embarque"]'
+).value,
+
+
+
+descarga:
+tr.querySelector(
+'[name="descarga"]'
+).value,
+
+
+
+etiquetaDia:
+tr.querySelector(
+'[name="dia"]'
+).value,
+
+
+
+etiquetaSemana:
+tr.querySelector(
+'[name="semana"]'
+).value,
+
+
+
+cards:
+Number(
+tr.querySelector(
+'[name="cards"]'
+).value
+||1
+)
+
+
+};
+
+
+
+for(
+let i=0;
+i<dados.cards;
+i++
+){
+
+linhas.push(dados);
+
+}
+
+
+
+});
+
+
+return linhas;
+
+
+}
+
+
+
+
+
+
 
 document
 .getElementById("btnCriar")
@@ -621,77 +582,58 @@ document
 async()=>{
 
 
-    const linhas =
-    obterLinhas();
+const cards =
+obterLinhas();
 
 
 
-    console.table(linhas);
+const resposta =
+await fetch(
+"/criar-cards-cargas",
+{
+
+method:"POST",
+
+headers:{
+
+...authHeaders(),
+
+"Content-Type":
+"application/json"
+
+},
+
+body:
+JSON.stringify({
+cards
+})
+
+}
+
+
+);
 
 
 
-    const token =
-    localStorage.getItem("token");
+console.log(
+await resposta.json()
+);
 
 
-
-    const resposta =
-    await fetch(
-        "/criar-cards-cargas",
-        {
-
-            method:"POST",
-
-            headers:{
-
-                "Content-Type":
-                "application/json",
-
-                Authorization:
-                `Bearer ${token}`
-
-            },
-
-
-            body:
-            JSON.stringify({
-
-                cards:linhas
-
-            })
-
-        }
-    );
-
-
-
-    const retorno =
-    await resposta.json();
-
-
-
-    console.log(
-        "RETORNO:",
-        retorno
-    );
-
-
-    alert(
-        `Criados: ${retorno.criados || 0}
-Erros: ${retorno.erros || 0}`
-    );
+alert(
+"Cards enviados!"
+);
 
 
 });
 
 
 
-/*
-INICIALIZA
-*/
+
+
 
 (async()=>{
 
-    await carregarParceiros();
+await carregarParceiros();
 
 })();
