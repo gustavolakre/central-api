@@ -88,29 +88,51 @@ router.post("/", async (req, res) => {
 
                 function adicionarConnector(field_id, value){
 
+                   if(
+                       value !== undefined &&
+                       value !== null &&
+                       value !== ""
+                   ){
 
-                    if(
-                        value !== undefined &&
-                        value !== null &&
-                        value !== ""
-                    ){
+                        let id = value;
 
 
-                        fields.push({
+                   // se já vier como array JSON
+                  if(typeof value === "string"){
 
-                            field_id,
+                   try{
 
-                            value: JSON.stringify([
-                                String(value)
-                            ])
+                        const convertido = JSON.parse(value);
 
-                        });
+                        if(Array.isArray(convertido)){
 
+                            id = convertido[0];
+
+                           }
 
                     }
+                   catch(e){
+
+                        id = value;
+
+                          }
+
+                       }
 
 
-                }
+                   fields.push({
+
+                        field_id,
+
+                        value: JSON.stringify([
+                        String(id)
+                        ])
+
+                    });
+
+                   }
+
+                 }
 
 
 
