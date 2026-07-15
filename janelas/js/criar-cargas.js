@@ -155,43 +155,27 @@ for(let i=1;i<=53;i++){
 function montarOpcoesParceiros(){
 
 
-    let html="";
+let html="";
 
 
-    parceirosBase
-    .sort(
-        (a,b)=>
-        a.nome_usual.localeCompare(
-            b.nome_usual
-        )
-    )
-    .forEach(p=>{
+parceirosBase.forEach(p=>{
 
 
-        html += `
+html += `
+
+<option value="${p.pipefy_record_id}">
+
+${p.nome_usual}
+
+</option>
+
+`;
 
 
-        <option
-
-            value="${p.pipefy_record_id}"
-
-            data-nome="${p.nome_usual}"
-
-        >
-
-            ${p.nome_usual}
-
-        </option>
+});
 
 
-        `;
-
-
-    });
-
-
-
-    return html;
+return html;
 
 
 }
@@ -676,8 +660,7 @@ const dados = {
 
 
 compradorId:
-
-comprador.value,
+String(comprador.value),
 
 
 
@@ -691,11 +674,8 @@ comprador.selectedIndex
 
 
 
-
-
 fornecedorId:
-
-fornecedor.value,
+String(fornecedor.value),
 
 
 
