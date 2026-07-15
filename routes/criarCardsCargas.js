@@ -27,6 +27,25 @@ router.post("/", async (req, res) => {
         const PIPE_ID = "304131962";
 
 
+        const RESPONSAVEIS = {
+
+            "Adelar Schuh": "306443829",
+            "Ana Wust": "305728998",
+            "Bruna Jaine Anderson": "308039901",
+            "Bruno Panatta": "307550459",
+            "Enário dos Santos": "307046790",
+            "Henrique": "304564865",
+            "Jeferson A. Antunes": "304569850",
+            "Rafael de Lima": "307776597",
+            "Luiz Gustavo Deon": "307283950",
+            "Vânia Riva": "305099902",
+            "Mikael Silva Sousa": "307046791",
+            "Wanderson Agostinho": "305205639"
+
+        };
+
+
+
         let sucesso = 0;
         let erros = 0;
 
@@ -67,44 +86,62 @@ router.post("/", async (req, res) => {
 
 
 
-                /*
-                    CONNECTORS
-                */
-
                 function adicionarConnector(field_id, value){
 
-                   if(
-                      value !== undefined &&
-                      value !== null &&
-                       value !== ""
-                   ){
 
-                      fields.push({
+                    if(
+                        value !== undefined &&
+                        value !== null &&
+                        value !== ""
+                    ){
 
-                      field_id,
 
-                      value: JSON.stringify([
-                      String(value)
-                      ])
+                        fields.push({
 
-                   });
+                            field_id,
 
-                 }
+                            value: JSON.stringify([
+                                String(value)
+                            ])
+
+                        });
+
+
+                    }
+
 
                 }
 
 
 
-adicionarConnector(
-    "comprador_restored",
-    card.compradorId
-);
+                /*
+                    CONNECTORS
+                */
 
 
-adicionarConnector(
-    "fornecedor",
-    card.fornecedorId
-);
+                adicionarConnector(
+                    "comprador_restored",
+                    card.compradorId
+                );
+
+
+                adicionarConnector(
+                    "fornecedor",
+                    card.fornecedorId
+                );
+
+
+
+                /*
+                    RESPONSÁVEL
+                    assignee_select recebe somente ID
+                */
+
+
+                adicionarCampo(
+                    "respons_vel",
+                    RESPONSAVEIS["Luiz Gustavo Deon"]
+                );
 
 
 
@@ -143,6 +180,11 @@ adicionarConnector(
                 );
 
 
+
+                /*
+                    TESTE
+                    Comentados para validar criação básica
+
                 adicionarCampo(
                     "data_e_hora_da_carga",
                     card.embarque
@@ -155,16 +197,7 @@ adicionarConnector(
                 );
 
 
-
-                /*
-                    ETIQUETA OBRIGATÓRIA
-
-                    Ex:
-                    03-Quarta, 2026/29
-                */
-
-
-                const etiqueta = 
+                const etiqueta =
                 `${card.etiquetaDia}, ${card.etiquetaSemana}`;
 
 
@@ -172,6 +205,20 @@ adicionarConnector(
                     "etiquetas",
                     etiqueta
                 );
+
+                */
+
+
+
+                console.log(
+                    "FIELDS ENVIADOS:",
+                    JSON.stringify(
+                        fields,
+                        null,
+                        2
+                    )
+                );
+
 
 
 
@@ -196,56 +243,73 @@ adicionarConnector(
 
 
 
-                const titulo = 
+
+
+                const titulo =
                 `${card.fornecedorNome} - ${card.compradorNome}`;
+
+
 
 
 
                 const mutation = `
 
-                    mutation {
+                mutation {
 
-                        createCard(
+                    createCard(
 
-                            input:{
+                        input:{
 
-                                pipe_id:${PIPE_ID}
 
-                                title:"${titulo}"
+                            pipe_id:${PIPE_ID}
 
-                                fields_attributes:[
 
-                                    ${fieldsGraphQL}
+                            title:"${titulo}"
 
-                                ]
 
-                            }
+                            fields_attributes:[
 
-                        ){
+                                ${fieldsGraphQL}
 
-                            card{
+                            ]
 
-                                id
-
-                                title
-
-                            }
 
                         }
 
+                    ){
+
+
+                        card{
+
+                            id
+
+                            title
+
+                        }
+
+
                     }
+
+
+                }
 
                 `;
 
 
 
+
                 const response = await axios.post(
+
 
                     "https://api.pipefy.com/graphql",
 
+
                     {
+
                         query: mutation
+
                     },
+
 
                     {
 
@@ -258,18 +322,24 @@ adicionarConnector(
 
                     }
 
+
                 );
 
 
 
+
                 console.log(
-                    "PIPEFY:",
+
+                    "PIPEFY RESPONSE:",
+
                     JSON.stringify(
                         response.data,
                         null,
                         2
                     )
+
                 );
+
 
 
 
@@ -291,8 +361,8 @@ adicionarConnector(
                     });
 
 
-
-                }else{
+                }
+                else{
 
 
                     sucesso++;
@@ -302,7 +372,9 @@ adicionarConnector(
 
 
 
-            }catch(err){
+
+            }
+            catch(err){
 
 
                 erros++;
@@ -313,7 +385,10 @@ adicionarConnector(
                     card:
                     card.fornecedorNome,
 
-                    erro:err.message
+
+                    erro:
+                    err.response?.data ||
+                    err.message
 
                 });
 
@@ -322,6 +397,7 @@ adicionarConnector(
 
 
         }
+
 
 
 
@@ -339,7 +415,9 @@ adicionarConnector(
 
 
 
-    }catch(err){
+
+    }
+    catch(err){
 
 
         console.error(err);
@@ -358,6 +436,7 @@ adicionarConnector(
 
 
 });
+
 
 
 module.exports = router;
