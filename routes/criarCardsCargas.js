@@ -296,6 +296,10 @@ router.post("/", async (req, res) => {
                 `;
 
 
+                console.log(
+                  "MUTATION ENVIADA:",
+                  mutation
+                );
 
 
                 const response = await axios.post(
