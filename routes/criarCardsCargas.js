@@ -3,6 +3,46 @@ const axios = require("axios");
 
 const router = express.Router();
 
+/** ID bruto do record connector Pipefy (sem JSON.stringify). */
+function normalizarConnectorId(value) {
+    if (value === undefined || value === null || value === "") {
+        return null;
+    }
+
+    let id = value;
+
+    for (let i = 0; i < 3; i++) {
+        if (typeof id !== "string") {
+            id = String(id);
+            break;
+        }
+
+        const trimmed = id.trim();
+        if (!trimmed) {
+            return null;
+        }
+
+        try {
+            const parsed = JSON.parse(trimmed);
+            if (Array.isArray(parsed)) {
+                id = parsed[0];
+                continue;
+            }
+            if (typeof parsed === "string" || typeof parsed === "number") {
+                id = String(parsed);
+                continue;
+            }
+        } catch {
+            id = trimmed;
+        }
+
+        break;
+    }
+
+    id = String(id ?? "").trim();
+    return id || null;
+}
+
 
 router.post("/", async (req, res) => {
 
@@ -88,51 +128,21 @@ router.post("/", async (req, res) => {
 
                 function adicionarConnector(field_id, value){
 
-                   if(
-                       value !== undefined &&
-                       value !== null &&
-                       value !== ""
-                   ){
+                    const id = normalizarConnectorId(value);
 
-                        let id = value;
-
-
-                   // se já vier como array JSON
-                  if(typeof value === "string"){
-
-                   try{
-
-                        const convertido = JSON.parse(value);
-
-                        if(Array.isArray(convertido)){
-
-                            id = convertido[0];
-
-                           }
-
+                    if(!id){
+                        return;
                     }
-                   catch(e){
 
-                        id = value;
-
-                          }
-
-                       }
-
-
-                   fields.push({
+                    fields.push({
 
                         field_id,
 
-                        value: JSON.stringify([
-                        String(id)
-                        ])
+                        value: id
 
                     });
 
-                   }
-
-                 }
+                }
 
 
 
