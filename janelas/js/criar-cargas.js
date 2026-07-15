@@ -24,6 +24,34 @@ function authHeaders(extra = {}){
 }
 
 
+function escapeHtmlAttr(value){
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;")
+        .replace(/</g, "&lt;");
+
+}
+
+
+function nomeParceiroSelect(select){
+
+    if(!select || select.selectedIndex < 0){
+        return "";
+    }
+
+    const opt = select.options[select.selectedIndex];
+
+    return (
+        opt.dataset.nome ||
+        opt.textContent ||
+        ""
+    ).trim();
+
+}
+
+
 
 
 async function carregarParceiros(){
@@ -40,9 +68,13 @@ async function carregarParceiros(){
             }
         );
 
+        if(!resposta.ok){
+            throw new Error(`HTTP ${resposta.status}`);
+        }
 
-        parceirosBase =
-        await resposta.json();
+        const dados = await resposta.json();
+
+        parceirosBase = Array.isArray(dados) ? dados : [];
 
 
 
@@ -160,15 +192,13 @@ let html="";
 
 parceirosBase.forEach(p=>{
 
+    const id = escapeHtmlAttr(p.pipefy_record_id);
+    const nome = escapeHtmlAttr(p.nome_usual);
 
 html += `
-
-<option value="${p.pipefy_record_id}">
-
+<option value="${id}" data-nome="${nome}">
 ${p.nome_usual}
-
 </option>
-
 `;
 
 
@@ -253,6 +283,11 @@ document
 )
 .value
 );
+
+if(!Number.isFinite(total) || total < 1){
+    alert("Informe um total de cards válido (mínimo 1).");
+    return;
+}
 
 
 
@@ -665,12 +700,7 @@ String(comprador.value),
 
 
 compradorNome:
-
-comprador
-.options[
-comprador.selectedIndex
-]
-.dataset.nome,
+nomeParceiroSelect(comprador),
 
 
 
@@ -680,12 +710,7 @@ String(fornecedor.value),
 
 
 fornecedorNome:
-
-fornecedor
-.options[
-fornecedor.selectedIndex
-]
-.dataset.nome,
+nomeParceiroSelect(fornecedor),
 
 
 
@@ -852,15 +877,26 @@ async()=>{
 const cards =
 obterLinhas();
 
+if(!cards.length){
+    alert("Gere as linhas antes de criar os cards.");
+    return;
+}
 
-
-console.log(
-"CARDS:",
-cards
+const linhaInvalida = cards.find(
+    c => !c.compradorId || !c.fornecedorId
 );
 
+if(linhaInvalida){
+    alert("Selecione comprador e fornecedor em todas as linhas.");
+    return;
+}
 
+console.log(
+    "CARDS:",
+    cards
+);
 
+try{
 
 const resposta =
 await fetch(
@@ -913,11 +949,33 @@ console.log(
 retorno
 );
 
+if(!resposta.ok){
+    alert(
+        retorno.erro ||
+        "Erro ao criar cards."
+    );
+    return;
+}
 
+const msg = [
+    `${retorno.criados ?? 0} card(s) criado(s).`,
+    retorno.erros ? `${retorno.erros} erro(s).` : null
+].filter(Boolean).join(" ");
 
-alert(
-"Cards enviados!"
-);
+alert(msg);
+
+if(retorno.detalhesErros?.length){
+    console.error("Detalhes:", retorno.detalhesErros);
+}
+
+}
+catch(err){
+
+console.error(err);
+
+alert("Falha ao enviar cards. Veja o console.");
+
+}
 
 
 
