@@ -621,6 +621,8 @@ validarLogin();
                 let naoDescontarMortos = estadoCampos[id]?.naoDescontarMortos || false
                 let visaoPorTipo = estadoCampos[id]?.visaoPorTipo || false
                 let visaoSintetizada = estadoCampos[id]?.visaoSintetizada || false
+                let visaoSintetizadaParceiro =  estadoCampos[id]?.visaoSintetizadaParceiro || false
+                    
                 html += `<div class="grupo" id="grupo_${id}">
                     <div style="display:grid; grid-template-columns: 180px 260px auto; align-items:center; gap:20px; margin-bottom:15px; font-size:14px;">
                         <div>
@@ -665,6 +667,9 @@ validarLogin();
                             </label>
                             <label style="display:flex; align-items:center; gap:5px;">
                                 <input type="checkbox" ${visaoSintetizada ? "checked" : ""} onchange="toggleVisaoSintetizada('${id}', this.checked)"> Visão sintetizada
+                            </label>
+                            <label style="display:flex; align-items:center; gap:5px;">
+                                <input type="checkbox" ${visaoSintetizadaParceiro ? "checked" : ""} onchange="toggleVisaoSintetizadaParceiro('${id}', this.checked)"> Visão Sintetizada por Parceiro
                             </label>
                             <label style="display:flex; align-items:center; gap:5px;">
                                 <input type="checkbox" ${naoDescontarMortos ? "checked" : ""} onchange="toggleNaoMortos('${id}', this.checked)"> Não descontar mortos
@@ -734,7 +739,74 @@ validarLogin();
                         }
                         html += `<div class="linha" style="margin:0; line-height:1.25;"> ${tipo}: <b>${r.total}</b> (${partes.join(" / ")}) </div>`
                     }
-                } else if (visaoPorTipo) {
+                } else if (visaoSintetizadaParceiro) {
+                  let resumo = {}
+                      let totalQuantidade = 0
+                      g.dados.forEach(d => {
+                  let parceiro =
+                      tipoOperacao === "comprador"
+                      ? d["Fornecedor"]
+                      : d["Comprador"]
+                  let nf =
+                      d["N Nota de Venda"] ||
+                      d["Nº Nota de Venda"] ||
+                      d["Nota de Venda"] ||
+                      "SEM NF"
+                  let qtd =
+                      Number(d["Quantidade"] || 0)
+                  let mortos =
+                      Number(d["Mortos em transporte"] || 0)
+                  let liquido =
+                      naoDescontarMortos
+                      ? qtd
+                      : (qtd - mortos)
+                  if (!resumo[parceiro]) {
+
+                      resumo[parceiro] = {
+                      total: 0,
+                      nfs: {}
+                     }
+
+                  }
+               if (!resumo[parceiro].nfs[nf]) {
+                   resumo[parceiro].nfs[nf] = 0
+                  }
+                  resumo[parceiro].nfs[nf] += liquido
+                  resumo[parceiro].total += liquido
+                  totalQuantidade += liquido
+                })
+
+    Object.keys(resumo)
+        .sort((a, b) => a.localeCompare(b, "pt-BR"))
+        .forEach(parceiro => {
+
+            let partes = []
+
+            Object.keys(resumo[parceiro].nfs)
+                .sort()
+                .forEach(nf => {
+
+                    partes.push(
+                        `${nf} - ${resumo[parceiro].nfs[nf]}`
+                    )
+
+                })
+
+            html += `
+                <div class="linha" style="margin:0; line-height:1.25;">
+                    ${parceiro}: <b>${resumo[parceiro].total}</b> (${partes.join(" / ")})
+                </div>
+            `
+
+        })
+
+    html += `
+        <div class="total" style="margin-top:12px;">
+            TOTAL QUANTIDADE: ${totalQuantidade}
+        </div>
+    `
+
+    } else if (visaoPorTipo) {
                     let resumo = {}
                     g.dados.forEach(d => {
                         let tipo = d["Tipo Suíno"]
@@ -874,6 +946,7 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
                 novoEstado[id].visaoResumida = estadoCampos[id]?.visaoResumida || false
                 novoEstado[id].visaoPorTipo = estadoCampos[id]?.visaoPorTipo || false
                 novoEstado[id].visaoSintetizada = estadoCampos[id]?.visaoSintetizada || false
+                novoEstado[id].visaoSintetizadaParceiro = estadoCampos[id]?.visaoSintetizadaParceiro || false
                 novoEstado[id].naoDescontarMortos = estadoCampos[id]?.naoDescontarMortos || false
                 novoEstado[id].precos = {}
                 for (let tipo of tiposSuino) {
@@ -1047,6 +1120,14 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
             estadoCampos[id].visaoSintetizada = valor
             gerarRelatorio()
         }
+
+        function toggleVisaoSintetizadaParceiro(id, valor) {
+            capturarCampos()
+            if (!estadoCampos[id])
+            estadoCampos[id] = {}
+            estadoCampos[id].visaoSintetizadaParceiro = valor
+            gerarRelatorio()
+          }
 
         function atualizarVencimento(id, valor) {
             capturarCampos()
