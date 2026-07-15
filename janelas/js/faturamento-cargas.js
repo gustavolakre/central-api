@@ -801,29 +801,38 @@ validarLogin();
                   totalQuantidade += liquido
                 })
 
-    Object.keys(resumo)
-        .sort((a, b) => a.localeCompare(b, "pt-BR"))
-        .forEach(parceiro => {
+   Object.keys(resumo)
+    .sort((a, b) => a.localeCompare(b, "pt-BR"))
+    .forEach(parceiro => {
 
-            let partes = []
+        // Procura o parceiro na Base de Parceiros pelo Nome Usual
+        const parceiroBase = baseParceiros.find(p =>
+            (p["Nome Usual"] || "").trim() === (parceiro || "").trim()
+        )
 
-            Object.keys(resumo[parceiro].nfs)
-                .sort()
-                .forEach(nf => {
+        // Usa a Razão Social para exibição
+        const parceiroExibicao =
+            parceiroBase?.["Razão Social"] || parceiro
 
-                    partes.push(
-                        `${nf} - ${resumo[parceiro].nfs[nf]}`
-                    )
+        let partes = []
 
-                })
+        Object.keys(resumo[parceiro].nfs)
+            .sort()
+            .forEach(nf => {
 
-            html += `
-                <div class="linha" style="margin:0; line-height:1.25;">
-                    ${parceiroExibicao} <b>${resumo[parceiro].total}</b> (${partes.join(" / ")})
-                </div>
-            `
+                partes.push(
+                    `${nf} - ${resumo[parceiro].nfs[nf]}`
+                )
 
-        })
+            })
+
+        html += `
+            <div class="linha" style="margin:0; line-height:1.25;">
+                ${parceiroExibicao}: <b>${resumo[parceiro].total}</b> (${partes.join(" / ")})
+            </div>
+        `
+
+    })
 
     html += `
         <div class="total" style="margin-top:12px;">
