@@ -763,8 +763,8 @@ validarLogin();
                       g.dados.forEach(d => {
                   let parceiro =
                       tipoOperacao === "comprador"
-                      ? d["Fornecedor"]
-                      : d["Comprador"]
+                       ? (d["Razão Social Fornecedor"] || d["Fornecedor"])
+                       : (d["Razão Social Comprador"] || d["Comprador"])
                   let nf =
                       d["N Nota de Venda"] ||
                       d["Nº Nota de Venda"] ||
