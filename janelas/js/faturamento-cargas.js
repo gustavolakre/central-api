@@ -677,6 +677,24 @@ validarLogin();
                         </div>
                     </div>`
 
+
+                    let tituloParceiro = razao
+
+                    if (!agruparSelecionados && parceiro) {
+
+                        const nomeUsual =
+                           parceiro["Nome Usual"] ||
+                           parceiro.nome_usual ||
+                           parceiro.nomeUsual ||
+                           ""
+
+                    if (nomeUsual && nomeUsual.trim()) {
+
+                           tituloParceiro =
+                          `${nomeUsual} (${razao})`
+                    }
+                }
+
                 let cnpj = ""
                 let ie = ""
                 if (agruparSelecionados && agrupado[chave].participantes) {
@@ -697,7 +715,7 @@ validarLogin();
                     cnpj = parceiro?.cnpj || parceiro?.cpf || ""
                     ie = parceiro?.inscricao_estadual || ""
                 }
-                html += `<div class="titulo">${razao}</div>
+                html += `<div class="titulo">${tituloParceiro}</div>
                     <div style="margin-bottom:12px; padding:8px 10px; background:#f1f1f1; border-left:4px solid #4CAF50; border-radius:4px; font-size:14px;">
                         ${cnpj ? `<div><b>CNPJ/CPF:</b> ${cnpj}</div>` : ""}
                         ${ie ? `<div><b>IE:</b> ${ie}</div>` : ""}
