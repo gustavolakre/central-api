@@ -2,7 +2,7 @@ document
 .getElementById("btnGerar")
 .addEventListener(
     "click",
-    gerarLinhas
+    adicionarLinha
 );
 
 
@@ -343,413 +343,127 @@ function montarSelect(
 }
 
 
-function gerarLinhas(){
+function criarTabela(){
 
+    const html = `
+    <div class="tabela-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Comprador</th>
+                    <th>Fornecedor</th>
+                    <th>Frete</th>
+                    <th>Tipo Suíno</th>
+                    <th>Quantidade</th>
+                    <th>Preço</th>
+                    <th>Prazo</th>
+                    <th>Embarque</th>
+                    <th>Descarga</th>
+                    <th>Dia</th>
+                    <th>Semana</th>
+                    <th>Qtd Cards</th>
+                </tr>
+            </thead>
 
-const total =
-Number(
-document
-.getElementById(
-"totalCards"
-)
-.value
-);
+            <tbody id="tbodyCards"></tbody>
 
-if(!Number.isFinite(total) || total < 1){
-    alert("Informe um total de cards válido (mínimo 1).");
-    return;
+        </table>
+    </div>
+    `;
+
+    document.getElementById("tabelaContainer").innerHTML = html;
+
+    const tbody = document.getElementById("tbodyCards");
+
+    tbody.addEventListener("input", atualizarResumo);
+    tbody.addEventListener("change", atualizarResumo);
 }
 
 
 
-let html = `
+function adicionarLinha(){
 
+    const tbody = document.getElementById("tbodyCards");
 
-<div class="tabela-wrapper">
+    const numero = tbody.rows.length + 1;
 
-<table>
-
-
-<thead>
-
+    tbody.insertAdjacentHTML("beforeend", `
 <tr>
 
-<th>#</th>
-
-<th>Comprador</th>
-
-<th>Fornecedor</th>
-
-<th>Frete</th>
-
-<th>Tipo Suíno</th>
-
-<th>Quantidade</th>
-
-<th>Preço</th>
-
-<th>Prazo</th>
-
-<th>Embarque</th>
-
-<th>Descarga</th>
-
-<th>Dia</th>
-
-<th>Semana</th>
-
-<th>Qtd Cards</th>
-
-</tr>
-
-
-</thead>
-
-
-<tbody>
-
-
-`;
-
-
-
-
-
-
-for(
-let i=1;
-i<=total;
-i++
-){
-
-
-
-html += `
-
-
-<tr>
-
+<td>${numero}</td>
 
 <td>
-
-${i}
-
-</td>
-
-
-
-<td>
-
-
-<select
-
-name="Comprador"
-
->
-
-
-<option value="">
-
-Selecione
-
-</option>
-
-
+<select name="Comprador">
+<option value="">Selecione</option>
 ${montarOpcoesParceiros()}
-
-
 </select>
-
-
-
 </td>
 
-
-
-
-
-
 <td>
-
-
-<select
-
-name="Fornecedor"
-
->
-
-
-<option value="">
-
-Selecione
-
-</option>
-
-
+<select name="Fornecedor">
+<option value="">Selecione</option>
 ${montarOpcoesParceiros()}
-
-
 </select>
-
-
-
 </td>
 
+<td>${montarSelect(FRETES,"frete")}</td>
 
-
-
-
-
-<td>
-
-${montarSelect(
-FRETES,
-"frete"
-)}
-
-</td>
-
-
-
-
+<td>${montarSelect(TIPOS_SUINO,"tipo")}</td>
 
 <td>
-
-${montarSelect(
-TIPOS_SUINO,
-"tipo"
-)}
-
-</td>
-
-
-
-
-
-
-<td>
-
-
 <input
-
 type="number"
-
 name="quantidade"
-
-value="0"
-
->
-
-
+value="0">
 </td>
 
-
-
-
-
-
-
 <td>
-
-
 <input
-
 type="number"
-
-name="preco"
-
 step="0.01"
-
-value="0"
-
->
-
-
+name="preco"
+value="0">
 </td>
 
-
-
-
-
+<td>${montarSelect(PRAZOS,"prazo")}</td>
 
 <td>
-
-${montarSelect(
-PRAZOS,
-"prazo"
-)}
-
-</td>
-
-
-
-
-
-
-<td>
-
-
 <input
-
 type="datetime-local"
-
-name="embarque"
-
->
-
-
+name="embarque">
 </td>
 
-
-
-
-
-
 <td>
-
-
 <input
-
 type="datetime-local"
-
-name="descarga"
-
->
-
-
+name="descarga">
 </td>
 
+<td>${montarSelect(DIAS,"dia")}</td>
 
-
-
-
-
+<td>${montarSelect(SEMANAS,"semana")}</td>
 
 <td>
-
-${montarSelect(
-DIAS,
-"dia"
-)}
-
-</td>
-
-
-
-
-
-
-<td>
-
-${montarSelect(
-SEMANAS,
-"semana"
-)}
-
-</td>
-
-
-
-
-
-
-
-<td>
-
-
 <input
-
 type="number"
-
 name="cards"
-
-class="quantidadeCards"
-
 value="1"
-
-min="1"
-
-
->
-
-
+min="1">
 </td>
-
-
-
-
 
 </tr>
+`);
 
-
-`;
-
-
+    atualizarResumo();
 
 }
-
-
-
-
-
-html += `
-
-
-</tbody>
-
-
-</table>
-
-
-</div>
-
-
-`;
-
-
-
-document
-.getElementById(
-"tabelaContainer"
-)
-.innerHTML = html;
-
-atualizarResumo();
-
-const tbody =
-document.querySelector(
-"#tabelaContainer tbody"
-);
-
-tbody.addEventListener(
-"input",
-atualizarResumo
-);
-
-tbody.addEventListener(
-"change",
-atualizarResumo
-);
-
-
-}
-
-
-
-
-
 
 
 
 
 function obterLinhas(){
-
-
-
 let linhas=[];
-
-
-
 
 document
 .querySelectorAll(
@@ -1145,13 +859,12 @@ alert("Falha ao enviar cards. Veja o console.");
 
 
 
-
-
-
 window.onload = async()=>{
 
+    await carregarParceiros();
 
-await carregarParceiros();
+    criarTabela();
 
+    adicionarLinha();
 
 };
