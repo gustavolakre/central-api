@@ -336,8 +336,11 @@ async function importarFretesPipefy() {
         const dados = await resposta.json();
 
         if (dados.sucesso) {
+            const removidos = dados.removidos || 0;
             status.innerHTML =
-                `✅ ${dados.importados} fretes importados`;
+                removidos > 0
+                    ? `✅ ${dados.importados} fretes importados · ${removidos} removidos`
+                    : `✅ ${dados.importados} fretes importados`;
         } else {
             status.innerHTML = `❌ ${dados.erro}`;
         }

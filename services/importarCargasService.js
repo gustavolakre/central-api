@@ -8,6 +8,7 @@
 //Insere os registros no PostgreSQL.
 //Atualiza registros existentes usando pipefy_card_id como chave única.
 //Só atualiza quando os dados realmente mudaram (raw_data IS DISTINCT FROM).
+//Remove do banco cards que não vieram no relatório (excluídos no Pipefy).
 //Processa tudo em lotes de 200 registros para ganhar desempenho.
 
 //RESUMO: Converte uma planilha exportada do Pipefy em registros da tabela controle_cargas.
@@ -92,6 +93,14 @@ async function importarCargas(buffer){
            `Planilha excede o limite de ${LIMITE_LINHAS} linhas`
          );
       }
+
+      const idsImportados = [
+        ...new Set(
+          dados
+            .map((carga) => Number(carga["Código"]))
+            .filter((id) => Number.isFinite(id))
+        )
+      ];
 
       const sql = `
         INSERT INTO controle_cargas (
@@ -397,11 +406,33 @@ async function importarCargas(buffer){
         );
       }
 
+      let removidos = 0;
+
+      // Só remove órfãos se o relatório trouxe IDs válidos
+      // (evita apagar a tabela inteira se a exportação vier vazia/quebrada)
+      if (idsImportados.length > 0) {
+        const limpeza = await pool.query(
+          `
+            DELETE FROM controle_cargas
+            WHERE pipefy_card_id IS NOT NULL
+              AND NOT (pipefy_card_id = ANY($1::bigint[]))
+          `,
+          [idsImportados]
+        );
+
+        removidos = limpeza.rowCount || 0;
+
+        console.log(
+          `Removidos ${removidos} cards ausentes no relatório`
+        );
+      }
+
       console.timeEnd("IMPORTACAO_TOTAL");
 
       return {
         sucesso: true,
-        importados
+        importados,
+        removidos
     };
 
 }

@@ -107,8 +107,11 @@
             if (dados.sucesso) {
 
                 if (status) {
+                    const removidos = dados.removidos || 0;
                     status.innerHTML =
-                        `✅ ${dados.importados} cargas importadas`;
+                        removidos > 0
+                            ? `✅ ${dados.importados} cargas importadas · ${removidos} removidas`
+                            : `✅ ${dados.importados} cargas importadas`;
                 }
 
                 mostrarUltimaAtualizacao();
