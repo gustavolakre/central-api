@@ -159,25 +159,6 @@ const DIAS = [
 
 
 
-const RESPONSAVEIS = [
-
-    { id: "306443829", nome: "Adelar Schuh" },
-    { id: "305728998", nome: "Ana Wust" },
-    { id: "308039901", nome: "Bruna Jaine Anderson" },
-    { id: "307550459", nome: "Bruno Panatta" },
-    { id: "307046790", nome: "Enário dos Santos" },
-    { id: "304564865", nome: "Henrique" },
-    { id: "304569850", nome: "Jeferson A. Antunes" },
-    { id: "307776597", nome: "Rafael de Lima" },
-    { id: "307283950", nome: "Luiz Gustavo Deon" },
-    { id: "305099902", nome: "Vânia Riva" },
-    { id: "307046791", nome: "Mikael Silva Sousa" },
-    { id: "305205639", nome: "Wanderson Agostinho" }
-
-];
-
-
-
 const SEMANAS=[];
 
 
@@ -324,46 +305,6 @@ function montarSelect(
 }
 
 
-function montarSelectResponsavel(){
-
-    let html = `
-
-    <select name="responsavel">
-
-    <option value="">
-        Selecione
-    </option>
-
-    `;
-
-    RESPONSAVEIS.forEach(({ id, nome }) => {
-
-        html += `
-        <option value="${escapeHtmlAttr(id)}">
-            ${escapeHtmlAttr(nome)}
-        </option>
-        `;
-
-    });
-
-    html += `
-
-    </select>
-
-    `;
-
-    return html;
-
-}
-
-
-
-
-
-
-
-
-
 function gerarLinhas(){
 
 
@@ -400,8 +341,6 @@ let html = `
 <th>Comprador</th>
 
 <th>Fornecedor</th>
-
-<th>Responsável</th>
 
 <th>Frete</th>
 
@@ -515,17 +454,6 @@ ${montarOpcoesParceiros()}
 </select>
 
 
-
-</td>
-
-
-
-
-
-
-<td>
-
-${montarSelectResponsavel()}
 
 </td>
 
@@ -821,16 +749,6 @@ nomeParceiroSelect(fornecedor),
 
 
 
-responsavelId:
-
-tr.querySelector(
-'[name="responsavel"]'
-).value,
-
-
-
-
-
 frete:
 
 tr.querySelector(
@@ -1011,11 +929,11 @@ if(!cards.length){
 }
 
 const linhaInvalida = cards.find(
-    c => !c.compradorId || !c.fornecedorId || !c.responsavelId
+    c => !c.compradorId || !c.fornecedorId
 );
 
 if(linhaInvalida){
-    alert("Selecione comprador, fornecedor e responsável em todas as linhas.");
+    alert("Selecione comprador e fornecedor em todas as linhas.");
     return;
 }
 

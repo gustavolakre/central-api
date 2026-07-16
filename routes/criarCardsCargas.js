@@ -147,24 +147,6 @@ router.post("/", async (req, res) => {
         const PIPE_ID = "304131962";
 
 
-        const RESPONSAVEIS = {
-
-            "Adelar Schuh": "306443829",
-            "Ana Wust": "305728998",
-            "Bruna Jaine Anderson": "308039901",
-            "Bruno Panatta": "307550459",
-            "Enário dos Santos": "307046790",
-            "Henrique": "304564865",
-            "Jeferson A. Antunes": "304569850",
-            "Rafael de Lima": "307776597",
-            "Luiz Gustavo Deon": "307283950",
-            "Vânia Riva": "305099902",
-            "Mikael Silva Sousa": "307046791",
-            "Wanderson Agostinho": "305205639"
-
-        };
-
-
         const labelsMap = await carregarLabelsMap(PIPE_ID);
 
 
@@ -245,30 +227,6 @@ router.post("/", async (req, res) => {
                 adicionarConnector(
                     "fornecedor",
                     card.fornecedorId
-                );
-
-
-
-                /*
-                    RESPONSÁVEL
-                    assignee_select exige array de IDs do membro Pipefy
-                */
-
-
-                const responsavelId =
-                    card.responsavelId ||
-                    RESPONSAVEIS[card.responsavel] ||
-                    null;
-
-                if (!responsavelId) {
-                    throw new Error(
-                        "Responsável não informado ou inválido"
-                    );
-                }
-
-                adicionarCampo(
-                    "respons_vel",
-                    [String(responsavelId)]
                 );
 
 
@@ -411,9 +369,6 @@ router.post("/", async (req, res) => {
                             title:"${titulo}"
 
 
-                            assignee_ids: [${String(responsavelId)}]
-
-
                             fields_attributes:[
 
                                 ${fieldsGraphQL}
@@ -431,8 +386,6 @@ router.post("/", async (req, res) => {
                             id
 
                             title
-
-                            assignees { id name }
 
                         }
 
