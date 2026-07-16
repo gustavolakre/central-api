@@ -3,6 +3,8 @@ const axios = require("axios");
 
 const router = express.Router();
 
+const PIPEFY_URL = "https://api.pipefy.com/graphql";
+
 /** ID bruto do record connector Pipefy (sem JSON.stringify). */
 function normalizarConnectorId(value) {
     if (value === undefined || value === null || value === "") {
@@ -41,6 +43,84 @@ function normalizarConnectorId(value) {
 
     id = String(id ?? "").trim();
     return id || null;
+}
+
+function pipefyHeaders() {
+    return {
+        Authorization: `Bearer ${process.env.PIPEFY_TOKEN}`
+    };
+}
+
+async function pipefyGraphQL(query) {
+    const response = await axios.post(
+        PIPEFY_URL,
+        { query },
+        { headers: pipefyHeaders() }
+    );
+
+    if (response.data.errors?.length) {
+        throw new Error(
+            response.data.errors.map((e) => e.message).join(" | ")
+        );
+    }
+
+    return response.data.data;
+}
+
+/** Cache nome -> id das labels do pipe. */
+async function carregarLabelsMap(pipeId) {
+    const data = await pipefyGraphQL(`{
+        pipe(id: ${pipeId}) {
+            labels { id name }
+        }
+    }`);
+
+    const map = new Map();
+
+    for (const label of data.pipe.labels || []) {
+        map.set(String(label.name).trim(), String(label.id));
+    }
+
+    return map;
+}
+
+/** Resolve label por nome; cria no pipe se ainda não existir. */
+async function garantirLabelId(pipeId, nome, labelsMap) {
+    const name = String(nome || "").trim();
+
+    if (!name) {
+        return null;
+    }
+
+    if (labelsMap.has(name)) {
+        return labelsMap.get(name);
+    }
+
+    const data = await pipefyGraphQL(`
+        mutation {
+            createLabel(input: {
+                pipe_id: ${pipeId}
+                name: "${name.replace(/"/g, '\\"')}"
+                color: "#0045FF"
+            }) {
+                label { id name }
+            }
+        }
+    `);
+
+    const created = data.createLabel.label;
+    labelsMap.set(String(created.name).trim(), String(created.id));
+    return String(created.id);
+}
+
+function formatFieldValueGraphQL(value) {
+    if (Array.isArray(value)) {
+        return `[${value
+            .map((v) => `"${String(v).replace(/"/g, '\\"')}"`)
+            .join(",")}]`;
+    }
+
+    return `"${String(value).replace(/"/g, '\\"')}"`;
 }
 
 
@@ -85,6 +165,8 @@ router.post("/", async (req, res) => {
         };
 
 
+        const labelsMap = await carregarLabelsMap(PIPE_ID);
+
 
         let sucesso = 0;
         let erros = 0;
@@ -107,20 +189,23 @@ router.post("/", async (req, res) => {
 
 
                     if(
-                        value !== undefined &&
-                        value !== null &&
-                        value !== ""
+                        value === undefined ||
+                        value === null ||
+                        value === ""
                     ){
-
-                        fields.push({
-
-                            field_id,
-
-                            value:String(value)
-
-                        });
-
+                        return;
                     }
+
+                    if(Array.isArray(value) && value.length === 0){
+                        return;
+                    }
+
+                    fields.push({
+                        field_id,
+                        value: Array.isArray(value)
+                            ? value.map(String)
+                            : String(value)
+                    });
 
                 }
 
@@ -225,20 +310,36 @@ router.post("/", async (req, res) => {
                 );
 
 
-                // Formato Pipefy: `2026/29,02-Segunda`
-                const etiqueta =
-                    card.etiquetas ||
-                    (
-                        card.etiquetaSemana &&
-                        card.etiquetaDia
-                            ? `${card.etiquetaSemana},${card.etiquetaDia}`
-                            : ""
-                    );
+                /*
+                    Etiquetas = label_select no Pipefy.
+                    Semana e dia são labels separadas (ex.: 2026/30 + 04-Quarta).
+                    A API exige array de IDs, não o texto combinado.
+                */
+                const etiquetaIds = [];
 
+                if (card.etiquetaSemana) {
+                    etiquetaIds.push(
+                        await garantirLabelId(
+                            PIPE_ID,
+                            card.etiquetaSemana,
+                            labelsMap
+                        )
+                    );
+                }
+
+                if (card.etiquetaDia) {
+                    etiquetaIds.push(
+                        await garantirLabelId(
+                            PIPE_ID,
+                            card.etiquetaDia,
+                            labelsMap
+                        )
+                    );
+                }
 
                 adicionarCampo(
                     "etiquetas",
-                    etiqueta
+                    etiquetaIds.filter(Boolean)
                 );
 
 
@@ -264,8 +365,7 @@ router.post("/", async (req, res) => {
 
                             field_id:"${f.field_id}"
 
-                            field_value:"${String(f.value)
-                                .replace(/"/g,'\\"')}"
+                            field_value:${formatFieldValueGraphQL(f.value)}
 
                         }`;
 
@@ -338,7 +438,7 @@ router.post("/", async (req, res) => {
                 const response = await axios.post(
 
 
-                    "https://api.pipefy.com/graphql",
+                    PIPEFY_URL,
 
 
                     {
@@ -350,12 +450,7 @@ router.post("/", async (req, res) => {
 
                     {
 
-                        headers:{
-
-                            Authorization:
-                            `Bearer ${process.env.PIPEFY_TOKEN}`
-
-                        }
+                        headers: pipefyHeaders()
 
                     }
 
