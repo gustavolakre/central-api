@@ -481,15 +481,6 @@ min="1">
 <td>
     <button
         type="button"
-        class="copiarLinha copiar"
-        title="Copiar para a linha abaixo">
-        📋
-    </button>
-</td>
-
-<td>
-    <button
-        type="button"
         class="excluirLinha excluir"
         title="Excluir linha">
         🗑️
