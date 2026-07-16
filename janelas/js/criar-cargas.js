@@ -708,13 +708,28 @@ html += `
 
 
 
-
 document
 .getElementById(
 "tabelaContainer"
 )
 .innerHTML = html;
 
+atualizarResumo();
+
+const tbody =
+document.querySelector(
+"#tabelaContainer tbody"
+);
+
+tbody.addEventListener(
+"input",
+atualizarResumo
+);
+
+tbody.addEventListener(
+"change",
+atualizarResumo
+);
 
 
 }
@@ -941,9 +956,65 @@ return linhas;
 }
 
 
+function atualizarResumo(){
 
+    const resumo = {};
 
+    document.querySelectorAll("#tabelaContainer tbody tr").forEach(tr=>{
 
+        const compradorSelect = tr.querySelector('[name="Comprador"]');
+
+        const comprador =
+            nomeParceiroSelect(compradorSelect) || "Não informado";
+
+        const suinos =
+            Number(tr.querySelector('[name="quantidade"]').value || 0);
+
+        const cards =
+            Number(tr.querySelector('[name="cards"]').value || 1);
+
+        if(!resumo[comprador]){
+            resumo[comprador]={
+                suinos:0,
+                cards:0
+            };
+        }
+
+        resumo[comprador].suinos += suinos;
+        resumo[comprador].cards += cards;
+
+    });
+
+    let html="";
+
+    let totalSuinos=0;
+    let totalCards=0;
+
+    Object.entries(resumo).forEach(([comprador,dados])=>{
+
+        html += `
+            <div class="resumo-item">
+                <div><strong>COMPRADOR:</strong> ${comprador}</div>
+                <div><strong>Total de Suínos:</strong> ${dados.suinos}</div>
+                <div><strong>Cards:</strong> ${dados.cards}</div>
+            </div>
+        `;
+
+        totalSuinos += dados.suinos;
+        totalCards += dados.cards;
+
+    });
+
+    html += `
+        <div class="resumo-total">
+            <div>Total Geral de Suínos: ${totalSuinos}</div>
+            <div>Total de Cards: ${totalCards}</div>
+        </div>
+    `;
+
+    document.getElementById("resumoCompradores").innerHTML = html;
+
+}
 
 
 
