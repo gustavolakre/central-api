@@ -213,10 +213,6 @@ router.post("/", async (req, res) => {
 
 
 
-                /*
-                    TESTE
-                    Comentados para validar criação básica
-
                 adicionarCampo(
                     "data_e_hora_da_carga",
                     card.embarque
@@ -229,16 +225,21 @@ router.post("/", async (req, res) => {
                 );
 
 
+                // Formato Pipefy: `2026/29,02-Segunda`
                 const etiqueta =
-                `${card.etiquetaDia}, ${card.etiquetaSemana}`;
+                    card.etiquetas ||
+                    (
+                        card.etiquetaSemana &&
+                        card.etiquetaDia
+                            ? `${card.etiquetaSemana},${card.etiquetaDia}`
+                            : ""
+                    );
 
 
                 adicionarCampo(
                     "etiquetas",
                     etiqueta
                 );
-
-                */
 
 
 

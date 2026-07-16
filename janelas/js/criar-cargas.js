@@ -180,6 +180,22 @@ for(let i=1;i<=53;i++){
 
 
 
+/** Monta etiqueta Pipefy: `2026/29,02-Segunda` */
+function montarEtiqueta(semana, dia){
+
+    const s = String(semana || "").trim();
+    const d = String(dia || "").trim();
+
+    if(!s || !d){
+        return "";
+    }
+
+    return `${s},${d}`;
+
+}
+
+
+
 
 
 
@@ -801,6 +817,15 @@ etiquetaSemana:
 tr.querySelector(
 '[name="semana"]'
 ).value,
+
+
+
+
+etiquetas:
+montarEtiqueta(
+tr.querySelector('[name="semana"]').value,
+tr.querySelector('[name="dia"]').value
+),
 
 
 
