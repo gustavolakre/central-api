@@ -251,7 +251,7 @@ router.post("/", async (req, res) => {
 
                 /*
                     RESPONSÁVEL
-                    assignee_select recebe somente ID do membro Pipefy
+                    assignee_select exige array de IDs do membro Pipefy
                 */
 
 
@@ -268,7 +268,7 @@ router.post("/", async (req, res) => {
 
                 adicionarCampo(
                     "respons_vel",
-                    responsavelId
+                    [String(responsavelId)]
                 );
 
 
@@ -411,6 +411,9 @@ router.post("/", async (req, res) => {
                             title:"${titulo}"
 
 
+                            assignee_ids: [${String(responsavelId)}]
+
+
                             fields_attributes:[
 
                                 ${fieldsGraphQL}
@@ -428,6 +431,8 @@ router.post("/", async (req, res) => {
                             id
 
                             title
+
+                            assignees { id name }
 
                         }
 

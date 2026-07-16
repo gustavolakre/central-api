@@ -214,7 +214,7 @@ function montarEtiqueta(semana, dia){
 }
 
 
-/** datetime-local (`2026-07-12T15:00`) -> formato Pipefy */
+/** datetime-local (`2026-07-12T15:00`) -> Pipefy `DD/MM/YYYY HH:mm` */
 function formatarDatetimePipefy(value){
 
     const v = String(value || "").trim();
@@ -224,12 +224,13 @@ function formatarDatetimePipefy(value){
     }
 
     // 2026-07-12T15:00 ou 2026-07-12T15:00:00
-    if(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v)){
-        const comSegundos = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(v)
-            ? v
-            : `${v}:00`;
+    const m = v.match(
+        /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/
+    );
 
-        return comSegundos.replace("T", " ");
+    if(m){
+        const [, yyyy, mm, dd, hh, min] = m;
+        return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
     }
 
     return v;
