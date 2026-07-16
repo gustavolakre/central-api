@@ -364,6 +364,7 @@ function criarTabela(){
                     <th>Semana</th>
                     <th>Qtd Cards</th>
                     <th>Copiar</th>
+                    <th>Excluir</th>
                 </tr>
             </thead>
 
@@ -384,9 +385,13 @@ function criarTabela(){
     tbody.addEventListener("click", e=>{
 
     if(e.target.classList.contains("copiarLinha")){
-
         copiarLinha(e.target);
+        return;
+    }
 
+    if(e.target.classList.contains("excluirLinha")){
+        excluirLinha(e.target);
+        return;
     }
 
 });
@@ -470,6 +475,24 @@ min="1">
         class="copiarLinha"
     >
         📋
+    </button>
+</td>
+
+<td>
+    <button
+        type="button"
+        class="copiarLinha copiar"
+        title="Copiar para a linha abaixo">
+        📋
+    </button>
+</td>
+
+<td>
+    <button
+        type="button"
+        class="excluirLinha excluir"
+        title="Excluir linha">
+        🗑️
     </button>
 </td>
 
@@ -691,6 +714,33 @@ return linhas;
 }
 
 
+function excluirLinha(botao){
+
+    const tbody =
+        document.getElementById("tbodyCards");
+
+    if(tbody.rows.length == 1){
+
+        alert("É necessário manter pelo menos uma linha.");
+
+        return;
+
+    }
+
+    botao.closest("tr").remove();
+
+    [...tbody.rows].forEach((tr,i)=>{
+
+        tr.cells[0].textContent = i + 1;
+
+    });
+
+    atualizarResumo();
+
+}
+
+
+
 function copiarLinha(botao){
 
     const linha = botao.closest("tr");
@@ -808,6 +858,35 @@ function atualizarResumo(){
 }
 
 
+function removerLinhasComSucesso(indices){
+
+    if(!Array.isArray(indices) || !indices.length){
+        return;
+    }
+
+    const tbody = document.getElementById("tbodyCards");
+
+    indices
+        .sort((a,b)=>b-a)
+        .forEach(i=>{
+
+            if(tbody.rows[i]){
+                tbody.rows[i].remove();
+            }
+
+        });
+
+    [...tbody.rows].forEach((tr,i)=>{
+
+        tr.cells[0].textContent = i + 1;
+
+    });
+
+    atualizarResumo();
+
+}
+
+
 
 
 document
@@ -905,15 +984,23 @@ if(!resposta.ok){
     return;
 }
 
-const msg = [
-    `${retorno.criados ?? 0} card(s) criado(s).`,
-    retorno.erros ? `${retorno.erros} erro(s).` : null
-].filter(Boolean).join(" ");
+if ((retorno.erros ?? 0) === 0) {
 
-alert(msg);
+    alert(`${retorno.criados} card(s) criado(s) com sucesso!`);
 
-if(retorno.detalhesErros?.length){
-    console.error("Detalhes:", retorno.detalhesErros);
+    window.location.reload();
+
+} else {
+
+    alert(
+        `${retorno.criados} card(s) criado(s) com sucesso.\n\n` +
+        `${retorno.erros} card(s) apresentaram erro e permanecerão na tela.`
+    );
+
+    removerLinhasComSucesso(retorno.indicesSucesso);
+
+    console.error(retorno.detalhesErros);
+
 }
 
 }
