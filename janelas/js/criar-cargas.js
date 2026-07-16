@@ -24,6 +24,38 @@ function authHeaders(extra = {}){
 }
 
 
+function tratarSessaoExpirada(){
+
+    if(typeof logoutSessaoExpirada === "function"){
+        logoutSessaoExpirada();
+        return;
+    }
+
+    localStorage.setItem(
+        "paginaDestino",
+        window.location.pathname
+    );
+
+    localStorage.removeItem("token");
+
+    window.location.href =
+        "/janelas/login.html";
+
+}
+
+
+async function verificarAuthResponse(resposta){
+
+    if(resposta.status === 401 || resposta.status === 403){
+        tratarSessaoExpirada();
+        throw new Error("Sessão expirada");
+    }
+
+    return resposta;
+
+}
+
+
 function escapeHtmlAttr(value){
 
     return String(value ?? "")
@@ -68,6 +100,8 @@ async function carregarParceiros(){
             }
         );
 
+        await verificarAuthResponse(resposta);
+
         if(!resposta.ok){
             throw new Error(`HTTP ${resposta.status}`);
         }
@@ -86,6 +120,10 @@ async function carregarParceiros(){
 
     }
     catch(err){
+
+        if(err.message === "Sessão expirada"){
+            return;
+        }
 
         console.error(
             "Erro ao carregar parceiros",
@@ -985,6 +1023,8 @@ cards
 );
 
 
+await verificarAuthResponse(resposta);
+
 
 const retorno =
 await resposta.json();
@@ -1016,6 +1056,10 @@ if(retorno.detalhesErros?.length){
 
 }
 catch(err){
+
+if(err.message === "Sessão expirada"){
+    return;
+}
 
 console.error(err);
 
