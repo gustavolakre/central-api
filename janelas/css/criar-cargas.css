@@ -146,3 +146,11 @@ td:nth-child(7){
     font-weight:bold;
     line-height:28px;
 }
+
+.excluir{
+    background:#d32f2f;
+}
+
+.excluir:hover{
+    background:#b71c1c;
+}

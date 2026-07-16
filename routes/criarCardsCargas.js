@@ -153,11 +153,13 @@ router.post("/", async (req, res) => {
         let sucesso = 0;
         let erros = 0;
 
+        const indicesSucesso = [];
+        const indicesErro = [];
+
         let detalhesErros = [];
 
 
-
-        for (const card of cards) {
+        for (const [indice, card] of cards.entries()) {
 
 
             try {
@@ -450,16 +452,20 @@ router.post("/", async (req, res) => {
                     erros++;
 
 
-                    detalhesErros.push({
+                    indicesErro.push(indice);
 
-                        card:titulo,
+                     detalhesErros.push({
 
-                        erro:
-                        response.data.errors
-                        .map(e=>e.message)
-                        .join(" | ")
+                     indice,
 
-                    });
+                     card:titulo,
+
+                     erro:
+                     response.data.errors
+                     .map(e=>e.message)
+                     .join(" | ")
+
+                  });
 
 
                 }
@@ -467,6 +473,8 @@ router.post("/", async (req, res) => {
 
 
                     sucesso++;
+
+                     indicesSucesso.push(indice);
 
 
                 }
@@ -481,17 +489,20 @@ router.post("/", async (req, res) => {
                 erros++;
 
 
-                detalhesErros.push({
+                indicesErro.push(indice);
 
-                    card:
-                    card.fornecedorNome,
+                 detalhesErros.push({
 
+                 indice,
 
-                    erro:
-                    err.response?.data ||
-                    err.message
+                 card:
+                 card.fornecedorNome,
 
-                });
+                 erro:
+                 err.response?.data ||
+                 err.message
+
+               });
 
 
             }
@@ -504,13 +515,17 @@ router.post("/", async (req, res) => {
 
         return res.json({
 
-            sucesso:true,
+           sucesso:true,
 
-            criados:sucesso,
+           criados:sucesso,
 
-            erros,
+           erros,
 
-            detalhesErros
+           indicesSucesso,
+
+            indicesErro,
+
+           detalhesErros
 
         });
 
