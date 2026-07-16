@@ -363,10 +363,12 @@ function criarTabela(){
                     <th>Dia</th>
                     <th>Semana</th>
                     <th>Qtd Cards</th>
+                    <th>Copiar</th>
                 </tr>
             </thead>
 
             <tbody id="tbodyCards"></tbody>
+            
 
         </table>
     </div>
@@ -378,6 +380,16 @@ function criarTabela(){
 
     tbody.addEventListener("input", atualizarResumo);
     tbody.addEventListener("change", atualizarResumo);
+
+    tbody.addEventListener("click", e=>{
+
+    if(e.target.classList.contains("copiarLinha")){
+
+        copiarLinha(e.target);
+
+    }
+
+});
 }
 
 
@@ -450,6 +462,15 @@ type="number"
 name="cards"
 value="1"
 min="1">
+</td>
+
+<td>
+    <button
+        type="button"
+        class="copiarLinha"
+    >
+        📋
+    </button>
 </td>
 
 </tr>
@@ -668,6 +689,62 @@ return linhas;
 
 
 }
+
+
+function copiarLinha(botao){
+
+    const linha = botao.closest("tr");
+
+    let proxima = linha.nextElementSibling;
+
+    if(!proxima){
+
+        adicionarLinha();
+
+        proxima = linha.nextElementSibling;
+
+    }
+
+    proxima.querySelector('[name="Comprador"]').value =
+        linha.querySelector('[name="Comprador"]').value;
+
+    proxima.querySelector('[name="Fornecedor"]').value =
+        linha.querySelector('[name="Fornecedor"]').value;
+
+    proxima.querySelector('[name="frete"]').value =
+        linha.querySelector('[name="frete"]').value;
+
+    proxima.querySelector('[name="tipo"]').value =
+        linha.querySelector('[name="tipo"]').value;
+
+    proxima.querySelector('[name="quantidade"]').value =
+        linha.querySelector('[name="quantidade"]').value;
+
+    proxima.querySelector('[name="preco"]').value =
+        linha.querySelector('[name="preco"]').value;
+
+    proxima.querySelector('[name="prazo"]').value =
+        linha.querySelector('[name="prazo"]').value;
+
+    proxima.querySelector('[name="embarque"]').value =
+        linha.querySelector('[name="embarque"]').value;
+
+    proxima.querySelector('[name="descarga"]').value =
+        linha.querySelector('[name="descarga"]').value;
+
+    proxima.querySelector('[name="dia"]').value =
+        linha.querySelector('[name="dia"]').value;
+
+    proxima.querySelector('[name="semana"]').value =
+        linha.querySelector('[name="semana"]').value;
+
+    proxima.querySelector('[name="cards"]').value =
+        linha.querySelector('[name="cards"]').value;
+
+    atualizarResumo();
+
+}
+
 
 
 function atualizarResumo(){
