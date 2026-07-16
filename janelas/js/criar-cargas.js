@@ -159,6 +159,25 @@ const DIAS = [
 
 
 
+const RESPONSAVEIS = [
+
+    { id: "306443829", nome: "Adelar Schuh" },
+    { id: "305728998", nome: "Ana Wust" },
+    { id: "308039901", nome: "Bruna Jaine Anderson" },
+    { id: "307550459", nome: "Bruno Panatta" },
+    { id: "307046790", nome: "Enário dos Santos" },
+    { id: "304564865", nome: "Henrique" },
+    { id: "304569850", nome: "Jeferson A. Antunes" },
+    { id: "307776597", nome: "Rafael de Lima" },
+    { id: "307283950", nome: "Luiz Gustavo Deon" },
+    { id: "305099902", nome: "Vânia Riva" },
+    { id: "307046791", nome: "Mikael Silva Sousa" },
+    { id: "305205639", nome: "Wanderson Agostinho" }
+
+];
+
+
+
 const SEMANAS=[];
 
 
@@ -191,6 +210,29 @@ function montarEtiqueta(semana, dia){
     }
 
     return `${s},${d}`;
+
+}
+
+
+/** datetime-local (`2026-07-12T15:00`) -> formato Pipefy */
+function formatarDatetimePipefy(value){
+
+    const v = String(value || "").trim();
+
+    if(!v){
+        return "";
+    }
+
+    // 2026-07-12T15:00 ou 2026-07-12T15:00:00
+    if(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(v)){
+        const comSegundos = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(v)
+            ? v
+            : `${v}:00`;
+
+        return comSegundos.replace("T", " ");
+    }
+
+    return v;
 
 }
 
@@ -281,6 +323,39 @@ function montarSelect(
 }
 
 
+function montarSelectResponsavel(){
+
+    let html = `
+
+    <select name="responsavel">
+
+    <option value="">
+        Selecione
+    </option>
+
+    `;
+
+    RESPONSAVEIS.forEach(({ id, nome }) => {
+
+        html += `
+        <option value="${escapeHtmlAttr(id)}">
+            ${escapeHtmlAttr(nome)}
+        </option>
+        `;
+
+    });
+
+    html += `
+
+    </select>
+
+    `;
+
+    return html;
+
+}
+
+
 
 
 
@@ -324,6 +399,8 @@ let html = `
 <th>Comprador</th>
 
 <th>Fornecedor</th>
+
+<th>Responsável</th>
 
 <th>Frete</th>
 
@@ -447,6 +524,17 @@ ${montarOpcoesParceiros()}
 
 <td>
 
+${montarSelectResponsavel()}
+
+</td>
+
+
+
+
+
+
+<td>
+
 ${montarSelect(
 FRETES,
 "frete"
@@ -536,7 +624,7 @@ PRAZOS,
 
 <input
 
-type="date"
+type="datetime-local"
 
 name="embarque"
 
@@ -555,7 +643,7 @@ name="embarque"
 
 <input
 
-type="date"
+type="datetime-local"
 
 name="descarga"
 
@@ -732,6 +820,16 @@ nomeParceiroSelect(fornecedor),
 
 
 
+responsavelId:
+
+tr.querySelector(
+'[name="responsavel"]'
+).value,
+
+
+
+
+
 frete:
 
 tr.querySelector(
@@ -784,9 +882,11 @@ tr.querySelector(
 
 embarque:
 
+formatarDatetimePipefy(
 tr.querySelector(
 '[name="embarque"]'
-).value,
+).value
+),
 
 
 
@@ -794,9 +894,11 @@ tr.querySelector(
 
 descarga:
 
+formatarDatetimePipefy(
 tr.querySelector(
 '[name="descarga"]'
-).value,
+).value
+),
 
 
 
@@ -908,11 +1010,11 @@ if(!cards.length){
 }
 
 const linhaInvalida = cards.find(
-    c => !c.compradorId || !c.fornecedorId
+    c => !c.compradorId || !c.fornecedorId || !c.responsavelId
 );
 
 if(linhaInvalida){
-    alert("Selecione comprador e fornecedor em todas as linhas.");
+    alert("Selecione comprador, fornecedor e responsável em todas as linhas.");
     return;
 }
 

@@ -251,13 +251,24 @@ router.post("/", async (req, res) => {
 
                 /*
                     RESPONSÁVEL
-                    assignee_select recebe somente ID
+                    assignee_select recebe somente ID do membro Pipefy
                 */
 
 
+                const responsavelId =
+                    card.responsavelId ||
+                    RESPONSAVEIS[card.responsavel] ||
+                    null;
+
+                if (!responsavelId) {
+                    throw new Error(
+                        "Responsável não informado ou inválido"
+                    );
+                }
+
                 adicionarCampo(
                     "respons_vel",
-                    RESPONSAVEIS["Luiz Gustavo Deon"]
+                    responsavelId
                 );
 
 

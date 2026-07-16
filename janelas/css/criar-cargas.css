@@ -50,7 +50,11 @@ button:hover{
 table{
     border-collapse:collapse;
     width:100%;
-    min-width:1800px;
+    min-width:2100px;
+}
+
+input[type="datetime-local"]{
+    min-width:180px;
 }
 
 thead th{
