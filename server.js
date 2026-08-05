@@ -210,6 +210,8 @@ app.use(
     require("./routes/buscarFretes")
 )
 
+app.use('/paineis-condenacoes', require('./routes/paineis-condenacoes'));
+
 app.use("/metricas", require("./routes/metricas"));
 
 app.use(

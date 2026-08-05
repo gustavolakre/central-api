@@ -1,0 +1,65 @@
+.kpis-condenacoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.kpi-card {
+    background: var(--surface-escuro, #1f2937);
+    border: 1px solid var(--border-escuro, #374151);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.kpi-card span {
+    font-size: 13px;
+    color: var(--text-muted-escuro, #e5e7eb);
+    font-weight: 600;
+}
+
+.kpi-card strong {
+    font-size: 28px;
+    color: var(--text-escuro, #f9fafb);
+    font-family: "Inter Tight", sans-serif;
+}
+
+.kpi-card.alerta {
+    border-left: 5px solid #ef4444;
+}
+
+.kpi-card.sucesso {
+    border-left: 5px solid #22c55e;
+}
+
+.kpi-card.percentual {
+    border-left: 5px solid #f59e0b;
+}
+
+.duas-colunas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 1100px) {
+    .duas-colunas {
+        grid-template-columns: 1fr;
+    }
+}
+
+#graficoPerdasSemana {
+    height: 420px !important;
+}
+
+#graficoPercentual,
+#graficoTopFornecedores {
+    height: 360px !important;
+}
+
+#graficoWaterfall {
+    height: 300px !important;
+}

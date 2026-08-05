@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Condenações</title>
+
+    <link rel="stylesheet" href="/janelas/css/base.css">
+    <link rel="stylesheet" href="/janelas/css/tema-escuro.css">
+    <link rel="stylesheet" href="/janelas/css/topbar-paineis.css">
+    <link rel="stylesheet" href="/janelas/css/paineis-cargas-2.css">
+    <link rel="stylesheet" href="/janelas/css/paineis-condenacoes.css">
+
+    <script src="/janelas/logout.js"></script>
+</head>
+<body class="tema-escuro">
+
+<div class="topbar-dashboard">
+    <div class="topbar-left">
+        <button class="btn-voltar" onclick="voltarInicio()">⬅ Voltar ao início</button>
+        <button class="btnAtualizarPipefy" onclick="atualizarCargasPipefy()">Atualizar Pipefy</button>
+        <div id="status" class="topbar-status"></div>
+        <div id="ultimaAtualizacao" class="topbar-ultima-atualizacao"></div>
+    </div>
+
+    <div class="topbar-right">
+        <a href="/janelas/dashboard.html">Por Responsáveis</a>
+        <a href="/janelas/paineis-cargas.html">Por Cargas</a>
+        <a href="/janelas/paineis-cargas-2.html">Por Parceiros</a>
+        <a href="/janelas/paineis-condenacoes.html" class="ativo">Condenações</a>
+    </div>
+</div>
+
+<h2>Painel de Condenações</h2>
+
+<div class="linha">
+    <div class="box">
+
+        <div class="filtros-topo">
+            <div class="filtro-box fornecedor">
+                <div class="filtro-titulo">Fornecedor</div>
+                <div id="filtroFornecedor"></div>
+            </div>
+
+            <div class="filtro-box comprador">
+                <div class="filtro-titulo">Comprador</div>
+                <div id="filtroComprador"></div>
+            </div>
+
+            <div class="filtro-box tipo">
+                <div class="filtro-titulo">Tipo Suíno</div>
+                <div id="filtroTipo"></div>
+            </div>
+        </div>
+
+        <div id="filtroPeriodo" class="filtro-periodo"></div>
+
+        <div class="kpis-condenacoes">
+            <div class="kpi-card">
+                <span>Valor Bruto</span>
+                <strong id="kpiBruto">R$ 0,00</strong>
+            </div>
+
+            <div class="kpi-card alerta">
+                <span>Condenações</span>
+                <strong id="kpiCondenacoes">R$ 0,00</strong>
+            </div>
+
+            <div class="kpi-card alerta">
+                <span>Mortos em Transporte</span>
+                <strong id="kpiMortos">R$ 0,00</strong>
+            </div>
+
+            <div class="kpi-card sucesso">
+                <span>Valor Líquido</span>
+                <strong id="kpiLiquido">R$ 0,00</strong>
+            </div>
+
+            <div class="kpi-card percentual">
+                <span>% Perda sobre Bruto</span>
+                <strong id="kpiPercentual">0,00%</strong>
+            </div>
+        </div>
+
+        <div class="box box-grafico">
+            <h3 class="titulo-grafico">Perdas por Semana</h3>
+            <canvas id="graficoPerdasSemana"></canvas>
+        </div>
+
+        <div class="duas-colunas">
+            <div class="box box-grafico">
+                <h3 class="titulo-grafico">Percentual de Perda</h3>
+                <canvas id="graficoPercentual"></canvas>
+            </div>
+
+            <div class="box box-grafico">
+                <h3 class="titulo-grafico">Top Fornecedores por Perda</h3>
+                <canvas id="graficoTopFornecedores"></canvas>
+            </div>
+        </div>
+
+        <div class="box box-grafico">
+            <h3 class="titulo-grafico">Bruto × Mortos × Condenações × Líquido</h3>
+            <canvas id="graficoWaterfall"></canvas>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script>Chart.register(ChartDataLabels);</script>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="/janelas/js/ui-comum.js"></script>
+<script src="/janelas/js/paineis-condenacoes.js"></script>
+
+</body>
+</html>
