@@ -13,10 +13,8 @@ router.get('/', async (req, res) => {
 
         COALESCE(valor_total_bruto, 0) AS valor_total_bruto,
         COALESCE(valor_total_liquido, 0) AS valor_total_liquido,
-
-        -- ajuste os nomes abaixo para os reais da sua tabela
-        COALESCE(total_condenacoes, 0) AS valor_condenacoes,
-        COALESCE(valor_mortos_transporte, 0) AS valor_mortos_transporte
+        COALESCE(valor_condenacoes, 0) AS valor_condenacoes,
+        COALESCE(valor_mortos, 0) AS valor_mortos_transporte
 
       FROM controle_cargas
       WHERE fase <> '09-Cancelada'
