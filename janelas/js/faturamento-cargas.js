@@ -917,8 +917,10 @@ validarLogin();
                 }
                 html += `<hr style="margin:10px 0; border:none; border-top:1px solid #ddd;">
                     <div class="rodape-valores">
-                        <div class="valores" id="val_${id}"></div>
-                        <div class="impostos-pis-cofins" id="impostos_${id}"></div>
+                        <div class="rodape-totais">
+                            <div class="valores" id="val_${id}"></div>
+                            <div class="impostos-pis-cofins" id="impostos_${id}"></div>
+                        </div>
                         <div class="dados-servico">
                             <b>Dados do Serviço</b>
                             <div class="dados-servico-item">
@@ -969,6 +971,12 @@ validarLogin();
             let bcPisCofins = total
             let pis = total * 0.0065
             let cofins = total * 0.03
+            let irrf = total * 0.015
+            let contribSociais = pis + cofins + (total * 0.01)
+            const fmtImp = (v) => "R$ " + Number(v).toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })
             html += `
               <div style="
                   margin-top:15px;
@@ -988,10 +996,14 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
             const elImpostos = document.getElementById(`impostos_${id}`)
             if (elImpostos) {
                 elImpostos.innerHTML = `
-                    <div class="impostos-bc"><b>BC PIS/COFINS:</b> ${formatar(bcPisCofins)}</div>
+                    <div class="impostos-bc"><b>BC PIS/COFINS:</b> ${fmtImp(bcPisCofins)}</div>
                     <div class="impostos-aliquotas">
-                        <div><b>PIS - Alíquota:</b> ${formatar(pis)}</div>
-                        <div><b>COFINS - Alíquota:</b> ${formatar(cofins)}</div>
+                        <div><b>PIS - Alíquota:</b> ${fmtImp(pis)}</div>
+                        <div><b>COFINS - Alíquota:</b> ${fmtImp(cofins)}</div>
+                    </div>
+                    <div class="impostos-aliquotas">
+                        <div><b>IRRF:</b> ${fmtImp(irrf)}</div>
+                        <div><b>Contribuições Sociais Retidas:</b> ${fmtImp(contribSociais)}</div>
                     </div>
                 `
             }

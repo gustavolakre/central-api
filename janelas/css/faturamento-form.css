@@ -42,10 +42,17 @@
     flex-wrap: wrap;
 }
 
+.rodape-totais {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    flex-wrap: wrap;
+    flex: 1 1 420px;
+}
+
 .impostos-pis-cofins {
-    flex: 1 1 280px;
     margin-top: 10px;
-    text-align: center;
+    text-align: left;
     font-size: 14px;
     line-height: 1.5;
     color: #222;
@@ -59,9 +66,14 @@
 
 .impostos-aliquotas {
     display: flex;
-    justify-content: center;
-    gap: 28px;
+    justify-content: flex-start;
+    gap: 20px;
     flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+.impostos-aliquotas:last-child {
+    margin-bottom: 0;
 }
 
 .dados-servico {
@@ -112,7 +124,6 @@
     margin-top: 10px;
     font-weight: bold;
     line-height: 1.5;
-    flex: 1 1 220px;
 }
 
 .botoes-topo {
