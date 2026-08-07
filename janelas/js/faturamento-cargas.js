@@ -720,12 +720,25 @@ validarLogin();
                         ${cnpj ? `<div><b>CNPJ/CPF:</b> ${cnpj}</div>` : ""}
                         ${ie ? `<div><b>IE:</b> ${ie}</div>` : ""}
                     </div>
+                    <div class="precos-servico-row">
                     <div class="precos"><b>Preços</b><br>`
                 for (let tipo of tiposSuino) {
                     let preco = estadoCampos[id]?.precos?.[tipo] || ""
                     html += `${tipo} <input type="number" step="0.01" value="${preco}" id="preco_${id}_${idSeguro(tipo)}" oninput="calcular('${chave}')"><br>`
                 }
                 html += `</div>
+                    <div class="dados-servico">
+                        <b>Dados do Serviço</b>
+                        <div class="dados-servico-item">
+                            <b>Código de Tributação Nacional:</b>
+                            17.01.01 — Assessoria ou consultoria de qualquer natureza, não contida em outros itens desta lista.
+                        </div>
+                        <div class="dados-servico-item">
+                            <b>Item da NBS correspondente ao serviço prestado:</b>
+                            114011700 — Serviços de consultoria em gestão de cadeia logística.
+                        </div>
+                    </div>
+                    </div>
                     <div class="disc">${textoDisc}</div>`
 
                 if (visaoSintetizada) {
