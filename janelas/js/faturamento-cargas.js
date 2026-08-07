@@ -972,7 +972,7 @@ validarLogin();
             let pis = total * 0.0065
             let cofins = total * 0.03
             let irrf = total * 0.015
-            let contribSociais = pis + cofins + (total * 0.01)
+            let contribTotais = pis + cofins + (total * 0.01)
             const fmtImp = (v) => "R$ " + Number(v).toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
@@ -998,10 +998,10 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
                 elImpostos.innerHTML = `
                     <b>Impostos</b>
                     <div class="impostos-linha"><b>BC PIS/COFINS:</b> ${fmtImp(bcPisCofins)}</div>
-                    <div class="impostos-linha"><b>PIS - Alíquota:</b> ${fmtImp(pis)}</div>
-                    <div class="impostos-linha"><b>COFINS - Alíquota:</b> ${fmtImp(cofins)}</div>
+                    <div class="impostos-linha"><b>PIS - Alíquota:</b> 0,65%</div>
+                    <div class="impostos-linha"><b>COFINS - Alíquota:</b> 3,00%</div>
                     <div class="impostos-linha"><b>IRRF:</b> ${fmtImp(irrf)}</div>
-                    <div class="impostos-linha"><b>Contribuições Sociais Retidas:</b> ${fmtImp(contribSociais)}</div>
+                    <div class="impostos-linha"><b>Contribuições Totais:</b> ${fmtImp(contribTotais)}</div>
                 `
             }
         }
