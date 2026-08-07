@@ -918,6 +918,7 @@ validarLogin();
                 html += `<hr style="margin:10px 0; border:none; border-top:1px solid #ddd;">
                     <div class="rodape-valores">
                         <div class="valores" id="val_${id}"></div>
+                        <div class="impostos-pis-cofins" id="impostos_${id}"></div>
                         <div class="dados-servico">
                             <b>Dados do Serviço</b>
                             <div class="dados-servico-item">
@@ -965,6 +966,9 @@ validarLogin();
                 html += `${tipo}: ${qtd} × ${formatar(preco)} = ${formatar(valor)}<br>`
             }
             let trib = total * 0.18
+            let bcPisCofins = total
+            let pis = total * 0.0065
+            let cofins = total * 0.03
             html += `
               <div style="
                   margin-top:15px;
@@ -980,6 +984,17 @@ validarLogin();
 
 html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (18%): ${formatar(trib)}</span>`
             document.getElementById(`val_${id}`).innerHTML = html
+
+            const elImpostos = document.getElementById(`impostos_${id}`)
+            if (elImpostos) {
+                elImpostos.innerHTML = `
+                    <div class="impostos-bc"><b>BC PIS/COFINS:</b> ${formatar(bcPisCofins)}</div>
+                    <div class="impostos-aliquotas">
+                        <div><b>PIS - Alíquota:</b> ${formatar(pis)}</div>
+                        <div><b>COFINS - Alíquota:</b> ${formatar(cofins)}</div>
+                    </div>
+                `
+            }
         }
 
         /* CAPTURA CAMPOS */
