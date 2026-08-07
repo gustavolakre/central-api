@@ -917,19 +917,19 @@ validarLogin();
                 }
                 html += `<hr style="margin:10px 0; border:none; border-top:1px solid #ddd;">
                     <div class="rodape-valores">
-                        <div class="rodape-totais">
-                            <div class="valores" id="val_${id}"></div>
+                        <div class="valores" id="val_${id}"></div>
+                        <div class="rodape-quadros">
                             <div class="impostos-pis-cofins" id="impostos_${id}"></div>
-                        </div>
-                        <div class="dados-servico">
-                            <b>Dados do Serviço</b>
-                            <div class="dados-servico-item">
-                                <b>Código de Tributação Nacional:</b>
-                                <div>17.01.01 — Assessoria ou consultoria de qualquer natureza, não contida em outros itens desta lista.</div>
-                            </div>
-                            <div class="dados-servico-item">
-                                <b>Item da NBS correspondente ao serviço prestado:</b>
-                                <div>114011700 — Serviços de consultoria em gestão de cadeia logística.</div>
+                            <div class="dados-servico">
+                                <b>Dados do Serviço</b>
+                                <div class="dados-servico-item">
+                                    <b>Código de Tributação Nacional:</b>
+                                    <div>17.01.01 — Assessoria ou consultoria de qualquer natureza, não contida em outros itens desta lista.</div>
+                                </div>
+                                <div class="dados-servico-item">
+                                    <b>Item da NBS correspondente ao serviço prestado:</b>
+                                    <div>114011700 — Serviços de consultoria em gestão de cadeia logística.</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -996,15 +996,12 @@ html += `<br><span style="color:#d32f2f; font-weight:bold;">Valor dos Tributos (
             const elImpostos = document.getElementById(`impostos_${id}`)
             if (elImpostos) {
                 elImpostos.innerHTML = `
-                    <div class="impostos-bc"><b>BC PIS/COFINS:</b> ${fmtImp(bcPisCofins)}</div>
-                    <div class="impostos-aliquotas">
-                        <div><b>PIS - Alíquota:</b> ${fmtImp(pis)}</div>
-                        <div><b>COFINS - Alíquota:</b> ${fmtImp(cofins)}</div>
-                    </div>
-                    <div class="impostos-aliquotas">
-                        <div><b>IRRF:</b> ${fmtImp(irrf)}</div>
-                        <div><b>Contribuições Sociais Retidas:</b> ${fmtImp(contribSociais)}</div>
-                    </div>
+                    <b>Impostos</b>
+                    <div class="impostos-linha"><b>BC PIS/COFINS:</b> ${fmtImp(bcPisCofins)}</div>
+                    <div class="impostos-linha"><b>PIS - Alíquota:</b> ${fmtImp(pis)}</div>
+                    <div class="impostos-linha"><b>COFINS - Alíquota:</b> ${fmtImp(cofins)}</div>
+                    <div class="impostos-linha"><b>IRRF:</b> ${fmtImp(irrf)}</div>
+                    <div class="impostos-linha"><b>Contribuições Sociais Retidas:</b> ${fmtImp(contribSociais)}</div>
                 `
             }
         }
