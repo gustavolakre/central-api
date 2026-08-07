@@ -36,20 +36,20 @@
 
 .rodape-valores {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: flex-start;
-    gap: 24px;
-    flex-wrap: wrap;
+    gap: 20px;
+    flex-wrap: nowrap;
 }
 
 .rodape-quadros {
     display: flex;
     justify-content: center;
     align-items: stretch;
-    gap: 20px;
-    flex-wrap: wrap;
-    width: 100%;
-    margin-top: 8px;
+    gap: 16px;
+    flex-wrap: nowrap;
+    flex: 1 1 auto;
+    min-width: 0;
 }
 
 .impostos-pis-cofins {
@@ -57,8 +57,8 @@
     border: 1px solid #ccc;
     padding: 14px 18px;
     border-radius: 5px;
-    width: 480px;
-    max-width: 100%;
+    flex: 1 1 0;
+    min-width: 320px;
     font-size: 17px;
     line-height: 1.55;
     font-weight: normal;
@@ -86,8 +86,8 @@
     border: 1px solid #ccc;
     padding: 14px 18px;
     border-radius: 5px;
-    width: 480px;
-    max-width: 100%;
+    flex: 1 1 0;
+    min-width: 320px;
     font-size: 16px;
     line-height: 1.5;
     font-weight: normal;
@@ -130,6 +130,7 @@
     margin-top: 10px;
     font-weight: bold;
     line-height: 1.5;
+    flex: 0 0 auto;
 }
 
 .botoes-topo {
