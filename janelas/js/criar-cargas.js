@@ -880,14 +880,45 @@ function removerLinhasComSucesso(indices){
 
 
 
+const btnCriar =
 document
 .getElementById(
 "btnCriar"
-)
+);
+
+
+function travarBotaoCriar(){
+
+    btnCriar.disabled = true;
+
+    btnCriar.dataset.textoOriginal =
+        btnCriar.textContent;
+
+    btnCriar.textContent = "Criando cards...";
+
+}
+
+
+function liberarBotaoCriar(){
+
+    btnCriar.disabled = false;
+
+    btnCriar.textContent =
+        btnCriar.dataset.textoOriginal ||
+        "Criar Cards";
+
+}
+
+
+btnCriar
 .addEventListener(
 "click",
 async()=>{
 
+
+if(btnCriar.disabled){
+    return;
+}
 
 
 const cards =
@@ -911,6 +942,10 @@ console.log(
     "CARDS:",
     cards
 );
+
+travarBotaoCriar();
+
+let recarregando = false;
 
 try{
 
@@ -979,6 +1014,8 @@ if ((retorno.erros ?? 0) === 0) {
 
     alert(`${retorno.criados} card(s) criado(s) com sucesso!`);
 
+    recarregando = true;
+
     window.location.reload();
 
 } else {
@@ -1004,6 +1041,15 @@ if(err.message === "Sessão expirada"){
 console.error(err);
 
 alert("Falha ao enviar cards. Veja o console.");
+
+}
+finally{
+
+// Em caso de sucesso total a página recarrega, então o botão
+// permanece travado até a nova carga da tela.
+if(!recarregando){
+    liberarBotaoCriar();
+}
 
 }
 
